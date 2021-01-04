@@ -22,7 +22,6 @@ QuaCry::QuaCry(Scene *scene) : scene_(scene)
         scene_->addCamera(camera_, false);
         scene_->setLastCameraActive();
 
-
 //        window_box_ = new PrimMeshModel(Primitive::Cube);
 //        window_size_ =mat4(vec4{10.0,10.0,1.0,1.0});
 //        window_box_->moveLocal(window_size_);
