@@ -69,8 +69,8 @@ void QuaCry::Draw()
                                                   0, 0, 0, 0,
                                                   0, 0, 0, 0 };
 
-        if (ImGui::CollapsingHeader("Embedded SL2:")){
-
+        if (ImGui::CollapsingHeader("Embedded SL2:"))
+        {
             ImGui::Columns(3, NULL, true);
             embeddings(selectedEmbedding, currEmbedding);
             ImGui::NextColumn();
@@ -92,4 +92,5 @@ void QuaCry::Draw()
 //            ImGui::SliderFloat("scale", &scale, 0.1, 20.0f);
 //        }
 
+        pointset_->_world_transform = temporaryMatrixView;
 }

@@ -31,8 +31,19 @@ add_executable(nir
   include/utils/log.h
   src/utils/log.cpp
 
+
+
+
+
   include/math/lattice.h
   src/math/lattice.cpp
+
+  include/math/sl.h
+  src/math/sl.cpp
+
+
+
+
 
   include/pointset.h
   src/pointset.cpp

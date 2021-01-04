@@ -6,11 +6,13 @@
 #include "math/lattice.h"
 #include "glrenderer.h"
 
+class QuaCry;
 
 class PointSet : public Lattice
 {
     friend class GLRenderer;
     friend class GUI;
+    friend class QuaCry;
 public:
     PointSet(): Lattice(3), _world_transform(mat4(1.0)){}
     PointSet(mat4& basis): Lattice(basis,3), _world_transform(mat4(1.0)){}

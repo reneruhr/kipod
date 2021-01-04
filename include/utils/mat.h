@@ -30,9 +30,8 @@ class mat2 {
     mat2( const vec2& a, const vec2& b )
 	{ _m[0] = a;  _m[1] = b;  }
 
-	/*BUG*/
     mat2( GLfloat m00, GLfloat m10, GLfloat m01, GLfloat m11 )
-	{ _m[0] = vec2( 0, 0 ); _m[1] = vec2( 0, 0 ); }
+    { _m[0] = vec2( m00, m01 ); _m[1] = vec2( m10, m11 ); }
 
     mat2( const mat2& m ) {
 	if ( *this != m ) {
