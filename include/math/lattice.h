@@ -15,7 +15,10 @@ public:
     Lattice(mat4& basis4d, int dim=4): dim(dim),basis(basis4d){}
     Lattice(int dim=4): dim(dim), basis(mat4(1.0)){}
 
-protected:
+    mat4 getBasisMatrix(){
+        return basis;
+    }
+
     int dim;
     mat4 basis;
     std::vector<vec4> sample;

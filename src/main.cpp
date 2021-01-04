@@ -150,6 +150,8 @@ int my_main( int argc, char **argv )
 
 
     QuaCry* quacry = new QuaCry(scene);
+    gui->AppendModule(quacry);
+
 
     while (!window->windowShouldClose())
     {

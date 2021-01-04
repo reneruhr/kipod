@@ -1,10 +1,5 @@
 #include "../include/gui.h"
 
-#include "../vendor/imgui/imgui.h"
-#include "../vendor/imgui/imgui_impl_glfw.h"
-#include "../vendor/imgui/imgui_impl_opengl3.h"
-#include "../vendor/imgui/imguifilesystem.h"
-
 #include "../include/guielement.h"
 
 GUI::~GUI()
@@ -37,7 +32,12 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
     draw_menus(scene, softrenderer, window);
 
-    ImGui::ShowDemoWindow();
+    for(auto m : gui_modules_) m->Draw();
+
+    static bool show_demo_ = false;
+    if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
+    if(show_demo_) ImGui::ShowDemoWindow();
+
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

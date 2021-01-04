@@ -57,7 +57,7 @@ class mat2 {
 
 	
     mat2 operator - ( const mat2& m ) const
-	{ return mat2( 0, 0 ); } /*BUG*/
+    { return mat2( _m[0]-m[0], _m[1]-m[1] ); }
 
     mat2 operator * ( const GLfloat s ) const 
 	{ return mat2( s*_m[0], s*_m[1] ); }
@@ -74,7 +74,13 @@ class mat2 {
     mat2 operator * ( const mat2& m ) const {
 	mat2  a( 0.0 );
 
-	/*BUG*/
+    for ( int i = 0; i < 2; ++i ) {
+        for ( int j = 0; j < 2; ++j ) {
+        for ( int k = 0; k < 2; ++k ) {
+            a[i][j] += _m[i][k] * m[k][j];
+        }
+        }
+    }
 
 	return a;
     }
@@ -89,7 +95,7 @@ class mat2 {
     }
 
     mat2& operator -= ( const mat2& m ) {
-	_m[0] -= 0;  _m[1] -= 0;  /*BUG*/
+    _m[0] -= m[0];  _m[1] -= m[0];
 	return *this;
     }
 
@@ -101,7 +107,13 @@ class mat2 {
     mat2& operator *= ( const mat2& m ) {
 	mat2  a( 0.0 );
 
-	/*BUG*/
+    for ( int i = 0; i < 2; ++i ) {
+        for ( int j = 0; j < 2; ++j ) {
+        for ( int k = 0; k < 2; ++k ) {
+            a[i][j] += _m[i][k] * m[k][j];
+        }
+        }
+    }
 
 	return *this = a;
     }
@@ -553,6 +565,39 @@ class mat4 {
 
     operator GLfloat* ()
 	{ return static_cast<GLfloat*>( &_m[0].x ); }
+
+
+
+
+
+
+
+    void topLeftCorner(mat2 m){
+        _m[0][0] = m[0][0];
+        _m[1][0] = m[1][0];
+        _m[0][1] = m[0][1];
+        _m[1][1] = m[1][1];
+    }
+    void bottomLeftCorner(mat2 m){
+        _m[0+2][0] = m[0][0];
+        _m[1+2][0] = m[1][0];
+        _m[0+2][1] = m[0][1];
+        _m[1+2][1] = m[1][1];
+    }
+    void topRightCorner(mat2 m){
+        _m[0][0+2] = m[0][0];
+        _m[1][0+2] = m[1][0];
+        _m[0][1+2] = m[0][1];
+        _m[1][1+2] = m[1][1];
+    }
+    void bottomRightCorner(mat2 m){
+        _m[0+2][0+2] = m[0][0];
+        _m[1+2][0+2] = m[1][0];
+        _m[0+2][1+2] = m[0][1];
+        _m[1+2][1+2] = m[1][1];
+    }
+
+
 };
 
 //

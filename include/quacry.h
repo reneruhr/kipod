@@ -4,10 +4,14 @@
 #include "utils/mat.h"
 #include <vector>
 
+#include "../include/guimodule.h"
+#include "guimathcontrol.h"
+
 class Scene;
 class PointSet;
 class PrimMeshModel;
 class Camera;
+
 
 struct WindowBox
 {
@@ -46,7 +50,7 @@ struct WindowBox
 
 };
 
-class QuaCry
+class QuaCry : public GUIModule, GUIMathControl
 {
     PointSet* pointset_;
     WindowBox window_box_;
@@ -55,9 +59,11 @@ class QuaCry
     Camera* camera_;
     //PrimMeshModel* window_box_;
 
-
+    mat4 current_transform_;
 public:
     QuaCry(Scene* scene);
+
+    virtual void Draw() override;
 };
 
 #endif // QUACRY_H

@@ -6,6 +6,13 @@
 #include "scene.h"
 #include "eventmanager.h"
 
+#include "../vendor/imgui/imgui.h"
+#include "../vendor/imgui/imgui_impl_glfw.h"
+#include "../vendor/imgui/imgui_impl_opengl3.h"
+#include "../vendor/imgui/imguifilesystem.h"
+
+#include "guimodule.h"
+
 class GUI
 {
 
@@ -14,6 +21,10 @@ public:
     ~GUI();
     void init(Window *window);
     void draw(Scene* scene, SoftRenderer* softrenderer, Window *window);
+
+    vector<GUIModule*> gui_modules_;
+
+    void AppendModule(GUIModule* module){ gui_modules_.push_back(module); }
 
 
     void draw_menus(Scene *scene, SoftRenderer *softrenderer, Window *window);

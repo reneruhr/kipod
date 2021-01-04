@@ -73,7 +73,11 @@ add_executable(nir
   include/guielement.h
   src/guielement.cpp
 
+  include/guimodule.h
+  src/guimodule.cpp
 
+  include/guimathcontrol.h
+  src/guimathcontrol.cpp
 
   include/window.h
   src/window.cpp
