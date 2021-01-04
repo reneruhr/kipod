@@ -22,15 +22,22 @@ void Scene::initLastModel(){
     models.back()->init(_glrenderer);
 }
 
-void Scene::addCamera(Camera *cam)
+void Scene::addCamera(Camera *cam, bool projective)
 {  
 	cameras.push_back(cam);
-	camerasMode.push_back(true);
+    camerasMode.push_back(projective);
 }
 
 void Scene::setCameraMode(int camera_id, bool perspective){
     camerasMode[camera_id] = perspective;
 }
+
+void Scene::setLastCameraActive()
+{
+    if(cameras.empty()) return;
+    activeCamera = cameras.size()-1;
+}
+
 
 void Scene::addLight(Light *light)
 {
@@ -46,10 +53,8 @@ void Scene::init(){
         _glrenderer->SetProgram(QuasiCrystal());
         _glrenderer->SetProgram(Lights());
 	}
-    Camera* cam = new Camera();
-    cam->createFrustum();
-    cam->Perspective( 45, float(_width)/_height, 0.1f, 200.0);
-    cam->Ortho();
+    Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
+    cam->createFrustum(); // Needed for very first Camera
     addCamera(cam);
 
 

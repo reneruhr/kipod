@@ -54,14 +54,16 @@ public:
 	
 	Camera* getActiveCamera();
 	MeshModel* getActiveModel();
-	void addCamera(Camera *cam);
+    void addCamera(Camera *cam, bool projective=true);
 	void moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up );
 	void moveEyeOfCamera(int camera_id, const vec3& eye);
 	void perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far);
 	void moveModel(int model_id, const vec3& translate);
 	void lookAtModel(int camera_id, int model_id);
 
-	void setCameraMode(int camera_id, bool orthogonal);
+    void setCameraMode(int camera_id, bool projective);
+
+    void setLastCameraActive();
 
     void addLight(Light *light);
     bool hasLight() { return !lights.empty(); }

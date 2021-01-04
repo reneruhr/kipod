@@ -129,7 +129,7 @@ void screenToPixel_y(double& y, int& q){
 int my_main( int argc, char **argv )
 {
 
-    window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "CG Homework");
+    window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "NIR(renderer)");
     window->init();
 
     renderer = new GLRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);

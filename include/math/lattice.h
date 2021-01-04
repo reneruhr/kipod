@@ -27,9 +27,9 @@ protected:
 
     std::vector<vec4>* makeSample3d(int X,int Y, int Z){
 
-        for(int x=0; x<X;x++)
-            for(int y=0; y<Y;y++)
-                for(int z=0; z<Z;z++)
+        for(int x=-X; x<X;x++)
+            for(int y=-Y; y<Y;y++)
+                for(int z=-Z; z<Z;z++)
                     sample.emplace_back((*this)(x,y,z));
         LOG("Created Sample");
         return &sample;

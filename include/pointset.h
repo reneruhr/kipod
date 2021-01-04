@@ -22,7 +22,7 @@ public:
 
 protected:
     int sampleInfo[3] = {10,10,10};
-    int sampleSize = 1000;
+    int sampleSize = (2*sampleInfo[0]+1)*(2*sampleInfo[1]+1)*(2*sampleInfo[2]+1);
     mat4 _world_transform;
     shared_ptr<LatticeData> latticeData= nullptr;
 

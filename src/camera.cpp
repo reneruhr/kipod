@@ -17,6 +17,15 @@ Camera::Camera(): _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec3(0,1,0))
 		init();
 	}
 
+Camera::Camera( const float fovy, const float aspect, const float zNear, const float zFar): Camera(){
+    Perspective(fovy, aspect, zNear, zFar);
+    Ortho();
+}
+
+Camera::Camera( const float left, const float right, const float bottom, const float top, const float zNear, const float zFar ) : Camera(){
+    Ortho(left, right, bottom, top, zNear,  zFar);
+}
+
 
 void Camera::LookAt(const vec3& eye, const vec3& at, const vec3& up ){
 	// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluLookAt.xml
@@ -87,11 +96,6 @@ void Camera::Frustum( const float left, const float right,
 	//   						 vec4(0, 	   		0, 		-1, 				0									));
 
 }
-
-
-
-
-
 
 void Camera::Ortho(){
 	Ortho(_proj_left, _proj_right, _proj_bottom, _proj_top, _near, _far);

@@ -339,9 +339,7 @@ void GUI::add_and_list_cameras(Scene *scene)
 {
 
             if (ImGui::Button("Add Camera")){
-                    Camera* cam = new Camera();
-                    cam->Perspective( 45, 800.0/600.0, 0.1, 100.0);
-                    cam->Ortho();
+                    Camera* cam = new Camera( 45, 800.0/600.0, 0.1, 100.0);
                     scene->addCamera(cam);
             }
 

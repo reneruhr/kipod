@@ -32,7 +32,7 @@ class Camera {
     float _fovy=45.0f,	_aspect = 800.0f/600.0f,	_near = 1.0f, _far=10.0f;
 	vec3 u,v,w; // Camera coordinates
 
-	float _proj_right =1.0, _proj_left = -1.0, _proj_top = 1.0, _proj_bottom = -1.0;
+    float _proj_right =10.0f, _proj_left = -10.0f, _proj_top = 10.0f, _proj_bottom = -10.0f;
 
 
 	GLuint vao_camera;
@@ -44,10 +44,13 @@ class Camera {
 public:
 	Camera(vec3 eye,vec3 at,vec3 up);
 	Camera();
+    Camera(const float fovy, const float aspect, const float zNear, const float zFar);
+    Camera(const float left, const float right, const float bottom, const float top, const float zNear, const float zFar);
+
 
 
 	void setTransformation(const mat4& transform);
-	//void LookAt(const vec4& eye, const vec4& at, const vec4& up );
+
 	void LookAt(const vec3& eye, const vec3& at, const vec3& up );
 	void Ortho( const float left, const float right,
 		const float bottom, const float top,
@@ -56,8 +59,6 @@ public:
 	void Frustum( const float left, const float right,
 		const float bottom, const float top,
 		const float zNear, const float zFar );
-	// mat4 Perspective( const float fovy, const float aspect,
-	// 	const float zNear, const float zFar);
 	void Perspective( const float fovy, const float aspect,
 		const float zNear, const float zFar);
 
@@ -102,5 +103,6 @@ public:
 
 
 	void createFrustum();
-	void drawFrustum();
+    void drawFrustum();
+
 };
