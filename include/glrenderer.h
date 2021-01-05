@@ -25,8 +25,9 @@ struct ModelData{
 
 struct LatticeData{
     GLuint vao, vbo;
-    unsigned int sample_size;
-    int dim;
+    GLuint u_binding_point= 1, u_buffer, u_block_index;
+    unsigned int sample_size_;
+    int dim_;
     LatticeData(){ LOG_DEBUG("LatticeData Constructor");}
 };
 
@@ -79,6 +80,9 @@ public:
 
 
     shared_ptr<ModelData> loadColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices, const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
+
+    void initUniformBlock(shared_ptr<LatticeData> lattice_data);
+    void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float> &window_size);
 };
 
 

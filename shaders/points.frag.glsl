@@ -2,6 +2,7 @@
 
 //in  vec2 texCoord;
 
+in vec4 vColor;
 out vec4 fColor;
 
 //uniform sampler2D texture;
@@ -9,6 +10,6 @@ out vec4 fColor;
 void main() 
 { 
    //fColor = textureLod( texture, texCoord, 0 );
-   fColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+   fColor = vColor;
 } 
 

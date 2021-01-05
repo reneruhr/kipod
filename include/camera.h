@@ -51,7 +51,7 @@ public:
 
 	void setTransformation(const mat4& transform);
 
-	void LookAt(const vec3& eye, const vec3& at, const vec3& up );
+    void LookAt(const vec3 eye, const vec3 at, const vec3 up );
 	void Ortho( const float left, const float right,
 		const float bottom, const float top,
 		const float zNear, const float zFar );
@@ -64,7 +64,7 @@ public:
 
 
 	void updateLookAtInternal();
-	void updateLookAt(const vec3& eye, const vec3& at, const vec3& up);
+    void updateLookAt(const vec3 eye, const vec3 at, const vec3 up);
 	void updateLookAt();
 	void updatePerspective(const float& fovy, const float& aspect, const float& near, const float& far);
 	void updateOrthogonal( const float left, const float right,const float bottom, const float top,const float zNear, const float zFar);

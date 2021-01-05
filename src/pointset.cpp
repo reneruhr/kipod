@@ -1,14 +1,15 @@
 #include "../include/pointset.h"
 
 
-void PointSet::init(GLRenderer *glrenderer)
+void PointSet::Init(GLRenderer *glrenderer)
 {
     LOG("Init PointSet");
-    makeSample3d(sampleInfo);
-    latticeData = glrenderer->loadPoints(this);
+    MakeSample3d(sample_info_);
+    lattice_data_ = glrenderer->loadPoints(this);
+    glrenderer->initUniformBlock(lattice_data_);
 }
 
-void PointSet::draw(GLRenderer *glrenderer)
+void PointSet::Draw(GLRenderer *glrenderer)
 {
-    glrenderer->drawPoints(latticeData);
+    glrenderer->drawPoints(lattice_data_);
 }

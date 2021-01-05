@@ -7,17 +7,19 @@
 #include "../include/guimodule.h"
 #include "guimathcontrol.h"
 
+#include "pointset.h"
+
 class Scene;
-class PointSet;
 class PrimMeshModel;
 class Camera;
 
 
 struct WindowBox
 {
-    WindowBox(): window_size_{-10,10,-10,10,-1,1,-1,1} {};
+    WindowBox(): window_size_{-10,10,-10,10,-2,2,-2,2} {};
 
     std::vector< float > window_size_;
+
 
     float operator[](int i){
         return window_size_[i];
@@ -50,13 +52,11 @@ struct WindowBox
 
 };
 
-class QuaCry : public GUIModule, GUIMathControl
+class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathControl
 {
-    PointSet* pointset_;
-    WindowBox window_box_;
-
     Scene* scene_;
     Camera* camera_;
+    Camera* sideViewCamera_;
     //PrimMeshModel* window_box_;
 
     mat4 current_transform_;

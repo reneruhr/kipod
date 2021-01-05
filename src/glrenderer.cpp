@@ -42,6 +42,24 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& mvp){
     glUniformMatrix4fv(matrix, 1, GL_TRUE, &mvp[0][0]);
 }
 
+void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
+{
+
+    lattice_data->u_block_index = glGetUniformBlockIndex(programQuasi, "WindowBlock");
+    glUniformBlockBinding(programQuasi, lattice_data->u_block_index, lattice_data->u_binding_point);
+
+    glGenBuffers(1, &lattice_data->u_buffer);
+    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
+
+}
+
+void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float>& window_size)
+{
+
+    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, size(window_size)*sizeof(float), window_size.data());
+}
+
 struct LightGLGS{
     GLuint type;
     GLuint source;
@@ -115,20 +133,21 @@ shared_ptr<LatticeData> GLRenderer::loadPoints(PointSet* points)
 {
     lattices.emplace_back(make_shared<LatticeData>());
     auto lattice = lattices.back();
-    lattice->sample_size = points->sampleSize;
-    lattice->sample_size = points->sampleSize;
+    lattice->sample_size_ = points->sample_size_;
+    lattice->sample_size_ = points->sample_size_;
     glGenVertexArrays(1, &lattice->vao);
     glGenBuffers(1, &lattice->vbo);
 
     glBindVertexArray(lattice->vao);
     glBindBuffer(GL_ARRAY_BUFFER, lattice->vbo);
-    glBufferData(GL_ARRAY_BUFFER, lattice->sample_size * 4 * sizeof(float), points->sample.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, lattice->sample_size_ * 4 * sizeof(float), points->sample_.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     //glEnable(GL_PROGRAM_POINT_SIZE);
     glPointSize(5.0);
+
 
     return lattice;
 }
@@ -140,7 +159,7 @@ void GLRenderer::drawPoints(shared_ptr<LatticeData> lattice)
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glDrawArrays(GL_POINTS, 0, lattice->sample_size);
+    glDrawArrays(GL_POINTS, 0, lattice->sample_size_);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

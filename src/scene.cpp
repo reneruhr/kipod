@@ -2,6 +2,8 @@
 #include "../include/scene.h"
 #include "../include/meshmodel.h"
 
+#include "../include/quacry.h"
+
 using namespace std;
 
 void Scene::loadOBJModel(string fileName, MaterialStruct material)
@@ -82,10 +84,14 @@ void Scene::draw()
 
     for(auto pointset : pointsets){
         _glrenderer->useProgram(QuasiCrystal());
-        mat4 m = pointset->getmTransform();
+
+        mat4 m = pointset->GetWorldTransform();
         mat4 mvp = camMatrix * m;
         _glrenderer->SetUniform(QuasiCrystal(), mvp);
-        pointset->draw(_glrenderer);
+        _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
+
+
+        pointset->Draw(_glrenderer);
     }
 
 	for(auto model : models){

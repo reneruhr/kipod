@@ -27,7 +27,7 @@ Camera::Camera( const float left, const float right, const float bottom, const f
 }
 
 
-void Camera::LookAt(const vec3& eye, const vec3& at, const vec3& up ){
+void Camera::LookAt(const vec3 eye, const vec3 at, const vec3 up ){
 	// https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluLookAt.xml
 	assert(length(eye-at)>0.0001);
 	w = normalize(at-eye);  // direction
@@ -118,7 +118,7 @@ void Camera::updateLookAtInternal(){
 }
 
 
-void Camera::updateLookAt(const vec3& eye, const vec3& at, const vec3& up){ 
+void Camera::updateLookAt(const vec3 eye, const vec3 at, const vec3 up){
 	std::cout << "Called upDateLookAt" << std::endl;
 	_eye=eye; 
 	_at=at; 

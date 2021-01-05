@@ -8,20 +8,19 @@
 #include "../include/gui.h"
 
 
-QuaCry::QuaCry(Scene *scene) : GUIModule(), GUIMathControl(), scene_(scene)
+QuaCry::QuaCry(Scene *scene) : PointSet(), GUIModule(), GUIMathControl(), WindowBox(), scene_(scene)
 {
-        mat4 basis(1.0);
-        window_box_ = WindowBox();
-        pointset_ = new PointSet(basis);
-        pointset_->init(scene_->_glrenderer);
-        scene_->pointsets.push_back(pointset_);
+        Init(scene_->_glrenderer);
+        scene_->pointsets.push_back(this);
 
+        camera_ = new Camera( Left(), Right(),
+                              Bottom(), Top(),
+                              Near(), Far() );
+        //sideViewCamera_ = new Camera( -10, -10, -10, 10, -10, 10);
+        sideViewCamera_ = new Camera(45, float(scene->_width)/scene->_height, 0.1f, 200.0);
+        sideViewCamera_->updateLookAt(vec3(30,0,0),vec3(60,0,0),vec3(0,0,1));
 
-
-        camera_ = new Camera( window_box_.Left(),window_box_.Right(),
-                              window_box_.Bottom(), window_box_.Top(),
-                              window_box_.Near(), window_box_.Far() );
-
+        scene_->addCamera(sideViewCamera_);
         scene_->addCamera(camera_, false);
         scene_->setLastCameraActive();
 
@@ -39,7 +38,7 @@ void QuaCry::Draw()
 {
         if (ImGui::CollapsingHeader("Lattice:")){
 
-            static mat4 f_basis = pointset_->basis;
+            static mat4 f_basis = basis_;
             static mat4 f_m = current_transform_;
             ImGui::Columns(2, NULL, true);
             ImGui::Text("Basis:");
@@ -92,5 +91,5 @@ void QuaCry::Draw()
 //            ImGui::SliderFloat("scale", &scale, 0.1, 20.0f);
 //        }
 
-        pointset_->_world_transform = temporaryMatrixView;
+        world_transform_ = temporaryMatrixView;
 }

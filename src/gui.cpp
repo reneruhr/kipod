@@ -98,7 +98,7 @@ void GUI::drawPointSetControl(Scene *scene)
 
         if(!scene->pointsets.empty()){
             PointSet* pointSet = scene->pointsets.back();
-            basisView.showMatrix(pointSet->basis);
+            basisView.showMatrix(pointSet->basis_);
         }
         ImGui::TreePop();
     }
