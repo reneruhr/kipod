@@ -1,10 +1,9 @@
 #version 330 core
 
+layout (location = 0) in  vec4 inPoint;
 
-//in  vec2 vTexCoord;
-layout (location = 0) in  vec4 vPosition;
-
-uniform mat4 mvp;
+uniform mat4 pv;
+uniform mat4 transform;
 uniform WindowBlock {
 	vec2 x;
 	vec2 y;
@@ -13,22 +12,21 @@ uniform WindowBlock {
 };
 
 out vec4 vColor;
-//out vec2 texCoord;
 
 void main()
 {
-    // gl_Position.xyz = vPosition.xyz;
-    // gl_Position.z = 0;
-    // gl_Position.w=1;
-    // texCoord = vTexCoord;
-
-    vColor = vec4(0,1,0,1);
-    //if(( z[0] <= vPosition.z ) && ( vPosition.z <= z[1] ) ) vColor.z=0.0f;
+    
+    vec4 point = transform * inPoint;
+	vColor = vec4(1,1,0,1);
    
-    vColor.x= abs(vPosition.w)/10.0f;
-	vColor.z= 1-abs(vPosition.z)/10.0f;
+   if((z[0] <= point.z)  && (point.z <= z[1])  &&  
+   	  (w[0] <= point.w) && (point.w <= w[1])){
+		vColor.x= abs(point.w)/10.0f;
+		vColor.z= 1.0f-abs(point.z)/5.0f;
+		vColor.y = abs(point.z)/5.0f;
+	}
 
-    gl_Position = mvp * vec4(vPosition.x,vPosition.y,vPosition.z,1);
-    //gl_PointSize = 5.0;
+	// Now discard 4-dim data, only keep projection to 3-dim
+    gl_Position = pv * vec4(point.xyz,1);
 
 }

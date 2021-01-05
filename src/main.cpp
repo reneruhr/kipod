@@ -149,7 +149,7 @@ int my_main( int argc, char **argv )
     inputmanager->init(window);
 
 
-    QuaCry* quacry = new QuaCry(scene);
+    QuaCry* quacry = new QuaCry(scene,{-10,10,-10,10,-5,5,-1,1},{-10,10,-10,10,-10,10,0,0});
     gui->AppendModule(quacry);
 
 

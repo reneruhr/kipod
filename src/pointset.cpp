@@ -4,7 +4,7 @@
 void PointSet::Init(GLRenderer *glrenderer)
 {
     LOG("Init PointSet");
-    MakeSample3d(sample_info_);
+    MakeSample();
     lattice_data_ = glrenderer->loadPoints(this);
     glrenderer->initUniformBlock(lattice_data_);
 }

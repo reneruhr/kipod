@@ -13,22 +13,21 @@ class PointSet : public Lattice
     friend class GUI;
     friend class Scene;
 public:
-    PointSet(): Lattice(3), world_transform_(mat4(1.0)){}
-    PointSet(mat4 basis): Lattice(basis,3), world_transform_(mat4(1.0)){}
+    PointSet(std::vector< int > sample_size = {-10,10,-10,10,-10,10,-10,10}, mat4 basis = mat4()) : Lattice(sample_size, basis)
+    {
+        LOG("Call PointSet Constructor with sample_size data {}, {} ,{}, {} ,{} ,{} ,{}, {}",
+            sample_size_[0],sample_size_[1],sample_size_[2],sample_size_[3],sample_size_[4],sample_size_[5],
+                sample_size_[6],sample_size_[7]);
+        LOG("...and basis {}", basis_);
+    }
     void Init(GLRenderer *glrenderer);
     virtual void Draw(GLRenderer *glrenderer);
     mat4 GetWorldTransform(){
         return world_transform_;
     }
-
 protected:
-    int sample_info_[3] = {10,10,10};
-    int sample_size_ = (2*sample_info_[0]+1)*(2*sample_info_[1]+1)*(2*sample_info_[2]+1);
     mat4 world_transform_;
     shared_ptr<LatticeData> lattice_data_= nullptr;
-
-
-
 };
 
 #endif // POINTSET_H

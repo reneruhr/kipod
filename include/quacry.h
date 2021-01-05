@@ -16,10 +16,10 @@ class Camera;
 
 struct WindowBox
 {
-    WindowBox(): window_size_{-10,10,-10,10,-2,2,-2,2} {};
+    WindowBox(): window_size_{-10,10,-10,10,-3,3,-3,3} {}
+    WindowBox(std::vector< float > window_size): window_size_(window_size) {}
 
     std::vector< float > window_size_;
-
 
     float operator[](int i){
         return window_size_[i];
@@ -61,8 +61,10 @@ class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathContr
 
     mat4 current_transform_;
 public:
+    QuaCry(Scene* scene, std::vector< float > window_size, std::vector< int > sample_size );
     QuaCry(Scene* scene);
 
+    void Init();
     virtual void Draw() override;
 };
 

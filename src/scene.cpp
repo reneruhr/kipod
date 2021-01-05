@@ -59,7 +59,6 @@ void Scene::init(){
     cam->createFrustum(); // Needed for very first Camera
     addCamera(cam);
 
-
     Light* light = new Light(LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
     addLight(light);
     Light* light1 = new Light(LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
@@ -76,8 +75,6 @@ void Scene::drawBoundingBox(){
 
 void Scene::draw()
 {
-	// 1. Send the renderer the current camera transform and the projection
-	// 2. Tell all models to draw themselves
 	mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
@@ -85,11 +82,13 @@ void Scene::draw()
     for(auto pointset : pointsets){
         _glrenderer->useProgram(QuasiCrystal());
 
-        mat4 m = pointset->GetWorldTransform();
-        mat4 mvp = camMatrix * m;
-        _glrenderer->SetUniform(QuasiCrystal(), mvp);
-        _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
+        mat4 basis = pointset->GetWorldTransform();
+        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
 
+//        LOG("set Buffer uniform z value: {} {}",
+//            ((QuaCry*)pointset)->window_size_[4], ((QuaCry*)pointset)->window_size_[5]);
+
+        _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
 
         pointset->Draw(_glrenderer);
     }

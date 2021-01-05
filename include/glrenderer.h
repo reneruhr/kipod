@@ -26,8 +26,7 @@ struct ModelData{
 struct LatticeData{
     GLuint vao, vbo;
     GLuint u_binding_point= 1, u_buffer, u_block_index;
-    unsigned int sample_size_;
-    int dim_;
+    int size;
     LatticeData(){ LOG_DEBUG("LatticeData Constructor");}
 };
 
@@ -72,7 +71,7 @@ public:
 
     void SetProgram(QuasiCrystal quasi);
     void useProgram(QuasiCrystal quasi);
-    void SetUniform(QuasiCrystal quasi, mat4 &mvp);
+    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m);
 
     void SetProgram(Lights lights);
     void SetUniform(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera);
