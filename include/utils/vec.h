@@ -153,6 +153,11 @@ GLfloat dot( const vec2& u, const vec2& v ) {
 }
 
 inline
+GLfloat det( const vec2& u, const vec2& v ) {
+    return u.x*v.y-u.y*v.x;
+}
+
+inline
 GLfloat length( const vec2& v ) {
     return std::sqrt( dot(v,v) );
 }
@@ -379,6 +384,9 @@ struct vec4 {
 
     vec4( const vec2& v, const float z, const float w ) : z(z), w(w)
 	{ x = v.x;  y = v.y; }
+
+    vec4( const vec2& v, const vec2& vv )
+    { x = v.x;  y = v.y; z = vv.x;  w = vv.y; }
 
     vec4( const float* f){
         x = *f;  y = *(f+1);  z = *(f+2);  w = *(f+3);

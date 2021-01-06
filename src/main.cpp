@@ -8,7 +8,7 @@
 #include "../include/graphicsalgorithms.h"
 
 #include "../include/quacry.h"
-
+#include "../include/math/minkowski_embedding.h"
 
 #include "../vendor/imgui/imgui.h"
 #include "../vendor/imgui/imgui_impl_glfw.h"
@@ -148,8 +148,8 @@ int my_main( int argc, char **argv )
     inputmanager = new InputManager(eventmanager);
     inputmanager->init(window);
 
-
-    QuaCry* quacry = new QuaCry(scene,{-10,10,-10,10,-5,5,-1,1},{-10,10,-10,10,-10,10,0,0});
+    mat4 amman_benker = MinkowskiEmbedding(2).Embedding();
+    QuaCry* quacry = new QuaCry(scene, amman_benker, {-10,10,-10,10,-5,5,-1,1},{-10,10,-10,10,-10,10,0,0});
     gui->AppendModule(quacry);
 
 

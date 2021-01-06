@@ -61,7 +61,7 @@ class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathContr
 
     mat4 current_transform_;
 public:
-    QuaCry(Scene* scene, std::vector< float > window_size, std::vector< int > sample_size );
+    QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size );
     QuaCry(Scene* scene);
 
     void Init();

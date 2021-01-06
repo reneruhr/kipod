@@ -8,8 +8,8 @@
 #include "../include/gui.h"
 
 
-QuaCry::QuaCry(Scene* scene, std::vector< float > window_size, std::vector< int > sample_size )
-        : PointSet(sample_size),  WindowBox(window_size), GUIModule(), GUIMathControl(), scene_(scene)
+QuaCry::QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size )
+        : PointSet(sample_size, basis),  WindowBox(window_size), GUIModule(), GUIMathControl(), scene_(scene)
 {
     Init();
 }

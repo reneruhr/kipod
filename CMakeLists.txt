@@ -41,9 +41,11 @@ add_executable(nir
   include/math/sl.h
   src/math/sl.cpp
 
+  include/math/minkowski_embedding.h
+  src/math/minkowski_embedding.cpp
 
-
-
+  include/math/polygon.h
+  src/math/polygon.cpp
 
   include/pointset.h
   src/pointset.cpp
