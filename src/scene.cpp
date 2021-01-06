@@ -80,16 +80,21 @@ void Scene::draw()
 	mat4 camMatrix = p*v;
 
     for(auto pointset : pointsets){
-        _glrenderer->useProgram(QuasiCrystal());
 
-        mat4 basis = pointset->GetWorldTransform();
-        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
-
-//        LOG("set Buffer uniform z value: {} {}",
-//            ((QuaCry*)pointset)->window_size_[4], ((QuaCry*)pointset)->window_size_[5]);
-
-        _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
-
+        if(pointset->lattice_data_->qc.window == WindowType::Octagon)
+        {
+            _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
+            mat4 basis = pointset->GetWorldTransform();
+            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis);
+            _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_vertices);
+        }
+        else if(pointset->lattice_data_->qc.window == WindowType::Box)
+        {
+                _glrenderer->useProgram(QuasiCrystal());
+                mat4 basis = pointset->GetWorldTransform();
+                _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
+                _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
+        }
         pointset->Draw(_glrenderer);
     }
 

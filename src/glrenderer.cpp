@@ -19,12 +19,19 @@ void GLRenderer::SetProgramWithNormals_from_faces(){
 
 
 void GLRenderer::SetProgram(QuasiCrystal quasi){
-    programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
+
+        programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
+        programQuasiOctagon = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/points.frag.glsl" );
+
 }
 
 void GLRenderer::useProgram(QuasiCrystal quasi)
 {
-        glUseProgram(programQuasi);
+    GLuint prog = programQuasi;
+    if(quasi.window == WindowType::Octagon)
+        prog = programQuasiOctagon;
+
+    glUseProgram(prog);
 }
 
 void GLRenderer::SetProgram(Lights light){
@@ -37,18 +44,24 @@ void GLRenderer::useProgram(Lights light)
 }
 
 void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m){
+    GLuint prog = programQuasi;
+    if(quasi.window == WindowType::Octagon)
+        prog = programQuasiOctagon;
 
-    GLuint cam_matrix = glGetUniformLocation(programQuasi, "pv");
-    GLuint transform_matrix = glGetUniformLocation(programQuasi, "transform");
+    GLuint cam_matrix = glGetUniformLocation(prog, "pv");
+    GLuint transform_matrix = glGetUniformLocation(prog, "transform");
     glUniformMatrix4fv(cam_matrix, 1, GL_TRUE, &pv[0][0]);
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 }
 
 void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
-{
+{    
+    GLuint prog = programQuasi;
+    if(lattice_data->qc.window == WindowType::Octagon)
+        prog = programQuasiOctagon;
 
-    lattice_data->u_block_index = glGetUniformBlockIndex(programQuasi, "WindowBlock");
-    glUniformBlockBinding(programQuasi, lattice_data->u_block_index, lattice_data->u_binding_point);
+    lattice_data->u_block_index = glGetUniformBlockIndex(prog, "WindowBlock");
+    glUniformBlockBinding(prog, lattice_data->u_block_index, lattice_data->u_binding_point);
 
     glGenBuffers(1, &lattice_data->u_buffer);
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
@@ -61,6 +74,14 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
     glBufferData(GL_UNIFORM_BUFFER, size(window_size)*sizeof(float), window_size.data(), GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
 }
+
+void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<vec2>& octagon)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
+    glBufferData(GL_UNIFORM_BUFFER, size(octagon)*sizeof(vec2), octagon.data(), GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
+}
+
 
 struct LightGLGS{
     GLuint type;
@@ -165,7 +186,7 @@ void GLRenderer::drawPoints(shared_ptr<LatticeData> lattice)
 }
 
 void GLRenderer::useProgram(int i){
-	GLuint prog;
+    GLuint prog;
 	if(i==1) prog=program;
 	else if(i==2) prog=program2;
 	else if(i==3) prog=program3;

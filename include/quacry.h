@@ -57,15 +57,22 @@ class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathContr
     Scene* scene_;
     Camera* camera_;
     Camera* sideViewCamera_;
+
+    WindowType window_type_;
+
+
     //PrimMeshModel* window_box_;
 
     mat4 current_transform_;
 public:
-    QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size );
+    QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size,
+           WindowType type = WindowType::Box);
     QuaCry(Scene* scene);
 
     void Init();
     virtual void Draw() override;
+
+    std::vector<vec2> window_vertices;
 };
 
 #endif // QUACRY_H

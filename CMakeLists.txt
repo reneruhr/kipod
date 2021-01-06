@@ -50,6 +50,9 @@ add_executable(nir
   include/pointset.h
   src/pointset.cpp
 
+  include/shapes.h
+  src/shapes.cpp
+
   src/main.cpp
 
   include/camera.h

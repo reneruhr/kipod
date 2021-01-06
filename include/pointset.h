@@ -20,7 +20,7 @@ public:
                 sample_size_[6],sample_size_[7]);
         LOG("...and basis {}", basis_);
     }
-    void Init(GLRenderer *glrenderer);
+    void Init(GLRenderer *glrenderer, WindowType type = WindowType::Box);
     virtual void Draw(GLRenderer *glrenderer);
     mat4 GetWorldTransform(){
         return world_transform_;

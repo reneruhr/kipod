@@ -8,8 +8,11 @@
 #include "../include/gui.h"
 
 
-QuaCry::QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size )
-        : PointSet(sample_size, basis),  WindowBox(window_size), GUIModule(), GUIMathControl(), scene_(scene)
+QuaCry::QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size,
+               std::vector< int > sample_size, WindowType type)
+        : PointSet(sample_size, basis),  WindowBox(window_size),
+          GUIModule(), GUIMathControl(), scene_(scene),
+          window_type_(type)
 {
     Init();
 }
@@ -22,11 +25,7 @@ QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathCont
 
 void QuaCry::Init()
 {
-    LOG("Init QuaCry with WindowBox {}, {} ,{}, {} ,{} ,{} ,{}, {}",
-        window_size_[0],window_size_[1],window_size_[2],window_size_[3],window_size_[4],window_size_[5],
-            window_size_[6],window_size_[7]);
-
-    PointSet::Init(scene_->_glrenderer);
+    PointSet::Init(scene_->_glrenderer, window_type_);
     scene_->pointsets.push_back(this);
 
     camera_ = new Camera( Left(), Right(),

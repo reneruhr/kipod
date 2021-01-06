@@ -10,6 +10,8 @@
 #include "../include/quacry.h"
 #include "../include/math/minkowski_embedding.h"
 
+#include "../include/math/polygon.h"
+
 #include "../vendor/imgui/imgui.h"
 #include "../vendor/imgui/imgui_impl_glfw.h"
 #include "../vendor/imgui/imgui_impl_opengl3.h"
@@ -149,8 +151,21 @@ int my_main( int argc, char **argv )
     inputmanager->init(window);
 
     mat4 amman_benker = MinkowskiEmbedding(2).Embedding();
-    QuaCry* quacry = new QuaCry(scene, amman_benker, {-10,10,-10,10,-5,5,-1,1},{-10,10,-10,10,-10,10,0,0});
-    gui->AppendModule(quacry);
+//    QuaCry* quacry = new QuaCry(scene,
+//                                amman_benker,
+//                                {-10,10,-10,10,-5,5,-1,1},
+//                                {-10,10,-10,10,-10,10,0,0},
+//                                WindowType::Box);
+
+    QuaCry* quacryOctagon = new QuaCry(scene,
+                                amman_benker,
+                                {-10,10,-10,10,-5,5,-5,5},
+                                {-10,10,-10,10,-10,10,0,0},
+                                WindowType::Octagon);
+    quacryOctagon->window_vertices = Octagon(sqrt(2)).vertices_;
+
+    //gui->AppendModule(quacry);
+    gui->AppendModule(quacryOctagon);
 
 
     while (!window->windowShouldClose())

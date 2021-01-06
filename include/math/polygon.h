@@ -21,6 +21,7 @@ public:
 
 const float nu = 1+sqrt(2);
 // Sides orthogonal to coordinate axes AKA truncated square.
+// Centered at origin (0,0)
 class Octagon : public Polygon
 {
 public:
