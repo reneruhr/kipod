@@ -479,7 +479,7 @@ bool inFrame(int triangle[3][2], int height, int width){
 
 
 
-void produceBC(const vec4& p, std::shared_ptr<float[]> BC){
+void produceBC(const vec4& p, std::vector<float>& BC){
    float x = p[0], y = p[1], z = p[2], w = p[3];
     BC[0] = x;
     BC[1] = w-x;
@@ -488,7 +488,7 @@ void produceBC(const vec4& p, std::shared_ptr<float[]> BC){
     BC[4] = z;
     BC[5] = w-z;
 }
-outcode produceOutcode(std::shared_ptr<float[]> BC){
+outcode produceOutcode(std::vector<float>& BC){
     outcode code = 0;
     const float EPSILON = -0.0000001;
     if(BC[0]<= EPSILON)             code |= X0;
@@ -689,8 +689,8 @@ ClipData BlinnClipping(Line& line, Line* normals)
     symmClipToSimpleClip(P0);
     symmClipToSimpleClip(P1);
 
-    std::shared_ptr<float[]> BC0( new float[6] );
-    std::shared_ptr<float[]> BC1( new float[6] );
+    std::vector<float> BC0(6);
+    std::vector<float> BC1(6);
     produceBC(P0, BC0);
     produceBC(P1, BC1);
     outcode c0 = produceOutcode(BC0);

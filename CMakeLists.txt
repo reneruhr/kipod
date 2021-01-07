@@ -11,10 +11,11 @@ add_definitions(-std=c++17
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
 
 set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/vendor/spdlog/include/)
 
-include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${SPDLOG_DIR})
+include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${glfw3_INCLUDE_DIR} ${SPDLOG_DIR})
 include_directories(include)
 
 file(GLOB imgui
@@ -114,7 +115,9 @@ add_executable(nir
 )
 
 target_link_libraries(nir ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-target_link_libraries(nir libglfw.so.3)
+target_link_libraries(nir GLEW::GLEW)
+target_link_libraries(nir glfw)
+
 
 file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
