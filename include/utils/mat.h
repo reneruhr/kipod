@@ -718,6 +718,13 @@ mat4 Translate( const vec4& v )
     return Translate( v.x, v.y, v.z );
 }
 
+inline
+mat4 Translate( const vec2& v )
+{
+    return Translate( v.x, v.y, 0 );
+}
+
+
 //----------------------------------------------------------------------------
 //
 //  Scale matrix generators

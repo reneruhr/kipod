@@ -17,6 +17,8 @@
 #include "../vendor/imgui/imgui_impl_opengl3.h"
 #include "../vendor/imgui/imguifilesystem.h"
 
+#include <chrono>
+#include <thread>
 
 
 #ifdef _DEBUG
@@ -161,15 +163,41 @@ int my_main( int argc, char **argv )
                                 amman_benker,
                                 {-10,10,-10,10,-5,5,-5,5},
                                 {-10,10,-10,10,-10,10,0,0},
-                                WindowType::Octagon);
-    quacryOctagon->window_vertices = Octagon(sqrt(2)).vertices_;
+                                WindowType::Octagon,
+                                Shape( Octagon(sqrt(2)/20) ) );
+    quacryOctagon->Move({0.8,0.8});
+
+    quacryOctagon->window_vertices_ = Octagon(sqrt(2)).vertices_;
 
     //gui->AppendModule(quacry);
     gui->AppendModule(quacryOctagon);
 
+    double then = glfwGetTime();
+    double now;
+    double limit = 1/30.0; // seconds per frame
+    double gap;
+
+    double lastTime = glfwGetTime();
+    int nbFrames = 0;
 
     while (!window->windowShouldClose())
     {
+//        double currentTime = glfwGetTime();
+//        nbFrames++;
+//        if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1 sec ago
+//            // printf and reset timer
+//            printf("%f ms/frame\n", 1000.0/double(nbFrames));
+//            nbFrames = 0;
+//            lastTime += 1.0;
+//        }
+
+        now = glfwGetTime();
+        gap = now-then;
+        if(gap < limit){
+            std::this_thread::sleep_for( std::chrono::milliseconds( (int)(1000*(limit-gap)) ) );
+        }
+        then = now;
+
         display();
         window->updateWindow();
         eventmanager->process();

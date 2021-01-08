@@ -6,31 +6,48 @@ sl::sl()
 
 }
 
+mat4 PermutationMatrix(std::vector<int> order){
+    mat4 id;
+    mat4 permutation_matrix;
+
+    for(int i = 0; i<4; ++i)
+        permutation_matrix[order[i]] = id[i];
+    return permutation_matrix;
+}
 
 mat4 sl2tosl4(sl2insl4 sl2matrix){
     sl2 sl2;
     mat4 m ;
     auto [type, embed, val] = sl2matrix;
-//    Eigen::Vector4i perm_vec = Eigen::Vector4i(0,1,2,3);
 
-//          if(embed == TOP_LEFT) ;
-//    else if (embed == OUTER) perm_vec = Eigen::Vector4i(0,3,2,1);
-//    else if (embed == BOTTOM_RIGHT) perm_vec = Eigen::Vector4i(2,3,0,1);
-//    else if (embed == XZ) perm_vec = Eigen::Vector4i(0,2,1,3);
-//    else if (embed == YZ) perm_vec = Eigen::Vector4i(1,2,0,3);
-//    else if (embed == YW) perm_vec = Eigen::Vector4i(1,3,2,0);
+    if (embed == TOP_RIGHT) {
+              m.topRightCorner(sl2.fromType(type, val)-mat2());
+              return m;
+    }
+    if (embed == BOTTOM_LEFT){
+              m.bottomLeftCorner(sl2.fromType(type, val)-mat2());
+              return m;
+    }
+    if(embed == TOP_LEFT) {
+          m.topLeftCorner(sl2.fromType(type, val));
+          return m;
+    }
+    if(embed == BOTTOM_RIGHT){
+          m.bottomRightCorner(sl2.fromType(type, val));
+          return m;
+    }
 
+    m.topLeftCorner(sl2.fromType(type, val));
+    std::vector<int> perm_vec = {0,1,2,3};
 
-    if (embed == TOP_RIGHT) m.topRightCorner(sl2.fromType(type, val));
-    else if (embed == BOTTOM_LEFT) m.bottomLeftCorner(sl2.fromType(type, val));
-    else if (embed == BOTTOM_RIGHT) m.bottomRightCorner(sl2.fromType(type, val));
-    else if (embed == TOP_LEFT) m.topLeftCorner(sl2.fromType(type, val));
+    if (embed == OUTER) perm_vec = std::vector<int>{0,3,2,1};
+    else if (embed == BOTTOM_RIGHT) perm_vec = std::vector<int>{2,3,0,1};
+    else if (embed == XZ) perm_vec = std::vector<int>{0,2,1,3};
+    else if (embed == YZ) perm_vec = std::vector<int>{1,2,0,3};
+    else if (embed == YW) perm_vec = std::vector<int>{1,3,2,0};
 
-            //    else {
-//        m.topLeftCorner<2,2>() = sl2.fromType(type, val);
-//        Eigen::PermutationMatrix<4, 4> P = Eigen::PermutationMatrix<4, 4>(perm_vec);
-//        m = P*m*P.transpose();
-//    }
+    mat4 P = PermutationMatrix(perm_vec);
+    m = P*m*transpose(P);
     return m;
 }
 

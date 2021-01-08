@@ -41,16 +41,12 @@ void ButtonLRarrow::right(EventManager *eventmanager, Event event)
 
 void MatrixView::showMatrix(mat4& matrix){
         ImGui::Text((IMGUIname+":").c_str());
-        ImGui::Columns(4, "mycolumns"); // 4-ways, with border
-        ImGui::Separator();
-
-        for (int i = 0; i < 4; i++)
-        {
-            for(int j =0; j <4; j++){
-
-                ImGui::Text("%.1f", matrix[j][i]);
-                ImGui::NextColumn();
+        static float* f = &matrix[0][0];
+        for (int i = 0; i < 4; i++){
+                for(int j =0; j <4; j++){
+                    ImGui::Text("%.1f", *(f+(4*i+j)));
+                    if(j<3) ImGui::SameLine();
+                }
             }
-        }
-        ImGui::Columns(1);
 }
+

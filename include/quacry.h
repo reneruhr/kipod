@@ -8,6 +8,7 @@
 #include "guimathcontrol.h"
 
 #include "pointset.h"
+#include "shapes.h"
 
 class Scene;
 class PrimMeshModel;
@@ -52,7 +53,11 @@ struct WindowBox
 
 };
 
-class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathControl
+class QuaCry : public PointSet,
+               public WindowBox,
+               public GUIModule,
+               GUIMathControl,
+               public Shape
 {
     Scene* scene_;
     Camera* camera_;
@@ -60,19 +65,15 @@ class QuaCry : public PointSet, public WindowBox, public GUIModule, GUIMathContr
 
     WindowType window_type_;
 
-
-    //PrimMeshModel* window_box_;
-
-    mat4 current_transform_;
 public:
     QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size,
-           WindowType type = WindowType::Box);
+           WindowType type = WindowType::Box, Shape shape = Shape(Square()));
     QuaCry(Scene* scene);
 
     void Init();
     virtual void Draw() override;
 
-    std::vector<vec2> window_vertices;
+    std::vector<vec2> window_vertices_;
 };
 
 #endif // QUACRY_H

@@ -46,6 +46,16 @@ void Scene::addLight(Light *light)
     lights.push_back(light);
 }
 
+void Scene::AddPointSet(PointSet *point_set)
+{
+    point_sets_.push_back(point_set);
+}
+
+void Scene::AddShape(Shape *shape)
+{
+    shapes_.push_back(shape);
+}
+
 void Scene::init(){
     if(_glrenderer) {
         _glrenderer->SetProgram();
@@ -79,23 +89,27 @@ void Scene::draw()
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
 
-    for(auto pointset : pointsets){
+    for(auto point_set : point_sets_){
 
-        if(pointset->lattice_data_->qc.window == WindowType::Octagon)
-        {
+        if(point_set->lattice_data_->qc.window == WindowType::Octagon){
             _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
-            mat4 basis = pointset->GetWorldTransform();
+            mat4 basis = point_set->GetWorldTransform();
             _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis);
-            _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_vertices);
+            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_vertices_);
         }
-        else if(pointset->lattice_data_->qc.window == WindowType::Box)
-        {
-                _glrenderer->useProgram(QuasiCrystal());
-                mat4 basis = pointset->GetWorldTransform();
-                _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
-                _glrenderer->setUniformBlock(pointset->lattice_data_, ((QuaCry*)pointset)->window_size_);
+        else if(point_set->lattice_data_->qc.window == WindowType::Box){
+            _glrenderer->useProgram(QuasiCrystal());
+            mat4 basis = point_set->GetWorldTransform();
+            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
+            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
         }
-        pointset->Draw(_glrenderer);
+        point_set->Draw(_glrenderer);
+    }
+    for(auto shape : shapes_){
+        _glrenderer->useProgram(Shape2d());
+        mat4 m = shape->GetWorldTransform();
+        _glrenderer->SetUniform(Shape2d(), m);
+        shape->Draw(_glrenderer);
     }
 
 	for(auto model : models){

@@ -92,7 +92,7 @@ void GUIMathControl::SetMat4(mat4& m){
         {
             for(int j =0; j <4; j++){
 
-                ImGui::Text("%.2f", m[i][j]);
+                ImGui::Text("%.1f", m[i][j]);
                 ImGui::NextColumn();
             }
         }
@@ -170,7 +170,7 @@ void GUIMathControl::SetMat2(float* f){
         {
             for(int j =0; j <2; j++){
 
-                ImGui::Text("%.2f", *(f+(2*i+j)));
+                ImGui::Text("%.1f", *(f+(2*i+j)));
                 ImGui::NextColumn();
             }
         }
@@ -198,7 +198,7 @@ void GUIMathControl::verify4i(SampleSize &sampleSize, mode &currentMode){
 void GUIMathControl::matrix4(mat4& m){
     for (int i = 0; i < 4; i++){
             for(int j =0; j <4; j++){
-                ImGui::Text("%.2f", m[i][j]);
+                ImGui::Text("%.1f", m[i][j]);
                 if(j<3) ImGui::SameLine();
             }
         }
@@ -207,7 +207,7 @@ void GUIMathControl::matrix4(mat4& m){
 void GUIMathControl::matrix(float* f, int size){
     for (int i = 0; i < size; i++){
             for(int j =0; j <size; j++){
-                ImGui::Text("%.2f", *(f+(size*i+j)));
+                ImGui::Text("%.1f", *(f+(size*i+j)));
                 if(j<size-1) ImGui::SameLine();
             }
         }
@@ -219,7 +219,7 @@ void GUIMathControl::sl4matrix(mat4& m){
     static float* f = &m[0][0];
     for (int i = 0; i < 4; i++){
             for(int j =0; j <4; j++){
-                ImGui::Text("%.2f", *(f+(4*i+j)));
+                ImGui::Text("%.1f", *(f+(4*i+j)));
                 if(j<3) ImGui::SameLine();
             }
         }
@@ -231,34 +231,34 @@ bool GUIMathControl::sl2matrix(float& s, SL2type sl2type, int id=1){
                 case(DILATE):
 
                             ImGui::Text("Dilate");
-                            ImGui::Text("%.2f", exp(s));
+                            ImGui::Text("%.1f", exp(s));
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", 0.0);
-                            ImGui::Text("%.2f", 0.0);
+                            ImGui::Text("%.1f", 0.0);
+                            ImGui::Text("%.1f", 0.0);
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", exp(-s));
+                            ImGui::Text("%.1f", exp(-s));
                             if(ImGui::SliderFloat("##float_dilate", &s, -5.0, 5.0)) return true;
                             break;
 
                 case(SHEAR_U):
                             ImGui::Text("Shear");
-                            ImGui::Text("%.2f", 1.0);
+                            ImGui::Text("%.1f", 1.0);
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", s);
-                            ImGui::Text("%.2f", 0.0);
+                            ImGui::Text("%.1f", s);
+                            ImGui::Text("%.1f", 0.0);
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", 1.0);
+                            ImGui::Text("%.1f", 1.0);
                             if(ImGui::SliderFloat("##float_shearU", &s, -10.0, 10.0)) return true;
                             break;
 
                 case(SHEAR_L):
                             ImGui::Text("Shear");
-                            ImGui::Text("%.2f", 1.0);
+                            ImGui::Text("%.1f", 1.0);
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", 0.0);
-                            ImGui::Text("%.2f", s);
+                            ImGui::Text("%.1f", 0.0);
+                            ImGui::Text("%.1f", s);
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", 1.0);
+                            ImGui::Text("%.1f", 1.0);
                             if(ImGui::SliderFloat("##float_shearL", &s, -10.0, 10.0)) return true;
                             break;
 
@@ -266,12 +266,12 @@ bool GUIMathControl::sl2matrix(float& s, SL2type sl2type, int id=1){
                             float angle = s * M_PI;
                             ImGui::PushID(id);
                             ImGui::Text("Rotate");
-                            ImGui::Text("%.2f", cos(angle));
+                            ImGui::Text("%.1f", cos(angle));
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", -sin(angle));
-                            ImGui::Text("%.2f", sin(angle));
+                            ImGui::Text("%.1f", -sin(angle));
+                            ImGui::Text("%.1f", sin(angle));
                             ImGui::SameLine();
-                            ImGui::Text("%.2f", cos(angle));
+                            ImGui::Text("%.1f", cos(angle));
                             if(ImGui::SliderFloat("##float_rotate", &s, 0.0, 1.0)) {ImGui::PopID(); return true;}
                             ImGui::PopID();
                             break;
@@ -296,8 +296,8 @@ void GUIMathControl::sl2control(mat4& temporaryMatrixView, MatrixWalk &SL4walk, 
         static MatrixWalk LocalFive(initlocal);
         static mat4 total = mat4(1.0f);
 
-        static bool immediate_mode = false;
-
+        static bool immediate_mode = true;
+        ImGui::Text(" 'Unipotent Embbeding' is SL2-id");
         ImGui::Checkbox("Immediate Mode", &immediate_mode);
         ImGui::SameLine();
         if(ImGui::Button("Reset")){
@@ -323,10 +323,15 @@ void GUIMathControl::sl2control(mat4& temporaryMatrixView, MatrixWalk &SL4walk, 
         ImGui::Columns(5, NULL, true);
 
         {
-                if(sl2matrix(rotate1, ROTATE) && immediate_mode) LocalFive.modify(0, std::make_tuple(ROTATE, currEmbedding, rotate1));
-                if(ImGui::Button("Add##Rotate1"))		SL4walk.append(std::make_tuple(ROTATE, currEmbedding, rotate1));
+                if(sl2matrix(rotate1, ROTATE) && immediate_mode)
+                    LocalFive.modify(0, std::make_tuple(ROTATE, currEmbedding, rotate1));
+                if(ImGui::Button("Add##Rotate1"))
+                    SL4walk.append(std::make_tuple(ROTATE, currEmbedding, rotate1));
                 ImGui::SameLine();
-                if(ImGui::Button("0##Rotate1")) {rotate1=0;LocalFive.modify(0, std::make_tuple(ROTATE, currEmbedding, rotate1));		}
+                if(ImGui::Button("0##Rotate1")) {
+                    rotate1=0;
+                    LocalFive.modify(0, std::make_tuple(ROTATE, currEmbedding, rotate1));
+                }
                 ImGui::NextColumn();
         }
         {
@@ -455,9 +460,9 @@ void GUIMathControl::sl4control(MatrixWalk &SL4walk){
   //           if (h_borders && ImGui::GetColumnIndex() == 0)
   //               ImGui::Separator();
   //           ImGui::Text("%c%c%c", 'a' + i, 'a' + i, 'a' + i);
-  //           ImGui::Text("Width %.2f", ImGui::GetColumnWidth());
-  //           ImGui::Text("Avail %.2f", ImGui::GetContentRegionAvail().x);
-  //           ImGui::Text("Offset %.2f", ImGui::GetColumnOffset());
+  //           ImGui::Text("Width %.1f", ImGui::GetColumnWidth());
+  //           ImGui::Text("Avail %.1f", ImGui::GetContentRegionAvail().x);
+  //           ImGui::Text("Offset %.1f", ImGui::GetColumnOffset());
   //           ImGui::Text("Long text that is likely to clip");
   //           ImGui::Button("Button", ImVec2(-FLT_MIN, 0.0f));
   //           ImGui::NextColumn();

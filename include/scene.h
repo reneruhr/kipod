@@ -13,6 +13,7 @@
 #include "eventmanager.h"
 
 #include "pointset.h"
+#include "shapes.h"
 
 class QuaCry;
 
@@ -25,6 +26,9 @@ class Scene : public Listener{
     vector<MeshModel*> models;
     vector<Light*> lights;
     vector<Camera*> cameras;
+    vector<Shape*> shapes_;
+    vector<PointSet*> point_sets_;
+
     GLRenderer *_glrenderer;
     SoftRenderer *_softrenderer;
 
@@ -36,8 +40,6 @@ class Scene : public Listener{
     void drawBoundingBox();
 
 protected:
-    vector<PointSet*> pointsets;
-
 
 
 public:
@@ -68,6 +70,10 @@ public:
     void addLight(Light *light);
     bool hasLight() { return !lights.empty(); }
 
+
+    void AddPointSet(PointSet *point_set);
+    bool HasPointSet(){ return !point_sets_.empty(); }
+    void AddShape(Shape *shape);
 
 	void initLastModel();
 	void init();

@@ -22,6 +22,7 @@ void GLRenderer::SetProgram(QuasiCrystal quasi){
 
         programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
         programQuasiOctagon = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/points.frag.glsl" );
+        programShapeOctagon= InitShader( "shaders/shape.vert.glsl", "shaders/shape.frag.glsl" );
 
 }
 
@@ -32,6 +33,11 @@ void GLRenderer::useProgram(QuasiCrystal quasi)
         prog = programQuasiOctagon;
 
     glUseProgram(prog);
+}
+
+void GLRenderer::useProgram(Shape2d shape)
+{
+    glUseProgram(programShapeOctagon);
 }
 
 void GLRenderer::SetProgram(Lights light){
@@ -54,6 +60,8 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m){
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 }
 
+
+
 void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
 {    
     GLuint prog = programQuasi;
@@ -67,6 +75,14 @@ void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
 
 }
+
+void GLRenderer::SetUniform(Shape2d shape, mat4& m){
+
+    GLuint transform_matrix = glGetUniformLocation(programShapeOctagon, "transform");
+    glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
+}
+
+
 
 void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float>& window_size)
 {
@@ -166,6 +182,7 @@ shared_ptr<LatticeData> GLRenderer::loadPoints(PointSet* points)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
 
     glPointSize(5.0);
 
@@ -378,3 +395,64 @@ shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* 
     LOG_DEBUG("LoadColoredTriangles End");
     return model;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+shared_ptr<ShapeData> GLRenderer::LoadShape(vector<vec2>* vertices_)
+{
+    shapes_.emplace_back(make_shared<ShapeData>());
+    auto shape = shapes_.back();
+    shape->size_ = size(*vertices_);
+    glGenVertexArrays(1, &shape->vao_);
+    glGenBuffers(1, &shape->vbo_);
+
+    glBindVertexArray(shape->vao_);
+    glBindBuffer(GL_ARRAY_BUFFER, shape->vbo_);
+    glBufferData(GL_ARRAY_BUFFER, shape->size_ * sizeof(vec2), vertices_->data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return shape;
+}
+
+
+void GLRenderer::DrawShape(shared_ptr<ShapeData> shapeData)
+{
+    glBindVertexArray(shapeData->vao_);
+    glBindBuffer(GL_ARRAY_BUFFER, shapeData->vbo_);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, shapeData->size_);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

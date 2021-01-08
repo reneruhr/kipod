@@ -8,17 +8,24 @@
 #include "../include/gui.h"
 
 
-QuaCry::QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size,
-               std::vector< int > sample_size, WindowType type)
-        : PointSet(sample_size, basis),  WindowBox(window_size),
-          GUIModule(), GUIMathControl(), scene_(scene),
+QuaCry::QuaCry(Scene* scene, mat4 basis,
+               std::vector< float > window_size,
+               std::vector< int > sample_size,
+               WindowType type,
+               Shape shape)
+        : PointSet(sample_size, basis),
+          WindowBox(window_size),
+          GUIModule(),
+          GUIMathControl(),
+          Shape(shape),
+          scene_(scene),
           window_type_(type)
 {
     Init();
 }
 
 
-QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathControl(), scene_(scene)
+QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathControl(), Shape(Square()), scene_(scene)
 {
     Init();
 }
@@ -26,7 +33,7 @@ QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathCont
 void QuaCry::Init()
 {
     PointSet::Init(scene_->_glrenderer, window_type_);
-    scene_->pointsets.push_back(this);
+    scene_->AddPointSet(this);
 
     camera_ = new Camera( Left(), Right(),
                           Bottom(), Top(),
@@ -38,12 +45,9 @@ void QuaCry::Init()
     scene_->addCamera(sideViewCamera_);
     scene_->addCamera(camera_, false);
     scene_->setLastCameraActive();
-    //        window_box_ = new PrimMeshModel(Primitive::Cube);
-    //        window_size_ =mat4(vec4{10.0,10.0,1.0,1.0});
-    //        window_box_->moveLocal(window_size_);
-    //        window_box_->setUniformMaterial();
-    //        scene->models.push_back(window_box_);
-    //        scene->models.back()->init(scene->_glrenderer);
+
+    Shape::Init(scene_->_glrenderer);
+    scene_->AddShape(this);
 
     LOG("Inititalized QuaCry");
 }
@@ -51,9 +55,10 @@ void QuaCry::Init()
 void QuaCry::Draw()
 {
         if (ImGui::CollapsingHeader("Lattice:")){
-
-            static mat4 f_basis = basis_;
-            static mat4 f_m = current_transform_;
+            static mat4 f_basis;
+            f_basis = basis_;
+            static mat4 f_m;
+            f_m= PointSet::world_transform_;
             ImGui::Columns(2, NULL, true);
             ImGui::Text("Basis:");
             matrix4(f_basis);
@@ -62,28 +67,11 @@ void QuaCry::Draw()
             matrix4(f_m);
             ImGui::Columns(1);
         }
-//        if (ImGui::CollapsingHeader("Sample Size")){
-//            GUIMathControl.verify4i(sampleSize, currentMode);
-//            if(currentMode == NEW_SAMPLE){
-//                lattice.new_sample(sampleSize);
-//                glClearColor(0, 0, 0, 0);
-//                GLfloat vertices_position[lattice.sample_num*4];
-
-//                lattice.set_vertices_position(vertices_position, 1);
-//                render.initialize(vao, vertices_position, lattice.sample_num);
-
-//                currentMode = IDLE;
-//            }
-//        }
-
-
         static std::array<int, 16> selectedEmbedding { 1, 1, 0, 0,
                                                        1, 1, 0, 0,
                                                        0, 0, 0, 0,
                                                        0, 0, 0, 0 };
-
-        if (ImGui::CollapsingHeader("Embedded SL2:"))
-        {
+        if (ImGui::CollapsingHeader("Embedded SL2:")){
             ImGui::Columns(3, NULL, true);
             embeddings(selectedEmbedding, currEmbedding);
             ImGui::NextColumn();
@@ -94,6 +82,26 @@ void QuaCry::Draw()
         if (ImGui::CollapsingHeader("Walk")){
            sl4control(SL4walk);
         }
+        PointSet::world_transform_ = temporaryMatrixView;
+
+
+
+
+
+
+        //        if (ImGui::CollapsingHeader("Sample Size")){
+        //            GUIMathControl.verify4i(sampleSize, currentMode);
+        //            if(currentMode == NEW_SAMPLE){
+        //                lattice.new_sample(sampleSize);
+        //                glClearColor(0, 0, 0, 0);
+        //                GLfloat vertices_position[lattice.sample_num*4];
+
+        //                lattice.set_vertices_position(vertices_position, 1);
+        //                render.initialize(vao, vertices_position, lattice.sample_num);
+
+        //                currentMode = IDLE;
+        //            }
+        //        }
 
 
 //        if (ImGui::CollapsingHeader("Window Options")){
@@ -105,5 +113,5 @@ void QuaCry::Draw()
 //            ImGui::SliderFloat("scale", &scale, 0.1, 20.0f);
 //        }
 
-        world_transform_ = temporaryMatrixView;
+
 }

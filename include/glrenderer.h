@@ -22,13 +22,16 @@ struct QuasiCrystal{
     QuasiCrystal(WindowType window = WindowType::Box): window(window){}
 };
 
+struct Shape2d{
+};
+
 class Lights{};
 
 struct ModelData{
     GLuint vbo,vao,ebo,nvao,nvbo, col_vao, col_ebo, col_vbo;
     unsigned int indices_size;
     bool hasNormals;
-    ModelData(){ LOG_DEBUG("ModelData Constructor");}
+    ModelData(){}
 };
 
 struct LatticeData{
@@ -36,8 +39,16 @@ struct LatticeData{
     GLuint vao, vbo;
     GLuint u_binding_point= 1, u_buffer, u_block_index;
     int size;
-    LatticeData(){ LOG_DEBUG("LatticeData Constructor");}
+    LatticeData(){}
 };
+
+struct ShapeData{
+    GLuint vao_, vbo_;
+    int size_;
+    ShapeData(){}
+};
+
+
 
 using namespace std;
 class GLRenderer : public Renderer
@@ -46,12 +57,13 @@ class GLRenderer : public Renderer
 
     vector< shared_ptr<ModelData> > models;
     vector< shared_ptr<LatticeData> > lattices;
+    vector< shared_ptr<ShapeData> > shapes_;
 	unsigned int VBO, VAO, EBO, coord_VBO,coord_VAO;
 	unsigned int vbo_size = 2;
 	unsigned int vbo_total[2];
 	unsigned int vao_total[2];
     GLuint program, program2, program3, programQuasi, programLights,
-           programQuasiOctagon;
+           programQuasiOctagon, programShapeOctagon;
 	GLuint matrix, matrix2, matrix3, normal_length;
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
@@ -84,6 +96,7 @@ public:
     void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m);
 
 
+
     void SetProgram(Lights lights);
     void SetUniform(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera);
     void useProgram(Lights light);
@@ -95,6 +108,13 @@ public:
     void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float> &window_size);
 
     void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<vec2> &octagon);
+
+
+
+    void DrawShape(shared_ptr<ShapeData> shape);
+    shared_ptr<ShapeData> LoadShape(vector<vec2> *vertices_vector_);
+    void useProgram(Shape2d shape);
+    void SetUniform(Shape2d shape, mat4 &m);
 };
 
 
