@@ -158,6 +158,7 @@ int my_main( int argc, char **argv )
 //                                {-10,10,-10,10,-5,5,-1,1},
 //                                {-10,10,-10,10,-10,10,0,0},
 //                                WindowType::Box);
+    //gui->AppendModule(quacry);
 
     QuaCry* quacryOctagon = new QuaCry(scene,
                                 amman_benker,
@@ -169,7 +170,7 @@ int my_main( int argc, char **argv )
 
     quacryOctagon->window_vertices_ = Octagon(sqrt(2)).vertices_;
 
-    //gui->AppendModule(quacry);
+
     gui->AppendModule(quacryOctagon);
 
     double then = glfwGetTime();

@@ -42,6 +42,8 @@ protected :
 	mat3 _normal_transform;
 
     BoundingBoxData _boundingBoxData;
+protected:
+    shared_ptr<ModelData> modelDataWired = nullptr;
 
 public:
     vector<vec3> vertices_vector;

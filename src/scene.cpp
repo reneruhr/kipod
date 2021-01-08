@@ -90,7 +90,6 @@ void Scene::draw()
 	mat4 camMatrix = p*v;
 
     for(auto point_set : point_sets_){
-
         if(point_set->lattice_data_->qc.window == WindowType::Octagon){
             _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
             mat4 basis = point_set->GetWorldTransform();
@@ -105,6 +104,7 @@ void Scene::draw()
         }
         point_set->Draw(_glrenderer);
     }
+
     for(auto shape : shapes_){
         _glrenderer->useProgram(Shape2d());
         mat4 m = shape->GetWorldTransform();
@@ -119,7 +119,6 @@ void Scene::draw()
 
         if(color_mode || emissive_mode){
             _glrenderer->useProgram(Lights());
-
             _glrenderer->SetUniform(m, v, p, lights, model->colors_vector[0], cameras[activeCamera]);
             model->drawColored(_glrenderer);
         }
@@ -226,6 +225,7 @@ void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& asp
 	if(numberOfCameras() <= camera_id) return;
 	Camera* cam =cameras[camera_id];
 	cam->Perspective(fovy, aspect, near, far);
+    needs_update = true;
 }
 
 
@@ -233,6 +233,7 @@ void Scene::moveModel(int model_id, const vec3& translate){
 	if(numberOfModels() <= model_id) return;
 	MeshModel* model = models[model_id];
 	model->move(translate);
+    needs_update = true;
 }
 
 void Scene::lookAtModel(int camera_id, int model_id){
@@ -294,7 +295,10 @@ void Scene::processEvent(Event& event){
         return;
     }
     if(event.getType() == EventType::WireframeMode){
+        LOG_DEBUG("Switched Wireframe Mode");
         wireframemode = !wireframemode;
+        color_mode = !wireframemode;
+        emissive_mode = !wireframemode;
         return;
     }
     if(event.getType() == EventType::EmissiveMode){
@@ -306,14 +310,17 @@ void Scene::processEvent(Event& event){
         return;
     }
     if(event.getType() == EventType::BoxMode){
+        LOG_DEBUG("Switched Box Mode");
         box_mode = !box_mode;
         return;
     }
     if(event.getType() == EventType::NormalMode){
+        LOG_DEBUG("Switched Normal Mode");
         normals_mode = !normals_mode;
         return;
     }
     if(event.getType() == EventType::CameraMode){
+        LOG_DEBUG("Camera Box Mode");
         camera_mode = !camera_mode;
         return;
     }

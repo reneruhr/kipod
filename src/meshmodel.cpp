@@ -10,9 +10,9 @@ using namespace std;
 
 struct FaceIdcs
 {
-    unsigned int v[4];
-    unsigned int vn[4];
-    unsigned int vt[4];
+    int v[4];
+    int vn[4];
+    int vt[4];
 
 	FaceIdcs()
 	{
@@ -28,7 +28,8 @@ struct FaceIdcs
 		char c;
 		for(int i = 0; i < 3; i++)
 		{
-			aStream >> std::ws >> v[i] >> std::ws;
+
+            aStream >> std::ws >> v[i] >> std::ws;
 			if (aStream.peek() != '/')
 				continue;
 			aStream >> c >> std::ws;
@@ -53,9 +54,9 @@ vec3 vec3fFromStream(std::istream & aStream)
 	return vec3(x, y, z);
 }
 
-vector<unsigned int> vec3iFromStream(std::istream & aStream)
+vector<int> vec3iFromStream(std::istream & aStream)
 {
-    vector<unsigned int> vec;
+    vector<int> vec;
     aStream >> vec[0] >> std::ws >> vec[1] >> std::ws >> vec[2];
     return vec;
 }
@@ -140,12 +141,20 @@ void MeshModel::loadFile(string fileName)
 	std::cout << " Finished Parsing " << std::endl;
     LOG_INFO("Finished Parsing");
 
-	
+    int vs = size(vertices_vector);
+    int ns = size(normals_vector);
+
+
 	for (vector<FaceIdcs>::iterator it = faces.begin(); it != faces.end(); ++it)
 	{
+
         for (int i = 0; i < 3; i++)
 		{
+            if(it->v[i] < 0)
+                it->v[i] = vs + it->v[i]+1;
             indices_vector.push_back(it->v[i]-1);
+            if(it->vn[i] < 0)
+                it->vn[i] = ns + it->vn[i]+1;
             nindices_vector.push_back(it->vn[i]-1);
 		}
 	}
@@ -252,19 +261,19 @@ void MeshModel::init(GLRenderer *glrenderer, bool colored)
         modelData =
                  glrenderer->loadColoredTriangles(&vertices_vector,&indices_vector,
                                            &normals_vector, &nindices_vector);
-    else
-        modelData =
+
+    modelDataWired =
                  glrenderer->loadTriangles(&vertices_vector,&indices_vector,
                                        &normals_vector, &nindices_vector);
 }
 
 void MeshModel::draw(GLRenderer *glrenderer)
 {
-    glrenderer->drawTriangles(modelData);
+    glrenderer->drawTriangles(modelDataWired);
 }
 void MeshModel::drawNormals(GLRenderer *glrenderer)
 {
-    glrenderer->drawNormals(modelData);
+    glrenderer->drawNormals(modelDataWired);
 }
 
 void MeshModel::drawColored(GLRenderer *glrenderer)

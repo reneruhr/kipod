@@ -25,9 +25,9 @@ typedef struct MaterialStruct {
         shininess(1.0f){}
 
     MaterialStruct():
-        ambient(0.2,0.2,0.2,1),
-        diffuse(0.2,0.2,0.2,1),
-        specular(1.0,1.0,1.0,1),
+        ambient(0.1,0.1,0.6,1),
+        diffuse(0.7,0.3,0.2,1),
+        specular(0.4,0.4,0.4,1),
         emission(0.0,0.0,0.0,1),
         shininess(1.0f){}
 
@@ -58,7 +58,7 @@ class Light
     friend class GUI;
 public:
     Light(LightSource type, vec4 source, vec4 color): type(type), source(source), color(color){}
-    Light():type(LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.2,1)){}
+    Light():type(LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.5,1)){}
 
     LightSource getType(){ return type;}
     vec4 getColor(){ return color;}

@@ -119,14 +119,12 @@ void Camera::updateLookAtInternal(){
 
 
 void Camera::updateLookAt(const vec3 eye, const vec3 at, const vec3 up){
-	std::cout << "Called upDateLookAt" << std::endl;
 	_eye=eye; 
 	_at=at; 
 	_up=up; 
 	LookAt(_eye, _at, _up);
 }
 void Camera::updateLookAt(){ 
-	std::cout << "Called upDateLookAt" << std::endl;
 	LookAt(_eye, _at, _up);
 }
 

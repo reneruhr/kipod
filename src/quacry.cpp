@@ -54,7 +54,10 @@ void QuaCry::Init()
 
 void QuaCry::Draw()
 {
-        if (ImGui::CollapsingHeader("Lattice:")){
+    if (ImGui::CollapsingHeader("Quasicrystals")){
+
+
+    if (ImGui::TreeNode("Lattice:")){
             static mat4 f_basis;
             f_basis = basis_;
             static mat4 f_m;
@@ -66,25 +69,47 @@ void QuaCry::Draw()
             ImGui::Text("Current Transformation:");
             matrix4(f_m);
             ImGui::Columns(1);
-        }
+            ImGui::TreePop();
+    }
         static std::array<int, 16> selectedEmbedding { 1, 1, 0, 0,
                                                        1, 1, 0, 0,
                                                        0, 0, 0, 0,
                                                        0, 0, 0, 0 };
-        if (ImGui::CollapsingHeader("Embedded SL2:")){
+        if (ImGui::TreeNode("Embedded SL2:")){
             ImGui::Columns(3, NULL, true);
             embeddings(selectedEmbedding, currEmbedding);
             ImGui::NextColumn();
             embeddingsView(selectedEmbedding);
             ImGui::Columns(1);
             sl2control(temporaryMatrixView, SL4walk, currEmbedding);
-        }
-        if (ImGui::CollapsingHeader("Walk")){
-           sl4control(SL4walk);
+            ImGui::TreePop();
         }
         PointSet::world_transform_ = temporaryMatrixView;
 
+        if (ImGui::TreeNode("Walk")){
+           sl4control(SL4walk);
+           ImGui::TreePop();
+        }
 
+
+
+        if (ImGui::TreeNode("View:")){
+            static int selected_view = -1;
+            for (int n = 0; n <  scene_->numberOfCameras(); n++){
+                char buf[64];
+                if(n==0) sprintf(buf, "Perspective Projection to XYZ (close up) ");
+                else if(n==1) sprintf(buf, "Perspective Projection to XYZ (far away)");
+                else if(n==2) sprintf(buf, "Cut and Project");
+
+                if (ImGui::Selectable(buf, selected_view == n)){
+                    selected_view = n;
+                    scene_->setActiveCamera(selected_view);
+                }
+            }
+            ImGui::TreePop();
+        }
+
+    }
 
 
 

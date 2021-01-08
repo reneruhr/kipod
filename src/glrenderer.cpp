@@ -5,6 +5,8 @@
 #include "../include/initshader.h"
 #include "../include/pointset.h"
 
+#include <numeric>
+
 void GLRenderer::SetProgram(){
     program = InitShader( "shaders/_vshader.glsl", "shaders/_fshader.glsl" );
 }
@@ -17,13 +19,16 @@ void GLRenderer::SetProgramWithNormals_from_faces(){
     program3 = InitShader( "shaders/_vshaderNormals_from_faces.glsl", "shaders/_gshaderNormals_from_faces.glsl", "shaders/_fshader_from_faces.glsl");
 }
 
-
 void GLRenderer::SetProgram(QuasiCrystal quasi){
 
         programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
         programQuasiOctagon = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/points.frag.glsl" );
         programShapeOctagon= InitShader( "shaders/shape.vert.glsl", "shaders/shape.frag.glsl" );
 
+}
+
+void GLRenderer::SetProgram(Lights light){
+    programLights = InitShader( "shaders/lights.vert.glsl", "shaders/lights.frag.glsl" );
 }
 
 void GLRenderer::useProgram(QuasiCrystal quasi)
@@ -40,9 +45,6 @@ void GLRenderer::useProgram(Shape2d shape)
     glUseProgram(programShapeOctagon);
 }
 
-void GLRenderer::SetProgram(Lights light){
-    programLights = InitShader( "shaders/lights.vert.glsl", "shaders/lights.frag.glsl" );
-}
 
 void GLRenderer::useProgram(Lights light)
 {
@@ -60,8 +62,6 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m){
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 }
 
-
-
 void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
 {    
     GLuint prog = programQuasi;
@@ -73,16 +73,13 @@ void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
 
     glGenBuffers(1, &lattice_data->u_buffer);
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
-
 }
 
-void GLRenderer::SetUniform(Shape2d shape, mat4& m){
-
+void GLRenderer::SetUniform(Shape2d shape, mat4& m)
+{
     GLuint transform_matrix = glGetUniformLocation(programShapeOctagon, "transform");
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 }
-
-
 
 void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float>& window_size)
 {
@@ -98,7 +95,6 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
 }
 
-
 struct LightGLGS{
     GLuint type;
     GLuint source;
@@ -108,7 +104,6 @@ struct LightGLGS{
 
 void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, MaterialStruct& material, Camera* camera)
 { 
-
     mat4 verts = v*m;
     mat4 norms = transpose(Inverse(v*m));
     GLuint viewMatrix = glGetUniformLocation(programLights, "v");
@@ -163,10 +158,8 @@ void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, M
         glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
         glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
         glUniform1i(lightsGLGS[i].on, on);
-
     }
 }
-
 
 shared_ptr<LatticeData> GLRenderer::loadPoints(PointSet* points)
 {
@@ -202,31 +195,32 @@ void GLRenderer::drawPoints(shared_ptr<LatticeData> lattice)
     glBindVertexArray(0);
 }
 
-void GLRenderer::useProgram(int i){
-    GLuint prog;
-	if(i==1) prog=program;
-	else if(i==2) prog=program2;
+void GLRenderer::useProgram(int i)
+{
+    GLuint prog=program;
+    if(i==2) prog=program2;
 	else if(i==3) prog=program3;
 	glUseProgram(prog);
 }
 
-void GLRenderer::SetUniformNormalLength(float x, int i){
-	GLuint prog;
-	if(i==1) prog=program;
-	else if(i==2) prog=program2;
+void GLRenderer::SetUniformNormalLength(float x, int i)
+{
+    GLuint prog=program;
+    if(i==2) prog=program2;
 	else if(i==3) prog=program3;
     normal_length = glGetUniformLocation(prog, "normal_length");
     glUniform1f(normal_length, x);
 
 }
 
-void GLRenderer::SetUniformMVP(mat4& mvp){
-
+void GLRenderer::SetUniformMVP(mat4& mvp)
+{
     matrix = glGetUniformLocation(program, "mvp");
     glUniformMatrix4fv(matrix, 1, GL_TRUE, &mvp[0][0]);
 }
 
-void GLRenderer::SetUniformMVP(mat4& mvp, int i){
+void GLRenderer::SetUniformMVP(mat4& mvp, int i)
+{
 	GLuint prog;
 	if(i==1) prog=program;
     else prog=program2;
@@ -234,7 +228,8 @@ void GLRenderer::SetUniformMVP(mat4& mvp, int i){
     glUniformMatrix4fv(matrix, 1, GL_TRUE, &mvp[0][0]);
 }
 
-void GLRenderer::SetUniformMVP_Normal(mat4 p, mat4 v, mat4 m){
+void GLRenderer::SetUniformMVP_Normal(mat4 p, mat4 v, mat4 m)
+{
 	mat4 verts = v*m;
 	mat4 norms = transpose(Inverse(v*m));
     matrix = glGetUniformLocation(program2, "mv");
@@ -245,7 +240,8 @@ void GLRenderer::SetUniformMVP_Normal(mat4 p, mat4 v, mat4 m){
     glUniformMatrix4fv(matrix3, 1, GL_TRUE, &p[0][0]);
 }
 
-void GLRenderer::SetUniformMVP_Normal_from_faces(mat4 p, mat4 v, mat4 m){
+void GLRenderer::SetUniformMVP_Normal_from_faces(mat4 p, mat4 v, mat4 m)
+{
 	mat4 verts = v*m;
 	mat4 norms = transpose(Inverse(v*m));
     matrix = glGetUniformLocation(program3, "mv");
@@ -256,7 +252,8 @@ void GLRenderer::SetUniformMVP_Normal_from_faces(mat4 p, mat4 v, mat4 m){
     glUniformMatrix4fv(matrix3, 1, GL_TRUE, &p[0][0]);
 }
 
-void GLRenderer::drawTriangles(shared_ptr<ModelData> model){
+void GLRenderer::drawTriangles(shared_ptr<ModelData> model)
+{
     glBindVertexArray(model->vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, model->vbo);
@@ -271,7 +268,8 @@ void GLRenderer::drawTriangles(shared_ptr<ModelData> model){
 }
 
 
-void GLRenderer::drawNormals(shared_ptr<ModelData> model){
+void GLRenderer::drawNormals(shared_ptr<ModelData> model)
+{
     if(model->hasNormals == false) return;
     glBindVertexArray(model->nvao);
     glBindBuffer(GL_ARRAY_BUFFER, model->nvbo);
@@ -286,7 +284,8 @@ void GLRenderer::drawNormals(shared_ptr<ModelData> model){
     glBindVertexArray(0);
 }
 
-void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model){
+void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
+{
     glBindVertexArray(model->col_vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, model->col_vbo);
@@ -294,7 +293,6 @@ void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)sizeof(vec3));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->col_ebo);
     glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
@@ -370,9 +368,13 @@ shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* 
         vnVector.push_back((*normals)[(*nindices)[i]]);
     }
 
+    vector<unsigned int> indices_vector = vector<unsigned int>(vnVector.size()/2);
+    std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
+    model->indices_size = size(indices_vector);
+
     glGenBuffers(1, &model->col_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->col_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices_vector.data(), GL_STATIC_DRAW);
 
     glGenVertexArrays(1, &model->col_vao);
     glBindVertexArray(model->col_vao);

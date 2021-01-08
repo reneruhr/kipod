@@ -28,7 +28,7 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::Begin("Wireframe Renderer Control");
+    ImGui::Begin("Controls");
 
     draw_menus(scene, softrenderer, window);
 
@@ -45,22 +45,26 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
 void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
 {
-    drawSoftRendererControl(scene, softrenderer, window);
-    drawModelControl(scene);
-    drawCameraControl(scene);
 
-    drawMaterialsControl(scene);
-    drawLightControl(scene);
-    drawNormalControl(scene);
-    drawBBOXControl(scene);
+    if (ImGui::CollapsingHeader("Renderer")){
+        drawSoftRendererControl(scene, softrenderer, window);
+        drawModelControl(scene);
+        drawCameraControl(scene);
+
+        drawMaterialsControl(scene);
+        drawLightControl(scene);
+        drawNormalControl(scene);
+        drawBBOXControl(scene);
+
+        drawPointSetControl(scene);
+    }
 
 
-    drawPointSetControl(scene);
 
 }
 
 void GUI::drawSoftRendererControl(Scene* scene, SoftRenderer* softrenderer, Window* window){
-    if (ImGui::TreeNode("Demo CG Course"))
+    if (ImGui::TreeNode("Software Renderer"))
         {
         softRenderScene(scene, window);
         selectLineAlgorithm(softrenderer);
@@ -274,8 +278,13 @@ void GUI::lightControl(Scene *scene)
     if(ImGui::Checkbox("Lights on", &checkLight))
         eventmanager->dispatch(Event(EventType::LightMode, Mode::SWITCH));
     static bool wireFrameCheck = false;
-    if(ImGui::Checkbox("WireFrame Mode", &wireFrameCheck))
+    if(ImGui::Checkbox("WireFrame Mode", &wireFrameCheck)){
         eventmanager->dispatch(Event(EventType::WireframeMode, Mode::SWITCH));
+    }
+
+    checkEmmisive= scene->emissive_mode;
+    checkLight= scene->color_mode;
+    wireFrameCheck = scene ->wireframemode;
 
 
 
@@ -351,15 +360,16 @@ void GUI::add_and_list_cameras(Scene *scene)
                 if (ImGui::Selectable(buf, selectedCamera == n)){
                     selectedCamera = n;
                     scene->setActiveCamera(selectedCamera);
+                    scene->needs_update = true;
                 }
             }
-
 }
 
 void GUI::frustum_camera(Scene *scene)
 {
     if(ImGui::Button("Draw Frustum")){
         scene->camera_frustum_mode = !scene->camera_frustum_mode;
+        scene->needs_update = true;
     }
     ImGui::Text("%i", scene->camera_frustum_mode);
 }
@@ -370,6 +380,7 @@ void GUI::toggle_view(Scene *scene)
     if(ImGui::Button("Projective View")){
         projective = !projective;
         scene->setCameraMode(scene->activeCamera,projective);
+        scene->needs_update = true;
     }
     ImGui::SameLine();
     ImGui::Text("Projective Mode: %i", projective);
@@ -394,6 +405,7 @@ void GUI::perspective_camera(Camera *cam)
 
     if(changed_perspective){
         cam->updatePerspective(slider_fovy, slider_aspect_ratio, slider_near, slider_far);
+
     }
 }
 
@@ -666,6 +678,7 @@ void GUI::focusCamera(Scene* scene){
     if(ImGui::Button("Focus Camera")){
         scene->lookAtModel(scene->activeCamera, scene->activeModel);
     }
+    scene->needs_update = true;
 }
 
 void GUI::rotateModelLocalSpace(){
