@@ -22,6 +22,11 @@ void Shape::Init(GLRenderer *glrenderer)
              glrenderer->LoadShape(&triangleFan_);
 }
 
+void Shape::ScaleShape(const float scale)
+{
+    world_transform_ = Scale(vec3(scale,scale,0)) * world_transform_;
+}
+
 void Shape::Move(const vec2 &translate)
 {
     world_transform_=Translate(translate)*world_transform_;
@@ -43,3 +48,5 @@ void Shape::Draw(GLRenderer *glrenderer)
 {
     glrenderer->DrawShape(shape_data_);
 }
+
+

@@ -37,6 +37,7 @@ public:
     void drawLightControl(Scene *scene);
 
     void drawPointSetControl(Scene *scene);
+    void drawYotamBirthday(Scene *scene);
 private:
     EventManager* eventmanager;
 

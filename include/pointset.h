@@ -20,7 +20,7 @@ public:
                 sample_size_[6],sample_size_[7]);
         LOG("...and basis {}", basis_);
     }
-    void Init(GLRenderer *glrenderer, WindowType type = WindowType::Box);
+    void Init(GLRenderer *glrenderer);
     virtual void Draw(GLRenderer *glrenderer);
     mat4 GetWorldTransform(){
         return world_transform_;
@@ -28,6 +28,11 @@ public:
 protected:
     mat4 world_transform_;
     shared_ptr<LatticeData> lattice_data_= nullptr;
+
+    void SetPointSize(float size){
+        lattice_data_->point_size_ = size;
+    }
+
 };
 
 #endif // POINTSET_H

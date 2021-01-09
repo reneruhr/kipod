@@ -90,19 +90,26 @@ void Scene::draw()
 	mat4 camMatrix = p*v;
 
     for(auto point_set : point_sets_){
+
+        mat4 basis = point_set->GetWorldTransform();
+        glEnable( GL_BLEND );
         if(point_set->lattice_data_->qc.window == WindowType::Octagon){
             _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
-            mat4 basis = point_set->GetWorldTransform();
-            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis);
-            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_vertices_);
+            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
+            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->vertices_);
         }
         else if(point_set->lattice_data_->qc.window == WindowType::Box){
             _glrenderer->useProgram(QuasiCrystal());
-            mat4 basis = point_set->GetWorldTransform();
-            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis);
+            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_);
             _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
         }
         point_set->Draw(_glrenderer);
+
+
+//        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
+//        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, (Shape*)point_set);
+//        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
+        glDisable( GL_BLEND );
     }
 
     for(auto shape : shapes_){
@@ -118,9 +125,11 @@ void Scene::draw()
 		mat4 mvp = camMatrix * m;
 
         if(color_mode || emissive_mode){
+             glEnable(GL_DEPTH_TEST);
             _glrenderer->useProgram(Lights());
             _glrenderer->SetUniform(m, v, p, lights, model->colors_vector[0], cameras[activeCamera]);
             model->drawColored(_glrenderer);
+             glDisable(GL_DEPTH_TEST);
         }
         else if (wireframemode)   {
             _glrenderer->useProgram(1);

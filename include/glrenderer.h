@@ -11,6 +11,7 @@ class MaterialStruct;
 class Camera;
 
 class PointSet;
+class Shape;
 
 enum class WindowType{
     Box,
@@ -38,7 +39,13 @@ struct LatticeData{
     QuasiCrystal qc;
     GLuint vao, vbo;
     GLuint u_binding_point= 1, u_buffer, u_block_index;
+    GLuint u_binding_point_window= 1, u_buffer_window, u_block_index_window;
     int size;
+    float point_size_=5.0f;
+    float alpha_ = 0.01f;
+    vec4 z_color_ = {0.01f, 0.01f, 0.13f, 1.0f};
+    vec4 w_color_ = {0.01f, 0.13f, 0.01f, 1.0f};
+
     LatticeData(){}
 };
 
@@ -63,7 +70,7 @@ class GLRenderer : public Renderer
 	unsigned int vbo_total[2];
 	unsigned int vao_total[2];
     GLuint program, program2, program3, programQuasi, programLights,
-           programQuasiOctagon, programShapeOctagon;
+           programQuasiOctagon, programShapeOctagon, programQuasiOctagonWindow;
 	GLuint matrix, matrix2, matrix3, normal_length;
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
@@ -80,6 +87,8 @@ public:
 
     shared_ptr<LatticeData> loadPoints(PointSet* points);
     void drawPoints(shared_ptr<LatticeData> lattice);
+    void drawPointsInWindow(shared_ptr<LatticeData> lattice);
+
 
 	void useProgram(int i);
 
@@ -93,7 +102,8 @@ public:
 
     void SetProgram(QuasiCrystal quasi);
     void useProgram(QuasiCrystal quasi);
-    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m);
+    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<LatticeData> data);
+    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<LatticeData> data, Shape* shape);
 
 
 
@@ -115,6 +125,8 @@ public:
     shared_ptr<ShapeData> LoadShape(vector<vec2> *vertices_vector_);
     void useProgram(Shape2d shape);
     void SetUniform(Shape2d shape, mat4 &m);
+    void useProgramWindow(QuasiCrystal quasi);
+    void initUniformBlockWindow(shared_ptr<LatticeData> lattice_data);
 };
 
 

@@ -33,6 +33,7 @@ public:
     void Init(GLRenderer *glrenderer);
     void Draw(GLRenderer *glrenderer);
 
+    void ScaleShape(const float scale);
     void Move(const vec2& translate);
     void MoveWorld(const mat4& transform);
     mat4 GetWorldTransform();

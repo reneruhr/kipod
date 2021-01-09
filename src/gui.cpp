@@ -1,6 +1,7 @@
 #include "../include/gui.h"
 
 #include "../include/guielement.h"
+#include "../include/utils/log.h"
 
 GUI::~GUI()
 {
@@ -35,7 +36,7 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
     for(auto m : gui_modules_) m->Draw();
 
     static bool show_demo_ = false;
-    if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
+    //if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
     if(show_demo_) ImGui::ShowDemoWindow();
 
     ImGui::End();
@@ -43,9 +44,23 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+
+void GUI::drawYotamBirthday(Scene* scene){
+    if(ImGui::Button("Mazal Tov")){
+        const char* path = "shaders/extra/Teddy.obj";
+        scene->loadOBJModel(path, MaterialStruct());
+        scene->initLastModel();
+        scene->setActiveModel(scene->numberOfModels()-1);
+        scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
+        scene->activeCamera =0;
+        eventmanager->dispatch( Event(EventType::RotateModel, EventData(RotateDirection::YAW, 180.0)) );
+    }
+}
+
+
 void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
 {
-
+    drawYotamBirthday(scene);
     if (ImGui::CollapsingHeader("Renderer")){
         drawSoftRendererControl(scene, softrenderer, window);
         drawModelControl(scene);
@@ -58,8 +73,6 @@ void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
         drawPointSetControl(scene);
     }
-
-
 
 }
 
@@ -648,6 +661,7 @@ void GUI::loadOBJfile(Scene* scene){
                         static ImGuiFs::Dialog dlg;
                         const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
                         if (strlen(chosenPath)>0) {
+                            LOG("{}",chosenPath);
                             scene->loadOBJModel(chosenPath, MaterialStruct());
                             scene->initLastModel();
                             scene->setActiveModel(scene->numberOfModels()-1);

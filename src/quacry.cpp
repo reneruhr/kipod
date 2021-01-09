@@ -32,7 +32,10 @@ QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathCont
 
 void QuaCry::Init()
 {
-    PointSet::Init(scene_->_glrenderer, window_type_);
+    PointSet::Init(scene_->_glrenderer);
+    lattice_data_->qc.window = window_type_;
+    scene_->_glrenderer->initUniformBlockWindow(lattice_data_);
+
     scene_->AddPointSet(this);
 
     camera_ = new Camera( Left(), Right(),
@@ -70,11 +73,13 @@ void QuaCry::Draw()
             matrix4(f_m);
             ImGui::Columns(1);
             ImGui::TreePop();
-    }
-        static std::array<int, 16> selectedEmbedding { 1, 1, 0, 0,
+    }// Lattice
+
+    static mat4 scale_matrix;
+    static std::array<int, 16> selectedEmbedding { 1, 1, 0, 0,
                                                        1, 1, 0, 0,
                                                        0, 0, 0, 0,
-                                                       0, 0, 0, 0 };
+                                                      0, 0, 0, 0 };
         if (ImGui::TreeNode("Embedded SL2:")){
             ImGui::Columns(3, NULL, true);
             embeddings(selectedEmbedding, currEmbedding);
@@ -83,15 +88,13 @@ void QuaCry::Draw()
             ImGui::Columns(1);
             sl2control(temporaryMatrixView, SL4walk, currEmbedding);
             ImGui::TreePop();
-        }
-        PointSet::world_transform_ = temporaryMatrixView;
+            PointSet::world_transform_ = temporaryMatrixView*scale_matrix;
+        } // Embedding
 
         if (ImGui::TreeNode("Walk")){
            sl4control(SL4walk);
            ImGui::TreePop();
-        }
-
-
+        } // Walk
 
         if (ImGui::TreeNode("View:")){
             static int selected_view = -1;
@@ -107,10 +110,58 @@ void QuaCry::Draw()
                 }
             }
             ImGui::TreePop();
-        }
+        }// View
 
-    }
 
+        if (ImGui::TreeNode("Scale Lattice:")){
+                static float lattice_scale=1;
+
+                ImGui::Text("Scale Lattice (uniformly xyzw)");
+                if (ImGui::SliderFloat("##LatticeScale", &lattice_scale, 0.2, 5.0f)){
+                   scale_matrix = mat4(lattice_scale);
+                   PointSet::world_transform_ = temporaryMatrixView*scale_matrix;
+                }
+
+         ImGui::TreePop();
+        } // Scale
+
+        if (ImGui::TreeNode("Looks")){
+                static float point_size= 3.0f;
+
+                ImGui::Text("Point Size");
+                if (ImGui::SliderFloat("##PointScale", &point_size, 1.0f, 10.0f)){
+                   SetPointSize(point_size);
+                }
+
+                static float visibility_outside_window=0.01f;
+                ImGui::Text("Change Transparency of points OUTSIDE the window");
+                if (ImGui::SliderFloat("##VisibilityScale", &visibility_outside_window, 0.0, 1.0f)){
+                   SetOutsideVisibility(visibility_outside_window);
+                }
+
+                static ImVec4 zColor = ImVec4(0.0f, 0.0f, 0.13f, 1.0f);
+                static ImVec4 wColor = ImVec4(0.0f, 0.13f, 0.0f, 1.0f);
+                ImGui::Text("Give the z/w-coordinates a colour!");
+                if (ImGui::ColorEdit3("##zColor", (float*)&zColor, 0)){
+                   SetColorZW((float*)&zColor, (float*)&wColor);
+                }
+                if (ImGui::ColorEdit3("##wColor", (float*)&wColor, 0)){
+                   SetColorZW((float*)&zColor, (float*)&wColor);
+                }
+
+
+
+         ImGui::TreePop();
+        } // Scale
+
+
+    } //Quasicrystals
+}
+
+void QuaCry::DrawWindow(GLRenderer *glrenderer)
+{
+    glrenderer->drawPointsInWindow(lattice_data_);
+} // Draw
 
 
 
@@ -134,9 +185,3 @@ void QuaCry::Draw()
 //            ImGui::SliderFloat4("zw window", windowBox.data(), -10.0f, 10.0f);
 //        }
 
-//        if (ImGui::CollapsingHeader("Scale Options")){
-//            ImGui::SliderFloat("scale", &scale, 0.1, 20.0f);
-//        }
-
-
-}

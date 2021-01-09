@@ -66,14 +66,24 @@ class QuaCry : public PointSet,
     WindowType window_type_;
 
 public:
-    QuaCry(Scene* scene, mat4 basis, std::vector< float > window_size, std::vector< int > sample_size,
+    QuaCry(Scene* scene, mat4 basis,
+           std::vector< float > window_size, std::vector< int > sample_size,
            WindowType type = WindowType::Box, Shape shape = Shape(Square()));
     QuaCry(Scene* scene);
 
     void Init();
     virtual void Draw() override;
 
-    std::vector<vec2> window_vertices_;
+
+    void DrawWindow(GLRenderer *glrenderer);
+
+    void SetOutsideVisibility(float alpha){
+        lattice_data_->alpha_ = alpha;
+    }
+    void SetColorZW(float* z, float* w){
+        lattice_data_->z_color_ = vec4(z);
+        lattice_data_->w_color_ = vec4(w);
+    }
 };
 
 #endif // QUACRY_H

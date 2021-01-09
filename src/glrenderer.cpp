@@ -24,6 +24,7 @@ void GLRenderer::SetProgram(QuasiCrystal quasi){
         programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
         programQuasiOctagon = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/points.frag.glsl" );
         programShapeOctagon= InitShader( "shaders/shape.vert.glsl", "shaders/shape.frag.glsl" );
+        programQuasiOctagonWindow = InitShader( "shaders/inside_polygon_window.vert.glsl", "shaders/shape.frag.glsl" );
 
 }
 
@@ -40,6 +41,15 @@ void GLRenderer::useProgram(QuasiCrystal quasi)
     glUseProgram(prog);
 }
 
+void GLRenderer::useProgramWindow(QuasiCrystal quasi)
+{
+    GLuint prog = programQuasi;
+    if(quasi.window == WindowType::Octagon)
+        prog = programQuasiOctagonWindow;
+
+    glUseProgram(prog);
+}
+
 void GLRenderer::useProgram(Shape2d shape)
 {
     glUseProgram(programShapeOctagon);
@@ -51,7 +61,7 @@ void GLRenderer::useProgram(Lights light)
         glUseProgram(programLights);
 }
 
-void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m){
+void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<LatticeData> data){
     GLuint prog = programQuasi;
     if(quasi.window == WindowType::Octagon)
         prog = programQuasiOctagon;
@@ -60,6 +70,46 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m){
     GLuint transform_matrix = glGetUniformLocation(prog, "transform");
     glUniformMatrix4fv(cam_matrix, 1, GL_TRUE, &pv[0][0]);
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
+
+    GLuint point_size = glGetUniformLocation(prog, "point_size");
+    glUniform1f(point_size, data->point_size_);
+
+    GLuint alpha = glGetUniformLocation(prog, "alpha");
+    glUniform1f(alpha, data->alpha_);
+
+    GLuint zColor = glGetUniformLocation(prog, "zColor");
+    glUniform4fv(zColor, 1, &data->z_color_[0]);
+    GLuint wColor = glGetUniformLocation(prog, "wColor");
+    glUniform4fv(wColor, 1, &data->w_color_[0]);
+}
+
+void GLRenderer::SetUniform(QuasiCrystal quasi, mat4 &pv, mat4 &m, shared_ptr<LatticeData> lattice_data, Shape *shape)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer_window);
+    glBufferData(GL_UNIFORM_BUFFER, size(shape->vertices_)*sizeof(vec2), shape->vertices_.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point_window, lattice_data->u_buffer_window);
+
+    GLuint prog = programQuasiOctagonWindow;
+
+    GLuint shape_matrix = glGetUniformLocation(prog, "shape_transform");
+    glUniformMatrix4fv(shape_matrix, 1, GL_TRUE, &shape->GetWorldTransform()[0][0]);
+
+    GLuint cam_matrix = glGetUniformLocation(prog, "pv");
+    GLuint transform_matrix = glGetUniformLocation(prog, "transform");
+    glUniformMatrix4fv(cam_matrix, 1, GL_TRUE, &pv[0][0]);
+    glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
+
+    GLuint point_size = glGetUniformLocation(prog, "point_size");
+    glUniform1f(point_size, 2.0f);
+
+    GLuint alpha = glGetUniformLocation(prog, "alpha");
+    glUniform1f(alpha, 1.0f);
+
+    vec4 color = {0.3f,0.3f,0.3f,1.0f};
+    GLuint zColor = glGetUniformLocation(prog, "zColor");
+    glUniform4fv(zColor, 1, &color[0]);
+    GLuint wColor = glGetUniformLocation(prog, "wColor");
+    glUniform4fv(wColor, 1, &color[0]);
 }
 
 void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
@@ -73,6 +123,17 @@ void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
 
     glGenBuffers(1, &lattice_data->u_buffer);
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
+}
+
+void GLRenderer::initUniformBlockWindow(shared_ptr<LatticeData> lattice_data)
+{
+    GLuint prog = programQuasiOctagonWindow;
+
+    lattice_data->u_block_index_window = glGetUniformBlockIndex(prog, "WindowBlock");
+    glUniformBlockBinding(prog, lattice_data->u_block_index_window, lattice_data->u_binding_point_window);
+
+    glGenBuffers(1, &lattice_data->u_buffer_window);
+    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer_window);
 }
 
 void GLRenderer::SetUniform(Shape2d shape, mat4& m)
@@ -176,9 +237,6 @@ shared_ptr<LatticeData> GLRenderer::loadPoints(PointSet* points)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
-    glPointSize(5.0);
-
     return lattice;
 }
 
@@ -193,6 +251,11 @@ void GLRenderer::drawPoints(shared_ptr<LatticeData> lattice)
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+}
+
+void GLRenderer::drawPointsInWindow(shared_ptr<LatticeData> lattice)
+{
+    drawPoints(lattice);
 }
 
 void GLRenderer::useProgram(int i)

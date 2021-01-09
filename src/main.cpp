@@ -72,9 +72,12 @@ void mainMenu(int id);
 
 void display()
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     //glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPointSize(4);
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if(scene->cg_active)
         {
@@ -88,7 +91,6 @@ void display()
 		}
 
     glViewport(0, 0, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
-    glEnable(GL_DEPTH_TEST);
     scene->draw();
 
     gui->draw(scene, softrenderer, window);
@@ -163,12 +165,12 @@ int my_main( int argc, char **argv )
     QuaCry* quacryOctagon = new QuaCry(scene,
                                 amman_benker,
                                 {-10,10,-10,10,-5,5,-5,5},
-                                {-10,10,-10,10,-10,10,0,0},
+                                {-20,20,-20,20,-10,10,-10,10},
                                 WindowType::Octagon,
-                                Shape( Octagon(sqrt(2)/20) ) );
+                                Shape( Octagon(sqrt(2)) ) );
+    quacryOctagon->ScaleShape(1/20);
     quacryOctagon->Move({0.8,0.8});
 
-    quacryOctagon->window_vertices_ = Octagon(sqrt(2)).vertices_;
 
 
     gui->AppendModule(quacryOctagon);
