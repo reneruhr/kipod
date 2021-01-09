@@ -154,7 +154,7 @@ int my_main( int argc, char **argv )
     inputmanager = new InputManager(eventmanager);
     inputmanager->init(window);
 
-    mat4 square_root = MinkowskiEmbedding(2).Embedding();
+    mat4 square_root = transpose(MinkowskiEmbedding(2).Embedding());
 
 
 

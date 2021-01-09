@@ -84,7 +84,7 @@ void QuaCry::Draw()
                                                        1, 1, 0, 0,
                                                        0, 0, 0, 0,
                                                       0, 0, 0, 0 };
-        if (ImGui::TreeNode("Embedded SL2:")){
+   if (ImGui::TreeNode("Embedded SL2:")){
             ImGui::Columns(3, NULL, true);
             embeddings(selectedEmbedding, currEmbedding);
             ImGui::NextColumn();
@@ -115,6 +115,19 @@ void QuaCry::Draw()
             }
             ImGui::TreePop();
         }// View
+
+
+//        if (ImGui::TreeNode("Animations")){
+//                 ImGui::Columns(3, NULL, true);
+//                 embeddings(selectedEmbedding, currEmbedding);
+//                 ImGui::NextColumn();
+//                 embeddingsView(selectedEmbedding);
+//                 ImGui::Columns(1);
+//                 sl2control(temporaryMatrixView, SL4walk, currEmbedding);
+//                 ImGui::TreePop();
+//                 PointSet::world_transform_ = temporaryMatrixView*scale_matrix;
+//                 ImGui::TreePop();
+//             }// Animations
 
 
         if (ImGui::TreeNode("Modify Lattice and Window")){
@@ -154,11 +167,27 @@ void QuaCry::Draw()
         } // Scale
 
         if (ImGui::TreeNode("Looks")){
-                static float point_size= 3.0f;
+                static float point_size = lattice_data_->point_size_;
+                static float point_size_window = lattice_data_->point_size_window_;
 
                 ImGui::Text("Point Size");
                 if (ImGui::SliderFloat("##PointScale", &point_size, 1.0f, 10.0f)){
                    SetPointSize(point_size);
+                }
+                ImGui::Text("Point Size in Window");
+                if (ImGui::SliderFloat("##PointScaleWindow", &point_size_window, 0.1f, 10.0f)){
+                   lattice_data_->point_size_window_ = point_size_window;
+                }
+
+                static float depth_slider = lattice_data_->depth_;
+                ImGui::Text("Depth ZW points");
+                if (ImGui::SliderFloat("##depth", &depth_slider, -1.2f, 1.2f)){
+                   lattice_data_->depth_ = depth_slider;
+                }
+                static float depth_shader_slider = shape_data_->depth_;
+                ImGui::Text("Depth Window");
+                if (ImGui::SliderFloat("##depth2", &depth_shader_slider, -1.2f, 1.2f)){
+                   shape_data_->depth_ = depth_shader_slider;
                 }
 
                 static float visibility_outside_window=0.01f;

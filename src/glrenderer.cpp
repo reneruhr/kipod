@@ -108,7 +108,10 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4 &pv, mat4 &m, shared_ptr<La
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 
     GLuint point_size = glGetUniformLocation(prog, "point_size");
-    glUniform1f(point_size, 2.0f);
+    glUniform1f(point_size, lattice_data->point_size_window_);
+
+    GLuint depth = glGetUniformLocation(prog, "depth");
+    glUniform1f(depth, lattice_data->depth_);
 
     GLuint alpha = glGetUniformLocation(prog, "alpha");
     glUniform1f(alpha, 1.0f);
@@ -134,10 +137,13 @@ void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
 }
 
 
-void GLRenderer::SetUniform(Shape2d shape, mat4& m)
+void GLRenderer::SetUniform(Shape2d shape, mat4& m, Shape* shape_qc)
 {
     GLuint transform_matrix = glGetUniformLocation(programShapeOctagon, "transform");
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
+    GLuint depth_shape = glGetUniformLocation(programShapeOctagon, "depth");
+    glUniform1f(depth_shape, shape_qc->shape_data_->depth_);
+
 }
 
 void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float>& window_size)
