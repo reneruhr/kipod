@@ -43,10 +43,11 @@ struct LatticeData{
     GLuint u_binding_point_window= 2, u_buffer_window, u_block_index_window;
     int size;
     float point_size_=5.0f;
-    float alpha_ = 0.01f;
-    float decay_ = 1;
-    vec4 z_color_ = {0.10f, 0.00f, 0.3f, 0.3f};
-    vec4 w_color_ = {0.10f, 0.3f, 0.00f, 0.3f};
+    float alpha_ = 0.001f;
+    float z_decay_ = 0.1;
+    float w_decay_ = 0.1;
+    vec4 z_color_ = {1.0f, 0.0f, 0.00f, 0.3f};
+    vec4 w_color_ = {0.0f, 1.0f, 0.00f, 0.3f};
 
     LatticeData(){}
 };
@@ -130,6 +131,7 @@ public:
     void useProgramWindow(QuasiCrystal quasi);
     void initUniformBlockWindow(shared_ptr<LatticeData> lattice_data);
     shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
+    void UpdatePoints(PointSet *points);
 };
 
 

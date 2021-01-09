@@ -24,7 +24,7 @@ void Shape::Init(GLRenderer *glrenderer)
 
 void Shape::ScaleShape(const float scale)
 {
-    world_transform_ = Scale(vec3(scale,scale,0)) * world_transform_;
+    world_transform_ = Scale(vec3(scale,scale,1)) * world_transform_;
 }
 
 void Shape::Move(const vec2 &translate)

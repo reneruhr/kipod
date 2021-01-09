@@ -96,7 +96,6 @@ void Scene::draw()
         if(point_set->lattice_data_->qc.window == WindowType::Octagon){
             _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
             _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
-            _glrenderer->setUniformBlock(point_set->lattice_data_, (Shape*)point_set);
         }
         else if(point_set->lattice_data_->qc.window == WindowType::Box){
             _glrenderer->useProgram(QuasiCrystal());
@@ -104,19 +103,23 @@ void Scene::draw()
             _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
         }
         point_set->Draw(_glrenderer);
+ glDisable( GL_BLEND );
+glEnable(GL_DEPTH_TEST);
 
-
-        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
+_glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
         _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, (Shape*)point_set);
         ((QuaCry*)point_set)->DrawWindow(_glrenderer);
-        glDisable( GL_BLEND );
+
+glDisable(GL_DEPTH_TEST);
     }
 
     for(auto shape : shapes_){
+        glEnable(GL_DEPTH_TEST);
         _glrenderer->useProgram(Shape2d());
         mat4 m = shape->GetWorldTransform();
         _glrenderer->SetUniform(Shape2d(), m);
         shape->Draw(_glrenderer);
+        glDisable(GL_DEPTH_TEST);
     }
 
 	for(auto model : models){

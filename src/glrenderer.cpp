@@ -80,8 +80,11 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<La
 
     GLuint alpha = glGetUniformLocation(prog, "alpha");
     glUniform1f(alpha, data->alpha_);
-    GLuint decay = glGetUniformLocation(prog, "decay");
-    glUniform1f(alpha, data->decay_);
+
+    GLuint zdecay = glGetUniformLocation(prog, "zdecay");
+    glUniform1f(zdecay, data->z_decay_);
+    GLuint wdecay = glGetUniformLocation(prog, "wdecay");
+    glUniform1f(wdecay, data->w_decay_);
 
     GLuint zColor = glGetUniformLocation(prog, "zColor");
     glUniform4fv(zColor, 1, &data->z_color_[0]);
@@ -91,10 +94,6 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<La
 
 void GLRenderer::SetUniform(QuasiCrystal quasi, mat4 &pv, mat4 &m, shared_ptr<LatticeData> lattice_data, Shape *shape)
 {
-    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer_window);
-    glBufferData(GL_UNIFORM_BUFFER, size(shape->transformed_vertices_)*sizeof(vec2), shape->transformed_vertices_.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point_window, lattice_data->u_buffer_window);
-
     GLuint prog = programQuasiOctagonWindow;
 
     GLuint shape_matrix = glGetUniformLocation(prog, "shape_transform");
@@ -134,16 +133,6 @@ void GLRenderer::initUniformBlock(shared_ptr<LatticeData> lattice_data)
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
 }
 
-void GLRenderer::initUniformBlockWindow(shared_ptr<LatticeData> lattice_data)
-{
-    GLuint prog = programQuasiOctagonWindow;
-
-    lattice_data->u_block_index_window = glGetUniformBlockIndex(prog, "WindowBlock");
-    glUniformBlockBinding(prog, lattice_data->u_block_index_window, lattice_data->u_binding_point_window);
-
-    glGenBuffers(1, &lattice_data->u_buffer_window);
-    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer_window);
-}
 
 void GLRenderer::SetUniform(Shape2d shape, mat4& m)
 {
@@ -158,12 +147,6 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
 }
 
-void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, Shape* shape)
-{
-    glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
-    glBufferData(GL_UNIFORM_BUFFER, size(shape->transformed_vertices_)*sizeof(vec2),  shape->transformed_vertices_.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
-}
 
 struct LightGLGS{
     GLuint type;
@@ -499,6 +482,21 @@ shared_ptr<ShapeData> GLRenderer::LoadShape(vector<vec2>* vertices_)
 
     return shape;
 }
+
+void GLRenderer::UpdatePoints(PointSet* points)
+{
+    shared_ptr<LatticeData> lattice = points->lattice_data_;
+    lattice->size = size(points->sample_);
+
+    glBindVertexArray(lattice->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, lattice->vbo);
+    glBufferData(GL_ARRAY_BUFFER, lattice->size * 4 * sizeof(float), points->sample_.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+}
+
 
 shared_ptr<ShapeData> GLRenderer::UpdateShape(shared_ptr<ShapeData> shape, vector<vec2>* vertices_)
 {

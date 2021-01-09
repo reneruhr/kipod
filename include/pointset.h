@@ -25,6 +25,7 @@ public:
     mat4 GetWorldTransform(){
         return world_transform_;
     }
+    void BaseChange(GLRenderer *glrenderer, mat4 new_basis);
 protected:
     mat4 world_transform_;
     shared_ptr<LatticeData> lattice_data_= nullptr;

@@ -5,6 +5,9 @@
 #include "../include/pointset.h"
 
 
+#include "../include/math/minkowski_embedding.h"
+
+
 #include "../include/gui.h"
 
 
@@ -35,7 +38,6 @@ void QuaCry::Init()
     PointSet::Init(scene_->_glrenderer);
     lattice_data_->qc.window = window_type_;
     lattice_data_->qc.shape = this;
-    scene_->_glrenderer->initUniformBlockWindow(lattice_data_);
 
     scene_->AddPointSet(this);
 
@@ -132,7 +134,22 @@ void QuaCry::Draw()
                 }
 
                if(ImGui::Button("Transpose Lattice"))
-                   basis_ = transpose(basis_);
+                   BaseChange(scene_->_glrenderer, transpose(basis_));
+               if(ImGui::Button("Amman Benker Sublattice Lattice"))
+                   BaseChange(scene_->_glrenderer,
+                              transpose(MinkowskiEmbedding(2).Embedding(
+                               {{1,0},{0,0}},
+                               {{0,1},{0,0}},
+                               {{0,0},{2,0}},
+                               {{0,0},{0,1}})));
+               if(ImGui::Button("Full sqrt(2) Lattice"))
+                   BaseChange(scene_->_glrenderer,
+                              transpose(MinkowskiEmbedding(2).Embedding(
+                               {{1,0},{0,0}},
+                               {{0,1},{0,0}},
+                               {{0,0},{1,0}},
+                               {{0,0},{0,1}})));
+
          ImGui::TreePop();
         } // Scale
 
@@ -150,19 +167,23 @@ void QuaCry::Draw()
                    SetOutsideVisibility(visibility_outside_window);
                 }
 
-                static float decay=lattice_data_->decay_;
-                ImGui::Text("Color decay from zw-origin");
-                if (ImGui::SliderFloat("##decay", &decay, 0.1, 10.0f)){
-                   lattice_data_->decay_=decay;
+                static float zdecay=lattice_data_->z_decay_;
+                static float wdecay=lattice_data_->w_decay_;
+                ImGui::Text("Color decay from z-origin");
+                if (ImGui::SliderFloat("z##zdecay", &zdecay, 0.01, 1.0f)){
+                   lattice_data_->z_decay_=zdecay;
+                }
+                if (ImGui::SliderFloat("w##wdecay", &wdecay, 0.01, 1.0f)){
+                   lattice_data_->w_decay_=wdecay;
                 }
 
                 static ImVec4 zColor = ImVec4(lattice_data_->z_color_[0],lattice_data_->z_color_[1],lattice_data_->z_color_[2],lattice_data_->z_color_[3]);
                 static ImVec4 wColor = ImVec4(lattice_data_->w_color_[0],lattice_data_->w_color_[1],lattice_data_->w_color_[2],lattice_data_->w_color_[3]);
                 ImGui::Text("Give the z/w-coordinates a colour!");
-                if (ImGui::ColorEdit4("##zColor", (float*)&zColor, 0)){
+                if (ImGui::ColorEdit4("z##zColor", (float*)&zColor, 0)){
                    SetColorZW((float*)&zColor, (float*)&wColor);
                 }
-                if (ImGui::ColorEdit4("##wColor", (float*)&wColor, 0)){
+                if (ImGui::ColorEdit4("w##wColor", (float*)&wColor, 0)){
                    SetColorZW((float*)&zColor, (float*)&wColor);
                 }
 

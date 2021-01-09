@@ -154,7 +154,11 @@ int my_main( int argc, char **argv )
     inputmanager = new InputManager(eventmanager);
     inputmanager->init(window);
 
-    mat4 amman_benker = MinkowskiEmbedding(2).Embedding();
+    mat4 square_root = MinkowskiEmbedding(2).Embedding();
+
+
+
+
 //    QuaCry* quacry = new QuaCry(scene,
 //                                amman_benker,
 //                                {-10,10,-10,10,-5,5,-1,1},
@@ -163,7 +167,7 @@ int my_main( int argc, char **argv )
     //gui->AppendModule(quacry);
 
     QuaCry* quacryOctagon = new QuaCry(scene,
-                                amman_benker,
+                                square_root,
                                 {-10,10,-10,10,-5,5,-5,5},
                                 {-20,20,-20,20,-10,10,-10,10},
                                 WindowType::Octagon,
