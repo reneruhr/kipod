@@ -20,6 +20,7 @@ enum class WindowType{
 
 struct QuasiCrystal{
     WindowType window;
+    Shape* shape;
     QuasiCrystal(WindowType window = WindowType::Box): window(window){}
 };
 
@@ -39,12 +40,13 @@ struct LatticeData{
     QuasiCrystal qc;
     GLuint vao, vbo;
     GLuint u_binding_point= 1, u_buffer, u_block_index;
-    GLuint u_binding_point_window= 1, u_buffer_window, u_block_index_window;
+    GLuint u_binding_point_window= 2, u_buffer_window, u_block_index_window;
     int size;
     float point_size_=5.0f;
     float alpha_ = 0.01f;
-    vec4 z_color_ = {0.01f, 0.01f, 0.13f, 1.0f};
-    vec4 w_color_ = {0.01f, 0.13f, 0.01f, 1.0f};
+    float decay_ = 1;
+    vec4 z_color_ = {0.10f, 0.00f, 0.3f, 0.3f};
+    vec4 w_color_ = {0.10f, 0.3f, 0.00f, 0.3f};
 
     LatticeData(){}
 };
@@ -117,7 +119,7 @@ public:
     void initUniformBlock(shared_ptr<LatticeData> lattice_data);
     void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float> &window_size);
 
-    void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<vec2> &octagon);
+    void setUniformBlock(shared_ptr<LatticeData> lattice_data, Shape* shape);
 
 
 
@@ -127,6 +129,7 @@ public:
     void SetUniform(Shape2d shape, mat4 &m);
     void useProgramWindow(QuasiCrystal quasi);
     void initUniformBlockWindow(shared_ptr<LatticeData> lattice_data);
+    shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
 };
 
 

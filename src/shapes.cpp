@@ -6,9 +6,9 @@
 void Shape::MakeFan()
 {
     triangleFan_.push_back(center_);
-    for(auto& v : vertices_)
+    for(auto& v : transformed_vertices_)
         triangleFan_.push_back(v);
-    triangleFan_.push_back(vertices_[0]);
+    triangleFan_.push_back(transformed_vertices_[0]);
 }
 
 Shape::Shape(Polygon polygon): Polygon(polygon)
@@ -17,9 +17,9 @@ Shape::Shape(Polygon polygon): Polygon(polygon)
 
 void Shape::Init(GLRenderer *glrenderer)
 {
-    MakeFan();
+    //MakeFan();
     shape_data_ =
-             glrenderer->LoadShape(&triangleFan_);
+             glrenderer->LoadShape(&transformed_vertices_);
 }
 
 void Shape::ScaleShape(const float scale)

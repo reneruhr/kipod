@@ -34,6 +34,7 @@ void QuaCry::Init()
 {
     PointSet::Init(scene_->_glrenderer);
     lattice_data_->qc.window = window_type_;
+    lattice_data_->qc.shape = this;
     scene_->_glrenderer->initUniformBlockWindow(lattice_data_);
 
     scene_->AddPointSet(this);
@@ -76,6 +77,7 @@ void QuaCry::Draw()
     }// Lattice
 
     static mat4 scale_matrix;
+    static mat2 window_matrix;
     static std::array<int, 16> selectedEmbedding { 1, 1, 0, 0,
                                                        1, 1, 0, 0,
                                                        0, 0, 0, 0,
@@ -113,15 +115,24 @@ void QuaCry::Draw()
         }// View
 
 
-        if (ImGui::TreeNode("Scale Lattice:")){
+        if (ImGui::TreeNode("Modify Lattice and Window")){
                 static float lattice_scale=1;
-
                 ImGui::Text("Scale Lattice (uniformly xyzw)");
                 if (ImGui::SliderFloat("##LatticeScale", &lattice_scale, 0.2, 5.0f)){
                    scale_matrix = mat4(lattice_scale);
                    PointSet::world_transform_ = temporaryMatrixView*scale_matrix;
                 }
+                static float window_scale=1;
+                ImGui::Text("Scale Window (uniformly zw)");
+                if (ImGui::SliderFloat("##window_scale", &window_scale, 0.2, 5.0f)){
+                   window_matrix = mat2(window_scale);
+                   Polygon::transform_ = window_matrix;
+                   UpdatedTransformedVertices();
+                   scene_->_glrenderer->UpdateShape(this->shape_data_, &this->transformed_vertices_);
+                }
 
+               if(ImGui::Button("Transpose Lattice"))
+                   basis_ = transpose(basis_);
          ImGui::TreePop();
         } // Scale
 
@@ -139,13 +150,19 @@ void QuaCry::Draw()
                    SetOutsideVisibility(visibility_outside_window);
                 }
 
-                static ImVec4 zColor = ImVec4(0.0f, 0.0f, 0.13f, 1.0f);
-                static ImVec4 wColor = ImVec4(0.0f, 0.13f, 0.0f, 1.0f);
+                static float decay=lattice_data_->decay_;
+                ImGui::Text("Color decay from zw-origin");
+                if (ImGui::SliderFloat("##decay", &decay, 0.1, 10.0f)){
+                   lattice_data_->decay_=decay;
+                }
+
+                static ImVec4 zColor = ImVec4(lattice_data_->z_color_[0],lattice_data_->z_color_[1],lattice_data_->z_color_[2],lattice_data_->z_color_[3]);
+                static ImVec4 wColor = ImVec4(lattice_data_->w_color_[0],lattice_data_->w_color_[1],lattice_data_->w_color_[2],lattice_data_->w_color_[3]);
                 ImGui::Text("Give the z/w-coordinates a colour!");
-                if (ImGui::ColorEdit3("##zColor", (float*)&zColor, 0)){
+                if (ImGui::ColorEdit4("##zColor", (float*)&zColor, 0)){
                    SetColorZW((float*)&zColor, (float*)&wColor);
                 }
-                if (ImGui::ColorEdit3("##wColor", (float*)&wColor, 0)){
+                if (ImGui::ColorEdit4("##wColor", (float*)&wColor, 0)){
                    SetColorZW((float*)&zColor, (float*)&wColor);
                 }
 

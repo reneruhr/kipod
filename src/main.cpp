@@ -168,8 +168,8 @@ int my_main( int argc, char **argv )
                                 {-20,20,-20,20,-10,10,-10,10},
                                 WindowType::Octagon,
                                 Shape( Octagon(sqrt(2)) ) );
-    quacryOctagon->ScaleShape(1/20);
-    quacryOctagon->Move({0.8,0.8});
+    quacryOctagon->ScaleShape(1.0f/20.0f);
+    quacryOctagon->Move({0.8f,0.8f});
 
 
 

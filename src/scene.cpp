@@ -96,7 +96,7 @@ void Scene::draw()
         if(point_set->lattice_data_->qc.window == WindowType::Octagon){
             _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
             _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
-            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->vertices_);
+            _glrenderer->setUniformBlock(point_set->lattice_data_, (Shape*)point_set);
         }
         else if(point_set->lattice_data_->qc.window == WindowType::Box){
             _glrenderer->useProgram(QuasiCrystal());
@@ -106,9 +106,9 @@ void Scene::draw()
         point_set->Draw(_glrenderer);
 
 
-//        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
-//        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, (Shape*)point_set);
-//        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
+        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
+        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, (Shape*)point_set);
+        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
         glDisable( GL_BLEND );
     }
 

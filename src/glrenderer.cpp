@@ -24,7 +24,7 @@ void GLRenderer::SetProgram(QuasiCrystal quasi){
         programQuasi = InitShader( "shaders/points.vert.glsl", "shaders/points.frag.glsl" );
         programQuasiOctagon = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/points.frag.glsl" );
         programShapeOctagon= InitShader( "shaders/shape.vert.glsl", "shaders/shape.frag.glsl" );
-        programQuasiOctagonWindow = InitShader( "shaders/inside_polygon_window.vert.glsl", "shaders/shape.frag.glsl" );
+        programQuasiOctagonWindow = InitShader( "shaders/inside_polygon_window.vert.glsl", "shaders/points.frag.glsl" );
 
 }
 
@@ -71,11 +71,17 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<La
     glUniformMatrix4fv(cam_matrix, 1, GL_TRUE, &pv[0][0]);
     glUniformMatrix4fv(transform_matrix, 1, GL_TRUE, &m[0][0]);
 
+    GLuint shape = glGetUniformLocation(prog, "shape");
+    glUniform2fv(shape, 8, &data->qc.shape->transformed_vertices_[0][0]);
+
+
     GLuint point_size = glGetUniformLocation(prog, "point_size");
     glUniform1f(point_size, data->point_size_);
 
     GLuint alpha = glGetUniformLocation(prog, "alpha");
     glUniform1f(alpha, data->alpha_);
+    GLuint decay = glGetUniformLocation(prog, "decay");
+    glUniform1f(alpha, data->decay_);
 
     GLuint zColor = glGetUniformLocation(prog, "zColor");
     glUniform4fv(zColor, 1, &data->z_color_[0]);
@@ -86,13 +92,16 @@ void GLRenderer::SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<La
 void GLRenderer::SetUniform(QuasiCrystal quasi, mat4 &pv, mat4 &m, shared_ptr<LatticeData> lattice_data, Shape *shape)
 {
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer_window);
-    glBufferData(GL_UNIFORM_BUFFER, size(shape->vertices_)*sizeof(vec2), shape->vertices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, size(shape->transformed_vertices_)*sizeof(vec2), shape->transformed_vertices_.data(), GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point_window, lattice_data->u_buffer_window);
 
     GLuint prog = programQuasiOctagonWindow;
 
     GLuint shape_matrix = glGetUniformLocation(prog, "shape_transform");
     glUniformMatrix4fv(shape_matrix, 1, GL_TRUE, &shape->GetWorldTransform()[0][0]);
+
+    GLuint shape_vectors = glGetUniformLocation(prog, "shape");
+    glUniform2fv(shape_vectors, 8, &lattice_data->qc.shape->transformed_vertices_[0][0]);
 
     GLuint cam_matrix = glGetUniformLocation(prog, "pv");
     GLuint transform_matrix = glGetUniformLocation(prog, "transform");
@@ -149,10 +158,10 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
 }
 
-void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<vec2>& octagon)
+void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, Shape* shape)
 {
     glBindBuffer(GL_UNIFORM_BUFFER, lattice_data->u_buffer);
-    glBufferData(GL_UNIFORM_BUFFER, size(octagon)*sizeof(vec2), octagon.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, size(shape->transformed_vertices_)*sizeof(vec2),  shape->transformed_vertices_.data(), GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, lattice_data->u_binding_point, lattice_data->u_buffer);
 }
 
@@ -482,6 +491,17 @@ shared_ptr<ShapeData> GLRenderer::LoadShape(vector<vec2>* vertices_)
     glGenVertexArrays(1, &shape->vao_);
     glGenBuffers(1, &shape->vbo_);
 
+    glBindVertexArray(shape->vao_);
+    glBindBuffer(GL_ARRAY_BUFFER, shape->vbo_);
+    glBufferData(GL_ARRAY_BUFFER, shape->size_ * sizeof(vec2), vertices_->data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return shape;
+}
+
+shared_ptr<ShapeData> GLRenderer::UpdateShape(shared_ptr<ShapeData> shape, vector<vec2>* vertices_)
+{
     glBindVertexArray(shape->vao_);
     glBindBuffer(GL_ARRAY_BUFFER, shape->vbo_);
     glBufferData(GL_ARRAY_BUFFER, shape->size_ * sizeof(vec2), vertices_->data(), GL_STATIC_DRAW);
