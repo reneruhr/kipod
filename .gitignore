@@ -2,3 +2,5 @@ vendor/
 resources/
 logs/
 CMakeLists.txt.user
+shaders/nir_shaders.sublime-project
+shaders/nir_shaders.sublime-workspace
