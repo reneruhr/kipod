@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(nir LANGUAGES CXX)
+project(kipod LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -23,7 +23,7 @@ file(GLOB imgui
     "vendor/imgui/*.cpp"
 )
 
-add_executable(nir
+add_executable(kipod
 
   include/core.h
   include/utils/mat.h
@@ -114,9 +114,9 @@ add_executable(nir
   ${imgui}
 )
 
-target_link_libraries(nir ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-target_link_libraries(nir GLEW::GLEW)
-target_link_libraries(nir glfw)
+target_link_libraries(kipod ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+target_link_libraries(kipod GLEW::GLEW)
+target_link_libraries(kipod glfw)
 
 
 file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
