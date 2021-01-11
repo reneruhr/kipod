@@ -48,10 +48,14 @@ protected:
 public:
     vector<vec3> vertices_vector;
     vector<vec3> normals_vector;
-    vector<MaterialStruct> colors_vector;
+    vector<vec2> texture_vector;
 
     vector<unsigned int> indices_vector;
     vector<unsigned int> nindices_vector;
+    vector<unsigned int> tindices_vector;
+
+
+    vector<MaterialStruct> colors_vector;
     vector<unsigned int> cindices_vector;
 
 

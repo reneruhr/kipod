@@ -103,6 +103,7 @@ void MeshModel::loadFile(string fileName)
 	ifstream ifile(fileName.c_str());
 	vector<FaceIdcs> faces;
     bool hasNormals=false;
+    bool hasTextures=false;
 
 	// while not end of file
 	while (!ifile.eof())
@@ -126,6 +127,9 @@ void MeshModel::loadFile(string fileName)
 		else if (lineType == "vn"){
 			hasNormals=true;
 			normals_vector.push_back(vec3fFromStream(issLine));}
+        else if (lineType == "vt"){
+            hasTextures=true;
+            texture_vector.push_back(vec2fFromStream(issLine));}
         else if (lineType == "f"){
 			faces.push_back(issLine);
         }
@@ -143,6 +147,7 @@ void MeshModel::loadFile(string fileName)
 
     int vs = size(vertices_vector);
     int ns = size(normals_vector);
+    int ts = size(texture_vector);
 
 
 	for (vector<FaceIdcs>::iterator it = faces.begin(); it != faces.end(); ++it)
@@ -153,9 +158,17 @@ void MeshModel::loadFile(string fileName)
             if(it->v[i] < 0)
                 it->v[i] = vs + it->v[i]+1;
             indices_vector.push_back(it->v[i]-1);
-            if(it->vn[i] < 0)
-                it->vn[i] = ns + it->vn[i]+1;
-            nindices_vector.push_back(it->vn[i]-1);
+
+            if(hasNormals){
+                if(it->vn[i] < 0)
+                    it->vn[i] = ns + it->vn[i]+1;
+                nindices_vector.push_back(it->vn[i]-1);
+            }
+            if(hasTextures){
+                if(it->vt[i] < 0)
+                    it->vt[i] = ts + it->vt[i]+1;
+                tindices_vector.push_back(it->vt[i]-1);
+            }
 		}
 	}
     if(hasNormals == false) calculateNormals();

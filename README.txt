@@ -9,10 +9,7 @@ rene$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 
 Then install cmake (if needed) and the three libraries needed for the application:
 
-rene$ brew install cmake
-rene$ brew install glew
-rene$ brew install glfw3
-rene$ brew install glm
+rene$ brew install cmake glew glfw3 glm
 
 Step 3: Building Instruction:
 

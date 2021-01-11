@@ -23,6 +23,10 @@ file(GLOB imgui
     "vendor/imgui/*.cpp"
 )
 
+file(GLOB stb
+    "vendor/stb/*.h"
+)
+
 add_executable(kipod
 
   include/core.h
@@ -32,9 +36,10 @@ add_executable(kipod
   include/utils/log.h
   src/utils/log.cpp
 
+  include/utils/image_loader.h
 
-
-
+  include/texture.h
+  src/texture.cpp
 
   include/math/lattice.h
   src/math/lattice.cpp
