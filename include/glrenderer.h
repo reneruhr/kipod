@@ -5,6 +5,7 @@
 #include "utils/mat.h"
 #include "GL/glew.h"
 #include "renderer.h"
+#include "texture.h"
 
 class Light;
 class MaterialStruct;
@@ -12,6 +13,20 @@ class Camera;
 
 class PointSet;
 class Shape;
+
+
+struct GLVertex{
+    vec3 position_;
+    vec3 normal_;
+    vec2 texture_;
+};
+
+struct GLTriangle{
+    GLVertex vertices_[3];
+};
+
+
+
 
 enum class WindowType{
     Box,
@@ -30,9 +45,15 @@ struct Shape2d{
 class Lights{};
 
 struct ModelData{
-    GLuint vbo,vao,ebo,nvao,nvbo, col_vao, col_ebo, col_vbo;
+    GLuint vbo,vao,ebo,
+           nvao, nvbo,
+           col_vao, col_ebo, col_vbo,
+           tex_vao_, tex_ebo_, tex_vbo_;
     unsigned int indices_size;
     bool hasNormals;
+    bool hasTexture;
+    Texture texture_;
+
     ModelData(){}
 };
 
@@ -136,6 +157,11 @@ public:
     void initUniformBlockWindow(shared_ptr<LatticeData> lattice_data);
     shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
     void UpdatePoints(PointSet *points);
+
+
+
+
+    shared_ptr<ModelData> LoadGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
 };
 
 

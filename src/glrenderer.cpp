@@ -463,6 +463,58 @@ shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* 
 
 
 
+shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices){
+
+    models.push_back(make_shared<ModelData>(ModelData()));
+    auto model = models.back();
+    model->indices_size = indices->size();
+
+    glGenBuffers(1, &model->tex_ebo_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &model->tex_vao_);
+    glBindVertexArray(model->tex_vao_);
+
+    glGenBuffers(1, &model->tex_vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
+    glBufferData(GL_ARRAY_BUFFER, triangles->size()*sizeof(GLTriangle), triangles->data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return model;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
