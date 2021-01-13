@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "../include/core.h"
 #include "../include/scene.h"
 #include "../include/window.h"
@@ -134,6 +136,8 @@ void screenToPixel_y(double& y, int& q){
 
 int my_main( int argc, char **argv )
 {
+
+    ImageLoader image_loader;
 
     window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "NIR(renderer)");
     window->init();

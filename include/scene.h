@@ -51,7 +51,7 @@ public:
         boundingBox.init(_glrenderer);
     }
 
-    void loadOBJModel(string fileName, MaterialStruct material);
+    void loadOBJModel(string fileName, MaterialStruct material, bool textures = false);
     void loadPrimitive(Primitive primitive, MaterialStruct material, int numberPolygons=0);
 	
 	Camera* getActiveCamera();
@@ -75,7 +75,7 @@ public:
     bool HasPointSet(){ return !point_sets_.empty(); }
     void AddShape(Shape *shape);
 
-	void initLastModel();
+    void initLastModel(bool with_texture = false);
 	void init();
 	void draw();
 	void drawDemo();
@@ -108,6 +108,7 @@ public:
 	bool camera_mode = false;
     bool camera_frustum_mode = false;
     bool color_mode = true;
+    bool texture_mode = true;
 
     bool box_mode = false;
     bool wireframemode = false;

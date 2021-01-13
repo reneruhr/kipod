@@ -42,10 +42,16 @@ protected :
 	mat3 _normal_transform;
 
     BoundingBoxData _boundingBoxData;
+
 protected:
     shared_ptr<ModelData> modelDataWired = nullptr;
+    shared_ptr<ModelData> modelTexturedData = nullptr;
 
 public:
+    MeshModel(string fileName, bool textured = false);
+    ~MeshModel(void);
+
+
     vector<vec3> vertices_vector;
     vector<vec3> normals_vector;
     vector<vec2> texture_vector;
@@ -54,19 +60,46 @@ public:
     vector<unsigned int> nindices_vector;
     vector<unsigned int> tindices_vector;
 
+    vector<GLTriangle> triangles_;
+
+    Texture* texture = nullptr;
+
+    void CreateTriangleVector()
+    {
+        for(int i=0, n=indices_vector.size(); i<n; i+=3){
+                     triangles_.emplace_back(
+                     GLTriangle(GLVertex(
+                                  vertices_vector[indices_vector[i]],
+                                  normals_vector[nindices_vector[i]],
+                                  texture_vector[tindices_vector[i]]),
+                                GLVertex(
+                                    vertices_vector[indices_vector[i+1]],
+                                    normals_vector[nindices_vector[i+1]],
+                                    texture_vector[tindices_vector[i+1]]),
+                                GLVertex(
+                                    vertices_vector[indices_vector[i+2]],
+                                    normals_vector[nindices_vector[i+2]],
+                                    texture_vector[tindices_vector[i+2]])
+                                ));
+        }
+    }
+
 
     vector<MaterialStruct> colors_vector;
     vector<unsigned int> cindices_vector;
 
 
-    MeshModel(string fileName);
-	~MeshModel(void);
+
 	void loadFile(string fileName);
     void calculateNormals();
     void reduceVertices();
 
 
     void init(GLRenderer *glrenderer, bool colored = true);
+    void Init(GLRenderer *glrenderer);
+
+    void Draw(GLRenderer *glrenderer);
+
     void draw() override{}
 
     void draw(GLRenderer *glrenderer);

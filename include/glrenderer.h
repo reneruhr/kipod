@@ -19,10 +19,20 @@ struct GLVertex{
     vec3 position_;
     vec3 normal_;
     vec2 texture_;
+
+    GLVertex() = default;
+    GLVertex(vec3 position, vec3 normal, vec2 texture) : position_(position), normal_(normal), texture_(texture) {}
 };
 
 struct GLTriangle{
     GLVertex vertices_[3];
+
+    GLTriangle() = default;
+    GLTriangle(GLVertex v, GLVertex w, GLVertex u) {
+        vertices_[0] = v;
+        vertices_[1] = w;
+        vertices_[2] = u;
+    }
 };
 
 
@@ -85,6 +95,15 @@ struct ShapeData{
 
 
 
+struct LightGLGS{
+    GLuint type;
+    GLuint source;
+    GLuint color;
+    GLuint on;
+};
+
+
+
 using namespace std;
 class GLRenderer : public Renderer
 {
@@ -98,7 +117,8 @@ class GLRenderer : public Renderer
 	unsigned int vbo_total[2];
 	unsigned int vao_total[2];
     GLuint program, program2, program3, programQuasi, programLights,
-           programQuasiOctagon, programShapeOctagon, programQuasiOctagonWindow;
+           programQuasiOctagon, programShapeOctagon, programQuasiOctagonWindow,
+           programTex;
 	GLuint matrix, matrix2, matrix3, normal_length;
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
@@ -139,6 +159,10 @@ public:
     void SetUniform(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera);
     void useProgram(Lights light);
 
+    void SetProgramTex();
+    void SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, Texture* texture);
+    void useProgramTex();
+
 
     shared_ptr<ModelData> loadColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices, const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
 
@@ -162,6 +186,7 @@ public:
 
 
     shared_ptr<ModelData> LoadGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
+    void DrawGLTriangles(shared_ptr<ModelData> model);
 };
 
 

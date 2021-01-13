@@ -6,9 +6,9 @@
 
 using namespace std;
 
-void Scene::loadOBJModel(string fileName, MaterialStruct material)
+void Scene::loadOBJModel(string fileName, MaterialStruct material, bool textured)
 {
-	MeshModel *model = new MeshModel(fileName);
+    MeshModel *model = new MeshModel(fileName, textured);
     model->setUniformMaterial(material);
 	models.push_back(model);
 }
@@ -19,9 +19,10 @@ void Scene::loadPrimitive(Primitive primitive, MaterialStruct material, int numb
 	models.push_back(model);
 }
 
-void Scene::initLastModel(){
+void Scene::initLastModel(bool with_texture){
     //models.back()->init();
-    models.back()->init(_glrenderer);
+    if(with_texture) models.back()->Init(_glrenderer);
+    else models.back()->init(_glrenderer);
 }
 
 void Scene::addCamera(Camera *cam, bool projective)
@@ -64,6 +65,7 @@ void Scene::init(){
 
         _glrenderer->SetProgram(QuasiCrystal());
         _glrenderer->SetProgram(Lights());
+        _glrenderer->SetProgramTex();
 	}
     Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
@@ -137,7 +139,14 @@ void Scene::draw()
 		mat4 m = model->getmTransform();
 		mat4 mvp = camMatrix * m;
 
-        if(color_mode || emissive_mode){
+        if( texture_mode){
+            glEnable(GL_DEPTH_TEST);
+           _glrenderer->useProgramTex();
+           _glrenderer->SetUniformTex(m, v, p, lights, model->colors_vector[0], cameras[activeCamera], model->texture);
+           model->Draw(_glrenderer);
+           glDisable(GL_DEPTH_TEST);
+        }
+        else if(color_mode || emissive_mode){
              glEnable(GL_DEPTH_TEST);
             _glrenderer->useProgram(Lights());
             _glrenderer->SetUniform(m, v, p, lights, model->colors_vector[0], cameras[activeCamera]);

@@ -657,13 +657,14 @@ void GUI::loadPrimitive(Scene* scene){
 
 void GUI::loadOBJfile(Scene* scene){
     ImGui::Text("Load OBJ File:");
+                        const bool texturedButton = ImGui::Button("With Texture!");
                         const bool browseButtonPressed = ImGui::Button("Add Model");
                         static ImGuiFs::Dialog dlg;
                         const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
                         if (strlen(chosenPath)>0) {
                             LOG("{}",chosenPath);
-                            scene->loadOBJModel(chosenPath, MaterialStruct());
-                            scene->initLastModel();
+                            scene->loadOBJModel(chosenPath, MaterialStruct(), texturedButton);
+                            scene->initLastModel(texturedButton);
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }

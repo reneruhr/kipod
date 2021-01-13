@@ -7,15 +7,19 @@
 
 class Texture
 {
-    unsigned int id_;
+
     Image* image_;
+
 
 public:
     Texture();
 
+    unsigned int id_;
+    std::string name_ ="tex";
+
     void LoadTexture(const char path[]){
 
-           image_= LoadImage(path);
+           image_= ImageLoader::LoadImage(path);
 
            glGenTextures(1, &id_);
            glBindTexture(GL_TEXTURE_2D, id_);
@@ -36,7 +40,7 @@ public:
                LOG("Failed to load texture");
            }
 
-           FreeImage(image_);
+           ImageLoader::FreeImage(image_);
     }
 
     void BindTexture(){

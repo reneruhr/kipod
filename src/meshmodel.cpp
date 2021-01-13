@@ -86,13 +86,21 @@ BoundingBoxData::BoundingBoxData(const vector<vec3> &vertices){
     }
 
 
-MeshModel::MeshModel(string fileName)
+MeshModel::MeshModel(string fileName, bool textured)
 {
-	_world_transform = mat4(1.0);
+    _world_transform = mat4(1.0);
 	loadFile(fileName);
 	createBBox();
 	centerModel();
+
+    if(textured){
+        texture = new Texture;
+        string str = "obj";
+        fileName.replace(fileName.find(str),str.length(),"png"); // File better not has obj in its name!
+        texture->LoadTexture(fileName.c_str());
+    }
 }
+
 
 MeshModel::~MeshModel(void)
 {
@@ -277,7 +285,18 @@ void MeshModel::init(GLRenderer *glrenderer, bool colored)
 
     modelDataWired =
                  glrenderer->loadTriangles(&vertices_vector,&indices_vector,
-                                       &normals_vector, &nindices_vector);
+                                           &normals_vector, &nindices_vector);
+}
+
+void MeshModel::Init(GLRenderer *glrenderer)
+{
+    CreateTriangleVector();
+    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &indices_vector);
+}
+
+void MeshModel::Draw(GLRenderer *glrenderer)
+{
+    glrenderer->DrawGLTriangles(modelTexturedData);
 }
 
 void MeshModel::draw(GLRenderer *glrenderer)

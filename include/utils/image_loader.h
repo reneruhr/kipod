@@ -1,7 +1,6 @@
-#ifndef IMAGELOADER_H
-#define IMAGELOADER_H
+#pragma once
 
-#define STB_IMAGE_IMPLEMENTATION
+
 #include "../../vendor/stb/stb_image.h"
 
 struct Image{
@@ -11,7 +10,10 @@ struct Image{
     unsigned char* data_;
 };
 
-Image* LoadImage(const char path[])
+class ImageLoader{
+public:
+
+static Image* LoadImage(const char path[])
 {
     Image* new_image = new Image();
     new_image->data_ = stbi_load(path, &new_image->width_,
@@ -19,10 +21,9 @@ Image* LoadImage(const char path[])
     return new_image;
 }
 
-void FreeImage(Image* old_image)
+static void FreeImage(Image* old_image)
 {
     stbi_image_free(old_image->data_);
 }
 
-
-#endif // IMAGELOADER_H
+};
