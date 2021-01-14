@@ -137,8 +137,6 @@ void screenToPixel_y(double& y, int& q){
 int my_main( int argc, char **argv )
 {
 
-    ImageLoader image_loader;
-
     window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "NIR(renderer)");
     window->init();
 
@@ -170,18 +168,18 @@ int my_main( int argc, char **argv )
 //                                WindowType::Box);
     //gui->AppendModule(quacry);
 
-    QuaCry* quacryOctagon = new QuaCry(scene,
-                                square_root,
-                                {-10,10,-10,10,-5,5,-5,5},
-                                {-20,20,-20,20,-10,10,-10,10},
-                                WindowType::Octagon,
-                                Shape( Octagon(sqrt(2)) ) );
-    quacryOctagon->ScaleShape(1.0f/20.0f);
-    quacryOctagon->Move({0.8f,0.8f});
+//    QuaCry* quacryOctagon = new QuaCry(scene,
+//                                square_root,
+//                                {-10,10,-10,10,-5,5,-5,5},
+//                                {-20,20,-20,20,-10,10,-10,10},
+//                                WindowType::Octagon,
+//                                Shape( Octagon(sqrt(2)) ) );
+//    quacryOctagon->ScaleShape(1.0f/20.0f);
+//    quacryOctagon->Move({0.8f,0.8f});
 
 
 
-    gui->AppendModule(quacryOctagon);
+//    gui->AppendModule(quacryOctagon);
 
     double then = glfwGetTime();
     double now;

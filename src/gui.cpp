@@ -294,10 +294,17 @@ void GUI::lightControl(Scene *scene)
     if(ImGui::Checkbox("WireFrame Mode", &wireFrameCheck)){
         eventmanager->dispatch(Event(EventType::WireframeMode, Mode::SWITCH));
     }
+    static bool textureCheck = false;
+    if(ImGui::Checkbox("Texture Mode", &textureCheck)){
+        eventmanager->dispatch(Event(EventType::TextureMode, Mode::SWITCH));
+    }
+
+
 
     checkEmmisive= scene->emissive_mode;
     checkLight= scene->color_mode;
     wireFrameCheck = scene ->wireframemode;
+    textureCheck = scene->texture_mode;
 
 
 
@@ -657,17 +664,19 @@ void GUI::loadPrimitive(Scene* scene){
 
 void GUI::loadOBJfile(Scene* scene){
     ImGui::Text("Load OBJ File:");
-                        const bool texturedButton = ImGui::Button("With Texture!");
+                        static bool texturedOption = false; //ImGui::Button("With Texture!");
+                        ImGui::Checkbox("Texture?", &texturedOption);
                         const bool browseButtonPressed = ImGui::Button("Add Model");
                         static ImGuiFs::Dialog dlg;
                         const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
                         if (strlen(chosenPath)>0) {
                             LOG("{}",chosenPath);
-                            scene->loadOBJModel(chosenPath, MaterialStruct(), texturedButton);
-                            scene->initLastModel(texturedButton);
+                            scene->loadOBJModel(chosenPath, MaterialStruct(), texturedOption);
+                            scene->initLastModel(texturedOption);
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }
+
                         if (strlen(dlg.getChosenPath())>0) {
                         ImGui::Text("Chosen file: \"%s\"",dlg.getChosenPath());
                         }

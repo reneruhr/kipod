@@ -5,6 +5,8 @@
 
 #include <numeric>
 #include <map>
+#include <filesystem>
+
 
 using namespace std;
 
@@ -95,9 +97,23 @@ MeshModel::MeshModel(string fileName, bool textured)
 
     if(textured){
         texture = new Texture;
-        string str = "obj";
-        fileName.replace(fileName.find(str),str.length(),"png"); // File better not has obj in its name!
-        texture->LoadTexture(fileName.c_str());
+
+        auto end = std::end(fileName);
+        *(end-3) = 'p'; *(end-2) = 'n'; *(end-1) = 'g';
+        if(std::filesystem::exists(fileName)){
+            texture->LoadTexture(fileName.c_str());
+            return;
+         }
+        *(end-3) = 'j'; *(end-2) = 'p'; *(end-1) = 'g';
+        if(std::filesystem::exists(fileName)){
+            texture->LoadTexture(fileName.c_str());
+            return;
+         }
+        *(end-3) = 's'; *(end-2) = 'v'; *(end-1) = 'g';
+        if(std::filesystem::exists(fileName)){
+            texture->LoadTexture(fileName.c_str());
+            return;
+         }
     }
 }
 
@@ -291,7 +307,10 @@ void MeshModel::init(GLRenderer *glrenderer, bool colored)
 void MeshModel::Init(GLRenderer *glrenderer)
 {
     CreateTriangleVector();
-    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &indices_vector);
+    triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
+    std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
+    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
+    modelTexturedData->texture_ = *texture;
 }
 
 void MeshModel::Draw(GLRenderer *glrenderer)

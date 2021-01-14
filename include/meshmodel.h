@@ -14,7 +14,7 @@
 using namespace std;
 
 class Model {
-protected:
+public:
     shared_ptr<ModelData> modelData= nullptr;
 	virtual ~Model() {}
 	void virtual draw()=0;
@@ -43,14 +43,12 @@ protected :
 
     BoundingBoxData _boundingBoxData;
 
-protected:
-    shared_ptr<ModelData> modelDataWired = nullptr;
-    shared_ptr<ModelData> modelTexturedData = nullptr;
-
 public:
     MeshModel(string fileName, bool textured = false);
     ~MeshModel(void);
 
+    shared_ptr<ModelData> modelDataWired = nullptr;
+    shared_ptr<ModelData> modelTexturedData = nullptr;
 
     vector<vec3> vertices_vector;
     vector<vec3> normals_vector;
@@ -61,6 +59,7 @@ public:
     vector<unsigned int> tindices_vector;
 
     vector<GLTriangle> triangles_;
+    vector<unsigned int> triangles_indices_;
 
     Texture* texture = nullptr;
 

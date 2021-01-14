@@ -540,6 +540,7 @@ shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>*
     models.push_back(make_shared<ModelData>(ModelData()));
     auto model = models.back();
     model->indices_size = indices->size();
+    model->hasTexture = true;
 
     glGenBuffers(1, &model->tex_ebo_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
@@ -572,6 +573,7 @@ shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>*
 void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
 {
     glActiveTexture(GL_TEXTURE0);
+    model->texture_.BindTexture();
 
     glBindVertexArray(model->tex_vao_);
 

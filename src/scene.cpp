@@ -9,8 +9,9 @@ using namespace std;
 void Scene::loadOBJModel(string fileName, MaterialStruct material, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
+
     model->setUniformMaterial(material);
-	models.push_back(model);
+    models.push_back(model);
 }
 
 void Scene::loadPrimitive(Primitive primitive, MaterialStruct material, int numberPolygons){
@@ -21,7 +22,9 @@ void Scene::loadPrimitive(Primitive primitive, MaterialStruct material, int numb
 
 void Scene::initLastModel(bool with_texture){
     //models.back()->init();
-    if(with_texture) models.back()->Init(_glrenderer);
+    if(with_texture) {
+        models.back()->Init(_glrenderer);
+    }
     else models.back()->init(_glrenderer);
 }
 
@@ -139,21 +142,21 @@ void Scene::draw()
 		mat4 m = model->getmTransform();
 		mat4 mvp = camMatrix * m;
 
-        if( texture_mode){
+        if( texture_mode && model->modelTexturedData ){
             glEnable(GL_DEPTH_TEST);
            _glrenderer->useProgramTex();
            _glrenderer->SetUniformTex(m, v, p, lights, model->colors_vector[0], cameras[activeCamera], model->texture);
            model->Draw(_glrenderer);
            glDisable(GL_DEPTH_TEST);
         }
-        else if(color_mode || emissive_mode){
+        else if((color_mode || emissive_mode )&& model->modelData){
              glEnable(GL_DEPTH_TEST);
             _glrenderer->useProgram(Lights());
             _glrenderer->SetUniform(m, v, p, lights, model->colors_vector[0], cameras[activeCamera]);
             model->drawColored(_glrenderer);
              glDisable(GL_DEPTH_TEST);
         }
-        else if (wireframemode)   {
+        else if (wireframemode && model->modelData)   {
             _glrenderer->useProgram(1);
             _glrenderer->SetUniformMVP(mvp);
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -357,6 +360,10 @@ void Scene::processEvent(Event& event){
     }
     if(event.getType() == EventType::ClippingMode){
         clipping_mode = !clipping_mode;
+        return;
+    }
+    if(event.getType() == EventType::TextureMode){
+        texture_mode = !texture_mode;
         return;
     }
 }

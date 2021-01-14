@@ -15,7 +15,8 @@ enum class EventType{
     BoxMode,
     NormalMode,
     CameraMode,
-    ClippingMode
+    ClippingMode,
+    TextureMode
 };
 
 enum class MoveDirection{

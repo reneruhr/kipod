@@ -16,8 +16,9 @@ public:
 static Image* LoadImage(const char path[])
 {
     Image* new_image = new Image();
+    stbi_set_flip_vertically_on_load(1);
     new_image->data_ = stbi_load(path, &new_image->width_,
-                          &new_image->height_, &new_image->n_channels_, 0);
+                          &new_image->height_, &new_image->n_channels_, 3);
     return new_image;
 }
 
