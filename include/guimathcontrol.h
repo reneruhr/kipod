@@ -1,9 +1,5 @@
 #ifndef GUIMATHCONTROL_H
 #define GUIMATHCONTROL_H
-#include <Eigen/Dense>
-#include <Eigen/StdVector>
-#include <Eigen/Geometry>
-#include <Eigen/QR>
 
 #include "utils/mat.h"
 #include "utils/vec.h"

@@ -94,6 +94,9 @@ void Scene::draw()
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
 
+
+    RenderManager::Bind(pointsetToTexture_mode);
+
     for(auto point_set : point_sets_){
         glEnable( GL_BLEND );
 
@@ -136,6 +139,8 @@ void Scene::draw()
 //        shape->Draw(_glrenderer);
 //        glDisable(GL_DEPTH_TEST);
 //    }
+
+    RenderManager::Bind(0);
 
 	for(auto model : models){
 
@@ -237,7 +242,6 @@ void Scene::swapBuffers()
 {
     _softrenderer->SwapBuffers();
 }
-
 
 Camera* Scene::getActiveCamera(){ return cameras[activeCamera];}
 

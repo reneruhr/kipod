@@ -26,6 +26,12 @@ void GLRenderer::SetProgram(QuasiCrystal quasi){
         programShapeOctagon= InitShader( "shaders/shape.vert.glsl", "shaders/shape.frag.glsl" );
         programQuasiOctagonWindow = InitShader( "shaders/inside_polygon_window.vert.glsl", "shaders/points.frag.glsl" );
 
+        programQuasiOctagonTexture = InitShader( "shaders/inside_polygon.vert.glsl", "shaders/renderToTexture.frag.glsl" );
+
+}
+
+void GLRenderer::SwapPrograms(){
+    std::swap(programQuasiOctagon, programQuasiOctagonTexture);
 }
 
 void GLRenderer::SetProgram(Lights light){
@@ -418,10 +424,10 @@ void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
     glBindVertexArray(model->col_vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, model->col_vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)sizeof(vec3));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)0);
+//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)sizeof(vec3));
+//    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->col_ebo);
     glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
@@ -578,12 +584,12 @@ void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
     glBindVertexArray(model->tex_vao_);
 
     glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
+//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
+//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
+//    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(1);
+//    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
     glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);

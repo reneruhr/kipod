@@ -67,6 +67,7 @@ void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
         drawCameraControl(scene);
 
         drawMaterialsControl(scene);
+        drawTextureControl(scene);
         drawLightControl(scene);
         drawNormalControl(scene);
         drawBBOXControl(scene);
@@ -664,7 +665,7 @@ void GUI::loadPrimitive(Scene* scene){
 
 void GUI::loadOBJfile(Scene* scene){
     ImGui::Text("Load OBJ File:");
-                        static bool texturedOption = false; //ImGui::Button("With Texture!");
+                        static bool texturedOption = false;
                         ImGui::Checkbox("Texture?", &texturedOption);
                         const bool browseButtonPressed = ImGui::Button("Add Model");
                         static ImGuiFs::Dialog dlg;
@@ -838,7 +839,28 @@ void GUI::translateModelLocalSpace(Scene* scene){
 }
 
 
-void GUI::drawBoundingBox(Scene *scene){
+void GUI::drawTextureControl(Scene *scene)
+{
+    static bool rendered_texturedOption = false;
+    if(ImGui::Checkbox("Model Texture = Render to Texture", &rendered_texturedOption)){
+        if(rendered_texturedOption && !scene->models.empty()){
+            MeshModel* model = scene->models.back();
+            if(model->modelTexturedData){
+                model->texture = TextureManager::Get(0);
+                model->modelTexturedData->texture_ = *model->texture;
+            }// Has a Texture
+        }//Yes and non-empty
+    }//Checkbox
+
+    static bool renderedToTextureScene = scene->pointsetToTexture_mode;
+    if(ImGui::Checkbox("Activate Render to Texture", &renderedToTextureScene)){
+            scene->pointsetToTexture_mode = !scene->pointsetToTexture_mode;
+            scene->_glrenderer->SwapPrograms();
+    }
+}
+
+void GUI::drawBoundingBox(Scene *scene)
+{
     ImGui::Text("Draw Bounding box");
                         if(ImGui::Button("Bounding Box on/off")){
                             scene->box_mode=!scene->box_mode;

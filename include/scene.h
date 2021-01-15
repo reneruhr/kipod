@@ -12,6 +12,8 @@
 #include "../include/light.h"
 #include "eventmanager.h"
 
+#include "render_manager.h"
+
 #include "pointset.h"
 #include "shapes.h"
 
@@ -114,6 +116,8 @@ public:
     bool wireframemode = false;
     bool emissive_mode = false;
     bool clipping_mode = true;
+
+    int pointsetToTexture_mode = 0;
 
     bool cg_active = false;
     bool needs_update = false;

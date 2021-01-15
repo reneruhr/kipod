@@ -7,6 +7,8 @@
 #include "renderer.h"
 #include "texture.h"
 
+#include <render_object.h>
+
 class Light;
 class MaterialStruct;
 class Camera;
@@ -14,15 +16,18 @@ class Camera;
 class PointSet;
 class Shape;
 
-
 struct GLVertex{
     vec3 position_;
     vec3 normal_;
     vec2 texture_;
 
     GLVertex() = default;
-    GLVertex(vec3 position, vec3 normal, vec2 texture) : position_(position), normal_(normal), texture_(texture) {}
+    GLVertex(vec3 position, vec3 normal, vec2 texture)
+        : position_(position), normal_(normal), texture_(texture) {}
 };
+
+
+
 
 struct GLTriangle{
     GLVertex vertices_[3];
@@ -34,8 +39,6 @@ struct GLTriangle{
         vertices_[2] = u;
     }
 };
-
-
 
 
 enum class WindowType{
@@ -118,8 +121,9 @@ class GLRenderer : public Renderer
 	unsigned int vao_total[2];
     GLuint program, program2, program3, programQuasi, programLights,
            programQuasiOctagon, programShapeOctagon, programQuasiOctagonWindow,
-           programTex;
+           programTex, programQuasiOctagonTexture;
 	GLuint matrix, matrix2, matrix3, normal_length;
+
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
     ~GLRenderer(void){};
@@ -187,6 +191,7 @@ public:
 
     shared_ptr<ModelData> LoadGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
     void DrawGLTriangles(shared_ptr<ModelData> model);
+    void SwapPrograms();
 };
 
 

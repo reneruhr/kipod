@@ -8,6 +8,10 @@ struct Image{
     int height_;
     int n_channels_;
     unsigned char* data_;
+
+    Image() = default;
+    Image(int w, int h) : width_(w), height_(h){}
+
 };
 
 class ImageLoader{

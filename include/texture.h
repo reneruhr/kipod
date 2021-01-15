@@ -5,6 +5,9 @@
 #include "utils/image_loader.h"
 #include "utils/log.h"
 
+#include "vector"
+
+
 class Texture
 {
 
@@ -12,46 +15,43 @@ class Texture
 
 
 public:
-    Texture();
+    Texture() = default;
+    Texture(int w, int h){
+        image_ = new Image(w,h);
+    }
 
     unsigned int id_;
     std::string name_ ="tex";
 
-    void LoadTexture(const char path[]){
+    void LoadTexture(const char path[]);
 
-           image_= ImageLoader::LoadImage(path);
+    void RenderToTexture(GLuint& frame_buffer);
 
-           glGenTextures(1, &id_);
-           glBindTexture(GL_TEXTURE_2D, id_);
-
-           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-
-//           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-//           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-           if (image_->data_)
-           {
-               glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_->width_, image_->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, image_->data_);
-               glGenerateMipmap(GL_TEXTURE_2D);
-           }
-           else
-           {
-               LOG("Failed to load texture");
-           }
-
-           ImageLoader::FreeImage(image_);
-    }
-
-    void BindTexture(){
+    void BindTexture()
+    {
         glBindTexture(GL_TEXTURE_2D, id_);
     }
 };
+
+class TextureManager{
+    inline static std::vector<Texture*> textures_;
+
+public:
+
+//    static void Init(){
+//        std::vector<Texture*> textures_ = {};
+//    }
+
+    static Texture* Get(int id)
+    {
+        return textures_[id];
+    }
+
+    static void Add(Texture* texture)
+    {
+        textures_.push_back(texture);
+    }
+};
+
 
 #endif // TEXTURE_H

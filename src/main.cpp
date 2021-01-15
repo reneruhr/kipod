@@ -7,12 +7,17 @@
 #include "../include/inputmanager.h"
 #include "../include/eventmanager.h"
 
+#include "../include/render_manager.h"
+#include "../include/texture.h"
+
 #include "../include/graphicsalgorithms.h"
 
 #include "../include/quacry.h"
 #include "../include/math/minkowski_embedding.h"
 
 #include "../include/math/polygon.h"
+
+
 
 #include "../vendor/imgui/imgui.h"
 #include "../vendor/imgui/imgui_impl_glfw.h"
@@ -137,8 +142,13 @@ void screenToPixel_y(double& y, int& q){
 int my_main( int argc, char **argv )
 {
 
-    window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "NIR(renderer)");
+    window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
     window->init();
+
+//    RenderManager::Init();
+    auto gl_frame_buffer = RenderManager::addFrameBuffer();
+//    TextureManager::Init();
+
 
     renderer = new GLRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     softrenderer = new SoftRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
@@ -166,20 +176,25 @@ int my_main( int argc, char **argv )
 //                                {-10,10,-10,10,-5,5,-1,1},
 //                                {-10,10,-10,10,-10,10,0,0},
 //                                WindowType::Box);
-    //gui->AppendModule(quacry);
+//    gui->AppendModule(quacry);
 
-//    QuaCry* quacryOctagon = new QuaCry(scene,
-//                                square_root,
-//                                {-10,10,-10,10,-5,5,-5,5},
-//                                {-20,20,-20,20,-10,10,-10,10},
-//                                WindowType::Octagon,
-//                                Shape( Octagon(sqrt(2)) ) );
-//    quacryOctagon->ScaleShape(1.0f/20.0f);
-//    quacryOctagon->Move({0.8f,0.8f});
+    QuaCry* quacryOctagon = new QuaCry(scene,
+                                square_root,
+                                {-10,10,-10,10,-5,5,-5,5},
+                                {-20,20,-20,20,-10,10,-10,10},
+                                WindowType::Octagon,
+                                Shape( Octagon(sqrt(2)) ) );
+    quacryOctagon->ScaleShape(1.0f/20.0f);
+    quacryOctagon->Move({0.8f,0.8f});
+
+   gui->AppendModule(quacryOctagon);
+
+   RenderManager::addFrameBuffer();
+   Texture* quasi_texture = new Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
+   quasi_texture->RenderToTexture(*RenderManager::Get(1));
+   TextureManager::Add(quasi_texture);
 
 
-
-//    gui->AppendModule(quacryOctagon);
 
     double then = glfwGetTime();
     double now;
