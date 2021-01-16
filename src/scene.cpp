@@ -169,6 +169,8 @@ void Scene::draw()
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
+
+
 		if(normals_mode){
             _glrenderer->useProgram(2);
             _glrenderer->SetUniformMVP_Normal(p, v, m);

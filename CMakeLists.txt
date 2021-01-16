@@ -76,11 +76,27 @@ add_executable(kipod
   include/primmeshmodel.h
   src/primmeshmodel.cpp
 
+  include/render_engine.h
+  src/render_engine.cpp
+
+  include/render_shader.h
+  src/render_shader.cpp
+
   include/render_manager.h
   src/render_manager.cpp
 
   include/render_object.h
   src/render_object.cpp
+
+  include/render_buffer.h
+  src/render_buffer.cpp
+
+  include/render_uniform.h
+  src/render_uniform.cpp
+
+  include/render_primitive.h
+  src/render_primitive.cpp
+
 
   include/renderer.h
   src/renderer.cpp
