@@ -436,6 +436,8 @@ void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
     glBindVertexArray(0);
 }
 
+
+
 shared_ptr<ModelData> GLRenderer::loadTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
                                                 const std::vector<vec3>* normals, const std::vector<unsigned int>* nindices){
     LOG_DEBUG("LoadTriangles Begin");
@@ -681,18 +683,54 @@ void GLRenderer::DrawShape(shared_ptr<ShapeData> shapeData)
 }
 
 
+using TriangleVNT = Kipod::GLTriangle< Kipod::GLVertex<RENDER_VERTEX | RENDER_NORMALS | RENDER_TEXTURE> > ;
+using TriangleVT  = Kipod::GLTriangle< Kipod::GLVertex<RENDER_VERTEX | RENDER_TEXTURE > > ;
+
+template<>
+void GLRenderer::Draw<TriangleVNT>(GLObject<TriangleVNT> *object)
+{
+    object->vao_->Bind();
+    object->ebo_->Bind();
+    object->tex_->Bind();
+
+    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+
+    object->ebo_->Unbind();
+    object->vao_->Unbind();
+}
 
 
+template<>
+void GLRenderer::Draw<TriangleVT>(GLObject<TriangleVT> *object)
+{
+    object->vao_->Bind();
+    object->ebo_->Bind();
+    object->tex_->Bind();
+
+    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+
+    object->ebo_->Unbind();
+    object->vao_->Unbind();
+}
 
 
+template<typename Primitive>
+void GLRenderer::Draw(GLObject<Primitive> *object)
+{
+    object->vao_->Bind();
+    object->ebo_->Bind();
+
+    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+
+    object->ebo_->Unbind();
+    object->vao_->Unbind();
+}
 
 
-
-
-
-
-
-
-
-
+template<typename Primitive>
+void GLRenderer::Setup(GLObject<Primitive> *object)
+{
+    object->ebo_->Set();
+    object->vao_->Set();
+}
 

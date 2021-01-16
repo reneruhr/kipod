@@ -3,7 +3,19 @@
 
 #include <glm/matrix.hpp>
 
-#include <render_object.h>
+
+enum RenderObjectType
+{
+    RENDER_WIREFRAME   = 1 << 0,
+    RENDER_VERTEX      = 1 << 1,
+    RENDER_NORMALS     = 1 << 2,
+    RENDER_TEXTURE     = 1 << 3,
+    RENDER_DEPTH       = 1 << 4,
+    RENDER_Dim2        = 1 << 5
+};
+
+namespace Kipod
+{
 
 class RenderPrimitive
 {
@@ -65,5 +77,5 @@ struct GLTriangle : virtual public RenderPrimitive{
     }
 };
 
-
+}
 #endif // RENDERPRIMITIVE_H

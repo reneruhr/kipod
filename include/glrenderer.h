@@ -128,6 +128,15 @@ public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
     ~GLRenderer(void){};
 	void Init();
+
+    template <typename Primitive>
+        void Draw(GLObject<Primitive>* object);
+
+    template <typename Primitive>
+        void Setup(GLObject<Primitive>* object);
+
+
+
     shared_ptr<ModelData> loadTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
                                         const std::vector<vec3>* normals=nullptr, const std::vector<unsigned int>* nindices=nullptr);
     void drawTriangles(shared_ptr<ModelData> model);

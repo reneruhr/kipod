@@ -6,9 +6,11 @@
 #include "utils/log.h"
 #include "GL/glew.h"
 
+#include "render_engine.h"
+
 using namespace std;
 
-class Renderer
+class Renderer : public RenderEngine
 {
 protected:
     int _width, _height;

@@ -31,6 +31,10 @@ public:
     {
         glBindTexture(GL_TEXTURE_2D, id_);
     }
+
+    void Bind(){
+        glBindTexture(GL_TEXTURE_2D, id_);
+    }
 };
 
 class TextureManager{

@@ -12,9 +12,19 @@ public:
 
     std::vector<Shader*> shaders_;
 
-    void Draw(RenderObject object);
+    template <typename Primitive>
+        void Setup(RenderObject* object);
 
+    template <typename Primitive>
+        void Draw(RenderObject* object);
 
 };
+
+
+
+
+
+
+
 
 #endif // RENDERENGINE_H

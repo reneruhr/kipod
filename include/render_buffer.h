@@ -34,11 +34,16 @@ public:
 class ElementsBuffer : public Buffer<unsigned int>
 {
 public:
-    void Bind()
+    void Set()
     {
         glGenBuffers(1, &id_);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_, data_.data(), GL_STATIC_DRAW);
+    }
+
+    void Bind()
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_);
     }
 
     void Unbind(){
@@ -53,12 +58,17 @@ template <typename T>
 class VertexBuffer : public Buffer<T>
 {
 public:
-    void Bind()
+    void Set()
     {
         glGenBuffers(1, &this->id_);
         glBindBuffer(GL_ARRAY_BUFFER, this->id_);
         glBufferData(GL_ARRAY_BUFFER, this->size_, this->data_.data(), GL_STATIC_DRAW);
 
+    }
+
+    void Bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, this->id_);
     }
 
     void Unbind(){
@@ -94,43 +104,32 @@ class VertexAttributeObject
 {
     std::vector<Attribute> attributes_;
     VertexBuffer<T>* vbo;
-    ElementsBuffer* ebo;
 
-protected:
+
+public:
 
     void Add(Attribute attribute)
     {
         attributes_.push_back(attribute);
     }
 
-    void Bind()
+    void Set()
     {
-        ebo->Bind();
-
         glGenVertexArrays(1, &this->id_);
         glBindVertexArray(this->id_);
 
-        vbo->Bind();
+        vbo->Set();
         for(auto& a : attributes_)
             a.Bind();
     }
 
-    void Unbind()
-    {
-        ebo->Unbind();
-        vbo->Unbind();
-        glBindVertexArray(0);
-    }
-
-    void QuickBind(){
+    void Bind(){
         glBindVertexArray(this->id_);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo->id_);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->id_);
+        vbo->Bind();
     }
 
-    void QuickUnBind(){
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->id_);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    void Unbind(){
+        vbo->Unbind();
         glBindVertexArray(0);
     }
 };

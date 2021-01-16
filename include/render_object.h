@@ -10,17 +10,9 @@
 #include "render_shader.h"
 #include "render_manager.h"
 
+#include "texture.h"
+#include <render_primitive.h>
 
-
-enum RenderObjectType
-{
-    RENDER_WIREFRAME   = 1 << 0,
-    RENDER_VERTEX      = 1 << 1,
-    RENDER_NORMALS     = 1 << 2,
-    RENDER_TEXTURE     = 1 << 3,
-    RENDER_DEPTH       = 1 << 4,
-    RENDER_Dim2        = 1 << 5
-};
 
 class RenderObject
 {
@@ -34,15 +26,19 @@ public:
 template <typename Primitive>
 class GLObject : public RenderObject
 {
-private:
+public:
 
     GLObject();
-    VertexBuffer<Primitive>* vbo;
-    ElementsBuffer* ebo;
-    VertexAttributeObject<Primitive>* vao;
-    Shader shader_;
-    std::vector<FrameBuffer> frame_buffers_;
+    VertexBuffer<Primitive>* vbo_;
+    ElementsBuffer* ebo_;
+    VertexAttributeObject<Primitive>* vao_;
+    Shader sha_;
+    std::vector<FrameBuffer> fra_;
+    Texture* tex_;
+
 };
+
+
 
 
 #endif // RENDEROBJECT_H
