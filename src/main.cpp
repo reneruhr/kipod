@@ -100,7 +100,6 @@ void display()
     glViewport(0, 0, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     scene->draw();
 
-    gui->draw(scene, softrenderer, window);
 }
 
 void reshape( int width, int height )
@@ -223,8 +222,11 @@ int my_main( int argc, char **argv )
         then = now;
 
         display();
+        gui->draw(scene, softrenderer, window);
         window->updateWindow();
         eventmanager->process();
+
+
     }
 
 

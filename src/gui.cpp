@@ -14,9 +14,23 @@ void GUI::init(Window *window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+
+
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
     ImGui::GetIO().WantCaptureKeyboard=1;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->_window, true);
@@ -26,22 +40,50 @@ void GUI::init(Window *window)
 
 void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground;
+//    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+//    dockspace_flags |= ImGuiDockNodeFlags_PassthruCentralNode;
+
+
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
+
     ImGui::NewFrame();
     ImGui::Begin("Controls");
+//    ImGui::Begin("Controls", (bool*)true, window_flags);
+//    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+//    static ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+////    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
+//    ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
+//    ImGui::End();
+//    ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
+
+//    ImGui::Begin("Dockable Window");
     draw_menus(scene, softrenderer, window);
 
     for(auto m : gui_modules_) m->Draw();
 
     static bool show_demo_ = false;
-    //if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
+    if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
     if(show_demo_) ImGui::ShowDemoWindow();
+
+
 
     ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+
 }
 
 

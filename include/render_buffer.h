@@ -100,7 +100,7 @@ public:
 
 
 template <typename T>
-class VertexAttributeObject
+class VertexAttributeObject : public IBuffer
 {
     std::vector<Attribute> attributes_;
     VertexBuffer<T>* vbo;
