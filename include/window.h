@@ -33,6 +33,9 @@ public:
 
     void SplitScreen(bool active);
     bool splitScreen = false;
+
+    unsigned Width(){ return _width; }
+    unsigned Height(){ return _height; }
 };
 
 #endif // WINDOW_H

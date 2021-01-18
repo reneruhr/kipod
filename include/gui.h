@@ -39,6 +39,8 @@ public:
     void drawPointSetControl(Scene *scene);
     void drawYotamBirthday(Scene *scene);
     void drawTextureControl(Scene *scene);
+    void Begin(Scene *scene, SoftRenderer *softrenderer, Window *window);
+    void End(Window* window);
 private:
     EventManager* eventmanager;
 

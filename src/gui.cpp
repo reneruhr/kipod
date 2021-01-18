@@ -3,6 +3,20 @@
 #include "../include/guielement.h"
 #include "../include/utils/log.h"
 
+
+static void HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
 GUI::~GUI()
 {
     ImGui_ImplOpenGL3_Shutdown();
@@ -36,32 +50,239 @@ void GUI::init(Window *window)
     ImGui_ImplGlfw_InitForOpenGL(window->_window, true);
     ImGui_ImplOpenGL3_Init(window->glsl_version);
 
+
+
+
 }
+
+
+void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
+
+    ImGuiIO &io = ImGui::GetIO();
+    static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking; //ImGuiWindowFlags_NoBackground;
+    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;// = ImGuiDockNodeFlags_None;
+    static bool opt_fullscreen = true;
+
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+
+    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+//   ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
+//    ImGui::Begin("Controls");
+//  ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
+//    ImGui::End();
+
+
+    //        ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
+    if (opt_fullscreen)
+    {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->GetWorkPos());
+        ImGui::SetNextWindowSize(viewport->GetWorkSize());
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    }
+    else
+    {
+        dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+    }
+
+    // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
+    // and handle the pass-thru hole, so we ask Begin() to not render a background.
+    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+        window_flags |= ImGuiWindowFlags_NoBackground;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+   ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
+       ImGui::PopStyleVar();
+
+
+
+    if (opt_fullscreen)
+        ImGui::PopStyleVar(2);
+
+    if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+    {
+        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    }
+
+
+    if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Options"))
+            {
+                // Disabling fullscreen would allow the window to be moved to the front of other windows,
+                // which we can't undo at the moment without finer window depth/z control.
+                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                ImGui::Separator();
+
+
+                if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
+                if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
+                if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
+                if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
+                if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
+                ImGui::Separator();
+
+//                if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
+//                    *p_open = false;
+                ImGui::EndMenu();
+            }
+            HelpMarker(
+                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
+                " > if io.ConfigDockingWithShift==false (default):" "\n"
+                "   drag windows from title bar to dock" "\n"
+                " > if io.ConfigDockingWithShift==true:" "\n"
+                "   drag windows from anywhere and hold Shift to dock" "\n\n"
+                "This demo app has nothing to do with it!" "\n\n"
+                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
+                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
+                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
+            );
+
+            ImGui::EndMenuBar();
+        }
+    ImGui::End();
+    ImGui::Begin("Settings");
+
+    draw_menus(scene, softrenderer, window);
+
+    for(auto m : gui_modules_) m->Draw();
+}
+
+
+
+void GUI::End(Window* window){
+    static bool show_demo_ = false;
+    if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
+    if(show_demo_) ImGui::ShowDemoWindow();
+
+    ImGui::End();
+
+
+    ImGuiIO &io = ImGui::GetIO();
+
+    io.DisplaySize = ImVec2((float)window->Width(), (float)window->Height());
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
+
+}
+
+
+
+
 
 void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 {
     ImGuiIO &io = ImGui::GetIO();
     static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground;
-//    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-//    dockspace_flags |= ImGuiDockNodeFlags_PassthruCentralNode;
-
-
+    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
 
     ImGui::NewFrame();
-    ImGui::Begin("Controls");
-//    ImGui::Begin("Controls", (bool*)true, window_flags);
-//    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-//    static ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-////    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-//    ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
+
+//
+    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
+//    ImGui::Begin("Controls");
+//  ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
 //    ImGui::End();
-//    ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
+
+
+
+ ImGui::Begin("Controls", (bool*)true, window_flags);
 
 //    ImGui::Begin("Dockable Window");
+
+     static bool opt_fullscreen = true;
+     static bool opt_padding = false;
+        if (opt_fullscreen)
+        {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->GetWorkPos());
+            ImGui::SetNextWindowSize(viewport->GetWorkSize());
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+        }
+        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+            window_flags |= ImGuiWindowFlags_NoBackground;
+        if (!opt_padding)
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+//        ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
+        if (!opt_padding)
+            ImGui::PopStyleVar();
+
+        if (opt_fullscreen)
+            ImGui::PopStyleVar(2);
+
+
+    if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Options"))
+            {
+                // Disabling fullscreen would allow the window to be moved to the front of other windows,
+                // which we can't undo at the moment without finer window depth/z control.
+                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                ImGui::MenuItem("Padding", NULL, &opt_padding);
+                ImGui::Separator();
+
+
+                if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
+                if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
+                if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
+                if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
+                if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
+                ImGui::Separator();
+
+//                if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
+//                    *p_open = false;
+                ImGui::EndMenu();
+            }
+            HelpMarker(
+                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
+                " > if io.ConfigDockingWithShift==false (default):" "\n"
+                "   drag windows from title bar to dock" "\n"
+                " > if io.ConfigDockingWithShift==true:" "\n"
+                "   drag windows from anywhere and hold Shift to dock" "\n\n"
+                "This demo app has nothing to do with it!" "\n\n"
+                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
+                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
+                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
+            );
+
+            ImGui::EndMenuBar();
+        }
+
+
     draw_menus(scene, softrenderer, window);
 
     for(auto m : gui_modules_) m->Draw();
@@ -70,9 +291,8 @@ void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
     if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
     if(show_demo_) ImGui::ShowDemoWindow();
 
-
-
     ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

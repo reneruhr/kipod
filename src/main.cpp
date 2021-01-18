@@ -220,9 +220,10 @@ int my_main( int argc, char **argv )
             std::this_thread::sleep_for( std::chrono::milliseconds( (int)(1000*(limit-gap)) ) );
         }
         then = now;
-
+        gui->Begin(scene, softrenderer, window);
         display();
-        gui->draw(scene, softrenderer, window);
+        //gui->draw(scene, softrenderer, window);
+        gui->End(window);
         window->updateWindow();
         eventmanager->process();
 
