@@ -28,15 +28,9 @@ void GUI::init(Window *window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.
+    ImGuiIO &io = ImGui::GetIO();  (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
-
-
 
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -45,11 +39,46 @@ void GUI::init(Window *window)
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    ImGui::GetIO().WantCaptureKeyboard=1;
+    io.WantCaptureKeyboard=1;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->_window, true);
     ImGui_ImplOpenGL3_Init(window->glsl_version);
 
+
+
+
+
+
+
+    auto& colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
+
+    // Headers
+    colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    // Buttons
+    colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    // Frame BG
+    colors[ImGuiCol_FrameBg] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    // Tabs
+    colors[ImGuiCol_Tab] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TabHovered] = ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
+    colors[ImGuiCol_TabActive] = ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
+    colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+
+    // Title
+    colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 
 
 
@@ -58,28 +87,18 @@ void GUI::init(Window *window)
 
 void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
 
-    ImGuiIO &io = ImGui::GetIO();
-    static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking; //ImGuiWindowFlags_NoBackground;
-    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;// = ImGuiDockNodeFlags_None;
-    static bool opt_fullscreen = true;
-
-
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
 
-
-    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-//   ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
-//    ImGui::Begin("Controls");
-//  ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
-//    ImGui::End();
+    ImGuiIO &io = ImGui::GetIO();
+    static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+    static bool opt_fullscreen = true;
+    static bool dockspace = true;
 
 
-    //        ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
     if (opt_fullscreen)
     {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -91,21 +110,13 @@ void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
         window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
     }
-    else
-    {
-        dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
-    }
 
-    // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
-    // and handle the pass-thru hole, so we ask Begin() to not render a background.
     if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
         window_flags |= ImGuiWindowFlags_NoBackground;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-   ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
-       ImGui::PopStyleVar();
-
-
+    ImGui::Begin("DockSpace Demo", &dockspace, window_flags);
+    ImGui::PopStyleVar();
 
     if (opt_fullscreen)
         ImGui::PopStyleVar(2);
@@ -152,12 +163,14 @@ void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
 
             ImGui::EndMenuBar();
         }
-    ImGui::End();
+
     ImGui::Begin("Settings");
 
     draw_menus(scene, softrenderer, window);
 
     for(auto m : gui_modules_) m->Draw();
+
+    ImGui::End();
 }
 
 
