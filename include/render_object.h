@@ -11,34 +11,57 @@
 #include "render_manager.h"
 
 #include "texture.h"
-#include <render_primitive.h>
+#include "render_primitive.h"
+#include "render_material.h"
+
+
+namespace kipod{
 
 
 class RenderObject
 {
-
 public:
-    RenderObject();
     RenderObjectType type_;
+
+    RenderMaterial* mat_;
+    glm::mat4 local_transform_ = glm::mat4(1.0);
+    glm::mat4 world_transform_ = glm::mat4(1.0);
+
+    glm::mat4 Transform() const {
+        return world_transform_*local_transform_;
+    }
+
+    virtual void Draw() = 0;
+    virtual void Setup()= 0;
 };
 
 
-template <typename Primitive>
 class GLObject : public RenderObject
 {
 public:
+    GLObject() {
+        LOG_ENGINE("Call: GLObject Constructor.");
+    }
 
-    GLObject();
-    VertexBuffer<Primitive>* vbo_;
-    ElementsBuffer* ebo_;
-    VertexAttributeObject<Primitive>* vao_;
-    Shader sha_;
-    std::vector<FrameBuffer> fra_;
-    Texture* tex_;
+    ElementsBuffer* ebo_ = nullptr;
+    VertexAttributeObject* vao_ = nullptr;
+    VertexBuffer* vbo_ = nullptr;
+    std::vector<FrameBuffer*> fras_;
+    std::vector<Texture*> texs_;
 
+    //Active:
+    Shader* sha_ = nullptr;
+    Texture* tex_ = nullptr;
+    FrameBuffer* fra_ = nullptr;
+
+    virtual void Draw() override;
+    virtual void Setup() override;
 };
 
 
 
+
+
+}
 
 #endif // RENDEROBJECT_H

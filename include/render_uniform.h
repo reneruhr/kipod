@@ -2,41 +2,61 @@
 #define RENDER_UNIFORM_H
 #include <GL/glew.h>
 #include <glm/matrix.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <string>
 
+#include "utils/log.h"
+
+namespace kipod{
 
 class IUniform{
-protected:
+public:
     std::string name_;
 
-    IUniform(std::string& name) : name_(name){};
+    IUniform() = default;
+    IUniform(std::string& name) : name_(name){}
+
+    virtual void Name() { LOG_ENGINE("Uniform name: {}", name_);}
+    virtual ~IUniform() = default;
 
 };
 
 
 template <typename T>
-class Uniform : public IUniform
+class Uniform :  public IUniform
 {
+public:
     T data_;
 
     GLuint program_;
     GLint location_;
     Uniform(std::string name_, GLuint program) : IUniform(name_), program_(program){
         location_ = GetLocation();
+        LOG_ENGINE("Created New Uniform {} to program {} at location {}", name_, program, location_);
     }
-public:
     GLint GetLocation(){
         return  glGetUniformLocation(program_, name_.c_str());
     }
-    virtual void Set(T& data);
 
-    virtual void SetMatrix4fv(glm::mat4& m);
-    virtual void Set4fv(glm::vec4& v);
-    virtual void Set3fv(glm::vec3& v);
-    virtual void Set2fv(glm::vec2& v);
-    virtual void Set1f(float& f);
-    virtual void Set1i(int& i);
+    void Set(const T& data)
+    {
+        data_ = data;
+        if constexpr (std::is_same_v<T, glm::mat4>)
+            glUniformMatrix4fv(location_, 1, GL_TRUE, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, glm::vec4>)
+            glUniform4fv(location_, 1, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, glm::vec3>)
+            glUniform3fv(location_, 1, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, glm::vec2>)
+            glUniform2fv(location_, 1, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, float>)
+            glUniform1f(location_, data_);
+        else if constexpr (std::is_same_v<T, int>)
+            glUniform1i(location_, data_);
+    }
 };
 
+
+}
 #endif // RENDER_UNIFORM_H

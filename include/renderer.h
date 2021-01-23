@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Renderer : public RenderEngine
+class Renderer : public kipod::RenderEngine
 {
 protected:
     int _width, _height;

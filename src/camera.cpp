@@ -5,13 +5,13 @@
 using namespace std;
 
 
-Camera::Camera(vec3 eye,vec3 at,vec3 up): _eye(eye),	_at(at),	_up(up)
+Camera::Camera(vec3 eye,vec3 at,vec3 up): RenderCamera(), _eye(eye),	_at(at),	_up(up)
 	{
 		updateLookAt();
 		init();
 	}
 
-Camera::Camera(): _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec3(0,1,0))
+Camera::Camera(): RenderCamera(),  _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec3(0,1,0))
 	{
 		updateLookAt();
 		init();
@@ -102,8 +102,8 @@ void Camera::Ortho(){
 }
 
 
-mat4 Camera::getProjection(bool perspective){ 
-	
+mat4 Camera::getProjection(bool perspective) const
+{
 	if(perspective)	return perspectiveMatrix;
 	return orthogonalMatrix;
 }
@@ -187,9 +187,9 @@ void Camera::updateAt(const vec3& at){
 }
 
 
-vec3 Camera::getEye(){ return _eye;}
-vec3 Camera::getAt(){ return _at;}
-vec3 Camera::getUp(){ return _up;}
+vec3 Camera::getEye() const { return _eye;}
+vec3 Camera::getAt() const { return _at;}
+vec3 Camera::getUp() const { return _up;}
 
 float Camera::getFOVY(){ return _fovy;}
 float Camera::getAspect(){ return _aspect;}

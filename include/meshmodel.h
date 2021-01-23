@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 #include "eventmanager.h"
 
+#include "render_object.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ public:
 	virtual ~Model() {}
 	void virtual draw()=0;
 };
+
 
 struct BoundingBoxData{
     vec3 _size;
@@ -30,7 +32,8 @@ struct BoundingBoxData{
 };
 
 
-class MeshModel : public Model, public Listener
+
+class MeshModel : public Model, public Listener, public kipod::GLObject
 {
 protected :
 	MeshModel() {}
@@ -88,6 +91,8 @@ public:
     vector<unsigned int> cindices_vector;
 
 
+    virtual void Setup() override;
+
 
 	void loadFile(string fileName);
     void calculateNormals();
@@ -118,8 +123,8 @@ public:
 
     void setLocal(const mat4& transform);
 
-    mat4 getmTransform();
-    mat4 getmTransformBBox();
+    mat4 getmTransform() const;
+    mat4 getmTransformBBox() const;
 
     float normal_length=1;
 

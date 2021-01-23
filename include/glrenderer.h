@@ -9,9 +9,12 @@
 
 #include <render_object.h>
 
+
 class Light;
 class MaterialStruct;
 class Camera;
+class Scene;
+class MeshModel;
 
 class PointSet;
 class Shape;
@@ -66,6 +69,7 @@ struct ModelData{
     bool hasNormals;
     bool hasTexture;
     Texture texture_;
+    std::unordered_map<std::string, kipod::GLObject*> gl_objects_;
 
     ModelData(){}
 };
@@ -129,11 +133,9 @@ public:
     ~GLRenderer(void){};
 	void Init();
 
-    template <typename Primitive>
-        void Draw(GLObject<Primitive>* object);
+    void Draw(kipod::GLObject* object);
 
-    template <typename Primitive>
-        void Setup(GLObject<Primitive>* object);
+    void Setup(kipod::GLObject* object);
 
 
 
@@ -201,6 +203,7 @@ public:
     shared_ptr<ModelData> LoadGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
     void DrawGLTriangles(shared_ptr<ModelData> model);
     void SwapPrograms();
+    void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
 };
 
 

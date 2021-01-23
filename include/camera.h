@@ -5,6 +5,8 @@
 #include "utils/vec.h"
 #include "utils/mat.h"
 
+#include "render_camera.h"
+
 using namespace std;
 
 
@@ -22,7 +24,8 @@ GLuint ibo_elements;
 };
 
 
-class Camera {
+class Camera : public kipod::RenderCamera
+{
 	bool orthogonal = false;
 	mat4 lookatMatrix;
 	mat4 perspectiveMatrix;
@@ -84,9 +87,9 @@ public:
 	void dolly(const float y);
 	void pedestal(const float z);
 
-	vec3 getEye();
-	vec3 getAt();
-	vec3 getUp();
+    vec3 getEye() const;
+    vec3 getAt() const;
+    vec3 getUp() const;
 
 	float getFOVY();
 	float getAspect();
@@ -94,8 +97,8 @@ public:
 	float getFar();
 	vec4 getLeftRightBottomTop();
 
-	mat4 getcTransform(){ return lookatMatrix; }
-	mat4 getProjection(bool perspective=true);
+    mat4 getcTransform() const { return lookatMatrix; }
+    mat4 getProjection(bool perspective=true) const ;
 
 
 	void init();

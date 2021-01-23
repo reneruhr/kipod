@@ -100,6 +100,8 @@ void display()
     glViewport(0, 0, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     scene->draw();
 
+    //scene->Draw();
+
 }
 
 void reshape( int width, int height )
@@ -145,7 +147,7 @@ int my_main( int argc, char **argv )
     window->init();
 
 //    RenderManager::Init();
-    auto gl_frame_buffer = RenderManager::addFrameBuffer();
+    auto gl_frame_buffer = kipod::RenderManager::addFrameBuffer();
 //    TextureManager::Init();
 
 
@@ -154,6 +156,7 @@ int my_main( int argc, char **argv )
 
     scene = new Scene(renderer, softrenderer, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     scene->init();
+    scene->Setup();
 
     eventmanager = new EventManager();
     eventmanager->addListener(scene);
@@ -188,9 +191,9 @@ int my_main( int argc, char **argv )
 
    gui->AppendModule(quacryOctagon);
 
-   RenderManager::addFrameBuffer();
+   kipod::RenderManager::addFrameBuffer();
    Texture* quasi_texture = new Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
-   quasi_texture->RenderToTexture(*RenderManager::Get(1));
+   quasi_texture->RenderToTexture(*kipod::RenderManager::Get(1));
    TextureManager::Add(quasi_texture);
 
 
@@ -224,7 +227,8 @@ int my_main( int argc, char **argv )
 
         display();
         //gui->draw(scene, softrenderer, window);
-        gui->Begin(scene, softrenderer, window);
+        gui->Begin(window);
+        gui->Draw(scene, softrenderer, window);
         gui->End(window);
 
         window->updateWindow();

@@ -25,7 +25,7 @@ public:
     ~Window();
     int init();
     GLFWwindow* _window;
-    const char* glsl_version = "#version 330";
+    const char* glsl_version = "#version 450";
     bool windowShouldClose();
     void updateWindow();
 

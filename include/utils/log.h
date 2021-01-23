@@ -23,5 +23,6 @@ public:
 };
 
 #define LOG_INFO(...)     Log::getLogger()->info(__VA_ARGS__)
+#define LOG_ENGINE(...)     Log::getLogger()->info(__VA_ARGS__)
 #define LOG_DEBUG(...)     Log::getLogger()->info(__VA_ARGS__)
 #define LOG(...)     Log::getLogger()->info(__VA_ARGS__)

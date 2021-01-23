@@ -85,7 +85,7 @@ void GUI::init(Window *window)
 }
 
 
-void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
+void GUI::Begin(Window* window){
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -164,6 +164,11 @@ void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
             ImGui::EndMenuBar();
         }
 
+
+}
+
+
+void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window){
     ImGui::Begin("Settings");
 
     draw_menus(scene, softrenderer, window);
@@ -174,12 +179,13 @@ void GUI::Begin(Scene* scene, SoftRenderer* softrenderer, Window* window){
 }
 
 
-
 void GUI::End(Window* window){
+
+    ImGui::Begin("ImGUI Demo");
     static bool show_demo_ = false;
     if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
     if(show_demo_) ImGui::ShowDemoWindow();
-
+    ImGui::End();
     ImGui::End();
 
 
@@ -202,128 +208,10 @@ void GUI::End(Window* window){
 }
 
 
-
-
-
-void GUI::draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
-{
-    ImGuiIO &io = ImGui::GetIO();
-    static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoBackground;
-    static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-
-    ImGui::NewFrame();
-
-
-//
-    ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-    ImGui::SetNextWindowDockID(dockspace_id , ImGuiCond_FirstUseEver);
-//    ImGui::Begin("Controls");
-//  ImGui::DockSpace(dockspace_id , ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None|ImGuiDockNodeFlags_PassthruCentralNode);
-//    ImGui::End();
-
-
-
- ImGui::Begin("Controls", (bool*)true, window_flags);
-
-//    ImGui::Begin("Dockable Window");
-
-     static bool opt_fullscreen = true;
-     static bool opt_padding = false;
-        if (opt_fullscreen)
-        {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos(viewport->GetWorkPos());
-            ImGui::SetNextWindowSize(viewport->GetWorkSize());
-            ImGui::SetNextWindowViewport(viewport->ID);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-        }
-        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-            window_flags |= ImGuiWindowFlags_NoBackground;
-        if (!opt_padding)
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-//        ImGui::Begin("DockSpace Demo", (bool*)true, window_flags);
-        if (!opt_padding)
-            ImGui::PopStyleVar();
-
-        if (opt_fullscreen)
-            ImGui::PopStyleVar(2);
-
-
-    if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("Options"))
-            {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::MenuItem("Padding", NULL, &opt_padding);
-                ImGui::Separator();
-
-
-                if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-                if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-                if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-                if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-                if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-                ImGui::Separator();
-
-//                if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
-//                    *p_open = false;
-                ImGui::EndMenu();
-            }
-            HelpMarker(
-                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
-                " > if io.ConfigDockingWithShift==false (default):" "\n"
-                "   drag windows from title bar to dock" "\n"
-                " > if io.ConfigDockingWithShift==true:" "\n"
-                "   drag windows from anywhere and hold Shift to dock" "\n\n"
-                "This demo app has nothing to do with it!" "\n\n"
-                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
-                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
-                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
-            );
-
-            ImGui::EndMenuBar();
-        }
-
-
-    draw_menus(scene, softrenderer, window);
-
-    for(auto m : gui_modules_) m->Draw();
-
-    static bool show_demo_ = false;
-    if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
-    if(show_demo_) ImGui::ShowDemoWindow();
-
-    ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        GLFWwindow* backup_current_context = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backup_current_context);
-    }
-
-}
-
-
 void GUI::drawYotamBirthday(Scene* scene){
     if(ImGui::Button("Mazal Tov")){
         const char* path = "shaders/extra/Teddy.obj";
-        scene->loadOBJModel(path, MaterialStruct());
+        scene->loadOBJModel(path);
         scene->initLastModel();
         scene->setActiveModel(scene->numberOfModels()-1);
         scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
@@ -928,9 +816,10 @@ void GUI::loadPrimitive(Scene* scene){
         ImGui::InputInt("input int", &numberPolygons);
     }
     if(ImGui::Button("Add Primitive")){
-                            if(primitiveChoice_current==0)      scene->loadPrimitive(Cube, MaterialStruct());
-                            else if(primitiveChoice_current==1) scene->loadPrimitive(Tetrahedron, MaterialStruct());
-                            else if(primitiveChoice_current==2) scene->loadPrimitive(Sphere, MaterialStruct(),std::max(0,numberPolygons));
+                            if(primitiveChoice_current==0)      scene->loadPrimitive(Cube);
+                            else if(primitiveChoice_current==1) scene->loadPrimitive(Tetrahedron);
+                            else if(primitiveChoice_current==2) scene->loadPrimitive(Sphere, std::max(0,numberPolygons));
+                            LOG_ENGINE("Loaded Primitive.");
                             scene->initLastModel();
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
@@ -946,8 +835,8 @@ void GUI::loadOBJfile(Scene* scene){
                         static ImGuiFs::Dialog dlg;
                         const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
                         if (strlen(chosenPath)>0) {
-                            LOG("{}",chosenPath);
-                            scene->loadOBJModel(chosenPath, MaterialStruct(), texturedOption);
+                            LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
+                            scene->loadOBJModel(chosenPath, texturedOption);
                             scene->initLastModel(texturedOption);
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );

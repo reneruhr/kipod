@@ -17,13 +17,22 @@
 #include "pointset.h"
 #include "shapes.h"
 
+#include "render_object.h"
+#include "render_scene.h"
+#include "render_material.h"
+
 class QuaCry;
 
 using namespace std;
 
-class Scene : public Listener{
+class Scene : public Listener, public kipod::RenderScene{
+
+    std::unordered_map<std::string, kipod::Shader> shaders_;
+
     friend class GUI;
     friend class QuaCry;
+
+
 
     vector<MeshModel*> models;
     vector<Light*> lights;
@@ -53,9 +62,16 @@ public:
         boundingBox.init(_glrenderer);
     }
 
-    void loadOBJModel(string fileName, MaterialStruct material, bool textures = false);
-    void loadPrimitive(Primitive primitive, MaterialStruct material, int numberPolygons=0);
-	
+
+    void loadOBJModel(string fileName, bool textures = false);
+    void loadPrimitive(Primitive primitive, int numberPolygons=0);
+
+
+    virtual void Setup() override;
+    virtual void Draw() override;
+    void SetupUniforms();
+
+
 	Camera* getActiveCamera();
 	MeshModel* getActiveModel();
     void addCamera(Camera *cam, bool projective=true);
@@ -123,4 +139,9 @@ public:
     bool needs_update = false;
 
     void processEvent(Event& event) override;
+
+    void BindMaterialUniforms(const kipod::RenderMaterial &material);
+    void BindLightUniforms(vector<Light *> &lights);
+    void BindMatrixUniforms(const kipod::RenderObject &model, const Camera &camera);
+    void BindMatrixUniformsForMesh(const MeshModel &model, const Camera &camera);
 };

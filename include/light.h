@@ -2,6 +2,7 @@
 #define LIGHT_H
 
 #include "core.h"
+#include "render_light.h"
 
 typedef struct MaterialStruct {
     vec4 ambient;
@@ -34,16 +35,8 @@ typedef struct MaterialStruct {
 } MaterialStruct;
 
 
-typedef enum LightSource{
-    AMBIENT,
-    POINT,
-    DIFFUSE,
-    SPECULAR,
-    SPOTLIGHT,
-    DISTANT
-} LightSource;
 
-class Light
+class Light : public kipod::RenderLight
 {
     LightSource type;
     vec4 source;
@@ -57,8 +50,12 @@ class Light
     float spotlightAngle;
     friend class GUI;
 public:
-    Light(LightSource type, vec4 source, vec4 color): type(type), source(source), color(color){}
-    Light():type(LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.5,1)){}
+    Light(LightSource type, vec4 source, vec4 color):
+        RenderLight(type, MakeGLM(source), MakeGLM(color)),
+        type(type), source(source), color(color){}
+    Light():
+        RenderLight(),
+        type(LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.5,1)){}
 
     LightSource getType(){ return type;}
     vec4 getColor(){ return color;}

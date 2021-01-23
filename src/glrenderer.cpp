@@ -6,6 +6,148 @@
 #include "../include/pointset.h"
 
 #include <numeric>
+#include "../include/utils/buffer_packing.h"
+
+shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
+                                                       const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices){
+    LOG_DEBUG("Call: LoadColoredTriangles ");
+
+    models.push_back(make_shared<ModelData>(ModelData()));
+    auto model = models.back();
+
+    auto gl = new kipod::GLObject();
+    model->gl_objects_.insert({"Colored Triangles", gl});
+
+    vector<vec3> vnVector;
+    vector<unsigned int> indices_vector;
+    pack_vectors(*vertices, *normals, vnVector, *indices, *nindices, indices_vector);
+    model->indices_size = size(indices_vector);
+
+    gl->ebo_ = new kipod::ElementsBuffer((void*)indices_vector.data(), indices_vector.size(), indices_vector.size()*sizeof(unsigned int));
+    gl->ebo_->Set();
+
+    gl->vao_ = new kipod::VertexAttributeObject;
+    gl->vao_->Set();
+
+    unsigned int buffersize =vnVector.size()*sizeof(vec3);
+    gl->vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+    gl->vbo_->Add(0, buffersize, (void*)vnVector.data());
+
+    gl->vbo_->Bind();
+
+    kipod::Attribute* att_v = new kipod::Attribute(0,3,2*sizeof(vec3),0);
+    kipod::Attribute* att_n = new kipod::Attribute(1,3,2*sizeof(vec3), sizeof(vec3));
+
+    gl->vao_->Add(att_v);
+    gl->vao_->Add(att_n);
+    gl->vao_->SetAttributes();
+
+    gl->ebo_->Unbind();
+    gl->vbo_->Unbind();
+    gl->vao_->Unbind();
+    return model;
+}
+
+
+shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices){
+
+    models.push_back(make_shared<ModelData>(ModelData()));
+    auto model = models.back();
+    model->indices_size = indices->size();
+    model->hasTexture = true;
+
+    glGenBuffers(1, &model->tex_ebo_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &model->tex_vao_);
+    glBindVertexArray(model->tex_vao_);
+
+
+    glCreateBuffers(1, &model->tex_vbo_); // Equivalent to
+                                          // glGenBuffers(1, &model->tex_vbo_);
+                                          // glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
+
+    glNamedBufferStorage(model->tex_vbo_, triangles->size()*sizeof(GLTriangle), nullptr, GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferSubData(model->tex_vbo_, 0, triangles->size()*sizeof(GLTriangle), triangles->data()); // Needs flag GL_DYNAMIC_STORAGE_BIT else can do 0
+                                            // Equivalent to
+                                            // glBufferData(GL_ARRAY_BUFFER, triangles->size()*sizeof(GLTriangle), triangles->data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_); // Not working without
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return model;
+}
+
+
+
+void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
+{
+    glActiveTexture(GL_TEXTURE0);
+    model->texture_.Bind();
+
+    glBindVertexArray(model->tex_vao_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_); // Not working without
+    glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+
+void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
+{
+    scene->BindLightUniforms(lights);
+    scene->BindMatrixUniformsForMesh(*model, *camera);
+    scene->BindMaterialUniforms(*(model->mat_));
+}
+
+void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
+{
+    auto gl = model->gl_objects_["Colored Triangles"];
+    gl->Draw();
+}
+
+void GLRenderer::Draw(kipod::GLObject *object)
+{
+    object->Draw();
+}
+
+void GLRenderer::Setup(kipod::GLObject *object)
+{
+    object->Setup();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void GLRenderer::SetProgram(){
     program = InitShader( "shaders/_vshader.glsl", "shaders/_fshader.glsl" );
@@ -72,11 +214,19 @@ void GLRenderer::SetProgramTex()
     programTex = InitShader( "shaders/textures.vert.glsl", "shaders/textures.frag.glsl" );
 }
 
+
+
 void GLRenderer::SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, Texture* texture)
 {
     glUniform1f(glGetUniformLocation(programTex, texture->name_.c_str()), 0);
-    texture->BindTexture();
+    texture->Bind();
 
+    auto p_via_glm = MakeGLM(p);
+    auto v_via_glm = MakeGLM(v);
+    auto m_via_glm = MakeGLM(m);
+
+    auto verts_glm =  m_via_glm*v_via_glm;
+    auto norms_glm = glm::transpose(glm::inverse(verts_glm));
 
     mat4 verts = v*m;
     mat4 norms = transpose(Inverse(v*m));
@@ -84,10 +234,18 @@ void GLRenderer::SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &light
     GLuint mv = glGetUniformLocation(programTex, "mv");
     GLuint mv_normal = glGetUniformLocation(programTex, "mv_normal");
     GLuint projection = glGetUniformLocation(programTex, "projection");
-    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
-    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
-    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
-    glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
+//    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
+//    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
+//glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
+  //    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
+
+     glUniformMatrix4fv(mv, 1, GL_TRUE, glm::value_ptr(verts_glm));
+     glUniformMatrix4fv(mv_normal, 1, GL_TRUE, glm::value_ptr(norms_glm));
+     glUniformMatrix4fv(projection, 1, GL_TRUE, glm::value_ptr(p_via_glm));
+     glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, glm::value_ptr(v_via_glm));
+
+
+
 
 
     GLuint ambient = glGetUniformLocation(programTex, "material.ambient");
@@ -96,16 +254,18 @@ void GLRenderer::SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &light
     GLuint emission = glGetUniformLocation(programTex, "material.emission");
     GLuint shininess = glGetUniformLocation(programTex, "material.shininess");
 
+
+
     glUniform4fv(ambient, 1, &material.ambient[0]);
     glUniform4fv(diffuse, 1, &material.diffuse[0]);
     glUniform4fv(specular, 1, &material.specular[0]);
     glUniform4fv(emission, 1, &material.emission[0]);
     glUniform1fv(shininess, 1, &material.shininess);
 
-    GLuint cameraLocation = glGetUniformLocation(programLights, "cameraLocation");
+    GLuint cameraLocation = glGetUniformLocation(programTex, "cameraLocation");
     vec4 camLocation = vec4(camera->getEye());
-
     glUniform4fv(cameraLocation, 1, &camLocation[0]);
+
 
     LightGLGS lightsGLGS[3];
     for(int i = 0; i<3; ++i){
@@ -237,6 +397,7 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
 
 void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, MaterialStruct& material, Camera* camera)
 { 
+
     mat4 verts = v*m;
     mat4 norms = transpose(Inverse(v*m));
     GLuint viewMatrix = glGetUniformLocation(programLights, "v");
@@ -263,8 +424,12 @@ void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, M
 
     GLuint cameraLocation = glGetUniformLocation(programLights, "cameraLocation");
     vec4 camLocation = vec4(camera->getEye());
+    //glUniform4fv(cameraLocation, 1, &camLocation[0]);
 
-    glUniform4fv(cameraLocation, 1, &camLocation[0]);
+    auto camLocation_glm = MakeGLM(camLocation);
+    glUniform4fv(cameraLocation, 1, glm::value_ptr(camLocation_glm));
+
+
 
     LightGLGS lightsGLGS[3];
     for(int i = 0; i<3; ++i){
@@ -287,9 +452,15 @@ void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, M
         vec4 color = lights[i]->getColor();
         int on = lights[i]->turnedOn;
 
+
+        auto color_glm = MakeGLM(color);
+        glUniform4fv(lightsGLGS[i].color, 1, glm::value_ptr(color_glm));
+        auto source_glm = MakeGLM(source);
+        glUniform4fv(lightsGLGS[i].source, 1, glm::value_ptr(source_glm));
+
         glUniform1i(lightsGLGS[i].type, type);
-        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
-        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
+//        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
+//        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
         glUniform1i(lightsGLGS[i].on, on);
     }
 }
@@ -419,22 +590,6 @@ void GLRenderer::drawNormals(shared_ptr<ModelData> model)
     glBindVertexArray(0);
 }
 
-void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
-{
-    glBindVertexArray(model->col_vao);
-
-    glBindBuffer(GL_ARRAY_BUFFER, model->col_vbo);
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)0);
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)sizeof(vec3));
-//    glEnableVertexAttribArray(0);
-//    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->col_ebo);
-    glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
 
 
 
@@ -486,141 +641,6 @@ shared_ptr<ModelData> GLRenderer::loadTriangles(const std::vector<vec3>* vertice
     LOG_DEBUG("LoadTriangles End");
     return model;
 }
-
-
-shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                                                       const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices){
-    LOG_DEBUG("LoadColoredTriangles Begin");
-
-    models.push_back(make_shared<ModelData>(ModelData()));
-    auto model = models.back();
-    model->indices_size = indices->size();
-
-    LOG_DEBUG("Pack normals");
-
-    vector<vec3> vnVector;
-    for(unsigned int i = 0; i<model->indices_size; i++)
-    {
-        vnVector.push_back((*vertices)[(*indices)[i]]);
-        vnVector.push_back((*normals)[(*nindices)[i]]);
-    }
-
-    vector<unsigned int> indices_vector = vector<unsigned int>(vnVector.size()/2);
-    std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
-    model->indices_size = size(indices_vector);
-
-    glGenBuffers(1, &model->col_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->col_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices_vector.data(), GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &model->col_vao);
-    glBindVertexArray(model->col_vao);
-
-    glGenBuffers(1, &model->col_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, model->col_vbo);
-    glBufferData(GL_ARRAY_BUFFER, vnVector.size()*sizeof(vec3), vnVector.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 2*sizeof(vec3), (void*)sizeof(vec3));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-    LOG_DEBUG("LoadColoredTriangles End");
-    return model;
-}
-
-
-
-
-
-
-
-
-
-shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices){
-
-    models.push_back(make_shared<ModelData>(ModelData()));
-    auto model = models.back();
-    model->indices_size = indices->size();
-    model->hasTexture = true;
-
-    glGenBuffers(1, &model->tex_ebo_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &model->tex_vao_);
-    glBindVertexArray(model->tex_vao_);
-
-    glGenBuffers(1, &model->tex_vbo_);
-    glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
-    glBufferData(GL_ARRAY_BUFFER, triangles->size()*sizeof(GLTriangle), triangles->data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    return model;
-}
-
-
-
-void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
-{
-    glActiveTexture(GL_TEXTURE0);
-    model->texture_.BindTexture();
-
-    glBindVertexArray(model->tex_vao_);
-
-    glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
-//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
-//    glEnableVertexAttribArray(0);
-//    glEnableVertexAttribArray(1);
-//    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
-    glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -683,54 +703,4 @@ void GLRenderer::DrawShape(shared_ptr<ShapeData> shapeData)
 }
 
 
-using TriangleVNT = Kipod::GLTriangle< Kipod::GLVertex<RENDER_VERTEX | RENDER_NORMALS | RENDER_TEXTURE> > ;
-using TriangleVT  = Kipod::GLTriangle< Kipod::GLVertex<RENDER_VERTEX | RENDER_TEXTURE > > ;
-
-template<>
-void GLRenderer::Draw<TriangleVNT>(GLObject<TriangleVNT> *object)
-{
-    object->vao_->Bind();
-    object->ebo_->Bind();
-    object->tex_->Bind();
-
-    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
-
-    object->ebo_->Unbind();
-    object->vao_->Unbind();
-}
-
-
-template<>
-void GLRenderer::Draw<TriangleVT>(GLObject<TriangleVT> *object)
-{
-    object->vao_->Bind();
-    object->ebo_->Bind();
-    object->tex_->Bind();
-
-    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
-
-    object->ebo_->Unbind();
-    object->vao_->Unbind();
-}
-
-
-template<typename Primitive>
-void GLRenderer::Draw(GLObject<Primitive> *object)
-{
-    object->vao_->Bind();
-    object->ebo_->Bind();
-
-    glDrawElements(GL_TRIANGLES, object->ebo_->count_, GL_UNSIGNED_INT, (void*)0);
-
-    object->ebo_->Unbind();
-    object->vao_->Unbind();
-}
-
-
-template<typename Primitive>
-void GLRenderer::Setup(GLObject<Primitive> *object)
-{
-    object->ebo_->Set();
-    object->vao_->Set();
-}
 

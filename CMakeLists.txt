@@ -33,10 +33,14 @@ add_executable(kipod
   include/utils/mat.h
   include/utils/vec.h
   
+  include/utils/buffer_packing.h
+
   include/utils/log.h
   src/utils/log.cpp
 
   include/utils/image_loader.h
+  include/utils/obj_parsing.h
+
 
   include/texture.h
   src/texture.cpp
@@ -97,6 +101,17 @@ add_executable(kipod
   include/render_primitive.h
   src/render_primitive.cpp
 
+  include/render_scene.h
+  src/render_scene.cpp
+
+  include/render_material.h
+  src/render_material.cpp
+
+  include/render_light.h
+  src/render_light.cpp
+
+  include/render_camera.h
+  src/render_camera.cpp
 
   include/renderer.h
   src/renderer.cpp

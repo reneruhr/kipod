@@ -5,10 +5,10 @@
 
 // #include <glm/glm.hpp> // vec2, vec3, mat4, radians
 // #include <glm/ext.hpp> // perspective, translate, rotate
-#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/matrix.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// WARNING: GLM IS COLUMB MAJOR
+// WARNING: GLM IS COLUMN MAJOR
 
 //----------------------------------------------------------------------------
 //
@@ -759,7 +759,6 @@ mat4 Inverse(mat4 m){
     glm::mat4 c = glm::inverse(b);
     float* d = glm::value_ptr(c);
 
-
     return mat4(d);
 }
 
@@ -771,4 +770,19 @@ mat3 Inverse(mat3 m){
     float* d = glm::value_ptr(c);
 
     return mat3(d);
+}
+
+
+inline
+glm::mat4 MakeGLM(mat4& m){
+    return glm::make_mat4(&m[0][0]);
+}
+
+inline
+glm::vec4 MakeGLM(vec4& v){
+    return glm::make_vec4(&v[0]);
+}
+inline
+glm::vec3 MakeGLM(vec3& v){
+    return glm::make_vec3(&v[0]);
 }

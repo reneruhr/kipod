@@ -3,6 +3,8 @@
 
 #include <glm/matrix.hpp>
 
+namespace kipod
+{
 
 enum RenderObjectType
 {
@@ -14,8 +16,7 @@ enum RenderObjectType
     RENDER_Dim2        = 1 << 5
 };
 
-namespace Kipod
-{
+
 
 class RenderPrimitive
 {
@@ -26,7 +27,7 @@ public:
 
 
 template <int>
-struct GLVertex : virtual public RenderPrimitive{
+struct GLVertex : public RenderPrimitive{
     GLVertex() = default;
 };
 
@@ -76,6 +77,10 @@ struct GLTriangle : virtual public RenderPrimitive{
         vertices_[2] = u;
     }
 };
+
+using TriangleVNT = kipod::GLTriangle< kipod::GLVertex<kipod::RENDER_VERTEX | kipod::RENDER_NORMALS | kipod::RENDER_TEXTURE> > ;
+using TriangleVT  = kipod::GLTriangle< kipod::GLVertex<kipod::RENDER_VERTEX | kipod::RENDER_TEXTURE > > ;
+
 
 }
 #endif // RENDERPRIMITIVE_H

@@ -3,72 +3,14 @@
 #include "../include/meshmodel.h"
 #include "../include/utils/vec.h"
 
+#include "../include/utils/obj_parsing.h"
+
 #include <numeric>
 #include <map>
 #include <filesystem>
 
 
 using namespace std;
-
-struct FaceIdcs
-{
-    int v[4];
-    int vn[4];
-    int vt[4];
-
-	FaceIdcs()
-	{
-		for (int i=0; i<4; i++)
-			v[i] = vn[i] = vt[i] = 0;
-	}
-
-	FaceIdcs(std::istream & aStream)
-	{
-		for (int i=0; i<4; i++)
-			v[i] = vn[i] = vt[i] = 0;
-
-		char c;
-		for(int i = 0; i < 3; i++)
-		{
-
-            aStream >> std::ws >> v[i] >> std::ws;
-			if (aStream.peek() != '/')
-				continue;
-			aStream >> c >> std::ws;
-			if (aStream.peek() == '/')
-			{
-				aStream >> c >> std::ws >> vn[i];
-				continue;
-			}
-			else
-				aStream >> vt[i];
-			if (aStream.peek() != '/')
-				continue;
-			aStream >> c >> vn[i];
-		}
-	}
-};
-
-vec3 vec3fFromStream(std::istream & aStream)
-{
-	float x, y, z;
-	aStream >> x >> std::ws >> y >> std::ws >> z;
-	return vec3(x, y, z);
-}
-
-vector<int> vec3iFromStream(std::istream & aStream)
-{
-    vector<int> vec;
-    aStream >> vec[0] >> std::ws >> vec[1] >> std::ws >> vec[2];
-    return vec;
-}
-
-vec2 vec2fFromStream(std::istream & aStream)
-{
-	float x, y;
-	aStream >> x >> std::ws >> y;
-	return vec2(x, y);
-}
 
 
 BoundingBoxData::BoundingBoxData(const vector<vec3> &vertices){
@@ -114,6 +56,9 @@ MeshModel::MeshModel(string fileName, bool textured)
             texture->LoadTexture(fileName.c_str());
             return;
          }
+        LOG_INFO("Tried but did not succeed to load texture.");
+        delete texture;
+        texture = nullptr;
     }
 }
 
@@ -122,8 +67,62 @@ MeshModel::~MeshModel(void)
 {
 }
 
+void MeshModel::Setup()
+{
+    LOG_ENGINE("Call: Setup of a MeshModel");
+    std::vector<vec3> vertices;
+    std::vector<vec3> normals;
+    std::vector<vec2> texture_coords;
+    std::vector<unsigned int> indicies;
+
+    unsigned int buffersize = 0;
+    for(int i=0, n=indices_vector.size(); i<n; ++i){
+                 indicies.emplace_back(i);
+                 vertices.emplace_back(vertices_vector[indices_vector[i]]);
+                 normals.emplace_back(normals_vector[nindices_vector[i]]);
+    }
+
+    unsigned int offset_n = vertices.size()*sizeof(vec3);
+    unsigned int offset_t = offset_n + normals.size()*sizeof(vec3);
+    buffersize+= offset_t;
+    if(!texture_vector.empty()){
+        LOG_ENGINE("Found UV coordinates for the MeshModel");
+        for(int i=0, n=indices_vector.size(); i<n; ++i)
+                     texture_coords.emplace_back(texture_vector[tindices_vector[i]]);
+        buffersize+=texture_coords.size()*sizeof(vec2);
+    }
+    vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+    vbo_->Add(0, vertices.size()*sizeof(vec3), (void*)vertices.data());
+    vbo_->Add(vertices.size()*sizeof(vec3), normals.size()*sizeof(vec3), (void*)normals.data());
+    if(!texture_vector.empty())
+        vbo_->Add(vertices.size()*sizeof(vec3)+normals.size()*sizeof(vec3), texture_coords.size()*sizeof(vec2), (void*)texture_coords.data());
+
+
+    vao_ = new kipod::VertexAttributeObject;
+    kipod::Attribute* att_v = new kipod::Attribute;
+    kipod::Attribute* att_n = new kipod::Attribute(1,3,0,offset_n);
+    vao_->Add(att_v);
+    vao_->Add(att_n);
+
+    if(!texture_vector.empty()){
+        kipod::Attribute* att_t = new kipod::Attribute(2,2,0,offset_t);
+        vao_->Add(att_t);
+    }
+
+    ebo_ = new kipod::ElementsBuffer((void*)indicies.data(), indicies.size(), indicies.size()*sizeof(unsigned int));
+
+    if(texture){
+        LOG_ENGINE("Found Texture for the MeshModel");
+        tex_=texture;
+    }//texture
+
+    GLObject::Setup();
+
+}
+
 void MeshModel::loadFile(string fileName)
 {
+    LOG_ENGINE("Start loading MeshModel from File.");
 	ifstream ifile(fileName.c_str());
 	vector<FaceIdcs> faces;
     bool hasNormals=false;
@@ -136,7 +135,7 @@ void MeshModel::loadFile(string fileName)
 		string curLine;
 		getline(ifile, curLine);
 
-        LOG_INFO(curLine);
+        //LOG_ENGINE(curLine);
 
 		// read type of the line
 		istringstream issLine(curLine);
@@ -163,20 +162,17 @@ void MeshModel::loadFile(string fileName)
 		}
 		else
 		{
-            LOG_INFO("Found unknown line Type \" {} \"", curLine);
+            LOG_ENGINE("Found unknown line Type \" {} \"", curLine);
 		}
 	}
-	std::cout << " Finished Parsing " << std::endl;
-    LOG_INFO("Finished Parsing");
+    LOG_ENGINE("Finished Parsing");
 
     int vs = size(vertices_vector);
     int ns = size(normals_vector);
     int ts = size(texture_vector);
 
-
 	for (vector<FaceIdcs>::iterator it = faces.begin(); it != faces.end(); ++it)
 	{
-
         for (int i = 0; i < 3; i++)
 		{
             if(it->v[i] < 0)
@@ -274,6 +270,26 @@ void MeshModel::calculateNormals(){
 
 //}
 
+
+
+void MeshModel::Init(GLRenderer *glrenderer)
+{
+    CreateTriangleVector();
+    triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
+    std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
+    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
+    modelTexturedData->texture_ = *texture;
+}
+
+void MeshModel::Draw(GLRenderer *glrenderer)
+{
+    glrenderer->DrawGLTriangles(modelTexturedData);
+}
+
+
+
+
+
 void MeshModel::draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals)
 {
     if(normals)
@@ -304,19 +320,7 @@ void MeshModel::init(GLRenderer *glrenderer, bool colored)
                                            &normals_vector, &nindices_vector);
 }
 
-void MeshModel::Init(GLRenderer *glrenderer)
-{
-    CreateTriangleVector();
-    triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
-    std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
-    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
-    modelTexturedData->texture_ = *texture;
-}
 
-void MeshModel::Draw(GLRenderer *glrenderer)
-{
-    glrenderer->DrawGLTriangles(modelTexturedData);
-}
 
 void MeshModel::draw(GLRenderer *glrenderer)
 {
@@ -334,16 +338,18 @@ void MeshModel::drawColored(GLRenderer *glrenderer)
 
 void MeshModel::move(const vec3& translate){
 	_world_transform=Translate(translate)*_world_transform;
+    //vec3 nonconst = translate;
+    //world_transform_=  glm::transpose(glm::translate(glm::transpose(world_transform_), MakeGLM(nonconst)));
 }
 
 void MeshModel::createBBox(){
     _boundingBoxData = BoundingBoxData(vertices_vector);
 }
 
-mat4 MeshModel::getmTransform(){
+mat4 MeshModel::getmTransform() const{
     return _world_transform*_local_transform;
 }
-mat4 MeshModel::getmTransformBBox(){
+mat4 MeshModel::getmTransformBBox() const {
     return _world_transform*_local_transform*_boundingBoxData._transform;
 }
 
@@ -381,7 +387,9 @@ void MeshModel::setUniformMaterial(MaterialStruct &material){
 }
 
 void MeshModel::setUniformMaterial(){
-    MaterialStruct material = MaterialStruct();
+    MaterialStruct material =  MaterialStruct();
     colors_vector = { material };
     cindices_vector = vector<unsigned int>((indices_vector).size(), 0);
+
+    mat_ =  new kipod::RenderMaterial;
 }

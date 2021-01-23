@@ -4,6 +4,9 @@
 #include <vector>
 #include "GL/glew.h"
 
+
+namespace kipod{
+
 struct FrameBuffer{
     int id_;
     unsigned int opengl_id_ = 0;
@@ -43,4 +46,5 @@ public:
     }
 };
 
+}
 #endif // RENDERMANAGER_H

@@ -3,24 +3,38 @@
 #include "../include/meshmodel.h"
 
 #include "../include/quacry.h"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
-void Scene::loadOBJModel(string fileName, MaterialStruct material, bool textured)
+void Scene::loadOBJModel(string fileName, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
 
-    model->setUniformMaterial(material);
+    model->setUniformMaterial();
     models.push_back(model);
+
+    render_objects_.push_back(model);
+    model->tex_ ? LOG_ENGINE("A Texture was set. Use Tex Shader") : LOG_ENGINE("No Texture set. Use Light Shader.");
+    model->Setup();
+    model->sha_ = model->tex_ ? &shaders_["Textured Triangles"] : &shaders_["Colored Triangles"];
 }
 
-void Scene::loadPrimitive(Primitive primitive, MaterialStruct material, int numberPolygons){
+void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
+{
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
-    model->setUniformMaterial(material);
+    model->setUniformMaterial();
 	models.push_back(model);
+
+    render_objects_.push_back(model);
+
+    model->Setup();
+    model->sha_ = &shaders_["Colored Triangles"];
+
 }
 
-void Scene::initLastModel(bool with_texture){
+void Scene::initLastModel(bool with_texture)
+{
     //models.back()->init();
     if(with_texture) {
         models.back()->Init(_glrenderer);
@@ -34,7 +48,8 @@ void Scene::addCamera(Camera *cam, bool projective)
     camerasMode.push_back(projective);
 }
 
-void Scene::setCameraMode(int camera_id, bool perspective){
+void Scene::setCameraMode(int camera_id, bool perspective)
+{
     camerasMode[camera_id] = perspective;
 }
 
@@ -43,7 +58,6 @@ void Scene::setLastCameraActive()
     if(cameras.empty()) return;
     activeCamera = cameras.size()-1;
 }
-
 
 void Scene::addLight(Light *light)
 {
@@ -60,7 +74,8 @@ void Scene::AddShape(Shape *shape)
     shapes_.push_back(shape);
 }
 
-void Scene::init(){
+void Scene::init()
+{
     if(_glrenderer) {
         _glrenderer->SetProgram();
         _glrenderer->SetProgramWithNormals();
@@ -82,11 +97,139 @@ void Scene::init(){
     addLight(light2);
 }
 
-void Scene::drawBoundingBox(){
+void Scene::drawBoundingBox()
+{
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     boundingBox.draw(_glrenderer);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+
+
+
+void Scene::SetupUniforms()
+{
+    shaders_.insert({"Textured Triangles", kipod::Shader("textures.vert.glsl", "textures.frag.glsl")});
+    shaders_.insert({"Colored Triangles", kipod::Shader("lights.vert.glsl",   "lights.frag.glsl")});
+
+    shaders_["Textured Triangles"].AttachUniform<float>("tex");
+
+    for(auto& [name, shader]: shaders_){
+        shader.AttachUniform<glm::mat4>("v");
+        shader.AttachUniform<glm::mat4>("mv");
+        shader.AttachUniform<glm::mat4>("mv_normal");
+        shader.AttachUniform<glm::mat4>("projection");
+
+        AttachMaterialToShader(shader);
+
+        shader.AttachUniform<glm::vec4>("cameraLocation");
+
+        for(int i = 0; i<3; ++i){
+            AttachLightToShader(shader, i);
+        }
+    }
+}
+
+
+void Scene::Setup()
+{
+    LOG_ENGINE("Seting up MeshModel Scene.");
+    SetupUniforms();
+
+//    Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
+//    cam->createFrustum(); // Needed for very first Camera
+//    addCamera(cam);
+
+//    AddLight(kipod::RenderLight(LightSource::AMBIENT,
+//                                glm::vec4(0.0),
+//                                glm::vec4(0.1, 0.1, 0.1, 1.0)
+//                                ));
+//    AddLight(kipod::RenderLight(LightSource::DIFFUSE,
+//                                glm::vec4(10.0,1.0,0.0,1.0),
+//                                glm::vec4(0.2, 0.3, 0.6, 1.0)
+//                                ));
+//    AddLight(kipod::RenderLight(LightSource::SPECULAR,
+//                                glm::vec4(0.0,1.0,10.0,1.0),
+//                                glm::vec4(1.0)
+//                                ));
+}
+
+void Scene::BindLightUniforms(vector<Light *> &lights)
+{
+    for(int i = 0; i<3; ++i){
+        for(auto& [name, shader]: shaders_){
+            SetLightToShader(shader, i, lights[i]);
+        }
+    }
+}
+
+void Scene::BindMaterialUniforms(const kipod::RenderMaterial &material)
+{
+    for(auto& [name, shader]: shaders_) SetMaterialToShader(shader, material);
+}
+
+
+void Scene::BindMatrixUniforms(const kipod::RenderObject& model, const Camera& camera){
+    vec4 eye = vec4(camera.getEye());
+    mat4 camp = camera.getProjection(camerasMode[activeCamera]);
+    mat4 camc = camera.getcTransform();
+    glm::vec4  camLocation = MakeGLM(eye);
+    glm::mat4 p = MakeGLM(camp);
+    glm::mat4 v = MakeGLM(camc);
+
+    for(auto& [name, shader]: shaders_){
+        shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
+        shader.SetUniform<glm::mat4>("v", v);
+        shader.SetUniform<glm::mat4>("projection", p);
+    }
+
+    auto m = model.Transform();
+
+    glm::mat4  mv = m*v; // WARNING WARNING ---- Use the fact that transposed
+    glm::mat4 mv_normal = glm::transpose(glm::inverse(mv));
+    for(auto& [name, shader]: shaders_){
+        shader.SetUniform<glm::mat4>("mv", mv);
+        shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
+    }
+}
+
+void Scene::BindMatrixUniformsForMesh(const MeshModel& model, const Camera& camera){
+    vec4 eye = vec4(camera.getEye());
+    mat4 camp = camera.getProjection(camerasMode[activeCamera]);
+    mat4 camc = camera.getcTransform();
+    glm::vec4  camLocation = MakeGLM(eye);
+    glm::mat4 p = MakeGLM(camp);
+    glm::mat4 v = MakeGLM(camc);
+
+    for(auto& [name, shader]: shaders_){
+        shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
+        shader.SetUniform<glm::mat4>("v", v);
+        shader.SetUniform<glm::mat4>("projection", p);
+    }
+
+    //auto m = model.Transform();
+    mat4 mm = model.getmTransform();
+    glm::mat4 m = MakeGLM(mm);
+    glm::mat4  mv = m*v; // WARNING WARNING ---- Use the fact that transposed
+    glm::mat4 mv_normal = glm::transpose(glm::inverse(mv));
+    for(auto& [name, shader]: shaders_){
+        shader.SetUniform<glm::mat4>("mv", mv);
+        shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
+    }
+}
+
+
+void Scene::Draw()
+{
+    kipod::RenderManager::Bind(0);
+    BindLightUniforms(lights);
+    shaders_["Textured Triangles"].SetUniform<float>("tex", 0.0f);
+    for(auto& model : render_objects_){
+        BindMatrixUniforms(*model, *cameras[activeCamera]);
+        BindMaterialUniforms(*(model->mat_));
+        model->Draw();
+    }
+}
+
 
 void Scene::draw()
 {
@@ -95,7 +238,7 @@ void Scene::draw()
 	mat4 camMatrix = p*v;
 
 
-    RenderManager::Bind(pointsetToTexture_mode);
+    kipod::RenderManager::Bind(pointsetToTexture_mode);
 
     for(auto point_set : point_sets_){
         glEnable( GL_BLEND );
@@ -140,8 +283,9 @@ void Scene::draw()
 //        glDisable(GL_DEPTH_TEST);
 //    }
 
-    RenderManager::Bind(0);
+    kipod::RenderManager::Bind(0);
 
+    //Draw();
 	for(auto model : models){
 
 		mat4 m = model->getmTransform();
@@ -156,8 +300,9 @@ void Scene::draw()
         }
         else if((color_mode || emissive_mode )&& model->modelData){
              glEnable(GL_DEPTH_TEST);
-            _glrenderer->useProgram(Lights());
-            _glrenderer->SetUniform(m, v, p, lights, model->colors_vector[0], cameras[activeCamera]);
+            //_glrenderer->useProgram(Lights());
+            shaders_["Colored Triangles"].Use();
+             _glrenderer->SetUniform(lights, cameras[activeCamera], model, this);
             model->drawColored(_glrenderer);
              glDisable(GL_DEPTH_TEST);
         }
@@ -168,7 +313,6 @@ void Scene::draw()
             model->draw(_glrenderer);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-
 
 
 		if(normals_mode){

@@ -2,21 +2,20 @@
 #define RENDERENGINE_H
 
 #include "render_object.h"
-
+#include "render_light.h"
+#include "render_camera.h"
 #include <vector>
+
+
+namespace kipod{
 
 class RenderEngine
 {
 public:
-    RenderEngine();
+    RenderEngine() {}
 
-    std::vector<Shader*> shaders_;
-
-    template <typename Primitive>
-        void Setup(RenderObject* object);
-
-    template <typename Primitive>
-        void Draw(RenderObject* object);
+    void Setup(RenderObject* object);
+    void Draw(RenderObject* object);
 
 };
 
@@ -24,7 +23,7 @@ public:
 
 
 
-
+}
 
 
 #endif // RENDERENGINE_H
