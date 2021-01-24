@@ -19,29 +19,7 @@ class MeshModel;
 class PointSet;
 class Shape;
 
-struct GLVertex{
-    vec3 position_;
-    vec3 normal_;
-    vec2 texture_;
 
-    GLVertex() = default;
-    GLVertex(vec3 position, vec3 normal, vec2 texture)
-        : position_(position), normal_(normal), texture_(texture) {}
-};
-
-
-
-
-struct GLTriangle{
-    GLVertex vertices_[3];
-
-    GLTriangle() = default;
-    GLTriangle(GLVertex v, GLVertex w, GLVertex u) {
-        vertices_[0] = v;
-        vertices_[1] = w;
-        vertices_[2] = u;
-    }
-};
 
 
 enum class WindowType{
@@ -69,7 +47,7 @@ struct ModelData{
     bool hasNormals;
     bool hasTexture;
     Texture texture_;
-    std::unordered_map<std::string, kipod::GLObject*> gl_objects_;
+    //std::unordered_map<std::string, kipod::GLObject*> gl_objects_;
 
     ModelData(){}
 };
@@ -132,12 +110,6 @@ public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
     ~GLRenderer(void){};
 	void Init();
-
-    void Draw(kipod::GLObject* object);
-
-    void Setup(kipod::GLObject* object);
-
-
 
     shared_ptr<ModelData> loadTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
                                         const std::vector<vec3>* normals=nullptr, const std::vector<unsigned int>* nindices=nullptr);
@@ -204,6 +176,7 @@ public:
     void DrawGLTriangles(shared_ptr<ModelData> model);
     void SwapPrograms();
     void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
+    void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
 };
 
 

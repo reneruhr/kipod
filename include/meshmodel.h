@@ -33,7 +33,7 @@ struct BoundingBoxData{
 
 
 
-class MeshModel : public Model, public Listener, public kipod::GLObject
+class MeshModel : public Model, public Listener, public kipod::RenderObject
 {
 protected :
 	MeshModel() {}
@@ -65,6 +65,7 @@ public:
     vector<unsigned int> triangles_indices_;
 
     Texture* texture = nullptr;
+    kipod::RenderMaterial* material = nullptr;
 
     void CreateTriangleVector()
     {
@@ -91,7 +92,7 @@ public:
     vector<unsigned int> cindices_vector;
 
 
-    virtual void Setup() override;
+//    virtual void Setup() override;
 
 
 	void loadFile(string fileName);

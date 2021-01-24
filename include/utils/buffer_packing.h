@@ -6,7 +6,7 @@
 #include <assert.h>
 #include "log.h"
 
-void pack_vectors(const std::vector<vec3>& a, const std::vector<vec3>& b, std::vector<vec3>& c,
+inline void pack_vectors(const std::vector<vec3>& a, const std::vector<vec3>& b, std::vector<vec3>& c,
                   const std::vector<unsigned int>& in_a, const std::vector<unsigned int>& in_b, std::vector<unsigned int>& in_c)
 {
     LOG_ENGINE("Pack vectors");

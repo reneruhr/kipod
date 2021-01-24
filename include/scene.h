@@ -59,6 +59,10 @@ public:
         :_glrenderer(renderer), _softrenderer(softrenderer),
           _width(width), _height(height), boundingBox(Cube)
     {
+        std::string name = "Colored Triangles";
+        auto layout = new kipod::GLRenderLayout;
+        layout->sha_ = &shaders_["Colored Triangles"];
+        boundingBox.AddLayout(name,layout);
         boundingBox.init(_glrenderer);
     }
 
@@ -68,7 +72,7 @@ public:
 
 
     virtual void Setup() override;
-    virtual void Draw() override;
+    //virtual void Draw() override;
     void SetupUniforms();
 
 
@@ -144,4 +148,5 @@ public:
     void BindLightUniforms(vector<Light *> &lights);
     void BindMatrixUniforms(const kipod::RenderObject &model, const Camera &camera);
     void BindMatrixUniformsForMesh(const MeshModel &model, const Camera &camera);
+    void BindTextureUniforms(const Texture *texture);
 };

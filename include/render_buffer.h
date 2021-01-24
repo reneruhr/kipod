@@ -104,7 +104,7 @@ public:
     std::size_t offset_ = 0;
 public:
     //Attribute() = default;
-    Attribute(unsigned int id=0, unsigned int count=3, GLsizei stride=0, std::size_t offset= 3 ) :
+    Attribute(unsigned int id = 0, unsigned int count = 0, GLsizei stride = 0, std::size_t offset = 0 ) :
          stride_(stride), offset_(offset) { count_ = count; id_ = id;}
 
     void Set()

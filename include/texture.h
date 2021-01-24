@@ -27,7 +27,7 @@ public:
 
     void RenderToTexture(GLuint& frame_buffer);
 
-    void Bind(){
+    void Bind() const {
         glBindTexture(GL_TEXTURE_2D, id_);
     }
 };

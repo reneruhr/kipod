@@ -14,49 +14,101 @@
 #include "render_primitive.h"
 #include "render_material.h"
 
+#include "../include/utils/mat.h"
 
-namespace kipod{
+struct GLVertex{
+    vec3 position_;
+    vec3 normal_;
+    vec2 texture_;
 
-
-class RenderObject
-{
-public:
-    RenderObjectType type_;
-
-    RenderMaterial* mat_;
-    glm::mat4 local_transform_ = glm::mat4(1.0);
-    glm::mat4 world_transform_ = glm::mat4(1.0);
-
-    glm::mat4 Transform() const {
-        return world_transform_*local_transform_;
-    }
-
-    virtual void Draw() = 0;
-    virtual void Setup()= 0;
+    GLVertex() = default;
+    GLVertex(vec3 position, vec3 normal, vec2 texture)
+        : position_(position), normal_(normal), texture_(texture) {}
 };
 
 
-class GLObject : public RenderObject
-{
+struct GLTriangle{
+    GLVertex vertices_[3];
+
+    GLTriangle() = default;
+    GLTriangle(GLVertex v, GLVertex w, GLVertex u) {
+        vertices_[0] = v;
+        vertices_[1] = w;
+        vertices_[2] = u;
+    }
+};
+
+namespace kipod{
+
+class RenderLayout{
+    friend class RenderObject;
+protected:
+
+    virtual ~RenderLayout() = default;
+
+    RenderMaterial* mat_ = nullptr;
+    Texture* tex_ = nullptr;
+    FrameBuffer* fra_ = nullptr;
+
+    virtual void Draw()=0;
+    virtual void Setup()=0;
+};
+
+class RenderObject{
 public:
-    GLObject() {
-        LOG_ENGINE("Call: GLObject Constructor.");
+    RenderObjectType type_;
+
+    RenderMaterial* mat_ = nullptr;
+    Texture* tex_ = nullptr;
+    FrameBuffer* fra_ = nullptr;
+
+
+    glm::mat4 local_transform_ = glm::mat4(1.0);
+    glm::mat4 world_transform_ = glm::mat4(1.0);
+
+    glm::mat4 Transform() const
+    {
+        return world_transform_*local_transform_;
+    }
+
+    std::unordered_map<std::string, RenderLayout*> render_layouts_;
+    RenderLayout* lay_ = nullptr;
+
+    void Draw(RenderLayout* layout_ = nullptr);
+    void Draw(std::string layout) { render_layouts_[layout]->Draw();  }
+    void Setup(RenderLayout* layout_ = nullptr);
+    void Setup(std::string layout){ render_layouts_[layout]->Setup();  }
+    RenderLayout* Layout(std::string layout) { return render_layouts_[layout]; }
+    void AddLayout(std::pair<std::string, RenderLayout*> named_layout)  {     render_layouts_.insert(named_layout);   }
+    void AddLayout(std::string name, RenderLayout* layout)  {     render_layouts_.insert({name,layout});   }
+};
+
+
+
+
+class GLRenderLayout : public RenderLayout{
+public:
+    GLRenderLayout() : RenderLayout()
+    {
+        LOG_ENGINE("Call: GLRenderLayout Constructor.");
     }
 
     ElementsBuffer* ebo_ = nullptr;
     VertexAttributeObject* vao_ = nullptr;
     VertexBuffer* vbo_ = nullptr;
-    std::vector<FrameBuffer*> fras_;
-    std::vector<Texture*> texs_;
 
     //Active:
     Shader* sha_ = nullptr;
-    Texture* tex_ = nullptr;
-    FrameBuffer* fra_ = nullptr;
 
     virtual void Draw() override;
     virtual void Setup() override;
+    void Unbind();
+
+    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices, const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
+    void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
 };
+
+
 
 
 

@@ -8,102 +8,77 @@
 #include <numeric>
 #include "../include/utils/buffer_packing.h"
 
-shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                                                       const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices){
-    LOG_DEBUG("Call: LoadColoredTriangles ");
+//shared_ptr<ModelData> GLRenderer::loadColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
+//                                                       const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices)
+//{
+//    LOG_ENGINE("Call: Colored Triangles Setup");
 
-    models.push_back(make_shared<ModelData>(ModelData()));
-    auto model = models.back();
+//    models.push_back(make_shared<ModelData>(ModelData()));
+//    auto model = models.back();
 
-    auto gl = new kipod::GLObject();
-    model->gl_objects_.insert({"Colored Triangles", gl});
+//    model->indices_size = size(*indices);
 
-    vector<vec3> vnVector;
-    vector<unsigned int> indices_vector;
-    pack_vectors(*vertices, *normals, vnVector, *indices, *nindices, indices_vector);
-    model->indices_size = size(indices_vector);
-
-    gl->ebo_ = new kipod::ElementsBuffer((void*)indices_vector.data(), indices_vector.size(), indices_vector.size()*sizeof(unsigned int));
-    gl->ebo_->Set();
-
-    gl->vao_ = new kipod::VertexAttributeObject;
-    gl->vao_->Set();
-
-    unsigned int buffersize =vnVector.size()*sizeof(vec3);
-    gl->vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
-    gl->vbo_->Add(0, buffersize, (void*)vnVector.data());
-
-    gl->vbo_->Bind();
-
-    kipod::Attribute* att_v = new kipod::Attribute(0,3,2*sizeof(vec3),0);
-    kipod::Attribute* att_n = new kipod::Attribute(1,3,2*sizeof(vec3), sizeof(vec3));
-
-    gl->vao_->Add(att_v);
-    gl->vao_->Add(att_n);
-    gl->vao_->SetAttributes();
-
-    gl->ebo_->Unbind();
-    gl->vbo_->Unbind();
-    gl->vao_->Unbind();
-    return model;
-}
+//    SetupColoredTriangles(vertices,indices,normals,nindices);
+//    return model;
+//}
 
 
-shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices){
-
-    models.push_back(make_shared<ModelData>(ModelData()));
-    auto model = models.back();
-    model->indices_size = indices->size();
-    model->hasTexture = true;
-
-    glGenBuffers(1, &model->tex_ebo_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model->indices_size*sizeof(unsigned int), indices->data(), GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &model->tex_vao_);
-    glBindVertexArray(model->tex_vao_);
+//shared_ptr<ModelData> GLRenderer::LoadGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices)
+//{
+//    LOG_ENGINE("Call: Textured Triangles Setup");
+//    models.push_back(make_shared<ModelData>(ModelData()));
+//    auto model = models.back();
+//    model->indices_size = indices->size();
+//    model->hasTexture = true;
 
 
-    glCreateBuffers(1, &model->tex_vbo_); // Equivalent to
-                                          // glGenBuffers(1, &model->tex_vbo_);
-                                          // glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_);
-
-    glNamedBufferStorage(model->tex_vbo_, triangles->size()*sizeof(GLTriangle), nullptr, GL_DYNAMIC_STORAGE_BIT);
-    glNamedBufferSubData(model->tex_vbo_, 0, triangles->size()*sizeof(GLTriangle), triangles->data()); // Needs flag GL_DYNAMIC_STORAGE_BIT else can do 0
-                                            // Equivalent to
-                                            // glBufferData(GL_ARRAY_BUFFER, triangles->size()*sizeof(GLTriangle), triangles->data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, model->tex_vbo_); // Not working without
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, position_));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLVertex), (void*)offsetof(GLVertex, texture_));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
+//    auto gl = new kipod::GLObject();
+//    model->gl_objects_.insert({"Textured Triangles", gl});
 
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+//    gl->ebo_ = new kipod::ElementsBuffer((void*)indices->data(), indices->size(), indices->size()*sizeof(unsigned int));
+//    gl->ebo_->Set();
 
-    return model;
-}
+//    gl->vao_ = new kipod::VertexAttributeObject;
+//    gl->vao_->Set();
+
+//    unsigned int buffersize = triangles->size()*sizeof(GLTriangle);
+//    gl->vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+//    gl->vbo_->Add(0, buffersize, (void*)triangles->data());
+
+//    gl->vbo_->Bind();
+
+//    kipod::Attribute* att_v = new kipod::Attribute(0,3,sizeof(GLVertex),0);
+//    kipod::Attribute* att_n = new kipod::Attribute(1,3,sizeof(GLVertex), offsetof(GLVertex, normal_));
+//    kipod::Attribute* att_t = new kipod::Attribute(2,2,sizeof(GLVertex), offsetof(GLVertex, texture_));
+
+//    gl->vao_->Add(att_v);
+//    gl->vao_->Add(att_n);
+//    gl->vao_->Add(att_t);
+//    gl->vao_->SetAttributes();
+
+//    gl->Unbind();
+
+//    return model;
+//}
+
+//void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
+//{
+
+//    auto gl = model->gl_objects_["Textured Triangles"];
+//    gl->Draw();
 
 
+////    glActiveTexture(GL_TEXTURE0);
+////    model->texture_.Bind();
 
-void GLRenderer::DrawGLTriangles(shared_ptr<ModelData> model)
-{
-    glActiveTexture(GL_TEXTURE0);
-    model->texture_.Bind();
+////    glBindVertexArray(model->tex_vao_);
+////    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_); // Not working without
+////    glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
 
-    glBindVertexArray(model->tex_vao_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->tex_ebo_); // Not working without
-    glDrawElements(GL_TRIANGLES, model->indices_size, GL_UNSIGNED_INT, (void*)0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
+////    glBindBuffer(GL_ARRAY_BUFFER, 0);
+////    glBindVertexArray(0);
+//}
 
 void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
 {
@@ -112,40 +87,29 @@ void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* m
     scene->BindMaterialUniforms(*(model->mat_));
 }
 
-void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
+void GLRenderer::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
 {
-    auto gl = model->gl_objects_["Colored Triangles"];
-    gl->Draw();
-}
-
-void GLRenderer::Draw(kipod::GLObject *object)
-{
-    object->Draw();
-}
-
-void GLRenderer::Setup(kipod::GLObject *object)
-{
-    object->Setup();
+    //glUniform1f(glGetUniformLocation(programTex, model->texture->name_.c_str()), 0);
+   scene->BindTextureUniforms(model->texture);
+   SetUniform(lights, camera, model, scene);
 }
 
 
+//void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
+//{
+//    auto gl = model->gl_objects_["Colored Triangles"];
+//    gl->Draw();
+//}
 
+//void GLRenderer::Draw(kipod::GLObject *object)
+//{
+//    object->Draw();
+//}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//void GLRenderer::Setup(kipod::GLObject *object)
+//{
+//    object->Setup();
+//}
 
 
 
