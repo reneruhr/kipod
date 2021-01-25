@@ -14,6 +14,13 @@ void Scene::Setup()
     LOG_ENGINE("Seting up MeshModel Scene.");
     SetupUniforms();
 
+    std::string name = "Colored Triangles";
+    auto layout = new kipod::GLRenderLayout;
+    layout->sha_ = &shaders_["Colored Triangles"];
+    //layout->sha_ = &shaders_["Colored Triangles"];
+    boundingBox.AddLayout(name,layout);
+    boundingBox.init(_glrenderer);
+
 //    Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
 //    cam->createFrustum(); // Needed for very first Camera
 //    addCamera(cam);
@@ -140,7 +147,7 @@ void Scene::loadOBJModel(string fileName, bool textured)
                        : (LOG_ENGINE("No Texture set. Use Light Shader."), "Colored Triangles" );
     auto layout = new kipod::GLRenderLayout;
     layout->sha_ = &shaders_[name];
-
+    LOG_ENGINE("Add Layout name {}", name);
     model->AddLayout({name, layout});
     model->Setup();
 }
@@ -240,6 +247,7 @@ void Scene::SetupUniforms()
     shaders_["Textured Triangles"].AttachUniform<float>("tex");
 
     for(auto& [name, shader]: shaders_){
+        LOG_ENGINE("Attaching Uniforms to Shader {}", name);
         shader.AttachUniform<glm::mat4>("v");
         shader.AttachUniform<glm::mat4>("mv");
         shader.AttachUniform<glm::mat4>("mv_normal");
@@ -263,7 +271,6 @@ void Scene::draw()
 	mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
-
 
     kipod::RenderManager::Bind(pointsetToTexture_mode);
 
@@ -318,7 +325,7 @@ void Scene::draw()
 		mat4 m = model->getmTransform();
 		mat4 mvp = camMatrix * m;
 
-        if( texture_mode && model->modelTexturedData ){
+        if( texture_mode && model->HasLayout("Textured Triangles") ){
             glEnable(GL_DEPTH_TEST);
            //_glrenderer->useProgramTex();
             shaders_["Textured Triangles"].Use();
@@ -327,7 +334,7 @@ void Scene::draw()
            static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
            glDisable(GL_DEPTH_TEST);
         }
-        else if((color_mode || emissive_mode )&& model->modelData){
+        else if((color_mode || emissive_mode )&& model->HasLayout("Colored Triangles")  ){ //&& model->modelData
              glEnable(GL_DEPTH_TEST);
             //_glrenderer->useProgram(Lights());
             shaders_["Colored Triangles"].Use();

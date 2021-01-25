@@ -59,11 +59,7 @@ public:
         :_glrenderer(renderer), _softrenderer(softrenderer),
           _width(width), _height(height), boundingBox(Cube)
     {
-        std::string name = "Colored Triangles";
-        auto layout = new kipod::GLRenderLayout;
-        layout->sha_ = &shaders_["Colored Triangles"];
-        boundingBox.AddLayout(name,layout);
-        boundingBox.init(_glrenderer);
+
     }
 
 

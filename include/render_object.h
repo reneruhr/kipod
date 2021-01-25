@@ -62,6 +62,8 @@ public:
     Texture* tex_ = nullptr;
     FrameBuffer* fra_ = nullptr;
 
+    std::unordered_map<std::string, RenderLayout*> render_layouts_;
+    RenderLayout* lay_ = nullptr;
 
     glm::mat4 local_transform_ = glm::mat4(1.0);
     glm::mat4 world_transform_ = glm::mat4(1.0);
@@ -71,16 +73,15 @@ public:
         return world_transform_*local_transform_;
     }
 
-    std::unordered_map<std::string, RenderLayout*> render_layouts_;
-    RenderLayout* lay_ = nullptr;
-
     void Draw(RenderLayout* layout_ = nullptr);
-    void Draw(std::string layout) { render_layouts_[layout]->Draw();  }
+    void Draw(std::string layout) { render_layouts_[layout]->Draw(); }
     void Setup(RenderLayout* layout_ = nullptr);
     void Setup(std::string layout){ render_layouts_[layout]->Setup();  }
     RenderLayout* Layout(std::string layout) { return render_layouts_[layout]; }
     void AddLayout(std::pair<std::string, RenderLayout*> named_layout)  {     render_layouts_.insert(named_layout);   }
     void AddLayout(std::string name, RenderLayout* layout)  {     render_layouts_.insert({name,layout});   }
+    bool HasLayout(std::string name) { return render_layouts_.find(name)!=end(render_layouts_);}
+
 };
 
 
@@ -104,7 +105,8 @@ public:
     virtual void Setup() override;
     void Unbind();
 
-    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices, const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
+    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
+                               const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
 };
 

@@ -64,7 +64,6 @@ public:
     vector<GLTriangle> triangles_;
     vector<unsigned int> triangles_indices_;
 
-    Texture* texture = nullptr;
     kipod::RenderMaterial* material = nullptr;
 
     void CreateTriangleVector()

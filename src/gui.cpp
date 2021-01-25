@@ -1010,8 +1010,8 @@ void GUI::drawTextureControl(Scene *scene)
         if(rendered_texturedOption && !scene->models.empty()){
             MeshModel* model = scene->models.back();
             if(model->modelTexturedData){
-                model->texture = TextureManager::Get(0);
-                model->modelTexturedData->texture_ = *model->texture;
+                model->tex_ = TextureManager::Get(0);
+                model->modelTexturedData->texture_ = *model->tex_;
             }// Has a Texture
         }//Yes and non-empty
     }//Checkbox

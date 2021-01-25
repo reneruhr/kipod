@@ -90,7 +90,7 @@ void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* m
 void GLRenderer::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
 {
     //glUniform1f(glGetUniformLocation(programTex, model->texture->name_.c_str()), 0);
-   scene->BindTextureUniforms(model->texture);
+   scene->BindTextureUniforms(model->tex_);
    SetUniform(lights, camera, model, scene);
 }
 

@@ -38,27 +38,27 @@ MeshModel::MeshModel(string fileName, bool textured)
 	centerModel();
 
     if(textured){
-        texture = new Texture;
+        tex_ = new Texture;
 
         auto end = std::end(fileName);
         *(end-3) = 'p'; *(end-2) = 'n'; *(end-1) = 'g';
         if(std::filesystem::exists(fileName)){
-            texture->LoadTexture(fileName.c_str());
+            tex_->LoadTexture(fileName.c_str());
             return;
          }
         *(end-3) = 'j'; *(end-2) = 'p'; *(end-1) = 'g';
         if(std::filesystem::exists(fileName)){
-            texture->LoadTexture(fileName.c_str());
+            tex_->LoadTexture(fileName.c_str());
             return;
          }
         *(end-3) = 's'; *(end-2) = 'v'; *(end-1) = 'g';
         if(std::filesystem::exists(fileName)){
-            texture->LoadTexture(fileName.c_str());
+            tex_->LoadTexture(fileName.c_str());
             return;
          }
         LOG_INFO("Tried but did not succeed to load texture.");
-        delete texture;
-        texture = nullptr;
+        delete tex_;
+        tex_ = nullptr;
     }
 }
 
@@ -278,7 +278,8 @@ void MeshModel::Init(GLRenderer *glrenderer)
     triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
     std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
 //    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
-    static_cast<kipod::GLRenderLayout*>(Layout("Textured Triangles"))->SetupGLTriangles(&triangles_, &triangles_indices_);
+    auto layout = Layout("Textured Triangles");
+    static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_, &triangles_indices_);
 
 //    modelTexturedData->texture_ = *texture;
 }

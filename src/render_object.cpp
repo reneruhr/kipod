@@ -58,8 +58,6 @@ void kipod::RenderObject::Setup(kipod::RenderLayout *layout)
 }
 
 
-
-
 void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
                                                   const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices)
 {

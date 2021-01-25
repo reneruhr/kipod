@@ -21,10 +21,6 @@ class IBuffer{
     unsigned int size_;
 };
 
-
-
-
-
 class Buffer : public IBuffer{
 protected:
     void* data_ = nullptr;
@@ -35,9 +31,6 @@ public:
     virtual ~Buffer() = default;
     virtual void Bind()=0;
 };
-
-
-
 
 class ElementsBuffer : public Buffer
 {
@@ -61,8 +54,6 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 };
-
-
 
 class VertexBuffer : public Buffer
 {
@@ -91,8 +82,6 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 };
-
-
 
 
 class Attribute : public IBuffer

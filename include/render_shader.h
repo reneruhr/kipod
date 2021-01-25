@@ -31,7 +31,7 @@ public:
     static GLuint Program(std::string vert, std::string frag){
 
         GLuint program = InitShader((path+vert).c_str(), (path+frag).c_str() );
-        LOG_ENGINE("Created program {}.", program);
+        LOG_ENGINE("Created Shader program {}.", program);
         return program;
     }
 
