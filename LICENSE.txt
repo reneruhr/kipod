@@ -29,11 +29,36 @@ SOFTWARE.
 
 
 
+
+
+
+
+
+
+
+
+
+
 #########################################################################
 #########################################################################
 Third Party Dependencies:
 #########################################################################
 #########################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -285,6 +310,12 @@ MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 TheCherno/Hazel
 #########################################################################
 
+--------Description of changes:--------
+   Using modified code snippets from  Hazel/Hazelnut (Log.h, Log.cpp, EditorLayer.cpp, ImGuiLayer.cpp, OpenGLFramebuffer.cpp) in Kipod (log.cpp, gui.cpp, rendermanager.cpp)
+
+----------------------------------------
+
+
 
  Apache License
                            Version 2.0, January 2004
@@ -465,5 +496,4 @@ TheCherno/Hazel
 
 
 
-   Changes:
-   Using modified code snippets from  Hazel (Log.h, Log.cpp, EditorLayer.cpp, ImGuiLayer.cpp) in Kipod (log.h, gui.cpp)
+ 
