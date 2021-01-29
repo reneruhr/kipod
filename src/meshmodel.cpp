@@ -272,16 +272,21 @@ void MeshModel::calculateNormals(){
 
 
 
-void MeshModel::Init(GLRenderer *glrenderer)
+void MeshModel::Init(bool textured)
 {
-    CreateTriangleVector();
-    triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
-    std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
-//    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
-    auto layout = Layout("Textured Triangles");
-    static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_, &triangles_indices_);
+    if(textured){
+        CreateTriangleVector();
+        triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
+        std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
+        //    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
+        auto layout = Layout("Textured Triangles");
+        static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_, &triangles_indices_);
+    }else{
+        auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
+        layout->SetupColoredTriangles(&vertices_vector,&indices_vector,
+                                               &normals_vector, &nindices_vector);
+    }
 
-//    modelTexturedData->texture_ = *texture;
 }
 
 //void MeshModel::Draw(GLRenderer *glrenderer)
@@ -311,16 +316,13 @@ void MeshModel::drawWithLight(SoftRenderer *softrenderer, const std::vector<Ligh
 }
 
 
-void MeshModel::init(GLRenderer *glrenderer, bool colored)
+void MeshModel::init(GLRenderer* glrenderer)
 {
-    if(colored)
-//        static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"))->SetupColoredTriangles(&vertices_vector,&indices_vector,
-//                                           &normals_vector, &nindices_vector);
-    {
-     auto layout = Layout("Colored Triangles");
-        static_cast<kipod::GLRenderLayout*>(layout)->SetupColoredTriangles(&vertices_vector,&indices_vector,
-                                           &normals_vector, &nindices_vector);
-    }
+
+//        auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
+//        layout->SetupColoredTriangles(&vertices_vector,&indices_vector,
+//                                               &normals_vector, &nindices_vector);
+
 
     modelDataWired =
                  glrenderer->loadTriangles(&vertices_vector,&indices_vector,
@@ -344,9 +346,7 @@ void MeshModel::drawNormals(GLRenderer *glrenderer)
 //}
 
 void MeshModel::move(const vec3& translate){
-	_world_transform=Translate(translate)*_world_transform;
-    //vec3 nonconst = translate;
-    //world_transform_=  glm::transpose(glm::translate(glm::transpose(world_transform_), MakeGLM(nonconst)));
+    _world_transform=Translate(translate)*_world_transform;
 }
 
 void MeshModel::createBBox(){

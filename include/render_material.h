@@ -38,7 +38,7 @@ public:
         ambient_(0.1,0.1,0.6,1),
         diffuse_(0.7,0.3,0.2,1),
         specular_(0.4,0.4,0.4,1),
-        emission_(0.0,0.0,0.0,1),
+        emission_(1.0,0.0,0.0,1),
         shininess_(1.0f){}
 
 };

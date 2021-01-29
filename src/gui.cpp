@@ -212,7 +212,7 @@ void GUI::drawYotamBirthday(Scene* scene){
     if(ImGui::Button("Mazal Tov")){
         const char* path = "shaders/extra/Teddy.obj";
         scene->loadOBJModel(path);
-        scene->initLastModel();
+//        scene->initLastModel();
         scene->setActiveModel(scene->numberOfModels()-1);
         scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
         scene->activeCamera =0;
@@ -820,7 +820,7 @@ void GUI::loadPrimitive(Scene* scene){
                             else if(primitiveChoice_current==1) scene->loadPrimitive(Tetrahedron);
                             else if(primitiveChoice_current==2) scene->loadPrimitive(Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Primitive.");
-                            scene->initLastModel();
+                            //scene->initLastModel();
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }
@@ -837,7 +837,7 @@ void GUI::loadOBJfile(Scene* scene){
                         if (strlen(chosenPath)>0) {
                             LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
                             scene->loadOBJModel(chosenPath, texturedOption);
-                            scene->initLastModel(texturedOption);
+                            //scene->initLastModel(texturedOption);
                             scene->setActiveModel(scene->numberOfModels()-1);
                             scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }

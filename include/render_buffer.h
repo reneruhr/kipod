@@ -36,7 +36,11 @@ class ElementsBuffer : public Buffer
 {
 public:
     ElementsBuffer() = default;
-    ElementsBuffer(void* data, unsigned int count, unsigned int size) : Buffer(data, count, size) {}
+    //ElementsBuffer(const ElementsBuffer& elementbuffer) = default;
+    ElementsBuffer(void* data, unsigned int count, unsigned int size, GLchar primitive=GL_TRIANGLES) : Buffer(data, count, size), primitive_(primitive) {}
+
+    GLchar primitive_;
+
     void Set()
     {
         glGenBuffers(1, &id_);

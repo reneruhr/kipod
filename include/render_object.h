@@ -89,16 +89,15 @@ public:
 
 class GLRenderLayout : public RenderLayout{
 public:
-    GLRenderLayout() : RenderLayout()
-    {
-        LOG_ENGINE("Call: GLRenderLayout Constructor.");
-    }
+//    GLRenderLayout() : RenderLayout()
+//    {
+//        LOG_ENGINE("Call: GLRenderLayout Constructor.");
+//    }
+    //GLRenderLayout(const GLRenderLayout& layout) = default;
 
     ElementsBuffer* ebo_ = nullptr;
     VertexAttributeObject* vao_ = nullptr;
     VertexBuffer* vbo_ = nullptr;
-
-    //Active:
     Shader* sha_ = nullptr;
 
     virtual void Draw() override;
@@ -108,6 +107,7 @@ public:
     void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
                                const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
+
 };
 
 

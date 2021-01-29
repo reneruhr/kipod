@@ -99,23 +99,25 @@ GLuint
 InitShader(const char* vShaderFile, const char* gShaderFile, const char* fShaderFile)
 {
     struct Shader {
-	const char*  filename;
-	GLenum       type;
-	GLchar*      source;
-    }  shaders[3] = {
-	{ vShaderFile, GL_VERTEX_SHADER, NULL },	
-	{ gShaderFile, GL_GEOMETRY_SHADER, NULL },
-	{ fShaderFile, GL_FRAGMENT_SHADER, NULL }
+        const char*  filename;
+        GLenum       type;
+        GLchar*      source;
+    }
+
+    shaders[3] = {
+        { vShaderFile, GL_VERTEX_SHADER, NULL },
+        { gShaderFile, GL_GEOMETRY_SHADER, NULL },
+        { fShaderFile, GL_FRAGMENT_SHADER, NULL }
     };
 
     GLuint program = glCreateProgram();
     
     for ( int i = 0; i < 3; ++i ) {
-	Shader& s = shaders[i];
-	s.source = readShaderSource( s.filename );
-	if ( shaders[i].source == NULL ) {
-	    std::cerr << "Failed to read " << s.filename << std::endl;
-	    exit( EXIT_FAILURE );
+        Shader& s = shaders[i];
+        s.source = readShaderSource( s.filename );
+        if ( shaders[i].source == NULL ) {
+            std::cerr << "Failed to read " << s.filename << std::endl;
+            exit( EXIT_FAILURE );
 	}
 	
 	GLuint shader = glCreateShader( s.type );

@@ -5,11 +5,11 @@
 
 void kipod::GLRenderLayout::Draw()
 {
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
 
-    if(sha_){
-        sha_->Use();
-    }
+//    if(sha_){
+//        sha_->Use();
+//    }
 
     if(tex_){
         glActiveTexture(GL_TEXTURE0);
@@ -18,15 +18,15 @@ void kipod::GLRenderLayout::Draw()
 
     vao_->Bind();
     ebo_->Bind();
-    glDrawElements(GL_TRIANGLES, ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(ebo_->primitive_, ebo_->count_, GL_UNSIGNED_INT, (void*)0);
     vao_->Unbind();
     ebo_->Unbind();
 
-    if(sha_){
-        sha_->Unuse();
-    }
+//    if(sha_){
+//        sha_->Unuse();
+//    }
 
-    glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
 }
 
 void kipod::GLRenderLayout::Setup()

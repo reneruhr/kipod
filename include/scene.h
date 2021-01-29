@@ -93,7 +93,6 @@ public:
     bool HasPointSet(){ return !point_sets_.empty(); }
     void AddShape(Shape *shape);
 
-    void initLastModel(bool with_texture = false);
 	void init();
 	void draw();
 	void drawDemo();
@@ -140,9 +139,13 @@ public:
 
     void processEvent(Event& event) override;
 
-    void BindMaterialUniforms(const kipod::RenderMaterial &material);
-    void BindLightUniforms(vector<Light *> &lights);
-    void BindMatrixUniforms(const kipod::RenderObject &model, const Camera &camera);
-    void BindMatrixUniformsForMesh(const MeshModel &model, const Camera &camera);
-    void BindTextureUniforms(const Texture *texture);
+    void BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material);
+    void BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights);
+    void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const Camera &camera);
+    void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const Camera &camera);
+    void BindTextureUniforms(kipod::Shader& shader, const Texture *texture);
+    void BindNormalUniforms(kipod::Shader& shader, const float length);
+    void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model);
+    void SetUniformNormal(MeshModel *model, Camera *camera);
+    void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model);
 };

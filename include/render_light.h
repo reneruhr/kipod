@@ -28,10 +28,10 @@ protected:
     int on_;
 public:
 
-    RenderLight(LightSource type, glm::vec4 source, glm::vec4 color):
-        type_(type), source_(source), color_(color){}
-    RenderLight():
-        type_(LightSource::AMBIENT), source_(glm::vec4(0.0)), color_(glm::vec4(0.2,0.2,0.5,1)){}
+    RenderLight(LightSource type, glm::vec4 source, glm::vec4 color)    :   type_(type), source_(source), color_(color){}
+
+    RenderLight()   :  type_(LightSource::AMBIENT), source_(glm::vec4(0.0)), color_(glm::vec4(0.2,0.2,0.5,1)){}
+
     virtual ~RenderLight() = default;
 
     LightSource Type() const { return type_;}

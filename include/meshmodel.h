@@ -99,8 +99,7 @@ public:
     void reduceVertices();
 
 
-    void init(GLRenderer *glrenderer, bool colored = true);
-    void Init(GLRenderer *glrenderer);
+    void Init(bool textured);
 
     void Draw(GLRenderer *glrenderer);
 
@@ -131,4 +130,5 @@ public:
     void processEvent(Event& event) override;
     void setUniformMaterial(MaterialStruct &material);
     void setUniformMaterial();
+    void init(GLRenderer* glrenderer);
 };

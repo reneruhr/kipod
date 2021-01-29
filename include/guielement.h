@@ -39,12 +39,4 @@ public:
 };
 
 
-
-
-
-
-
-
-
-
 #endif // GUIELEMENT_H

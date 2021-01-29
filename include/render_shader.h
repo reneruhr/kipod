@@ -20,24 +20,36 @@ class Shader
 public:
     Shader() = default;
 
-    Shader(std::string vert, std::string frag){
+    Shader(std::string vert, std::string frag)
+    {
         program_ = Program(vert,frag);
     }
+    Shader(std::string vert, std::string frag, std::string geom)
+    {
+        program_ = Program(vert, frag, geom);
+    }
 
-    void Use(){
+    void Use()
+    {
         Shader::Use(program_);
     }
 
-    static GLuint Program(std::string vert, std::string frag){
-
+    static GLuint Program(std::string vert, std::string frag)
+    {
         GLuint program = InitShader((path+vert).c_str(), (path+frag).c_str() );
         LOG_ENGINE("Created Shader program {}.", program);
         return program;
     }
 
+    static GLuint Program(std::string vert, std::string frag, std::string geom)
+    {
+        GLuint program = InitShader((path+vert).c_str(), (path+geom).c_str(), (path+frag).c_str() );
+        LOG_ENGINE("Created Shader program with Geometry Shader {}.", program);
+        return program;
+    }
+
     static void Use(GLuint program)
     {
-        //LOG_ENGINE("Use program {}.", program);
         glUseProgram(program);
     }
 

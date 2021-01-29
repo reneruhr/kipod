@@ -43,7 +43,7 @@ public:
     {
         data_ = data;
         if constexpr (std::is_same_v<T, glm::mat4>)
-            glUniformMatrix4fv(location_, 1, GL_TRUE, glm::value_ptr(data_));
+            glUniformMatrix4fv(location_, 1, GL_FALSE, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec4>)
             glUniform4fv(location_, 1, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec3>)

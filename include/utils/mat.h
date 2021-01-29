@@ -775,7 +775,7 @@ mat3 Inverse(mat3 m){
 
 inline
 glm::mat4 MakeGLM(mat4& m){
-    return glm::make_mat4(&m[0][0]);
+    return glm::transpose(glm::make_mat4(&m[0][0]));
 }
 
 inline

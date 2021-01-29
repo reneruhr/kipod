@@ -80,19 +80,24 @@
 ////    glBindVertexArray(0);
 //}
 
-void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
-{
-    scene->BindLightUniforms(lights);
-    scene->BindMatrixUniformsForMesh(*model, *camera);
-    scene->BindMaterialUniforms(*(model->mat_));
-}
+//void GLRenderer::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
+//{
+//    scene->BindLightUniforms(lights);
+//    scene->BindMatrixUniformsForMesh(*model, *camera);
+//    scene->BindMaterialUniforms(*(model->mat_));
+//}
 
-void GLRenderer::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
-{
-    //glUniform1f(glGetUniformLocation(programTex, model->texture->name_.c_str()), 0);
-   scene->BindTextureUniforms(model->tex_);
-   SetUniform(lights, camera, model, scene);
-}
+//void GLRenderer::SetUniformNormal(MeshModel* model, Scene *scene)
+//{
+//    scene->BindNormalUniforms(model->normal_length);
+//}
+
+//void GLRenderer::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model, Scene *scene)
+//{
+//    //glUniform1f(glGetUniformLocation(programTex, model->texture->name_.c_str()), 0);
+//   scene->BindTextureUniforms(model->tex_);
+//   SetUniform(lights, camera, model, scene);
+//}
 
 
 //void GLRenderer::drawColoredTriangles(shared_ptr<ModelData> model)
@@ -118,7 +123,7 @@ void GLRenderer::SetProgram(){
 }
 
 void GLRenderer::SetProgramWithNormals(){
-    program2 = InitShader( "shaders/_vshaderNormals.glsl", "shaders/_gshaderNormals.glsl", "shaders/_fshader.glsl");
+    program2 = InitShader( "shaders/normals.vert.glsl", "shaders/normals.geom.glsl", "shaders/normals.frag.glsl");
 }
 
 void GLRenderer::SetProgramWithNormals_from_faces(){
@@ -180,84 +185,84 @@ void GLRenderer::SetProgramTex()
 
 
 
-void GLRenderer::SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, Texture* texture)
-{
-    glUniform1f(glGetUniformLocation(programTex, texture->name_.c_str()), 0);
-    texture->Bind();
+//void GLRenderer::SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, Texture* texture)
+//{
+//    glUniform1f(glGetUniformLocation(programTex, texture->name_.c_str()), 0);
+//    texture->Bind();
 
-    auto p_via_glm = MakeGLM(p);
-    auto v_via_glm = MakeGLM(v);
-    auto m_via_glm = MakeGLM(m);
+//    auto p_via_glm = MakeGLM(p);
+//    auto v_via_glm = MakeGLM(v);
+//    auto m_via_glm = MakeGLM(m);
 
-    auto verts_glm =  m_via_glm*v_via_glm;
-    auto norms_glm = glm::transpose(glm::inverse(verts_glm));
+//    auto verts_glm =  m_via_glm*v_via_glm;
+//    auto norms_glm = glm::transpose(glm::inverse(verts_glm));
 
-    mat4 verts = v*m;
-    mat4 norms = transpose(Inverse(v*m));
-    GLuint viewMatrix = glGetUniformLocation(programTex, "v");
-    GLuint mv = glGetUniformLocation(programTex, "mv");
-    GLuint mv_normal = glGetUniformLocation(programTex, "mv_normal");
-    GLuint projection = glGetUniformLocation(programTex, "projection");
-//    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
-//    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
-//glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
-  //    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
+//    mat4 verts = v*m;
+//    mat4 norms = transpose(Inverse(v*m));
+//    GLuint viewMatrix = glGetUniformLocation(programTex, "v");
+//    GLuint mv = glGetUniformLocation(programTex, "mv");
+//    GLuint mv_normal = glGetUniformLocation(programTex, "mv_normal");
+//    GLuint projection = glGetUniformLocation(programTex, "projection");
+////    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
+////    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
+////glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
+//  //    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
 
-     glUniformMatrix4fv(mv, 1, GL_TRUE, glm::value_ptr(verts_glm));
-     glUniformMatrix4fv(mv_normal, 1, GL_TRUE, glm::value_ptr(norms_glm));
-     glUniformMatrix4fv(projection, 1, GL_TRUE, glm::value_ptr(p_via_glm));
-     glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, glm::value_ptr(v_via_glm));
-
-
+//     glUniformMatrix4fv(mv, 1, GL_TRUE, glm::value_ptr(verts_glm));
+//     glUniformMatrix4fv(mv_normal, 1, GL_TRUE, glm::value_ptr(norms_glm));
+//     glUniformMatrix4fv(projection, 1, GL_TRUE, glm::value_ptr(p_via_glm));
+//     glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, glm::value_ptr(v_via_glm));
 
 
 
-    GLuint ambient = glGetUniformLocation(programTex, "material.ambient");
-    GLuint diffuse = glGetUniformLocation(programTex, "material.diffuse");
-    GLuint specular = glGetUniformLocation(programTex, "material.specular");
-    GLuint emission = glGetUniformLocation(programTex, "material.emission");
-    GLuint shininess = glGetUniformLocation(programTex, "material.shininess");
+
+
+//    GLuint ambient = glGetUniformLocation(programTex, "material.ambient");
+//    GLuint diffuse = glGetUniformLocation(programTex, "material.diffuse");
+//    GLuint specular = glGetUniformLocation(programTex, "material.specular");
+//    GLuint emission = glGetUniformLocation(programTex, "material.emission");
+//    GLuint shininess = glGetUniformLocation(programTex, "material.shininess");
 
 
 
-    glUniform4fv(ambient, 1, &material.ambient[0]);
-    glUniform4fv(diffuse, 1, &material.diffuse[0]);
-    glUniform4fv(specular, 1, &material.specular[0]);
-    glUniform4fv(emission, 1, &material.emission[0]);
-    glUniform1fv(shininess, 1, &material.shininess);
+//    glUniform4fv(ambient, 1, &material.ambient[0]);
+//    glUniform4fv(diffuse, 1, &material.diffuse[0]);
+//    glUniform4fv(specular, 1, &material.specular[0]);
+//    glUniform4fv(emission, 1, &material.emission[0]);
+//    glUniform1fv(shininess, 1, &material.shininess);
 
-    GLuint cameraLocation = glGetUniformLocation(programTex, "cameraLocation");
-    vec4 camLocation = vec4(camera->getEye());
-    glUniform4fv(cameraLocation, 1, &camLocation[0]);
+//    GLuint cameraLocation = glGetUniformLocation(programTex, "cameraLocation");
+//    vec4 camLocation = vec4(camera->getEye());
+//    glUniform4fv(cameraLocation, 1, &camLocation[0]);
 
 
-    LightGLGS lightsGLGS[3];
-    for(int i = 0; i<3; ++i){
-        std::string lightsi = "Lights["+std::to_string(i)+"]";
-        std::string t = lightsi+".type";
-        std::string s = lightsi+".source";
-        std::string c = lightsi+".color";
-        std::string o = lightsi+".on";
-        const char* tc = t.c_str();
-        const char* sc = s.c_str();
-        const char* cc = c.c_str();
-        const char* oc = o.c_str();
-        lightsGLGS[i].type = glGetUniformLocation(programTex, tc);
-        lightsGLGS[i].source = glGetUniformLocation(programTex, sc);
-        lightsGLGS[i].color = glGetUniformLocation(programTex, cc);
-        lightsGLGS[i].on = glGetUniformLocation(programTex, oc);
+//    LightGLGS lightsGLGS[3];
+//    for(int i = 0; i<3; ++i){
+//        std::string lightsi = "Lights["+std::to_string(i)+"]";
+//        std::string t = lightsi+".type";
+//        std::string s = lightsi+".source";
+//        std::string c = lightsi+".color";
+//        std::string o = lightsi+".on";
+//        const char* tc = t.c_str();
+//        const char* sc = s.c_str();
+//        const char* cc = c.c_str();
+//        const char* oc = o.c_str();
+//        lightsGLGS[i].type = glGetUniformLocation(programTex, tc);
+//        lightsGLGS[i].source = glGetUniformLocation(programTex, sc);
+//        lightsGLGS[i].color = glGetUniformLocation(programTex, cc);
+//        lightsGLGS[i].on = glGetUniformLocation(programTex, oc);
 
-        int type = lights[i]->getType();
-        vec4 source = lights[i]->getSource();
-        vec4 color = lights[i]->getColor();
-        int on = lights[i]->turnedOn;
+//        int type = lights[i]->getType();
+//        vec4 source = lights[i]->getSource();
+//        vec4 color = lights[i]->getColor();
+//        int on = lights[i]->turnedOn;
 
-        glUniform1i(lightsGLGS[i].type, type);
-        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
-        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
-        glUniform1i(lightsGLGS[i].on, on);
-    }
-}
+//        glUniform1i(lightsGLGS[i].type, type);
+//        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
+//        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
+//        glUniform1i(lightsGLGS[i].on, on);
+//    }
+//}
 
 void GLRenderer::useProgramTex()
 {
@@ -359,75 +364,75 @@ void GLRenderer::setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vect
 
 
 
-void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, MaterialStruct& material, Camera* camera)
-{ 
+//void GLRenderer::SetUniform(mat4& m, mat4& v, mat4& p, vector<Light*>& lights, MaterialStruct& material, Camera* camera)
+//{
 
-    mat4 verts = v*m;
-    mat4 norms = transpose(Inverse(v*m));
-    GLuint viewMatrix = glGetUniformLocation(programLights, "v");
-    GLuint mv = glGetUniformLocation(programLights, "mv");
-    GLuint mv_normal = glGetUniformLocation(programLights, "mv_normal");
-    GLuint projection = glGetUniformLocation(programLights, "projection");
-    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
-    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
-    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
-    glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
-
-
-    GLuint ambient = glGetUniformLocation(programLights, "material.ambient");
-    GLuint diffuse = glGetUniformLocation(programLights, "material.diffuse");
-    GLuint specular = glGetUniformLocation(programLights, "material.specular");
-    GLuint emission = glGetUniformLocation(programLights, "material.emission");
-    GLuint shininess = glGetUniformLocation(programLights, "material.shininess");
-
-    glUniform4fv(ambient, 1, &material.ambient[0]);
-    glUniform4fv(diffuse, 1, &material.diffuse[0]);
-    glUniform4fv(specular, 1, &material.specular[0]);
-    glUniform4fv(emission, 1, &material.emission[0]);
-    glUniform1fv(shininess, 1, &material.shininess);
-
-    GLuint cameraLocation = glGetUniformLocation(programLights, "cameraLocation");
-    vec4 camLocation = vec4(camera->getEye());
-    //glUniform4fv(cameraLocation, 1, &camLocation[0]);
-
-    auto camLocation_glm = MakeGLM(camLocation);
-    glUniform4fv(cameraLocation, 1, glm::value_ptr(camLocation_glm));
+//    mat4 verts = v*m;
+//    mat4 norms = transpose(Inverse(v*m));
+//    GLuint viewMatrix = glGetUniformLocation(programLights, "v");
+//    GLuint mv = glGetUniformLocation(programLights, "mv");
+//    GLuint mv_normal = glGetUniformLocation(programLights, "mv_normal");
+//    GLuint projection = glGetUniformLocation(programLights, "projection");
+//    glUniformMatrix4fv(mv, 1, GL_TRUE, &verts[0][0]);
+//    glUniformMatrix4fv(mv_normal, 1, GL_TRUE, &norms[0][0]);
+//    glUniformMatrix4fv(projection, 1, GL_TRUE, &p[0][0]);
+//    glUniformMatrix4fv(viewMatrix, 1, GL_TRUE, &v[0][0]);
 
 
+//    GLuint ambient = glGetUniformLocation(programLights, "material.ambient");
+//    GLuint diffuse = glGetUniformLocation(programLights, "material.diffuse");
+//    GLuint specular = glGetUniformLocation(programLights, "material.specular");
+//    GLuint emission = glGetUniformLocation(programLights, "material.emission");
+//    GLuint shininess = glGetUniformLocation(programLights, "material.shininess");
 
-    LightGLGS lightsGLGS[3];
-    for(int i = 0; i<3; ++i){
-        std::string lightsi = "Lights["+std::to_string(i)+"]";
-        std::string t = lightsi+".type";
-        std::string s = lightsi+".source";
-        std::string c = lightsi+".color";
-        std::string o = lightsi+".on";
-        const char* tc = t.c_str();
-        const char* sc = s.c_str();
-        const char* cc = c.c_str();
-        const char* oc = o.c_str();
-        lightsGLGS[i].type = glGetUniformLocation(programLights, tc);
-        lightsGLGS[i].source = glGetUniformLocation(programLights, sc);
-        lightsGLGS[i].color = glGetUniformLocation(programLights, cc);
-        lightsGLGS[i].on = glGetUniformLocation(programLights, oc);
+//    glUniform4fv(ambient, 1, &material.ambient[0]);
+//    glUniform4fv(diffuse, 1, &material.diffuse[0]);
+//    glUniform4fv(specular, 1, &material.specular[0]);
+//    glUniform4fv(emission, 1, &material.emission[0]);
+//    glUniform1fv(shininess, 1, &material.shininess);
 
-        int type = lights[i]->getType();
-        vec4 source = lights[i]->getSource();
-        vec4 color = lights[i]->getColor();
-        int on = lights[i]->turnedOn;
+//    GLuint cameraLocation = glGetUniformLocation(programLights, "cameraLocation");
+//    vec4 camLocation = vec4(camera->getEye());
+//    //glUniform4fv(cameraLocation, 1, &camLocation[0]);
+
+//    auto camLocation_glm = MakeGLM(camLocation);
+//    glUniform4fv(cameraLocation, 1, glm::value_ptr(camLocation_glm));
 
 
-        auto color_glm = MakeGLM(color);
-        glUniform4fv(lightsGLGS[i].color, 1, glm::value_ptr(color_glm));
-        auto source_glm = MakeGLM(source);
-        glUniform4fv(lightsGLGS[i].source, 1, glm::value_ptr(source_glm));
 
-        glUniform1i(lightsGLGS[i].type, type);
-//        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
-//        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
-        glUniform1i(lightsGLGS[i].on, on);
-    }
-}
+//    LightGLGS lightsGLGS[3];
+//    for(int i = 0; i<3; ++i){
+//        std::string lightsi = "Lights["+std::to_string(i)+"]";
+//        std::string t = lightsi+".type";
+//        std::string s = lightsi+".source";
+//        std::string c = lightsi+".color";
+//        std::string o = lightsi+".on";
+//        const char* tc = t.c_str();
+//        const char* sc = s.c_str();
+//        const char* cc = c.c_str();
+//        const char* oc = o.c_str();
+//        lightsGLGS[i].type = glGetUniformLocation(programLights, tc);
+//        lightsGLGS[i].source = glGetUniformLocation(programLights, sc);
+//        lightsGLGS[i].color = glGetUniformLocation(programLights, cc);
+//        lightsGLGS[i].on = glGetUniformLocation(programLights, oc);
+
+//        int type = lights[i]->getType();
+//        vec4 source = lights[i]->getSource();
+//        vec4 color = lights[i]->getColor();
+//        int on = lights[i]->turnedOn;
+
+
+//        auto color_glm = MakeGLM(color);
+//        glUniform4fv(lightsGLGS[i].color, 1, glm::value_ptr(color_glm));
+//        auto source_glm = MakeGLM(source);
+//        glUniform4fv(lightsGLGS[i].source, 1, glm::value_ptr(source_glm));
+
+//        glUniform1i(lightsGLGS[i].type, type);
+////        glUniform4fv(lightsGLGS[i].source, 1, &source[0]);
+////        glUniform4fv(lightsGLGS[i].color, 1, &color[0]);
+//        glUniform1i(lightsGLGS[i].on, on);
+//    }
+//}
 
 shared_ptr<LatticeData> GLRenderer::loadPoints(PointSet* points)
 {

@@ -177,6 +177,7 @@ public:
     void SwapPrograms();
     void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
     void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
+    void SetUniformNormal(MeshModel *model, Scene *scene);
 };
 
 
