@@ -30,6 +30,7 @@ public:
     void Bind() const {
         glBindTexture(GL_TEXTURE_2D, id_);
     }
+    void RenderToTexture2(GLuint &frame_buffer);
 };
 
 class TextureManager{

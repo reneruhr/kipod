@@ -191,10 +191,11 @@ int my_main( int argc, char **argv )
 
    gui->AppendModule(quacryOctagon);
 
-   kipod::RenderManager::addFrameBuffer();
-   Texture* quasi_texture = new Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
-   quasi_texture->RenderToTexture(*kipod::RenderManager::Get(1));
-   TextureManager::Add(quasi_texture);
+   //????? Breaks Imgui Viewport
+//   auto quasi_framebuffer = kipod::RenderManager::addFrameBuffer();
+//   Texture* quasi_texture = new Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
+//   quasi_texture->RenderToTexture(quasi_framebuffer->opengl_id_);
+//   TextureManager::Add(quasi_texture);
 
 
 

@@ -48,7 +48,7 @@ void GUI::init(Window *window)
 
 
 
-
+    // FROM HAZEL:
 
     auto& colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
@@ -167,19 +167,30 @@ void GUI::Begin(Window* window){
 
 }
 
-
-void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window){
-    ImGui::Begin("Settings");
+void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
+{
+    ImGui::Begin("Modules");
 
     draw_menus(scene, softrenderer, window);
 
     for(auto m : gui_modules_) m->Draw();
 
     ImGui::End();
+
+    ImGui::Begin("Viewport");
+
+    unsigned int scene_texture = scene->SceneAsFramebuffer();
+    ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2{ GLOBAL_SCR_WIDTH*0.9f, GLOBAL_SCR_HEIGHT*0.9f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+
+    ImGui::End();
+
+
+
 }
 
-
-void GUI::End(Window* window){
+void GUI::End(Window* window)
+{
 
     ImGui::Begin("ImGUI Demo");
     static bool show_demo_ = false;

@@ -50,6 +50,9 @@ class Scene : public Listener, public kipod::RenderScene{
 
     void drawBoundingBox();
 
+    kipod::FrameBuffer* framebuffer_;
+    Texture* texture_;
+
 protected:
 
 
@@ -69,6 +72,9 @@ public:
 
     virtual void Setup() override;
     //virtual void Draw() override;
+
+    unsigned int SceneAsFramebuffer() { return texture_->id_; };
+
     void SetupUniforms();
 
 

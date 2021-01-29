@@ -55,5 +55,33 @@ void Texture::RenderToTexture(GLuint& frame_buffer)
         glDrawBuffers(1, draw_buffers);
 
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            LOG("Failed to Render to Texture");
+            LOG_ENGINE("Failed to Render to Texture");
+}
+
+void Texture::RenderToTexture2(GLuint& frame_buffer)
+{
+            glCreateFramebuffers(1, &frame_buffer);
+
+            glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
+
+            glCreateTextures(GL_TEXTURE_2D, 1, &id_);
+            glBindTexture(GL_TEXTURE_2D, id_);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image_->width_, image_->height_, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id_, 0);
+
+            GLuint depth_render_buffer;
+            glCreateTextures(GL_TEXTURE_2D, 1, &depth_render_buffer);
+            glBindTexture(GL_TEXTURE_2D, depth_render_buffer);
+            glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, image_->width_, image_->height_);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth_render_buffer, 0);
+
+           if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                LOG_ENGINE("Failed to Render to Texture");
+
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            LOG_ENGINE("Created Texture id {} and Framebuffer {}", id_, frame_buffer);
 }

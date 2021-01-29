@@ -21,6 +21,8 @@ public:
     virtual void Setup(){}
     virtual void Draw(){}
 
+
+
     void AddLight(RenderLight* light){
         lights_.emplace_back(light);
     }

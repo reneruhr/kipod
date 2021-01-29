@@ -1,9 +1,7 @@
 #ifndef RENDERMANAGER_H
 #define RENDERMANAGER_H
 
-#include <vector>
-#include "GL/glew.h"
-
+#include <kipod.h>
 
 namespace kipod{
 
@@ -11,12 +9,15 @@ struct FrameBuffer{
     int id_;
     unsigned int opengl_id_ = 0;
 
-    FrameBuffer(){
+    FrameBuffer()
+    {
         static int n_frame_buffers = 0;
         id_ = n_frame_buffers++;
+        LOG_ENGINE("Created {}th FrameBuffer", id_);
     }
 
-    void Bind(){
+    void Bind()
+    {
         glBindFramebuffer(GL_FRAMEBUFFER, opengl_id_);
     }
 };

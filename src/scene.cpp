@@ -20,32 +20,23 @@ void Scene::Setup()
     boundingBox.AddLayout(name,layout);
     boundingBox.init(_glrenderer);
     boundingBox.Init(false);
-//    {
-//        auto normal_layout = new kipod::GLRenderLayout(*layout);
-//        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
-//        ebo->primitive_ = GL_POINTS;
-//        normal_layout->ebo_ = ebo;
-//        normal_layout->sha_ = &shaders_["Normals Triangles"];
-//        boundingBox.AddLayout({"Normals Triangles", normal_layout});
-//    }
+    {
+        auto normal_layout = new kipod::GLRenderLayout(*layout);
+        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+        ebo->primitive_ = GL_POINTS;
+        normal_layout->ebo_ = ebo;
+        normal_layout->sha_ = &shaders_["Normals Triangles"];
+        boundingBox.AddLayout({"Normals Triangles", normal_layout});
+    }
 
-//    Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
-//    cam->createFrustum(); // Needed for very first Camera
-//    addCamera(cam);
-
-//    AddLight(kipod::RenderLight(LightSource::AMBIENT,
-//                                glm::vec4(0.0),
-//                                glm::vec4(0.1, 0.1, 0.1, 1.0)
-//                                ));
-//    AddLight(kipod::RenderLight(LightSource::DIFFUSE,
-//                                glm::vec4(10.0,1.0,0.0,1.0),
-//                                glm::vec4(0.2, 0.3, 0.6, 1.0)
-//                                ));
-//    AddLight(kipod::RenderLight(LightSource::SPECULAR,
-//                                glm::vec4(0.0,1.0,10.0,1.0),
-//                                glm::vec4(1.0)
-//                                ));
+    framebuffer_ = kipod::RenderManager::addFrameBuffer();
+    texture_ = new Texture(_width, _height);
+    texture_->RenderToTexture2(framebuffer_->opengl_id_);
+    TextureManager::Add(texture_);
+    LOG_ENGINE("Scene Framebuffer id is {}", framebuffer_->opengl_id_);
 }
+
+
 
 void Scene::BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights)
 {
@@ -320,7 +311,8 @@ void Scene::draw()
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
 
-    kipod::RenderManager::Bind(pointsetToTexture_mode);
+    //kipod::RenderManager::Bind(pointsetToTexture_mode);
+    framebuffer_->Bind();
 
     for(auto point_set : point_sets_){
         glEnable( GL_BLEND );
