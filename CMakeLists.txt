@@ -29,6 +29,8 @@ file(GLOB stb
 
 add_executable(kipod
 
+  include/kipod.h
+
   include/core.h
   include/utils/mat.h
   include/utils/vec.h
