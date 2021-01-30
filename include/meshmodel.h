@@ -99,7 +99,7 @@ public:
     void reduceVertices();
 
 
-    void Init(bool textured);
+    void Init(bool textured, bool normals=true);
 
     void Draw(GLRenderer *glrenderer);
 

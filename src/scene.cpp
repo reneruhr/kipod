@@ -12,14 +12,25 @@ using namespace std;
 void Scene::Setup()
 {
     LOG_ENGINE("Seting up MeshModel Scene.");
+
+    Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
+    cam->createFrustum(); // Needed for very first Camera
+    addCamera(cam);
+
+    Light* light = new Light(LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
+    addLight(light);
+    Light* light1 = new Light(LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
+    addLight(light1);
+    Light* light2 = new Light(LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
+    addLight(light2);
+
     SetupUniforms();
 
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
     layout->sha_ = &shaders_["Colored Triangles"];
     boundingBox.AddLayout(name,layout);
-    boundingBox.init(_glrenderer);
-    boundingBox.Init(false);
+    boundingBox.Init(false,false);
     {
         auto normal_layout = new kipod::GLRenderLayout(*layout);
         auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
@@ -29,7 +40,7 @@ void Scene::Setup()
         boundingBox.AddLayout({"Normals Triangles", normal_layout});
     }
 
-    framebuffer_ = new kipod::FrameBuffer(width_, height_); //kipod::RenderManager::addFrameBuffer(width_, height_);
+    framebuffer_ = new kipod::FrameBuffer(width_, height_);
     LOG_ENGINE("Scene Framebuffer id is {}", framebuffer_->opengl_id_);
 }
 
@@ -136,21 +147,6 @@ void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* mod
 }
 
 
-
-//void Scene::Draw()
-//{
-//    kipod::RenderManager::Bind(0);
-//    BindLightUniforms(lights);
-//    shaders_["Textured Triangles"].SetUniform<float>("tex", 0.0f);
-//    for(auto& model : render_objects_){
-//        BindMatrixUniforms(*model, *cameras[activeCamera]);
-//        BindMaterialUniforms(*(model->mat_));
-//        model->Draw();
-//    }
-//}
-
-
-
 void Scene::loadOBJModel(string fileName, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
@@ -248,23 +244,7 @@ void Scene::init()
         _glrenderer->SetProgram(Lights());
         _glrenderer->SetProgramTex();
 	}
-    Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
-    cam->createFrustum(); // Needed for very first Camera
-    addCamera(cam);
 
-    Light* light = new Light(LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
-    addLight(light);
-    Light* light1 = new Light(LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
-    addLight(light1);
-    Light* light2 = new Light(LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
-    addLight(light2);
-}
-
-void Scene::drawBoundingBox()
-{
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    boundingBox.draw(_glrenderer);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 
@@ -383,10 +363,19 @@ void Scene::draw()
             static_cast<kipod::RenderObject*>(model)->Draw("Normals Triangles");
         }
 		if(box_mode){
-                _glrenderer->useProgram(1);
-				mvp = camMatrix * model->getmTransformBBox();
-                _glrenderer->SetUniformMVP(mvp);
-                drawBoundingBox();
+            mat4 box = model->getmTransformBBox();
+            mat4 camc = cameras[activeCamera]->getcTransform();
+            glm::mat4 mv = MakeGLM(camc) * MakeGLM(box);
+            mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
+            glm::mat4 p = MakeGLM(camp);
+
+            shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
+            shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
+
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
 	if(camera_mode){

@@ -47,6 +47,7 @@ void kipod::GLRenderLayout::Unbind()
     vao_->Unbind();
 }
 
+
 void kipod::RenderObject::Draw(kipod::RenderLayout *layout)
 {
     if(layout)  layout->Draw();
@@ -89,6 +90,35 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* verti
 }
 
 
+void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices_vector)
+{
+    LOG_ENGINE("Call: Colored Triangles Without Normals Setup");
+    ebo_ = new kipod::ElementsBuffer((void*)indices_vector->data(), indices_vector->size(), indices_vector->size()*sizeof(unsigned int));
+    ebo_->Set();
+
+    vao_ = new kipod::VertexAttributeObject;
+    vao_->Set();
+
+    unsigned int buffersize = vertices->size()*sizeof(vec3);
+    vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+    vbo_->Add(0, buffersize, (void*)vertices->data());
+
+    vbo_->Bind();
+
+    kipod::Attribute* att_v = new kipod::Attribute(0,3,sizeof(vec3),0);
+
+    vao_->Add(att_v);
+    vao_->SetAttributes();
+
+    Unbind();
+}
+
+
+
+
+
+
+
 
 void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices)
 {
@@ -117,11 +147,6 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
 
     Unbind();
 }
-
-
-
-
-
 
 
 

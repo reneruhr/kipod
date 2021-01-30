@@ -20,6 +20,7 @@ protected:
     std::vector<RenderLight*> lights_;
 
     unsigned int width_,height_;
+    entt::registry registry;
 
 public:
     RenderScene() = default;

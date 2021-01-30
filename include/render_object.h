@@ -104,6 +104,7 @@ public:
     virtual void Setup() override;
     void Unbind();
 
+    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices);
     void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
                                const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);

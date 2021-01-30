@@ -272,7 +272,7 @@ void MeshModel::calculateNormals(){
 
 
 
-void MeshModel::Init(bool textured)
+void MeshModel::Init(bool textured, bool normals)
 {
     if(textured){
         CreateTriangleVector();
@@ -281,10 +281,13 @@ void MeshModel::Init(bool textured)
         //    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
         auto layout = Layout("Textured Triangles");
         static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_, &triangles_indices_);
-    }else{
+    }else if(normals){
         auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
         layout->SetupColoredTriangles(&vertices_vector,&indices_vector,
                                                &normals_vector, &nindices_vector);
+    }else{
+        auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
+        layout->SetupColoredTriangles(&vertices_vector,&indices_vector);
     }
 
 }
