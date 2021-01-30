@@ -24,7 +24,7 @@ GUI::~GUI()
     ImGui::DestroyContext();
 }
 
-void GUI::init(Window *window)
+void GUI::init(kipod::Window *window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -43,8 +43,6 @@ void GUI::init(Window *window)
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->_window, true);
     ImGui_ImplOpenGL3_Init(window->glsl_version);
-
-
 
 
 
@@ -80,12 +78,10 @@ void GUI::init(Window *window)
     colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
     colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 
-
-
 }
 
 
-void GUI::Begin(Window* window){
+void GUI::Begin(kipod::Window* window){
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -167,7 +163,7 @@ void GUI::Begin(Window* window){
 
 }
 
-void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
+void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, kipod::Window* window)
 {
     ImGui::Begin("Modules");
 
@@ -177,11 +173,15 @@ void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
     ImGui::End();
 
-    ImGui::Begin("Viewport");
+    ImGui::Begin("Quasicrystal");
 
     unsigned int scene_texture = scene->SceneAsFramebuffer();
-    ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2{ GLOBAL_SCR_WIDTH*0.9f, GLOBAL_SCR_HEIGHT*0.9f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
+    ImVec2 viewport_size = ImGui::GetContentRegionAvail();
+    unsigned int x = static_cast<unsigned int>(viewport_size.x*1.2);
+    unsigned int y = static_cast<unsigned int>(viewport_size.y*1.2);
+    if(scene->width_ != x || scene->height_ != y)
+        scene->Resize(x, y);
+    ImGui::Image(reinterpret_cast<void*>(scene_texture), viewport_size, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
     ImGui::End();
 
@@ -189,7 +189,7 @@ void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
 }
 
-void GUI::End(Window* window)
+void GUI::End(kipod::Window* window)
 {
 
     ImGui::Begin("ImGUI Demo");
@@ -232,7 +232,7 @@ void GUI::drawYotamBirthday(Scene* scene){
 }
 
 
-void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
+void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, kipod::Window* window)
 {
     drawYotamBirthday(scene);
     if (ImGui::CollapsingHeader("Renderer")){
@@ -251,7 +251,7 @@ void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, Window* window)
 
 }
 
-void GUI::drawSoftRendererControl(Scene* scene, SoftRenderer* softrenderer, Window* window){
+void GUI::drawSoftRendererControl(Scene* scene, SoftRenderer* softrenderer, kipod::Window* window){
     if (ImGui::TreeNode("Software Renderer"))
         {
         softRenderScene(scene, window);
@@ -384,7 +384,7 @@ void GUI::selectLineAlgorithm(SoftRenderer* softrenderer){
     }
 }
 
-void GUI::softRenderScene(Scene* scene, Window* window){
+void GUI::softRenderScene(Scene* scene, kipod::Window* window){
     if(ImGui::Button("Activate CG Course Buffer")){
         scene->cg_active = !scene->cg_active;
         window->SplitScreen(scene->cg_active);
@@ -1021,7 +1021,7 @@ void GUI::drawTextureControl(Scene *scene)
         if(rendered_texturedOption && !scene->models.empty()){
             MeshModel* model = scene->models.back();
             if(model->modelTexturedData){
-                model->tex_ = TextureManager::Get(0);
+                model->tex_ = kipod::TextureManager::Get(0);
                 model->modelTexturedData->texture_ = *model->tex_;
             }// Has a Texture
         }//Yes and non-empty

@@ -44,23 +44,20 @@ class Scene : public Listener, public kipod::RenderScene{
     SoftRenderer *_softrenderer;
 
     vector<bool> camerasMode;
-    unsigned int _width,_height;
 
     PrimMeshModel boundingBox;
 
     void drawBoundingBox();
 
     kipod::FrameBuffer* framebuffer_;
-    Texture* texture_;
-
 protected:
 
 
 public:
     Scene(GLRenderer *renderer=nullptr, SoftRenderer *softrenderer=nullptr,
           unsigned int width=800, unsigned int height=600)
-        :_glrenderer(renderer), _softrenderer(softrenderer),
-          _width(width), _height(height), boundingBox(Cube)
+        : RenderScene(width, height), _glrenderer(renderer), _softrenderer(softrenderer),
+          boundingBox(Cube)
     {
 
     }
@@ -73,7 +70,8 @@ public:
     virtual void Setup() override;
     //virtual void Draw() override;
 
-    unsigned int SceneAsFramebuffer() { return texture_->id_; };
+    virtual void Resize(unsigned int w, unsigned int h) override { framebuffer_->Resize(w,h); kipod::RenderScene::Resize(w,h); };
+    unsigned int SceneAsFramebuffer() { return framebuffer_->FrameBufferAsTexture(); };
 
     void SetupUniforms();
 
@@ -149,7 +147,7 @@ public:
     void BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights);
     void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const Camera &camera);
     void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const Camera &camera);
-    void BindTextureUniforms(kipod::Shader& shader, const Texture *texture);
+    void BindTextureUniforms(kipod::Shader& shader, const kipod::Texture *texture);
     void BindNormalUniforms(kipod::Shader& shader, const float length);
     void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model);
     void SetUniformNormal(MeshModel *model, Camera *camera);
