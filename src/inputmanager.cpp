@@ -1,20 +1,20 @@
 #include "../include/inputmanager.h"
 #include "../include/eventmanager.h"
 #include "../include/core.h"
-#include "window.h"
+#include "render_window.h"
 InputManager::InputManager(EventManager *eventmanager) : eventmanager(eventmanager)
 {
 
 }
 
-void InputManager::init(Window* window){
+void InputManager::init(kipod::Window* window){
     window->eventmanager = eventmanager;
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     EventManager *eventmanager;
-    eventmanager = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window))->eventmanager;
+    eventmanager = reinterpret_cast<kipod::Window*>(glfwGetWindowUserPointer(window))->eventmanager;
 
     if (action == GLFW_PRESS){
         LOG_DEBUG("PUSHED BUTTON {}", key);

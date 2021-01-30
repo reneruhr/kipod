@@ -45,7 +45,7 @@ void QuaCry::Init()
                           Bottom(), Top(),
                           Near(), Far() );
     //sideViewCamera_ = new Camera( -10, -10, -10, 10, -10, 10);
-    sideViewCamera_ = new Camera(45, float(scene_->_width)/scene_->_height, 0.1f, 200.0);
+    sideViewCamera_ = new Camera(45, float(scene_->width_)/scene_->height_, 0.1f, 200.0);
     sideViewCamera_->updateLookAt(vec3(30,0,0),vec3(60,0,0),vec3(0,0,1));
 
     scene_->addCamera(sideViewCamera_);

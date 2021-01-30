@@ -1,8 +1,10 @@
-#include "../include/window.h"
-#include "../include/core.h"
+#include "../include/render_window.h"
 
 unsigned int GLOBAL_SCR_WIDTH = 800;
 unsigned int GLOBAL_SCR_HEIGHT = 600;
+
+
+namespace kipod{
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -20,7 +22,6 @@ Window::~Window()
 
 int Window::init()
 {
-
     if(!glfwInit()){
         std::cout << "GLFW not initialized.";
         return -1;
@@ -32,10 +33,7 @@ int Window::init()
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-
-
     _window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
-
 
     if (_window == NULL)
     {
@@ -103,4 +101,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     bool splitScreen = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window))->splitScreen;
     GLOBAL_SCR_WIDTH = width/2 * ( splitScreen? 1 : 2 );
     GLOBAL_SCR_HEIGHT = height;
+}
+
 }

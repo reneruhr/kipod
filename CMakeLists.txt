@@ -44,8 +44,6 @@ add_executable(kipod
   include/utils/obj_parsing.h
 
 
-  include/texture.h
-  src/texture.cpp
 
   include/math/lattice.h
   src/math/lattice.cpp
@@ -82,6 +80,13 @@ add_executable(kipod
   include/primmeshmodel.h
   src/primmeshmodel.cpp
 
+
+
+
+
+
+
+
   include/render_engine.h
   src/render_engine.cpp
 
@@ -115,6 +120,15 @@ add_executable(kipod
   include/render_camera.h
   src/render_camera.cpp
 
+  include/render_texture.h
+  src/render_texture.cpp
+
+  include/render_window.h
+  src/render_window.cpp
+
+
+
+
   include/renderer.h
   src/renderer.cpp
 
@@ -140,8 +154,6 @@ add_executable(kipod
   include/guimathcontrol.h
   src/guimathcontrol.cpp
 
-  include/window.h
-  src/window.cpp
 
   include/graphicsalgorithms.h
   src/graphicsalgorithms.cpp

@@ -5,7 +5,7 @@
 #include "utils/mat.h"
 #include "GL/glew.h"
 #include "renderer.h"
-#include "texture.h"
+#include "render_texture.h"
 
 #include <render_object.h>
 
@@ -46,7 +46,7 @@ struct ModelData{
     unsigned int indices_size;
     bool hasNormals;
     bool hasTexture;
-    Texture texture_;
+    kipod::Texture texture_;
     //std::unordered_map<std::string, kipod::GLObject*> gl_objects_;
 
     ModelData(){}
@@ -147,7 +147,7 @@ public:
     void useProgram(Lights light);
 
     void SetProgramTex();
-    void SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, Texture* texture);
+    void SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, kipod::Texture* texture);
     void useProgramTex();
 
 

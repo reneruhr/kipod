@@ -1,14 +1,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "../include/core.h"
+#include "../include/kipod.h"
+
 #include "../include/scene.h"
-#include "../include/window.h"
 #include "../include/gui.h"
 #include "../include/inputmanager.h"
 #include "../include/eventmanager.h"
-
-#include "../include/render_manager.h"
-#include "../include/texture.h"
 
 #include "../include/graphicsalgorithms.h"
 
@@ -18,14 +15,6 @@
 #include "../include/math/polygon.h"
 
 
-
-#include "../vendor/imgui/imgui.h"
-#include "../vendor/imgui/imgui_impl_glfw.h"
-#include "../vendor/imgui/imgui_impl_opengl3.h"
-#include "../vendor/imgui/imguifilesystem.h"
-
-#include <chrono>
-#include <thread>
 
 
 #ifdef _DEBUG
@@ -39,7 +28,7 @@ Scene *scene;
 GLRenderer *renderer;
 SoftRenderer *softrenderer;
 GUI *gui;
-Window *window;
+kipod::Window *window;
 InputManager *inputmanager;
 EventManager *eventmanager;
 
@@ -143,12 +132,12 @@ void screenToPixel_y(double& y, int& q){
 int my_main( int argc, char **argv )
 {
 
-    window = new Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
+    window = new kipod::Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
     window->init();
 
 //    RenderManager::Init();
     auto gl_frame_buffer = kipod::RenderManager::addFrameBuffer();
-//    TextureManager::Init();
+//    kipod::TextureManager::Init();
 
 
     renderer = new GLRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
@@ -193,9 +182,9 @@ int my_main( int argc, char **argv )
 
    //????? Breaks Imgui Viewport
 //   auto quasi_framebuffer = kipod::RenderManager::addFrameBuffer();
-//   Texture* quasi_texture = new Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
+//   Texture* quasi_texture = new kipod::Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
 //   quasi_texture->RenderToTexture(quasi_framebuffer->opengl_id_);
-//   TextureManager::Add(quasi_texture);
+//   kipod::TextureManager::Add(quasi_texture);
 
 
 

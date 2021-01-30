@@ -2,7 +2,7 @@
 #define GUI_H
 
 
-#include "window.h"
+#include "render_window.h"
 #include "scene.h"
 #include "eventmanager.h"
 
@@ -19,29 +19,29 @@ class GUI
 public:
     GUI(EventManager* eventmanager) : eventmanager(eventmanager) {}
     ~GUI();
-    void init(Window *window);
-    void draw(Scene* scene, SoftRenderer* softrenderer, Window *window);
+    void init(kipod::Window *window);
+    void draw(Scene* scene, SoftRenderer* softrenderer, kipod::Window *window);
 
     vector<GUIModule*> gui_modules_;
 
     void AppendModule(GUIModule* module){ gui_modules_.push_back(module); }
 
 
-    void draw_menus(Scene *scene, SoftRenderer *softrenderer, Window *window);
+    void draw_menus(Scene *scene, SoftRenderer *softrenderer, kipod::Window *window);
     void drawCameraControl(Scene *scene);
     void drawModelControl(Scene *scene);
     void drawNormalControl(Scene *scene);
     void drawBBOXControl(Scene *scene);
-    void drawSoftRendererControl(Scene *scene, SoftRenderer *softrenderer, Window *window);
+    void drawSoftRendererControl(Scene *scene, SoftRenderer *softrenderer, kipod::Window *window);
     void drawMaterialsControl(Scene *scene);
     void drawLightControl(Scene *scene);
 
     void drawPointSetControl(Scene *scene);
     void drawYotamBirthday(Scene *scene);
     void drawTextureControl(Scene *scene);
-    void Begin(Window *window);
-    void Draw(Scene* scene, SoftRenderer* softrenderer, Window* window);
-    void End(Window* window);
+    void Begin(kipod::Window *window);
+    void Draw(Scene* scene, SoftRenderer* softrenderer, kipod::Window* window);
+    void End(kipod::Window* window);
 private:
     EventManager* eventmanager;
 
@@ -61,7 +61,7 @@ private:
     void drawBoundingBox(Scene *scene);
     void drawNormals(Scene *scene);
     void selectLineAlgorithm(SoftRenderer *softrenderer);
-    void softRenderScene(Scene *scene, Window *window);
+    void softRenderScene(Scene *scene, kipod::Window *window);
     void addMaterials(Scene *scene);
     void lightControl(Scene *scene);
     void showMaterials(Scene *scene);

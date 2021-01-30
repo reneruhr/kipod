@@ -1,26 +1,35 @@
 #ifndef RENDERSCENE_H
 #define RENDERSCENE_H
 
-#include "render_engine.h"
-#include <vector>
+#include "render_object.h"
+#include "render_camera.h"
+#include "render_light.h"
+#include "core.h"
 
 namespace kipod
 {
 
 class RenderScene
 {
+    friend class GUI;
+
+
 protected:
     std::vector<RenderObject*> render_objects_;
     std::vector<RenderCamera*> cameras_;
     std::vector<RenderLight*> lights_;
 
+    unsigned int width_,height_;
+
 public:
-    RenderScene(){}
+    RenderScene() = default;
+    RenderScene(unsigned int w, unsigned int h) : width_(w), height_(h) {}
     virtual ~RenderScene() = default;
 
     virtual void Setup(){}
     virtual void Draw(){}
 
+    virtual void Resize(unsigned int w, unsigned int h){ width_ = w; height_ = h; }
 
 
     void AddLight(RenderLight* light){
@@ -34,10 +43,6 @@ public:
     void AddModel(RenderObject* model){
         render_objects_.emplace_back(model);
     }
-
-
-
-
 
 };
 

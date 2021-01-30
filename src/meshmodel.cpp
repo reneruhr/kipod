@@ -38,7 +38,7 @@ MeshModel::MeshModel(string fileName, bool textured)
 	centerModel();
 
     if(textured){
-        tex_ = new Texture;
+        tex_ = new kipod::Texture;
 
         auto end = std::end(fileName);
         *(end-3) = 'p'; *(end-2) = 'n'; *(end-1) = 'g';

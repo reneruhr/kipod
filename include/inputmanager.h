@@ -3,14 +3,17 @@
 
 #include "eventmanager.h"
 
-class GLFWwindow;
+namespace kipod{
 class Window;
+}
+class GLFWwindow;
+
 
 class InputManager
 {
 public:
     InputManager(EventManager* eventmanager);
-    void init(Window *window);
+    void init(kipod::Window *window);
 private:
     EventManager* eventmanager;
 };

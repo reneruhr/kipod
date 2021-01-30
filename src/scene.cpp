@@ -29,10 +29,7 @@ void Scene::Setup()
         boundingBox.AddLayout({"Normals Triangles", normal_layout});
     }
 
-    framebuffer_ = kipod::RenderManager::addFrameBuffer();
-    texture_ = new Texture(_width, _height);
-    texture_->RenderToTexture2(framebuffer_->opengl_id_);
-    TextureManager::Add(texture_);
+    framebuffer_ = new kipod::FrameBuffer(width_, height_); //kipod::RenderManager::addFrameBuffer(width_, height_);
     LOG_ENGINE("Scene Framebuffer id is {}", framebuffer_->opengl_id_);
 }
 
@@ -50,7 +47,7 @@ void Scene::BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMater
     SetMaterialToShader(shader, material);
 }
 
-void Scene::BindTextureUniforms(kipod::Shader& shader, const Texture* texture)
+void Scene::BindTextureUniforms(kipod::Shader& shader, const kipod::Texture* texture)
 {
     shader.SetUniform<float>(texture->name_.c_str(), 0.0f);
     glActiveTexture(GL_TEXTURE0);
@@ -251,7 +248,7 @@ void Scene::init()
         _glrenderer->SetProgram(Lights());
         _glrenderer->SetProgramTex();
 	}
-    Camera* cam = new Camera(45, float(_width)/_height, 0.1f, 200.0);
+    Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
     addCamera(cam);
 
@@ -313,10 +310,11 @@ void Scene::draw()
 
     //kipod::RenderManager::Bind(pointsetToTexture_mode);
     framebuffer_->Bind();
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for(auto point_set : point_sets_){
         glEnable( GL_BLEND );
-
 
         mat4 basis = point_set->GetWorldTransform();
 
@@ -330,7 +328,6 @@ void Scene::draw()
             _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
         }
         point_set->Draw(_glrenderer);
-
 
         glEnable(GL_DEPTH_TEST);
         Shape* shape = (Shape*)(QuaCry*)point_set;

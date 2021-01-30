@@ -1,14 +1,12 @@
-// core.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #pragma once
 
 
 #include <stdio.h>
 #include <cmath>
 #include <cassert>
+
+#include <chrono>
+#include <thread>
 
 #include <algorithm>
 #include <vector>
@@ -25,13 +23,9 @@
 #include "utils/mat.h"
 #include "utils/log.h"
 
+#include "../vendor/entt/src/entt.hpp"
 
-
-//#include "initshader.h"
-//#include "scene.h"
-//#include "camera.h"
-//#include "renderer.h"
-//#include "softrenderer.h"
-
-
-
+#include "../vendor/imgui/imgui.h"
+#include "../vendor/imgui/imgui_impl_glfw.h"
+#include "../vendor/imgui/imgui_impl_opengl3.h"
+#include "../vendor/imgui/imguifilesystem.h"

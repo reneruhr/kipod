@@ -1,14 +1,15 @@
 #ifndef WINDOW_HELPER_H
 #define WINDOW_HELPER_H
 
-#include <string>
-#include "GL/glew.h"
-#include <GLFW/glfw3.h>
+#include <core.h>
 #include "inputmanager.h"
 #include "eventmanager.h"
 
 extern unsigned int GLOBAL_SCR_WIDTH;
 extern unsigned int GLOBAL_SCR_HEIGHT;
+
+namespace kipod
+{
 
 class Window
 {
@@ -38,4 +39,5 @@ public:
     unsigned Height(){ return _height; }
 };
 
+}
 #endif // WINDOW_H

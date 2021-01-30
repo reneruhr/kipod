@@ -10,7 +10,7 @@
 #include "render_shader.h"
 #include "render_manager.h"
 
-#include "texture.h"
+#include "render_texture.h"
 #include "render_primitive.h"
 #include "render_material.h"
 
