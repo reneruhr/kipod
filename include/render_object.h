@@ -1,10 +1,7 @@
 #ifndef RENDEROBJECT_H
 #define RENDEROBJECT_H
 
-#include <GL/glew.h>
-#include <glm/matrix.hpp>
-#include <vector>
-#include <string>
+#include "core.h"
 
 #include "render_buffer.h"
 #include "render_shader.h"
@@ -14,7 +11,7 @@
 #include "render_primitive.h"
 #include "render_material.h"
 
-#include "../include/utils/mat.h"
+
 
 struct GLVertex{
     vec3 position_;
@@ -108,7 +105,7 @@ public:
     void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
                                const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
-
+    void SetupShape(const std::vector<vec2>* vertices_);
 };
 
 

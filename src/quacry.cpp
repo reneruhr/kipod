@@ -52,7 +52,7 @@ void QuaCry::Init()
     scene_->addCamera(camera_, false);
     scene_->setLastCameraActive();
 
-    Shape::Init(scene_->_glrenderer);
+    Shape::Init();
     scene_->AddShape(this);
 
     LOG("Inititalized QuaCry");

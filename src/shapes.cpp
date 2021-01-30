@@ -15,12 +15,22 @@ Shape::Shape(Polygon polygon): Polygon(polygon)
 {    
 }
 
-void Shape::Init(GLRenderer *glrenderer)
+
+void Shape::Init()
 {
     //MakeFan();
-    shape_data_ =
-             glrenderer->LoadShape(&transformed_vertices_);
+    std::string name = "Shape";
+    auto layout = new kipod::GLRenderLayout;
+    layout->SetupShape(&transformed_vertices_);
+    AddLayout(name, layout);
+
 }
+
+void Shape::Draw()
+{
+    RenderObject::Draw("Shape");
+}
+
 
 void Shape::ScaleShape(const float scale)
 {
@@ -43,10 +53,5 @@ mat4 Shape::GetWorldTransform()
 }
 
 
-
-void Shape::Draw(GLRenderer *glrenderer)
-{
-    glrenderer->DrawShape(shape_data_);
-}
 
 

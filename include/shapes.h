@@ -13,14 +13,16 @@
 
 #include "math/polygon.h"
 
+#include "render_object.h"
 
-class Shape : public Polygon
+class Shape : public Polygon, public kipod::RenderObject
 {
 
     void MakeFan();
 
 protected:
     mat4 world_transform_;
+
 public:
     Shape(){};
     Shape(Polygon polygon);
@@ -30,8 +32,8 @@ public:
 
     vector<vec2> triangleFan_;
 
-    void Init(GLRenderer *glrenderer);
-    void Draw(GLRenderer *glrenderer);
+    void Init();
+    void Draw();
 
     void ScaleShape(const float scale);
     void Move(const vec2& translate);
@@ -41,6 +43,7 @@ public:
     void SetUniformMaterial(MaterialStruct &material);
     void SetUniformMaterial();
 
+    float depth_ = -0.1f;
 };
 
 #endif // SHAPES_H

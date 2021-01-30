@@ -148,6 +148,37 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
     Unbind();
 }
 
+void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
+{
+    LOG_ENGINE("Call: Shape Setup");
+
+    auto indices_vector = std::vector<unsigned int>(std::size(*vertices));
+    std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
+
+
+    ebo_ = new kipod::ElementsBuffer((void*)indices_vector.data(), indices_vector.size(), indices_vector.size()*sizeof(unsigned int));
+    ebo_->primitive_ = GL_TRIANGLE_FAN;
+    ebo_->Set();
+
+
+    vao_ = new kipod::VertexAttributeObject;
+    vao_->Set();
+
+    unsigned int buffersize = vertices->size()*sizeof(vec2);
+    vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+    vbo_->Add(0, buffersize, (void*)vertices->data());
+
+    vbo_->Bind();
+
+    kipod::Attribute* att_v = new kipod::Attribute(0,2,sizeof(vec2),0);
+
+    vao_->Add(att_v);
+    vao_->SetAttributes();
+
+    Unbind();
+
+}
+
 
 
 

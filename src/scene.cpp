@@ -3,9 +3,14 @@
 #include "../include/meshmodel.h"
 
 #include "../include/quacry.h"
-#include <glm/gtc/type_ptr.hpp>
+
 
 using namespace std;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//SETUP                          ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -24,7 +29,7 @@ void Scene::Setup()
     Light* light2 = new Light(LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
     addLight(light2);
 
-    SetupUniforms();
+    SetupShaders();
 
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
@@ -43,6 +48,281 @@ void Scene::Setup()
     framebuffer_ = new kipod::FrameBuffer(width_, height_);
     LOG_ENGINE("Scene Framebuffer id is {}", framebuffer_->opengl_id_);
 }
+
+
+
+
+void Scene::AddPointSet(PointSet *point_set)
+{
+    point_sets_.push_back(point_set);
+}
+
+void Scene::AddShape(Shape *shape)
+{
+    shapes_.push_back(shape);
+}
+
+void Scene::init()
+{
+    if(_glrenderer) {
+        _glrenderer->SetProgram();
+        _glrenderer->SetProgramWithNormals();
+        _glrenderer->SetProgramWithNormals_from_faces();
+
+        _glrenderer->SetProgram(QuasiCrystal());
+        _glrenderer->SetProgram(Lights());
+        _glrenderer->SetProgramTex();
+	}
+
+}
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//DRAWING                          ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void Scene::draw()
+{
+	mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
+	mat4 v = cameras[activeCamera]->getcTransform();
+	mat4 camMatrix = p*v;
+
+    //kipod::RenderManager::Bind(pointsetToTexture_mode);
+    framebuffer_->Bind();
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for(auto point_set : point_sets_){
+        glEnable( GL_BLEND );
+
+        mat4 basis = point_set->GetWorldTransform();
+
+        if(point_set->lattice_data_->qc.window == WindowType::Octagon){
+            _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
+            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
+        }
+        else if(point_set->lattice_data_->qc.window == WindowType::Box){
+            _glrenderer->useProgram(QuasiCrystal());
+            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_);
+            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
+        }
+        point_set->Draw(_glrenderer);
+
+        glEnable(GL_DEPTH_TEST);
+        Shape* shape = (Shape*)(QuaCry*)point_set;
+
+        shaders_["Shape"].Use();
+        SetShapeUniform(shape);
+        shape->Draw();
+
+        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
+        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, shape);
+        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
+        glDisable(GL_DEPTH_TEST);
+
+        glDisable( GL_BLEND );
+    }
+
+
+    kipod::RenderManager::Bind(0);
+
+    //Draw();
+	for(auto model : models){
+        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glEnable(GL_DEPTH_TEST);
+
+        if( texture_mode && model->HasLayout("Textured Triangles") ){
+            shaders_["Textured Triangles"].Use();
+           SetUniformTex(lights, cameras[activeCamera], model);
+           static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
+        }
+        else if((color_mode || emissive_mode )&& model->HasLayout("Colored Triangles")  ){
+            shaders_["Colored Triangles"].Use();
+             SetUniform(lights, cameras[activeCamera], model);
+            static_cast<kipod::RenderObject*>(model)->Draw("Colored Triangles");
+        }
+
+        glDisable(GL_DEPTH_TEST);
+
+        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        if(normals_mode && model->HasLayout("Normals Triangles") ){
+            shaders_["Normals Triangles"].Use();
+            SetUniformNormal(model, cameras[activeCamera]);
+            static_cast<kipod::RenderObject*>(model)->Draw("Normals Triangles");
+        }
+
+		if(box_mode){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            SetUniformBox(cameras[activeCamera], model);
+            static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+	}
+	if(camera_mode){
+        shaders_["Basic"].Use();
+		for(auto cam : cameras){
+			mat4 mvp = camMatrix * Translate((cam->getEye()));
+            shaders_["Basic"].SetUniform<glm::mat4>("mvp", MakeGLM(mvp));
+			cam->draw();
+		}
+	}
+	if(camera_frustum_mode){
+        shaders_["Basic"].Use();
+		for(auto cam : cameras){
+			mat4 mvp = camMatrix * Inverse(cam->getcTransform()) * Inverse(cam->getProjection(true));
+            shaders_["Basic"].SetUniform<glm::mat4>("mvp", MakeGLM(mvp));
+			cam->drawFrustum();
+		}
+	}
+}
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//SHADER  SETUP                             ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Scene::SetupShaders(){
+    SetupShaderTexturedTriangles();
+    SetupShaderColoredTriangles();
+    SetupShaderNormals();
+    void SetupShaderBasic();
+    SetupShaderShape();
+}
+
+void Scene::SetupShaderTexturedTriangles()
+{
+    shaders_.insert({"Textured Triangles", kipod::Shader("textures.vert.glsl", "textures.frag.glsl")});
+
+    shaders_["Textured Triangles"].AttachUniform<float>("tex");
+
+        LOG_ENGINE("Attaching Uniforms to Texture Shader");
+        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("v");
+        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("mv");
+        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("mv_normal");
+        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("projection");
+
+        AttachMaterialToShader(shaders_["Textured Triangles"]);
+
+        shaders_["Textured Triangles"].AttachUniform<glm::vec4>("cameraLocation");
+
+        for(int i = 0; i<3; ++i){
+            AttachLightToShader(shaders_["Textured Triangles"], i);
+        }
+}
+
+void Scene::SetupShaderColoredTriangles()
+{
+    shaders_.insert({"Colored Triangles", kipod::Shader("lights.vert.glsl",   "lights.frag.glsl")});
+
+    shaders_["Colored Triangles"].AttachUniform<float>("tex");
+
+        LOG_ENGINE("Attaching Uniforms to Shader Colored Triangles");
+        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("v");
+        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("mv");
+        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("mv_normal");
+        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("projection");
+
+        AttachMaterialToShader(shaders_["Colored Triangles"]);
+
+        shaders_["Colored Triangles"].AttachUniform<glm::vec4>("cameraLocation");
+
+        for(int i = 0; i<3; ++i){
+            AttachLightToShader(shaders_["Colored Triangles"], i);
+        }
+}
+
+void Scene::SetupShaderNormals()
+{
+    shaders_.insert({"Normals Triangles", kipod::Shader("normals.vert.glsl", "normals.frag.glsl", "normals.geom.glsl")});
+    auto shader = shaders_["Normals Triangles"];
+    shader.AttachUniform<float>("normal_length");
+    shader.AttachUniform<glm::mat4>("mv");
+    shader.AttachUniform<glm::mat4>("mv_normal");
+    shader.AttachUniform<glm::mat4>("projection");
+}
+
+void Scene::SetupShaderBasic()
+{
+    shaders_.insert({"Basic", kipod::Shader("basic.vert.glsl",   "basic.frag.glsl")});
+    shaders_["Basic"].AttachUniform<glm::mat4>("mvp");
+}
+
+void Scene::SetupShaderShape()
+{
+    shaders_.insert({"Shape", kipod::Shader("shape.vert.glsl",   "shape.frag.glsl")});
+    shaders_["Shape"].AttachUniform<float>("depth");
+    shaders_["Shape"].AttachUniform<glm::mat4>("transform");
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//SETTING UNIFORMS                             ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Scene::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model)
+{
+    auto shader = shaders_["Colored Triangles"];
+    BindLightUniforms(shader, lights);
+    BindMatrixUniformsForMesh(shader, *model, *camera);
+    BindMaterialUniforms(shader, *(model->mat_));
+}
+
+void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
+{
+    auto shader = shaders_["Normals Triangles"];
+    BindMatrixUniformsForMesh(shader, *model, *camera);
+    BindNormalUniforms(shader, model->normal_length);
+}
+
+void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
+{
+   auto shader = shaders_["Textured Triangles"];
+   BindTextureUniforms(shader, model->tex_);
+   BindLightUniforms(shader, lights);
+   BindMatrixUniformsForMesh(shader, *model, *camera);
+   BindMaterialUniforms(shader, *(model->mat_));
+}
+
+void Scene::SetUniformBox(Camera* camera, MeshModel* model)
+{
+    mat4 box = model->getmTransformBBox();
+    mat4 camc = cameras[activeCamera]->getcTransform();
+    glm::mat4 mv = MakeGLM(camc) * MakeGLM(box);
+    mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
+    glm::mat4 p = MakeGLM(camp);
+
+    shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
+    shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
+}
+
+void Scene::SetShapeUniform(Shape* shape)
+{
+    mat4 shape_matrix = shape->GetWorldTransform();
+    auto transform = MakeGLM(shape_matrix);
+
+    shaders_["Shape"].SetUniform<glm::mat4>("transform", transform);
+    shaders_["Shape"].SetUniform<float>("depth", shape->depth_);
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//BINDING UNIFORMS                          ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -122,29 +402,12 @@ void Scene::BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel& mo
 }
 
 
-void Scene::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model)
-{
-    auto shader = shaders_["Colored Triangles"];
-    BindLightUniforms(shader, lights);
-    BindMatrixUniformsForMesh(shader, *model, *camera);
-    BindMaterialUniforms(shader, *(model->mat_));
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//CAMERA    MODEL CONTROL                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
-{
-    auto shader = shaders_["Normals Triangles"];
-    BindMatrixUniformsForMesh(shader, *model, *camera);
-    BindNormalUniforms(shader, model->normal_length);
-}
 
-void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
-{
-   auto shader = shaders_["Textured Triangles"];
-   BindTextureUniforms(shader, model->tex_);
-   BindLightUniforms(shader, lights);
-   BindMatrixUniformsForMesh(shader, *model, *camera);
-   BindMaterialUniforms(shader, *(model->mat_));
-}
+
 
 
 void Scene::loadOBJModel(string fileName, bool textured)
@@ -181,7 +444,7 @@ void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
     model->setUniformMaterial();
-	models.push_back(model);
+    models.push_back(model);
 
     AddModel(model);
     std::string name = "Colored Triangles";
@@ -201,9 +464,15 @@ void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//CAMERA    MODEL CONTROL                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void Scene::addCamera(Camera *cam, bool projective)
-{  
-	cameras.push_back(cam);
+{
+    cameras.push_back(cam);
     camerasMode.push_back(projective);
 }
 
@@ -223,179 +492,53 @@ void Scene::addLight(Light *light)
     lights.push_back(light);
 }
 
-void Scene::AddPointSet(PointSet *point_set)
-{
-    point_sets_.push_back(point_set);
+
+Camera* Scene::getActiveCamera(){ return cameras[activeCamera];}
+
+MeshModel* Scene::getActiveModel(){ return models[activeModel]; }
+
+void Scene::moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up ){
+    if(numberOfCameras() <= camera_id) return;
+    Camera* cam = cameras[camera_id];
+    cam->updateLookAt( eye, at, up );
 }
 
-void Scene::AddShape(Shape *shape)
-{
-    shapes_.push_back(shape);
+void Scene::moveEyeOfCamera(int camera_id, const vec3& eye){
+    if(numberOfCameras() <= camera_id) return;
+    Camera* cam = cameras[camera_id];
+    cam->moveEye(eye);
 }
 
-void Scene::init()
-{
-    if(_glrenderer) {
-        _glrenderer->SetProgram();
-        _glrenderer->SetProgramWithNormals();
-        _glrenderer->SetProgramWithNormals_from_faces();
-
-        _glrenderer->SetProgram(QuasiCrystal());
-        _glrenderer->SetProgram(Lights());
-        _glrenderer->SetProgramTex();
-	}
-
+void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far){
+    if(numberOfCameras() <= camera_id) return;
+    Camera* cam =cameras[camera_id];
+    cam->Perspective(fovy, aspect, near, far);
+    needs_update = true;
 }
 
 
+void Scene::moveModel(int model_id, const vec3& translate){
+    if(numberOfModels() <= model_id) return;
+    MeshModel* model = models[model_id];
+    model->move(translate);
+    needs_update = true;
+}
 
-void Scene::SetupUniforms()
-{
-    shaders_.insert({"Textured Triangles", kipod::Shader("textures.vert.glsl", "textures.frag.glsl")});
-    shaders_.insert({"Colored Triangles", kipod::Shader("lights.vert.glsl",   "lights.frag.glsl")});
-
-    shaders_["Textured Triangles"].AttachUniform<float>("tex");
-    for(auto& [name, shader]: shaders_){
-        LOG_ENGINE("Attaching Uniforms to Shader {}", name);
-        shader.AttachUniform<glm::mat4>("v");
-        shader.AttachUniform<glm::mat4>("mv");
-        shader.AttachUniform<glm::mat4>("mv_normal");
-        shader.AttachUniform<glm::mat4>("projection");
-
-        AttachMaterialToShader(shader);
-
-        shader.AttachUniform<glm::vec4>("cameraLocation");
-
-        for(int i = 0; i<3; ++i){
-            AttachLightToShader(shader, i);
-        }
-    }
-
-    shaders_.insert({"Normals Triangles", kipod::Shader("normals.vert.glsl", "normals.frag.glsl", "normals.geom.glsl")});
-    auto shader = shaders_["Normals Triangles"];
-    shader.AttachUniform<float>("normal_length");
-    shader.AttachUniform<glm::mat4>("mv");
-    shader.AttachUniform<glm::mat4>("mv_normal");
-    shader.AttachUniform<glm::mat4>("projection");
+void Scene::lookAtModel(int camera_id, int model_id){
+    if(numberOfModels() <= model_id) return;
+    if(numberOfCameras() <= camera_id) return;
+    Camera* cam =cameras[camera_id];
+    MeshModel* model = models[model_id];
+    cam->updateAt(model->getCenter());
 }
 
 
 
 
-void Scene::draw()
-{
-	mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
-	mat4 v = cameras[activeCamera]->getcTransform();
-	mat4 camMatrix = p*v;
 
-    //kipod::RenderManager::Bind(pointsetToTexture_mode);
-    framebuffer_->Bind();
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    for(auto point_set : point_sets_){
-        glEnable( GL_BLEND );
-
-        mat4 basis = point_set->GetWorldTransform();
-
-        if(point_set->lattice_data_->qc.window == WindowType::Octagon){
-            _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
-            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
-        }
-        else if(point_set->lattice_data_->qc.window == WindowType::Box){
-            _glrenderer->useProgram(QuasiCrystal());
-            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_);
-            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
-        }
-        point_set->Draw(_glrenderer);
-
-        glEnable(GL_DEPTH_TEST);
-        Shape* shape = (Shape*)(QuaCry*)point_set;
-        mat4 shape_matrix = shape->GetWorldTransform();
-
-        _glrenderer->useProgram(Shape2d());
-        _glrenderer->SetUniform(Shape2d(), shape_matrix, shape);
-        shape->Draw(_glrenderer);
-
-        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
-        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, shape);
-        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
-        glDisable(GL_DEPTH_TEST);
-
-        glDisable( GL_BLEND );
-    }
-
-//    for(auto shape : shapes_){
-//        glEnable(GL_DEPTH_TEST);
-//        _glrenderer->useProgram(Shape2d());
-//        mat4 m = shape->GetWorldTransform();
-//        _glrenderer->SetUniform(Shape2d(), m);
-//        shape->Draw(_glrenderer);
-//        glDisable(GL_DEPTH_TEST);
-//    }
-
-    kipod::RenderManager::Bind(0);
-
-    //Draw();
-	for(auto model : models){
-
-		mat4 m = model->getmTransform();
-		mat4 mvp = camMatrix * m;
-
-        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glEnable(GL_DEPTH_TEST);
-        if( texture_mode && model->HasLayout("Textured Triangles") ){ 
-            shaders_["Textured Triangles"].Use();
-           SetUniformTex(lights, cameras[activeCamera], model);
-           static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
-        }
-        else if((color_mode || emissive_mode )&& model->HasLayout("Colored Triangles")  ){
-            shaders_["Colored Triangles"].Use();
-             SetUniform(lights, cameras[activeCamera], model);
-            static_cast<kipod::RenderObject*>(model)->Draw("Colored Triangles");
-        }
-        glDisable(GL_DEPTH_TEST);
-        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-        if(normals_mode && model->HasLayout("Normals Triangles") ){
-            shaders_["Normals Triangles"].Use();
-            SetUniformNormal(model, cameras[activeCamera]);
-            static_cast<kipod::RenderObject*>(model)->Draw("Normals Triangles");
-        }
-		if(box_mode){
-            mat4 box = model->getmTransformBBox();
-            mat4 camc = cameras[activeCamera]->getcTransform();
-            glm::mat4 mv = MakeGLM(camc) * MakeGLM(box);
-            mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
-            glm::mat4 p = MakeGLM(camp);
-
-            shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
-            shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
-
-
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-	}
-	if(camera_mode){
-        _glrenderer->useProgram(1);
-		for(auto cam : cameras){
-			mat4 mvp = camMatrix * Translate((cam->getEye()));
-            _glrenderer->SetUniformMVP(mvp);
-			cam->draw();
-		}
-	}
-	if(camera_frustum_mode){
-        _glrenderer->useProgram(1);
-		for(auto cam : cameras){
-			mat4 mvp = camMatrix * Inverse(cam->getcTransform()) * Inverse(cam->getProjection(true));
-            _glrenderer->SetUniformMVP(mvp);
-			cam->drawFrustum();
-		}
-	}
-}
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//SOFTRENDER                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene::drawSoft()
 {
@@ -438,44 +581,10 @@ void Scene::swapBuffers()
     _softrenderer->SwapBuffers();
 }
 
-Camera* Scene::getActiveCamera(){ return cameras[activeCamera];}
 
-MeshModel* Scene::getActiveModel(){ return models[activeModel]; }
-
-void Scene::moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up ){
-	if(numberOfCameras() <= camera_id) return;
-	Camera* cam = cameras[camera_id];
-	cam->updateLookAt( eye, at, up );
-}
-
-void Scene::moveEyeOfCamera(int camera_id, const vec3& eye){
-	if(numberOfCameras() <= camera_id) return;
-	Camera* cam = cameras[camera_id];
-	cam->moveEye(eye);
-}
-
-void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far){
-	if(numberOfCameras() <= camera_id) return;
-	Camera* cam =cameras[camera_id];
-	cam->Perspective(fovy, aspect, near, far);
-    needs_update = true;
-}
-
-
-void Scene::moveModel(int model_id, const vec3& translate){
-	if(numberOfModels() <= model_id) return;
-	MeshModel* model = models[model_id];
-	model->move(translate);
-    needs_update = true;
-}
-
-void Scene::lookAtModel(int camera_id, int model_id){
-	if(numberOfModels() <= model_id) return;
-	if(numberOfCameras() <= camera_id) return;
-	Camera* cam =cameras[camera_id];
-	MeshModel* model = models[model_id];
-	cam->updateAt(model->getCenter());
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//EVENTS                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 void Scene::processEvent(Event& event){

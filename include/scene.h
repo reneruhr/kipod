@@ -149,7 +149,18 @@ public:
     void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const Camera &camera);
     void BindTextureUniforms(kipod::Shader& shader, const kipod::Texture *texture);
     void BindNormalUniforms(kipod::Shader& shader, const float length);
+
     void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model);
     void SetUniformNormal(MeshModel *model, Camera *camera);
     void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model);
+    void SetUniformBox(Camera *camera, MeshModel *model);
+    void SetShapeUniform(Shape *shape);
+
+    void SetupShaders();
+        void SetupShaderBasic();
+        void SetupShaderNormals();
+        void SetupShaderColoredTriangles();
+        void SetupShaderTexturedTriangles();
+        void SetupShaderShape();
+
 };
