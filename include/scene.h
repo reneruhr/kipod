@@ -153,7 +153,7 @@ public:
     void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model);
     void SetUniformNormal(MeshModel *model, Camera *camera);
     void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model);
-    void SetUniformBox(Camera *camera, MeshModel *model);
+    void SetUniformBox(MeshModel *model);
     void SetShapeUniform(Shape *shape);
 
     void SetupShaders();

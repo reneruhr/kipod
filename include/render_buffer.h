@@ -16,9 +16,9 @@ class IBuffer{
     IBuffer() = default;
     IBuffer(unsigned int count, unsigned int size) : count_(count), size_(size){}
     virtual ~IBuffer() = default;
-    unsigned int id_;
-    unsigned int count_;
-    unsigned int size_;
+    unsigned int id_ = 0;
+    unsigned int count_ = 0;
+    unsigned int size_ = 0;
 };
 
 class Buffer : public IBuffer{
@@ -36,7 +36,7 @@ class ElementsBuffer : public Buffer
 {
 public:
     ElementsBuffer() = default;
-    //ElementsBuffer(const ElementsBuffer& elementbuffer) = default;
+    ElementsBuffer(const ElementsBuffer& elementbuffer) = default;
     ElementsBuffer(void* data, unsigned int count, unsigned int size, GLchar primitive=GL_TRIANGLES) : Buffer(data, count, size), primitive_(primitive) {}
 
     GLchar primitive_;
@@ -57,35 +57,10 @@ public:
     void Unbind(){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
+
 };
 
-class VertexBuffer : public Buffer
-{
-public:
-    VertexBuffer() = default;
-    VertexBuffer(void* data, unsigned int size) : Buffer(data, 0, size) { Set(); }
 
-    void Set()
-    {
-        LOG_ENGINE("Setting VertexBuffer");
-        glCreateBuffers(1, &this->id_);
-        glNamedBufferStorage(this->id_, size_, data_, GL_DYNAMIC_STORAGE_BIT);
-        //glBufferData(GL_ARRAY_BUFFER, this->size_, this->data_, GL_STATIC_DRAW);
-    }
-
-    void Add(unsigned int offset, unsigned int size, const void* data){
-        glNamedBufferSubData(this->id_, offset, size, data);
-    }
-
-    void Bind()
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, this->id_);
-    }
-
-    void Unbind(){
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-};
 
 
 class Attribute : public IBuffer
@@ -142,6 +117,46 @@ public:
     }
 };
 
+class VertexBuffer : public Buffer
+{
+public:
+    VertexBuffer() = default;
+    VertexBuffer(void* data, unsigned int count, unsigned int size, VertexAttributeObject* vao, GLenum  flag = GL_STATIC_DRAW) : Buffer(data, count, size) {
+        SetFixed(vao, flag);
+    }
+    VertexBuffer(void* data, unsigned int size) : Buffer(data, 0, size) {
+        Set();
+    }
 
+    void SetFixed(VertexAttributeObject* vao, GLenum  flag = GL_STATIC_DRAW){
+        LOG_ENGINE("Setting VertexBuffer");
+        glGenBuffers(1, &id_);
+        //glBindVertexArray(vao->id_);
+        glBindBuffer(GL_ARRAY_BUFFER, id_);
+        glBufferData(GL_ARRAY_BUFFER, size_, data_, flag);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //glBindVertexArray(0);
+    }
+
+    void Set(GLenum flag = GL_DYNAMIC_STORAGE_BIT)
+    {
+        LOG_ENGINE("Setting VertexBuffer");
+        glCreateBuffers(1, &this->id_);
+        glNamedBufferStorage(this->id_, size_, data_, flag);
+    }
+
+    void Add(unsigned int offset, unsigned int size, const void* data){
+        glNamedBufferSubData(this->id_, offset, size, data);
+    }
+
+    void Bind()
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, this->id_);
+    }
+
+    void Unbind(){
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+};
 }
 #endif // RENDER_BUFFER_H

@@ -6,8 +6,9 @@
 #include "math/lattice.h"
 #include "glrenderer.h"
 
+#include "render_object.h"
 
-class PointSet : public Lattice
+class PointSet : public Lattice, public kipod::RenderObject
 {
     friend class GLRenderer;
     friend class GUI;
@@ -20,8 +21,9 @@ public:
                 sample_size_[6],sample_size_[7]);
         LOG("...and basis {}", basis_);
     }
-    void Init(GLRenderer *glrenderer);
-    virtual void Draw(GLRenderer *glrenderer);
+
+    virtual void Init();
+    virtual void Draw();
     mat4 GetWorldTransform(){
         return world_transform_;
     }

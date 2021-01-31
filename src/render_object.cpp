@@ -5,28 +5,28 @@
 
 void kipod::GLRenderLayout::Draw()
 {
-    //glEnable(GL_DEPTH_TEST);
-
 //    if(sha_){
 //        sha_->Use();
 //    }
-
     if(tex_){
         glActiveTexture(GL_TEXTURE0);
         tex_->Bind();
     }
-
     vao_->Bind();
-    ebo_->Bind();
-    glDrawElements(ebo_->primitive_, ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+    if(ebo_->count_){
+        ebo_->Bind();
+        glDrawElements(ebo_->primitive_, ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+        ebo_->Unbind();
+    }else{
+        vbo_->Bind();
+        glDrawArrays(ebo_->primitive_, 0, vbo_->count_);
+        vbo_->Unbind();
+    }
     vao_->Unbind();
-    ebo_->Unbind();
 
 //    if(sha_){
 //        sha_->Unuse();
 //    }
-
-    //glDisable(GL_DEPTH_TEST);
 }
 
 void kipod::GLRenderLayout::Setup()
@@ -113,13 +113,6 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *verti
     Unbind();
 }
 
-
-
-
-
-
-
-
 void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices)
 {
     LOG_ENGINE("Call: Textured Triangles Setup");
@@ -155,11 +148,9 @@ void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
     auto indices_vector = std::vector<unsigned int>(std::size(*vertices));
     std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
 
-
     ebo_ = new kipod::ElementsBuffer((void*)indices_vector.data(), indices_vector.size(), indices_vector.size()*sizeof(unsigned int));
     ebo_->primitive_ = GL_TRIANGLE_FAN;
     ebo_->Set();
-
 
     vao_ = new kipod::VertexAttributeObject;
     vao_->Set();
@@ -167,21 +158,33 @@ void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
     unsigned int buffersize = vertices->size()*sizeof(vec2);
     vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
     vbo_->Add(0, buffersize, (void*)vertices->data());
-
     vbo_->Bind();
 
     kipod::Attribute* att_v = new kipod::Attribute(0,2,sizeof(vec2),0);
-
     vao_->Add(att_v);
     vao_->SetAttributes();
 
     Unbind();
-
 }
 
+void kipod::GLRenderLayout::SetupPointSet(const std::vector<vec4> *vertices)
+{
+    LOG_ENGINE("Call: PointSet Setup");
+
+    ebo_ = new kipod::ElementsBuffer();
+    ebo_->primitive_ = GL_POINTS;
+
+    vao_ = new kipod::VertexAttributeObject;
+    vao_->Set();
+
+    unsigned int buffersize = vertices->size()*sizeof(vec4);
+    vbo_ = new kipod::VertexBuffer((void*)vertices->data(), vertices->size(), buffersize, vao_);
+    vbo_->Bind();
 
 
+    kipod::Attribute* att_v = new kipod::Attribute(0,4,sizeof(vec4),0);
+    vao_->Add(att_v);
+    vao_->SetAttributes();
 
-
-
-
+    Unbind();
+}

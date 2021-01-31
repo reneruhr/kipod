@@ -85,12 +85,8 @@ public:
 
 
 class GLRenderLayout : public RenderLayout{
+
 public:
-//    GLRenderLayout() : RenderLayout()
-//    {
-//        LOG_ENGINE("Call: GLRenderLayout Constructor.");
-//    }
-    //GLRenderLayout(const GLRenderLayout& layout) = default;
 
     ElementsBuffer* ebo_ = nullptr;
     VertexAttributeObject* vao_ = nullptr;
@@ -106,6 +102,7 @@ public:
                                const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
     void SetupShape(const std::vector<vec2>* vertices_);
+    void SetupPointSet(const std::vector<vec4>* vertices);
 };
 
 

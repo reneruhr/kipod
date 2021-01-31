@@ -57,10 +57,6 @@ void Scene::AddPointSet(PointSet *point_set)
     point_sets_.push_back(point_set);
 }
 
-void Scene::AddShape(Shape *shape)
-{
-    shapes_.push_back(shape);
-}
 
 void Scene::init()
 {
@@ -93,7 +89,6 @@ void Scene::draw()
 	mat4 v = cameras[activeCamera]->getcTransform();
 	mat4 camMatrix = p*v;
 
-    //kipod::RenderManager::Bind(pointsetToTexture_mode);
     framebuffer_->Bind();
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,7 +107,7 @@ void Scene::draw()
             _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_);
             _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
         }
-        point_set->Draw(_glrenderer);
+        point_set->PointSet::Draw();
 
         glEnable(GL_DEPTH_TEST);
         Shape* shape = (Shape*)(QuaCry*)point_set;
@@ -161,7 +156,7 @@ void Scene::draw()
 
 		if(box_mode){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            SetUniformBox(cameras[activeCamera], model);
+            SetUniformBox(model);
             static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
@@ -297,7 +292,7 @@ void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* mod
    BindMaterialUniforms(shader, *(model->mat_));
 }
 
-void Scene::SetUniformBox(Camera* camera, MeshModel* model)
+void Scene::SetUniformBox(MeshModel* model)
 {
     mat4 box = model->getmTransformBBox();
     mat4 camc = cameras[activeCamera]->getcTransform();
@@ -403,7 +398,7 @@ void Scene::BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel& mo
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//CAMERA    MODEL CONTROL                              ///////////////////////////////////////////////////////
+//   MODEL CONTROL                              ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -465,8 +460,48 @@ void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
 
 
 
+void Scene::moveModel(int model_id, const vec3& translate){
+    if(numberOfModels() <= model_id) return;
+    MeshModel* model = models[model_id];
+    model->move(translate);
+    needs_update = true;
+}
+
+void Scene::lookAtModel(int camera_id, int model_id){
+    if(numberOfModels() <= model_id) return;
+    if(numberOfCameras() <= camera_id) return;
+    Camera* cam =cameras[camera_id];
+    MeshModel* model = models[model_id];
+    cam->updateAt(model->getCenter());
+}
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//CAMERA    MODEL CONTROL                              ///////////////////////////////////////////////////////
+//Shape   CONTROL                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Scene::AddShape(Shape *shape)
+{
+    shapes_.push_back(shape);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//LIGHT  CONTROL                              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Scene::addLight(Light *light)
+{
+    lights.push_back(light);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//CAMERA  CONTROL                              ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -487,10 +522,6 @@ void Scene::setLastCameraActive()
     activeCamera = cameras.size()-1;
 }
 
-void Scene::addLight(Light *light)
-{
-    lights.push_back(light);
-}
 
 
 Camera* Scene::getActiveCamera(){ return cameras[activeCamera];}
@@ -515,23 +546,6 @@ void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& asp
     cam->Perspective(fovy, aspect, near, far);
     needs_update = true;
 }
-
-
-void Scene::moveModel(int model_id, const vec3& translate){
-    if(numberOfModels() <= model_id) return;
-    MeshModel* model = models[model_id];
-    model->move(translate);
-    needs_update = true;
-}
-
-void Scene::lookAtModel(int camera_id, int model_id){
-    if(numberOfModels() <= model_id) return;
-    if(numberOfCameras() <= camera_id) return;
-    Camera* cam =cameras[camera_id];
-    MeshModel* model = models[model_id];
-    cam->updateAt(model->getCenter());
-}
-
 
 
 

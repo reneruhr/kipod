@@ -1,18 +1,23 @@
 #include "../include/pointset.h"
 
 
-void PointSet::Init(GLRenderer *glrenderer)
+void PointSet::Init()
 {
-    LOG("Init PointSet");
+    LOG_ENGINE("Initialize PointSet");
     MakeSample();
-    lattice_data_ = glrenderer->loadPoints(this);
+
+    std::string name = "PointSet";
+    auto layout = new kipod::GLRenderLayout;
+    layout->SetupPointSet(&sample_);
+    AddLayout(name, layout);
+
+    lattice_data_ =  std::make_shared<LatticeData>();
+    lattice_data_->size = size(sample_);
 }
 
-
-
-void PointSet::Draw(GLRenderer *glrenderer)
+void PointSet::Draw()
 {
-    glrenderer->drawPoints(lattice_data_);
+   RenderObject::Draw("PointSet");
 }
 
 
