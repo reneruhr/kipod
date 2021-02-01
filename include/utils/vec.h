@@ -303,6 +303,10 @@ struct vec3 {
 
     operator GLfloat* ()
 	{ return static_cast<GLfloat*>( &x ); }
+
+    operator glm::vec3() const {
+        return glm::make_vec3(&x);
+    }
 };
 
 //----------------------------------------------------------------------------
@@ -499,6 +503,10 @@ struct vec4 {
 
     operator GLfloat* ()
 	{ return static_cast<GLfloat*>( &x ); }
+
+    operator glm::vec4() const {
+        return glm::make_vec4(&x);
+    }
 };
 
 //----------------------------------------------------------------------------
