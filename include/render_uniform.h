@@ -39,21 +39,24 @@ public:
         return  glGetUniformLocation(program_, name_.c_str());
     }
 
-    void Set(const T& data)
+    void Set(const T& data, const int size = 1)
     {
         data_ = data;
         if constexpr (std::is_same_v<T, glm::mat4>)
-            glUniformMatrix4fv(location_, 1, GL_FALSE, glm::value_ptr(data_));
+            glUniformMatrix4fv(location_, size, GL_FALSE, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec4>)
-            glUniform4fv(location_, 1, glm::value_ptr(data_));
+            glUniform4fv(location_, size, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec3>)
-            glUniform3fv(location_, 1, glm::value_ptr(data_));
+            glUniform3fv(location_, size, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec2>)
-            glUniform2fv(location_, 1, glm::value_ptr(data_));
+            glUniform2fv(location_, size, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, float>)
             glUniform1f(location_, data_);
         else if constexpr (std::is_same_v<T, int>)
             glUniform1i(location_, data_);
+
+//        else if constexpr (std::is_same_v<T, std::vector<glm::vec2> >)
+//            glUniform2fv(location_, size, &data_[0][0]);
     }
 };
 

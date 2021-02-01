@@ -156,11 +156,16 @@ public:
     void SetUniformBox(MeshModel *model);
     void SetShapeUniform(Shape *shape);
 
+    void SetUniformInternal(Camera *camera, QuaCry *quacry);
+
     void SetupShaders();
         void SetupShaderBasic();
         void SetupShaderNormals();
         void SetupShaderColoredTriangles();
         void SetupShaderTexturedTriangles();
         void SetupShaderShape();
+
+        void SetupShaderPointSet();
+        void SetupShaderQuasi();
 
 };

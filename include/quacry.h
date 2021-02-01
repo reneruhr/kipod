@@ -71,7 +71,7 @@ public:
            WindowType type = WindowType::Box, Shape shape = Shape(Square()));
     QuaCry(Scene* scene);
 
-    void Init();
+    virtual void Init() override;
     virtual void Draw() override;
 
 

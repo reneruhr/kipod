@@ -35,7 +35,7 @@ QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathCont
 
 void QuaCry::Init()
 {
-    PointSet::Init(scene_->_glrenderer);
+    PointSet::Init();
     lattice_data_->qc.window = window_type_;
     lattice_data_->qc.shape = this;
 

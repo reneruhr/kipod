@@ -29,6 +29,10 @@ public:
         program_ = Program(vert, frag, geom);
     }
 
+    operator GLuint()  const {
+        return program_;
+    }
+
     void Use()
     {
         Shader::Use(program_);
@@ -65,15 +69,15 @@ public:
     }
 
     template <typename T>
-    void SetUniform(std::string name, const T& data){
+    void SetUniform(std::string name, const T& data, const int size = 1){
         auto search = uniforms_.find(name);
         if(search != end(uniforms_))
-            static_cast<Uniform<T>*>(search->second)->Set(data);
+            static_cast<Uniform<T>*>(search->second)->Set(data, size);
         else
         {
             LOG_ENGINE("Did not find uniform. Create a new one");
             Uniform<T>* uniform = new Uniform<T>(name, program_);
-            uniform->Set(data);
+            uniform->Set(data, size);
             uniforms_.insert({name, static_cast<IUniform*>(uniform)});
         }
     }

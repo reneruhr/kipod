@@ -110,15 +110,15 @@ void Scene::draw()
         point_set->PointSet::Draw();
 
         glEnable(GL_DEPTH_TEST);
-        Shape* shape = (Shape*)(QuaCry*)point_set;
 
+        Shape* shape = (Shape*)(QuaCry*)point_set;
         shaders_["Shape"].Use();
         SetShapeUniform(shape);
         shape->Draw();
 
-        _glrenderer->useProgramWindow(QuasiCrystal(WindowType::Octagon));
-        _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_, shape);
-        ((QuaCry*)point_set)->DrawWindow(_glrenderer);
+        shaders_["Quasi Internal"].Use();
+        SetUniformInternal(cameras[activeCamera], (QuaCry*)point_set);
+        point_set->PointSet::Draw();
         glDisable(GL_DEPTH_TEST);
 
         glDisable( GL_BLEND );
@@ -195,6 +195,47 @@ void Scene::SetupShaders(){
     SetupShaderNormals();
     void SetupShaderBasic();
     SetupShaderShape();
+    SetupShaderPointSet();
+
+    SetupShaderQuasi();
+
+}
+
+void Scene::SetupShaderQuasi(){
+
+    shaders_.insert({"Quasi Physical", kipod::Shader("inside_polygon.vert.glsl", "points.frag.glsl")});
+    shaders_.insert({"Quasi Internal", kipod::Shader("inside_polygon_window.vert.glsl", "points.frag.glsl")});
+    shaders_.insert({"Quasi Physical Texture", kipod::Shader("inside_polygon.vert.glsl", "renderToTexture.frag.glsl")});
+
+
+    shaders_["Quasi Physical"].AttachUniform<glm::mat4>("pv");
+    shaders_["Quasi Physical"].AttachUniform<glm::mat4>("transform");
+    shaders_["Quasi Physical"].AttachUniform<glm::vec2>("shape");
+    shaders_["Quasi Physical"].AttachUniform<float>("point_size");
+    shaders_["Quasi Physical"].AttachUniform<float>("alpha");
+    shaders_["Quasi Physical"].AttachUniform<float>("zdecay");
+    shaders_["Quasi Physical"].AttachUniform<float>("wdecay");
+    shaders_["Quasi Physical"].AttachUniform<glm::vec4>("zColor");
+    shaders_["Quasi Physical"].AttachUniform<glm::vec4>("wColor");
+
+
+
+    shaders_["Quasi Internal"].AttachUniform<float>("depth");
+    shaders_["Quasi Internal"].AttachUniform<glm::mat4>("shape_transform");
+
+    shaders_["Quasi Internal"].AttachUniform<glm::mat4>("pv");
+    shaders_["Quasi Internal"].AttachUniform<glm::mat4>("transform");
+    shaders_["Quasi Internal"].AttachUniform<glm::vec2>("shape");
+    shaders_["Quasi Internal"].AttachUniform<float>("point_size");
+    shaders_["Quasi Internal"].AttachUniform<float>("alpha");
+    shaders_["Quasi Internal"].AttachUniform<float>("zdecay");
+    shaders_["Quasi Internal"].AttachUniform<float>("wdecay");
+    shaders_["Quasi Internal"].AttachUniform<glm::vec4>("zColor");
+    shaders_["Quasi Internal"].AttachUniform<glm::vec4>("wColor");
+}
+
+void Scene::SetupShaderPointSet(){
+    shaders_.insert({"PointSet", kipod::Shader("points.vert.glsl", "points.frag.glsl")});
 }
 
 void Scene::SetupShaderTexturedTriangles()
@@ -261,6 +302,64 @@ void Scene::SetupShaderShape()
     shaders_["Shape"].AttachUniform<float>("depth");
     shaders_["Shape"].AttachUniform<glm::mat4>("transform");
 }
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//QUASICRYSTAL UNIFORMS                             ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+void Scene::SetUniformInternal(Camera* camera, QuaCry* quacry)
+{
+
+    LatticeData data;
+
+    auto shape_transform = quacry->Shape::GetWorldTransform();
+    auto shape_transform_glm  = MakeGLM(shape_transform);
+
+    auto camp = camera->getProjection(activeCamera);
+    auto camc = camera->getcTransform();
+    glm::mat4 p = MakeGLM(camp);
+    glm::mat4 v = MakeGLM(camc);
+
+    auto transform = quacry->PointSet::GetWorldTransform();
+    auto transform_glm = MakeGLM(transform);
+
+    vec4 colorw = {0.3f,0.3f,0.3f,1.0f}; // data.w_color_;
+    auto colorw_glm = MakeGLM(colorw);
+    vec4 colorz =  {0.3f,0.3f,0.3f,1.0f}; //data.z_color_;
+    auto colorz_glm = MakeGLM(colorz);
+
+
+    auto shader = shaders_["Quasi Internal"];
+    shader.SetUniform<float>("depth", data.depth_);
+    shader.SetUniform<glm::mat4>("shape_transform", shape_transform_glm);
+
+
+    shader.SetUniform<glm::mat4>("pv", p*v);
+    shader.SetUniform<glm::mat4>("transform", transform_glm);
+    //std::vector<glm::vec2> shape_vectors_glm = vec2vecToGLM(quacry->transformed_vertices_);
+    //shader.SetUniform< std::vector< glm::vec2 > >("shape", shape_vectors_glm, 8);
+    GLuint shape = glGetUniformLocation(shader, "shape");
+    glUniform2fv(shape, 8, &quacry->transformed_vertices_[0][0]);
+
+
+
+    shader.SetUniform<float>("point_size", data.point_size_window_);
+    shader.SetUniform<float>("alpha", 1.0f);
+    shader.SetUniform<float>("zdecay", data.z_decay_);
+    shader.SetUniform<float>("wdecay", data.w_decay_);
+    shader.SetUniform<glm::vec4>("zColor", colorz_glm);
+    shader.SetUniform<glm::vec4>("wColor", colorw_glm);
+}
+
+
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
