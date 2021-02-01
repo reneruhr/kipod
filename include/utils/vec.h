@@ -13,7 +13,12 @@
 #include <cmath>
 #include "GL/glew.h"
 
+#include <vector>
 #include <limits>
+
+#include <glm/matrix.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "log.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327
@@ -140,6 +145,12 @@ struct vec2 {
 
     operator GLfloat* ()
 	{ return static_cast<GLfloat*>( &x ); }
+
+
+    operator glm::vec2() const {
+        return glm::make_vec2(&x);
+    }
+
 };
 
 //----------------------------------------------------------------------------
@@ -165,6 +176,13 @@ GLfloat length( const vec2& v ) {
 inline
 vec2 normalize( const vec2& v ) {
     return v / length(v);
+}
+
+inline
+std::vector<glm::vec2> vec2vecToGLM(std::vector<vec2>& vecs){
+    std::vector<glm::vec2> new_vecs;
+    for(vec2& v : vecs) { new_vecs.emplace_back(glm::vec2(v)); }
+    return new_vecs;
 }
 
 //////////////////////////////////////////////////////////////////////////////

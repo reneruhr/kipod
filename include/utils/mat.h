@@ -152,7 +152,14 @@ class mat2 {
 
     operator GLfloat* ()
 	{ return static_cast<GLfloat*>( &_m[0].x ); }
+
+
 };
+
+
+
+
+
 
 //
 //  --- Non-class mat2 Methods ---
@@ -169,6 +176,30 @@ mat2 transpose( const mat2& A ) {
     return mat2( A[0][0], A[1][0],
 		 A[0][1], A[1][1] );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //----------------------------------------------------------------------------
 //
@@ -785,4 +816,8 @@ glm::vec4 MakeGLM(vec4& v){
 inline
 glm::vec3 MakeGLM(vec3& v){
     return glm::make_vec3(&v[0]);
+}
+inline
+glm::vec2 MakeGLM(vec2& v){
+    return glm::make_vec2(&v[0]);
 }
