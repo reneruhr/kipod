@@ -81,20 +81,6 @@ void Camera::Frustum( const float left, const float right,
 	Ortho( left, right, bottom, top, zNear, zFar );
 	perspectiveMatrix = orthogonalMatrix* pers;
 
-	// Also works:
-
-	// float mid_x = (left+right)/2;
-	// float mid_y = (bottom+top)/2;
-	// float mid_z = -(zNear+zFar)/2;
-
-	// float scale_x = 2/(right-left);
-	// float scale_y = 2/(top-bottom);
-	// float scale_z = 2/(zFar-zNear);
-	// perspectiveMatrix = mat4(vec4(zNear*scale_x, 0, 					-mid_x*scale_x, 0					),
-	//   				    	 vec4(0, 	   		zNear*scale_y, 			-mid_y*scale_y, 0					),
-	//   						 vec4(0, 	   		0, 		scale_z*mid_z, -scale_z*zFar*zNear  					),
-	//   						 vec4(0, 	   		0, 		-1, 				0									));
-
 }
 
 void Camera::Ortho(){

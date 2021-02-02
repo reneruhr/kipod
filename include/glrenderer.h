@@ -8,6 +8,8 @@
 #include "render_texture.h"
 
 #include <render_object.h>
+#include <render_camera.h>
+
 
 
 class Light;
@@ -20,23 +22,10 @@ class PointSet;
 class Shape;
 
 
-
-
 enum class WindowType{
     Box,
     Octagon
 };
-
-struct QuasiCrystal{
-    WindowType window;
-    Shape* shape;
-    QuasiCrystal(WindowType window = WindowType::Box): window(window){}
-};
-
-struct Shape2d{
-};
-
-class Lights{};
 
 struct ModelData{
     GLuint vbo,vao,ebo,
@@ -50,6 +39,12 @@ struct ModelData{
     //std::unordered_map<std::string, kipod::GLObject*> gl_objects_;
 
     ModelData(){}
+};
+
+struct QuasiCrystal{
+    WindowType window;
+    Shape* shape;
+    QuasiCrystal(WindowType window = WindowType::Box): window(window){}
 };
 
 struct LatticeData{
@@ -78,8 +73,6 @@ struct ShapeData{
     ShapeData(){}
 };
 
-
-
 struct LightGLGS{
     GLuint type;
     GLuint source;
@@ -87,97 +80,26 @@ struct LightGLGS{
     GLuint on;
 };
 
-
-
 using namespace std;
 class GLRenderer : public Renderer
 {
     unsigned int _width, _height;
 
-    vector< shared_ptr<ModelData> > models;
-    vector< shared_ptr<LatticeData> > lattices;
-    vector< shared_ptr<ShapeData> > shapes_;
-	unsigned int VBO, VAO, EBO, coord_VBO,coord_VAO;
-	unsigned int vbo_size = 2;
-	unsigned int vbo_total[2];
-	unsigned int vao_total[2];
-    GLuint program, program2, program3, programQuasi, programLights,
-           programQuasiOctagon, programShapeOctagon, programQuasiOctagonWindow,
-           programTex, programQuasiOctagonTexture;
-	GLuint matrix, matrix2, matrix3, normal_length;
+    std::unique_ptr<kipod::RenderObject> coordinate_axis_;
 
 public:
-    GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){}
+    GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){
+        SetupCoordinateAxis();
+    }
     ~GLRenderer(void){};
-	void Init();
 
-    shared_ptr<ModelData> loadTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                                        const std::vector<vec3>* normals=nullptr, const std::vector<unsigned int>* nindices=nullptr);
-    void drawTriangles(shared_ptr<ModelData> model);
-    void drawNormals(shared_ptr<ModelData> model);
-    void drawColoredTriangles(shared_ptr<ModelData> model);
-	void SetProgram();
-	void SetProgramWithNormals();
-	void SetProgramWithNormals_from_faces();
-
-    shared_ptr<LatticeData> loadPoints(PointSet* points);
-    void drawPoints(shared_ptr<LatticeData> lattice);
-    void drawPointsInWindow(shared_ptr<LatticeData> lattice);
-
-
-	void useProgram(int i);
-
-	void SetUniformMVP(mat4& mvp);
-	void SetUniformMVP(mat4& mvp, int i);
-	void SetUniformNormalLength(float x, int i);
-	void SetUniformMVP_Normal(mat4 p, mat4 v, mat4 m);
-	void SetUniformMVP_Normal_from_faces(mat4 p, mat4 v, mat4 m);
-
-    bool switchWireframeMode = true;
-
-    void SetProgram(QuasiCrystal quasi);
-    void useProgram(QuasiCrystal quasi);
-    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<LatticeData> data);
-    void SetUniform(QuasiCrystal quasi, mat4& pv, mat4& m, shared_ptr<LatticeData> data, Shape* shape);
-
-
-
-    void SetProgram(Lights lights);
-    void SetUniform(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera);
-    void useProgram(Lights light);
-
-    void SetProgramTex();
-    void SetUniformTex(mat4 &m, mat4 &v, mat4 &p, vector<Light *> &lights, MaterialStruct &material, Camera *camera, kipod::Texture* texture);
-    void useProgramTex();
-
-
-    shared_ptr<ModelData> loadColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices, const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
-
-    void initUniformBlock(shared_ptr<LatticeData> lattice_data);
-    void setUniformBlock(shared_ptr<LatticeData> lattice_data, std::vector<float> &window_size);
-
-    void setUniformBlock(shared_ptr<LatticeData> lattice_data, Shape* shape);
-
-
-
-    void DrawShape(shared_ptr<ShapeData> shape);
-    shared_ptr<ShapeData> LoadShape(vector<vec2> *vertices_vector_);
-    void useProgram(Shape2d shape);
-    void SetUniform(Shape2d shape, mat4 &m,  Shape* shape_qc);
-    void useProgramWindow(QuasiCrystal quasi);
-    void initUniformBlockWindow(shared_ptr<LatticeData> lattice_data);
-    shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
     void UpdatePoints(PointSet *points);
-
-
-
-
-    shared_ptr<ModelData> LoadGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
-    void DrawGLTriangles(shared_ptr<ModelData> model);
+    shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
+    void drawTriangles(shared_ptr<ModelData> model);
     void SwapPrograms();
-    void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
-    void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model, Scene *scene);
-    void SetUniformNormal(MeshModel *model, Scene *scene);
+
+    void DrawCoordinateAxis(shared_ptr<kipod::RenderCamera> camera);
+    void SetupCoordinateAxis();
 };
 
 

@@ -1,8 +1,7 @@
 #ifndef RENDERCAMERA_H
 #define RENDERCAMERA_H
 
-#include "render_shader.h"
-#include <string>
+#include "core.h"
 
 namespace kipod
 {
@@ -13,6 +12,13 @@ public:
     RenderCamera() = default;
     virtual ~RenderCamera() = default;
     RenderCamera(const float fovy, const float aspect, const float zNear, const float zFar){}
+
+    glm::mat4 view_matrix_;
+    glm::mat4 projection_matrix_;
+
+    operator glm::mat4 () const {
+        return projection_matrix_*view_matrix_;
+    }
 };
 
 

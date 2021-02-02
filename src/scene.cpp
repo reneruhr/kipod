@@ -58,21 +58,6 @@ void Scene::AddPointSet(PointSet *point_set)
 }
 
 
-void Scene::init()
-{
-    if(_glrenderer) {
-        _glrenderer->SetProgram();
-        _glrenderer->SetProgramWithNormals();
-        _glrenderer->SetProgramWithNormals_from_faces();
-
-        _glrenderer->SetProgram(QuasiCrystal());
-        _glrenderer->SetProgram(Lights());
-        _glrenderer->SetProgramTex();
-	}
-
-}
-
-
 
 
 
@@ -80,7 +65,6 @@ void Scene::init()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //DRAWING                          ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 void Scene::draw()
@@ -96,16 +80,14 @@ void Scene::draw()
     for(auto point_set : point_sets_){
         glEnable( GL_BLEND );
 
-        mat4 basis = point_set->GetWorldTransform();
-
         if(point_set->lattice_data_->qc.window == WindowType::Octagon){
-            _glrenderer->useProgram(QuasiCrystal(WindowType::Octagon));
-            _glrenderer->SetUniform(QuasiCrystal(WindowType::Octagon), camMatrix, basis, point_set->lattice_data_);
+            shaders_["Quasi Physical"].Use();
+            SetUniformPhysical(cameras[activeCamera], (QuaCry*)point_set);
         }
         else if(point_set->lattice_data_->qc.window == WindowType::Box){
-            _glrenderer->useProgram(QuasiCrystal());
-            _glrenderer->SetUniform(QuasiCrystal(), camMatrix, basis, point_set->lattice_data_);
-            _glrenderer->setUniformBlock(point_set->lattice_data_, ((QuaCry*)point_set)->window_size_);
+            SetupBlockUniform((QuaCry*)point_set); //NEEDS TO BE MOVED
+            shaders_["Quasi Physical Box"].Use();
+            SetUniformPhysicalBox(cameras[activeCamera], (QuaCry*)point_set);
         }
         point_set->PointSet::Draw();
 
@@ -119,28 +101,27 @@ void Scene::draw()
         shaders_["Quasi Internal"].Use();
         SetUniformInternal(cameras[activeCamera], (QuaCry*)point_set);
         point_set->PointSet::Draw();
-        glDisable(GL_DEPTH_TEST);
 
-        glDisable( GL_BLEND );
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
 
     kipod::RenderManager::Bind(0);
 
-    //Draw();
 	for(auto model : models){
         if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
         if( texture_mode && model->HasLayout("Textured Triangles") ){
-            shaders_["Textured Triangles"].Use();
+           shaders_["Textured Triangles"].Use();
            SetUniformTex(lights, cameras[activeCamera], model);
            static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
         }
         else if((color_mode || emissive_mode )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"].Use();
-             SetUniform(lights, cameras[activeCamera], model);
+            SetUniform(lights, cameras[activeCamera], model);
             static_cast<kipod::RenderObject*>(model)->Draw("Colored Triangles");
         }
 
@@ -201,9 +182,10 @@ void Scene::SetupShaders(){
 
 }
 
-void Scene::SetupShaderQuasi(){
-
+void Scene::SetupShaderQuasi()
+{
     shaders_.insert({"Quasi Physical", kipod::Shader("inside_polygon.vert.glsl", "points.frag.glsl")});
+    shaders_.insert({"Quasi Physical Box", kipod::Shader("points.vert.glsl", "points.frag.glsl")});
     shaders_.insert({"Quasi Internal", kipod::Shader("inside_polygon_window.vert.glsl", "points.frag.glsl")});
     shaders_.insert({"Quasi Physical Texture", kipod::Shader("inside_polygon.vert.glsl", "renderToTexture.frag.glsl")});
 
@@ -304,23 +286,19 @@ void Scene::SetupShaderShape()
 }
 
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //QUASICRYSTAL UNIFORMS                             ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
 void Scene::SetUniformInternal(Camera* camera, QuaCry* quacry)
 {
-
-    LatticeData data;
+    auto data = quacry->lattice_data_;
 
     auto shape_transform = quacry->Shape::GetWorldTransform();
     auto shape_transform_glm  = MakeGLM(shape_transform);
 
-    auto camp = camera->getProjection(activeCamera);
+    auto camp = camera->getProjection(camerasMode[activeCamera]);
     auto camc = camera->getcTransform();
     glm::mat4 p = MakeGLM(camp);
     glm::mat4 v = MakeGLM(camc);
@@ -335,9 +313,8 @@ void Scene::SetUniformInternal(Camera* camera, QuaCry* quacry)
 
 
     auto shader = shaders_["Quasi Internal"];
-    shader.SetUniform<float>("depth", data.depth_);
+    shader.SetUniform<float>("depth", data->depth_);
     shader.SetUniform<glm::mat4>("shape_transform", shape_transform_glm);
-
 
     shader.SetUniform<glm::mat4>("pv", p*v);
     shader.SetUniform<glm::mat4>("transform", transform_glm);
@@ -346,21 +323,55 @@ void Scene::SetUniformInternal(Camera* camera, QuaCry* quacry)
     GLuint shape = glGetUniformLocation(shader, "shape");
     glUniform2fv(shape, 8, &quacry->transformed_vertices_[0][0]);
 
-
-
-    shader.SetUniform<float>("point_size", data.point_size_window_);
+    shader.SetUniform<float>("point_size", data->point_size_window_);
     shader.SetUniform<float>("alpha", 1.0f);
-    shader.SetUniform<float>("zdecay", data.z_decay_);
-    shader.SetUniform<float>("wdecay", data.w_decay_);
+    shader.SetUniform<float>("zdecay", data->z_decay_);
+    shader.SetUniform<float>("wdecay", data->w_decay_);
     shader.SetUniform<glm::vec4>("zColor", colorz_glm);
     shader.SetUniform<glm::vec4>("wColor", colorw_glm);
 }
 
+void Scene::SetUniformPhysical(Camera *camera, QuaCry *quacry)
+{
+    auto data = quacry->lattice_data_;
+
+    auto camp = camera->getProjection(camerasMode[activeCamera]);
+    auto camc = camera->getcTransform();
+
+    auto shader = shaders_["Quasi Physical"];
+
+    GLuint shape = glGetUniformLocation(shader, "shape");
+    glUniform2fv(shape, 8, &quacry->transformed_vertices_[0][0]);
+
+    shader.SetUniform<glm::mat4>("pv", camp*camc);
+    shader.SetUniform<glm::mat4>("transform", quacry->PointSet::GetWorldTransform());
+    shader.SetUniform<float>("point_size", data->point_size_);
+    shader.SetUniform<float>("alpha", data->alpha_);
+    shader.SetUniform<float>("zdecay", data->z_decay_);
+    shader.SetUniform<float>("wdecay", data->w_decay_);
+    shader.SetUniform<glm::vec4>("zColor", data->z_color_);
+    shader.SetUniform<glm::vec4>("wColor", data->w_color_);
+}
+
+void Scene::SetUniformPhysicalBox(Camera *camera, QuaCry *quacry)
+{
+    auto data = quacry->lattice_data_;
+    auto window_size = quacry->window_size_;
+
+    auto camp = camera->getProjection(camerasMode[activeCamera]);
+    auto camc = camera->getcTransform();
+
+    auto shader = shaders_["Quasi Physical Box"];
+
+    shader.SetUniform<glm::mat4>("pv", camp*camc);
+    shader.SetUniform<glm::mat4>("transform", quacry->PointSet::GetWorldTransform());
 
 
 
-
-
+    glBindBuffer(GL_UNIFORM_BUFFER, data->u_buffer);
+    glBufferData(GL_UNIFORM_BUFFER, size(window_size)*sizeof(float), window_size.data(), GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, data->u_binding_point, data->u_buffer);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //SETTING UNIFORMS                             ///////////////////////////////////////////////////////
@@ -412,6 +423,16 @@ void Scene::SetShapeUniform(Shape* shape)
     shaders_["Shape"].SetUniform<float>("depth", shape->depth_);
 }
 
+void Scene::SetupBlockUniform(QuaCry *quacry){
+    auto data = quacry->lattice_data_;
+    auto shader = shaders_["Quasi Physical Box"];
+
+    data->u_block_index = glGetUniformBlockIndex(shader, "WindowBlock");
+    glUniformBlockBinding(shader, data->u_block_index, data->u_binding_point);
+
+    glGenBuffers(1, &data->u_buffer);
+    glBindBuffer(GL_UNIFORM_BUFFER, data->u_buffer);
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -521,7 +542,6 @@ void Scene::loadOBJModel(string fileName, bool textured)
     LOG_ENGINE("Add Layout name {}", name);
     model->AddLayout({name, layout});
     model->Init(foundTexture);
-    model->init(_glrenderer);
 
     if(!foundTexture){
         auto normal_layout = new kipod::GLRenderLayout(*layout);
@@ -546,7 +566,6 @@ void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
     layout->sha_ = &shaders_["Colored Triangles"];
     model->AddLayout({name, layout});
     model->Init(false);
-    model->init(_glrenderer);
     {
         auto normal_layout = new kipod::GLRenderLayout(*layout);
         auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);

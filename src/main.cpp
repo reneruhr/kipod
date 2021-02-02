@@ -144,7 +144,6 @@ int my_main( int argc, char **argv )
     softrenderer = new SoftRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
 
     scene = new Scene(renderer, softrenderer, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
-    scene->init();
     scene->Setup();
 
     eventmanager = new EventManager();

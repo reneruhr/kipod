@@ -130,5 +130,4 @@ public:
     void processEvent(Event& event) override;
     void setUniformMaterial(MaterialStruct &material);
     void setUniformMaterial();
-    void init(GLRenderer* glrenderer);
 };

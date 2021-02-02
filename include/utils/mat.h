@@ -628,7 +628,7 @@ class mat4 {
     }
 
     operator glm::mat4() { // MAKE CONST
-        return glm::transpose(glm::make_mat4( &_m[0][0] ));
+        return glm::make_mat4( &_m[0][0] );
     }
 
 };

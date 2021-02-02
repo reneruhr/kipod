@@ -67,58 +67,6 @@ MeshModel::~MeshModel(void)
 {
 }
 
-//void MeshModel::Setup()
-//{
-//    LOG_ENGINE("Call: Setup of a MeshModel");
-//    std::vector<vec3> vertices;
-//    std::vector<vec3> normals;
-//    std::vector<vec2> texture_coords;
-//    std::vector<unsigned int> indicies;
-
-//    unsigned int buffersize = 0;
-//    for(int i=0, n=indices_vector.size(); i<n; ++i){
-//                 indicies.emplace_back(i);
-//                 vertices.emplace_back(vertices_vector[indices_vector[i]]);
-//                 normals.emplace_back(normals_vector[nindices_vector[i]]);
-//    }
-
-//    unsigned int offset_n = vertices.size()*sizeof(vec3);
-//    unsigned int offset_t = offset_n + normals.size()*sizeof(vec3);
-//    buffersize+= offset_t;
-//    if(!texture_vector.empty()){
-//        LOG_ENGINE("Found UV coordinates for the MeshModel");
-//        for(int i=0, n=indices_vector.size(); i<n; ++i)
-//                     texture_coords.emplace_back(texture_vector[tindices_vector[i]]);
-//        buffersize+=texture_coords.size()*sizeof(vec2);
-//    }
-//    vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
-//    vbo_->Add(0, vertices.size()*sizeof(vec3), (void*)vertices.data());
-//    vbo_->Add(vertices.size()*sizeof(vec3), normals.size()*sizeof(vec3), (void*)normals.data());
-//    if(!texture_vector.empty())
-//        vbo_->Add(vertices.size()*sizeof(vec3)+normals.size()*sizeof(vec3), texture_coords.size()*sizeof(vec2), (void*)texture_coords.data());
-
-
-//    vao_ = new kipod::VertexAttributeObject;
-//    kipod::Attribute* att_v = new kipod::Attribute(0,3,0,0);
-//    kipod::Attribute* att_n = new kipod::Attribute(1,3,0,offset_n);
-//    vao_->Add(att_v);
-//    vao_->Add(att_n);
-
-//    if(!texture_vector.empty()){
-//        kipod::Attribute* att_t = new kipod::Attribute(2,2,0,offset_t);
-//        vao_->Add(att_t);
-//    }
-
-//    ebo_ = new kipod::ElementsBuffer((void*)indicies.data(), indicies.size(), indicies.size()*sizeof(unsigned int));
-
-//    if(texture){
-//        LOG_ENGINE("Found Texture for the MeshModel");
-//        tex_=texture;
-//    }//texture
-
-//    GLObject::Setup();
-
-//}
 
 void MeshModel::loadFile(string fileName)
 {
@@ -253,24 +201,6 @@ void MeshModel::calculateNormals(){
 
 }
 
-//void MeshModel::calculateNormals(){
-//     LOG_INFO("Calculate Normals from Faces");
-
-//     vector<vec3> face_normals;
-//    for(unsigned int k=0; k<indices_vector.size(); k+=3){
-//    vec3 w = normalize(
-//                        cross(
-//                                vertices_vector[indices_vector[k+1]]-vertices_vector[indices_vector[k]],
-//                                vertices_vector[indices_vector[k+2]]-vertices_vector[indices_vector[k+1]]
-//                              )
-//                      );
-//    nindices_vector.insert(nindices_vector.end(), {k/3, k/3, k/3});
-//    normals_vector.push_back(w);
-//    }
-
-//}
-
-
 
 void MeshModel::Init(bool textured, bool normals)
 {
@@ -290,15 +220,11 @@ void MeshModel::Init(bool textured, bool normals)
         layout->SetupColoredTriangles(&vertices_vector,&indices_vector);
     }
 
+
+    modelDataWired =make_shared<ModelData>(ModelData());
+    modelDataWired->indices_size = size(indices_vector);
+    if(!normals_vector.empty()) modelDataWired->hasNormals = false;
 }
-
-//void MeshModel::Draw(GLRenderer *glrenderer)
-//{
-//    glrenderer->DrawGLTriangles(modelTexturedData);
-//}
-
-
-
 
 
 void MeshModel::draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals)
@@ -319,34 +245,6 @@ void MeshModel::drawWithLight(SoftRenderer *softrenderer, const std::vector<Ligh
 }
 
 
-void MeshModel::init(GLRenderer* glrenderer)
-{
-
-//        auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
-//        layout->SetupColoredTriangles(&vertices_vector,&indices_vector,
-//                                               &normals_vector, &nindices_vector);
-
-
-    modelDataWired =
-                 glrenderer->loadTriangles(&vertices_vector,&indices_vector,
-                                           &normals_vector, &nindices_vector);
-}
-
-
-
-void MeshModel::draw(GLRenderer *glrenderer)
-{
-    glrenderer->drawTriangles(modelDataWired);
-}
-void MeshModel::drawNormals(GLRenderer *glrenderer)
-{
-    glrenderer->drawNormals(modelDataWired);
-}
-
-//void MeshModel::drawColored(GLRenderer *glrenderer)
-//{
-//    glrenderer->drawColoredTriangles(modelData);
-//}
 
 void MeshModel::move(const vec3& translate){
     _world_transform=Translate(translate)*_world_transform;

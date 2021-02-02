@@ -5,9 +5,6 @@
 
 void kipod::GLRenderLayout::Draw()
 {
-//    if(sha_){
-//        sha_->Use();
-//    }
     if(tex_){
         glActiveTexture(GL_TEXTURE0);
         tex_->Bind();
@@ -23,10 +20,6 @@ void kipod::GLRenderLayout::Draw()
         vbo_->Unbind();
     }
     vao_->Unbind();
-
-//    if(sha_){
-//        sha_->Unuse();
-//    }
 }
 
 void kipod::GLRenderLayout::Setup()
@@ -184,6 +177,32 @@ void kipod::GLRenderLayout::SetupPointSet(const std::vector<vec4> *vertices)
 
     kipod::Attribute* att_v = new kipod::Attribute(0,4,sizeof(vec4),0);
     vao_->Add(att_v);
+    vao_->SetAttributes();
+
+    Unbind();
+}
+
+void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors)
+{
+    LOG_ENGINE("Call: Lines Setup");
+
+    ebo_ = new kipod::ElementsBuffer();
+    ebo_->primitive_ = GL_LINES;
+
+    vao_ = new kipod::VertexAttributeObject;
+    vao_->Set();
+
+    unsigned int buffersize = vertices->size()*sizeof(vec3);
+    vbo_ = new kipod::VertexBuffer(nullptr, 2*buffersize);
+    vbo_->Add(0, buffersize, (void*)vertices->data());
+    vbo_->Add(buffersize, buffersize, (void*)colors->data());
+    vbo_->Bind();
+
+
+    kipod::Attribute* att_v = new kipod::Attribute(0,3,sizeof(vec3),0);
+    vao_->Add(att_v);
+    kipod::Attribute* att_c = new kipod::Attribute(1,3,sizeof(vec3),0);
+    vao_->Add(att_c);
     vao_->SetAttributes();
 
     Unbind();

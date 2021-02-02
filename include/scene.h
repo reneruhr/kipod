@@ -100,13 +100,7 @@ public:
 	void init();
 	void draw();
 	void drawDemo();
-//	void drawLine(int p[2], int q[2]);
-//    void drawLineDDA(int p[2], int q[2]) { _softrenderer->drawLineDDA(p,q);}
-//    void drawLineMidpoint(int p[2], int q[2]) { _softrenderer->drawLineMidpoint(p,q);}
-//    void drawLineBresenheim(int p[2], int q[2]) { _softrenderer->drawLineBresenheim(p,q);}
 
-//	void drawTestTriangle();
-//    void drawTestTriangle2();
 	void clearBuffer();
 	void swapBuffers();
 
@@ -156,7 +150,12 @@ public:
     void SetUniformBox(MeshModel *model);
     void SetShapeUniform(Shape *shape);
 
+
+
     void SetUniformInternal(Camera *camera, QuaCry *quacry);
+    void SetUniformPhysical(Camera *camera, QuaCry *quacry);
+    void SetUniformPhysicalBox(Camera *camera, QuaCry *quacry);
+
 
     void SetupShaders();
         void SetupShaderBasic();
@@ -167,5 +166,8 @@ public:
 
         void SetupShaderPointSet();
         void SetupShaderQuasi();
+        void SetupBlockUniform(QuaCry *quacry);
+
+
 
 };

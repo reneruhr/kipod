@@ -11,6 +11,7 @@
 #include "../include/gui.h"
 
 
+
 QuaCry::QuaCry(Scene* scene, mat4 basis,
                std::vector< float > window_size,
                std::vector< int > sample_size,
@@ -225,10 +226,7 @@ void QuaCry::Draw()
     } //Quasicrystals
 }
 
-void QuaCry::DrawWindow(GLRenderer *glrenderer)
-{
-    glrenderer->drawPointsInWindow(lattice_data_);
-} // Draw
+// Draw
 
 
 

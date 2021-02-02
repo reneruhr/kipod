@@ -75,8 +75,6 @@ public:
     virtual void Draw() override;
 
 
-    void DrawWindow(GLRenderer *glrenderer);
-
     void SetOutsideVisibility(float alpha){
         lattice_data_->alpha_ = alpha;
     }
