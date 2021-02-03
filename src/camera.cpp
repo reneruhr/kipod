@@ -17,12 +17,19 @@ Camera::Camera(): RenderCamera(),  _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec
 		init();
 	}
 
-Camera::Camera( const float fovy, const float aspect, const float zNear, const float zFar): Camera(){
+Camera::Camera( const float fovy, const float aspect, const float zNear, const float zFar):
+                    RenderCamera(fovy, aspect, zNear, zFar), _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec3(0,1,0)){
+    updateLookAt();
+    init();
+
     Perspective(fovy, aspect, zNear, zFar);
     Ortho();
 }
 
-Camera::Camera( const float left, const float right, const float bottom, const float top, const float zNear, const float zFar ) : Camera(){
+Camera::Camera( const float left, const float right, const float bottom, const float top, const float zNear, const float zFar )
+    : kipod::RenderCamera(left, right, bottom, top, zNear,  zFar), _eye(vec3(0,0,0)),	_at(vec3(0,0,-1)),	_up(vec3(0,1,0)){
+    updateLookAt();
+    init();
     Ortho(left, right, bottom, top, zNear,  zFar);
 }
 
@@ -101,6 +108,7 @@ void Camera::updateLookAtInternal(){
 						vec4(w,-dot(_eye,w)),
                         vec4(vec3(0.0f))
 		);
+        kipod::RenderCamera::LookAt(_eye, -_at, _up);
 }
 
 
@@ -109,6 +117,7 @@ void Camera::updateLookAt(const vec3 eye, const vec3 at, const vec3 up){
 	_at=at; 
 	_up=up; 
 	LookAt(_eye, _at, _up);
+
 }
 void Camera::updateLookAt(){ 
 	LookAt(_eye, _at, _up);

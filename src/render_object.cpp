@@ -201,7 +201,7 @@ void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const 
 
     kipod::Attribute* att_v = new kipod::Attribute(0,3,sizeof(vec3),0);
     vao_->Add(att_v);
-    kipod::Attribute* att_c = new kipod::Attribute(1,3,sizeof(vec3),0);
+    kipod::Attribute* att_c = new kipod::Attribute(1,3,sizeof(vec3),buffersize);
     vao_->Add(att_c);
     vao_->SetAttributes();
 

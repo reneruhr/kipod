@@ -18,6 +18,8 @@ void Scene::Setup()
 {
     LOG_ENGINE("Seting up MeshModel Scene.");
 
+    _glrenderer->SetupCoordinateAxis();
+
     Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
     addCamera(cam);
@@ -159,6 +161,8 @@ void Scene::draw()
 			cam->drawFrustum();
 		}
 	}
+
+    _glrenderer->DrawCoordinateAxis(make_shared<kipod::RenderCamera>(*cameras[activeCamera]));
 }
 
 
@@ -495,24 +499,25 @@ void Scene::BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel& mo
     mat4 camp = camera.getProjection(camerasMode[activeCamera]);
     mat4 camc = camera.getcTransform();
     glm::vec4  camLocation = MakeGLM(eye);
-    glm::mat4 p = MakeGLM(camp);
+    //glm::mat4 p = MakeGLM(camp);
+    glm::mat4 p = camera.projection_matrix_;
     glm::mat4 v = MakeGLM(camc);
 
-
-        shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
-        shader.SetUniform<glm::mat4>("v", v);
-        shader.SetUniform<glm::mat4>("projection", p);
-
+    shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
+    shader.SetUniform<glm::mat4>("v", v);
+    shader.SetUniform<glm::mat4>("projection", p);
 
     //auto m = model.Transform();
     mat4 mm = camc*model.getmTransform();
-    glm::mat4 mv = MakeGLM(mm);
+    //glm::mat4 mv = MakeGLM(mm);
+    glm::mat4 mv =  camera.view_matrix_ * glm::transpose(glm::mat4(model.getmTransform()));
+
     //glm::mat4  mv = v*m;
     glm::mat4 mv_normal = glm::transpose(glm::inverse(mv)); // order?
     //glm::mat4 mv_normal = glm::inverse(glm::transpose(mv)); // order?
 
-        shader.SetUniform<glm::mat4>("mv", mv);
-        shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
+    shader.SetUniform<glm::mat4>("mv", mv);
+    shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
 
 }
 
