@@ -311,7 +311,9 @@ TheCherno/Hazel
 #########################################################################
 
 --------Description of changes:--------
-   Using modified code snippets from  Hazel/Hazelnut (Log.h, Log.cpp, EditorLayer.cpp, ImGuiLayer.cpp, OpenGLFramebuffer.cpp) in Kipod (log.cpp, gui.cpp, rendermanager.cpp)
+   Hazel/Hazelnut Log.h, Log.cpp used in Kipod log.cpp
+   Hazel/EditorLayer.cpp, ImGuiLayer.cpp, OpenGLFramebuffer.cpp  used in Kipod gui.cpp, rendermanager.cpp
+   Hazel/Event.cpp, KeyEvent.h, Base.h used in Kipod engine_events.h, engine_input.h
 
 ----------------------------------------
 
