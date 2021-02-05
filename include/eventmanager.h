@@ -71,6 +71,7 @@ class Listener
 public:
     Listener(){}
     virtual void processEvent(Event& event){}
+    virtual void processEvent(Event* event){}
 };
 
 class EventManager

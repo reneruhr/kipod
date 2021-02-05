@@ -7,11 +7,14 @@ unsigned int GLOBAL_SCR_HEIGHT = 600;
 namespace kipod{
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
+
 
 Window::Window(unsigned int width, unsigned int height, std::string title)
     : _width(width), _height(height), _title(title)
 {
-
 }
 
 Window::~Window()
@@ -23,21 +26,21 @@ Window::~Window()
 int Window::init()
 {
     if(!glfwInit()){
-        std::cout << "GLFW not initialized.";
+        LOG_ENGINE("GLFW not initialized.");
         return -1;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     _window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
 
     if (_window == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        LOG_ENGINE("Failed to create GLFW window.");
         glfwTerminate();
         return -1;
     }
@@ -60,11 +63,12 @@ int Window::init()
     GLenum err = glewInit();
     if (GLEW_OK != err)
     {
-        /* Problem: glewInit failed, something is seriously wrong. */
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-        /*		...*/
+        LOG_ENGINE("Glew Error: {}", glewGetErrorString(err));
     }
-    fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+    LOG_ENGINE("Status: Using GLEW {}", glewGetString(GLEW_VERSION));
+
+
+    Signup();
 
     return 0;
 }
@@ -95,12 +99,21 @@ void Window::SplitScreen(bool active)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     //glViewport(0, 0, width, height);
     bool splitScreen = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window))->splitScreen;
     GLOBAL_SCR_WIDTH = width/2 * ( splitScreen? 1 : 2 );
     GLOBAL_SCR_HEIGHT = height;
 }
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    Input::KeyBoard(key, scancode, action, mods);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+
+}
+
 
 }

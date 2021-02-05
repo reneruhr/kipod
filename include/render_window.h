@@ -1,25 +1,20 @@
-#ifndef WINDOW_HELPER_H
-#define WINDOW_HELPER_H
+#pragma once
 
 #include <core.h>
-#include "inputmanager.h"
-#include "eventmanager.h"
+#include "engine_input.h"
+#include "engine_events.h"
 
 extern unsigned int GLOBAL_SCR_WIDTH;
 extern unsigned int GLOBAL_SCR_HEIGHT;
 
-namespace kipod
-{
 
-class Window
+namespace kipod{
+
+class Window : public Listener
 {
     unsigned int _width, _height;
     std::string _title;
 
-//    void resize(unsigned int width, unsigned int height){
-//        _width=width;
-//        _height=height;
-//    }
 
 public:
     Window(unsigned int width, unsigned int height, std::string title);
@@ -30,14 +25,26 @@ public:
     bool windowShouldClose();
     void updateWindow();
 
-    EventManager* eventmanager;
-
     void SplitScreen(bool active);
     bool splitScreen = false;
 
     unsigned Width(){ return _width; }
     unsigned Height(){ return _height; }
+
+    bool CloseWindow(KeyPressedEvent& e) {
+        if(e.GetKeyCode() == Key::Escape)
+            glfwSetWindowShouldClose(_window, true);
+        return false;
+    }
+
+    LISTENER_SIGNUP(EventCategoryKeyboard)
+    virtual bool Receive(std::shared_ptr<Event> event) override{
+
+        return Process<KeyPressedEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
+
+    }
+
 };
 
 }
-#endif // WINDOW_H
+

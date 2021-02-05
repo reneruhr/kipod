@@ -14,7 +14,7 @@
 
 #include "../include/math/polygon.h"
 
-
+#include "../include/engine_events.h"
 
 
 #ifdef _DEBUG
@@ -22,7 +22,6 @@
 #endif
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
-
 
 Scene *scene;
 GLRenderer *renderer;
@@ -52,7 +51,6 @@ float translation_stepsize = 1.0;
 int p[2];
 int q[2];
 
-static bool first_point,second_point = false;
 
 extern unsigned int GLOBAL_SCR_WIDTH;
 extern unsigned int GLOBAL_SCR_HEIGHT;
@@ -93,32 +91,6 @@ void display()
 
 }
 
-void reshape( int width, int height )
-{
-//update the renderer's buffers
-}
-
-void mouse(int button, int state, int x, int y)
-{
-
-}
-
-void motion(int x, int y)
-{
-	// calc difference in mouse movement
-	int dx=x-last_x;
-	int dy=y-last_y;
-	// update last x,y
-	last_x=x;
-	last_y=y;
-}
-
-void processInput(GLFWwindow *window)
-{
-
-}
-
-static double x,y;
 
 void screenToPixel_x(double& x, int& p){
 	p = (int)(x);
@@ -131,7 +103,6 @@ void screenToPixel_y(double& y, int& q){
 
 int my_main( int argc, char **argv )
 {
-
     window = new kipod::Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
     window->init();
 
@@ -153,13 +124,10 @@ int my_main( int argc, char **argv )
     gui->init(window);
 
 
-    inputmanager = new InputManager(eventmanager);
-    inputmanager->init(window);
+//    inputmanager = new InputManager(eventmanager);
+//    inputmanager->init(window);
 
     mat4 square_root = transpose(MinkowskiEmbedding(2).Embedding());
-
-
-
 
 //    QuaCry* quacry = new QuaCry(scene,
 //                                amman_benker,
@@ -222,6 +190,7 @@ int my_main( int argc, char **argv )
 
         window->updateWindow();
         eventmanager->process();
+        kipod::Events::Process();
 
 
     }
