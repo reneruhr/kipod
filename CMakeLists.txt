@@ -44,7 +44,6 @@ add_executable(kipod
   include/utils/obj_parsing.h
 
 
-
   include/math/lattice.h
   src/math/lattice.cpp
 
@@ -81,10 +80,13 @@ add_executable(kipod
   src/primmeshmodel.cpp
 
 
+  include/engine_input.h
+  src/engine_input.cpp
 
+  include/engine_events.h
+  src/engine_events.cpp
 
-
-
+  include/utils/key_table.h
 
 
   include/render_engine.h
