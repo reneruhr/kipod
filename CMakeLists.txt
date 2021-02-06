@@ -86,6 +86,9 @@ add_executable(kipod
   include/engine_events.h
   src/engine_events.cpp
 
+  include/engine_controls.h
+  src/engine_controls.cpp
+
   include/utils/key_table.h
 
 
@@ -128,6 +131,9 @@ add_executable(kipod
   include/render_window.h
   src/render_window.cpp
 
+  include/render_gui.h
+  src/render_gui.cpp
+
 
 
 
@@ -155,6 +161,7 @@ add_executable(kipod
 
   include/guimathcontrol.h
   src/guimathcontrol.cpp
+
 
 
   include/graphicsalgorithms.h

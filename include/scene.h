@@ -20,18 +20,25 @@
 #include "render_object.h"
 #include "render_scene.h"
 #include "render_material.h"
+#include "render_gui.h"
+
+#include "engine_events.h"
+#include "engine_input.h"
+#include "engine_controls.h"
+
 
 class QuaCry;
 
 using namespace std;
 
-class Scene : public Listener, public kipod::RenderScene{
+class Scene : public Listener, public kipod::Listener,
+        public kipod::Controls, public kipod::RenderScene{
 
     std::unordered_map<std::string, kipod::Shader> shaders_;
 
     friend class GUI;
+    friend class kipod::Gui;
     friend class QuaCry;
-
 
 
     vector<MeshModel*> models;
@@ -49,7 +56,7 @@ class Scene : public Listener, public kipod::RenderScene{
 
     void drawBoundingBox();
 
-    kipod::FrameBuffer* framebuffer_;
+
 protected:
 
 
@@ -70,8 +77,7 @@ public:
     virtual void Setup() override;
     //virtual void Draw() override;
 
-    virtual void Resize(unsigned int w, unsigned int h) override { framebuffer_->Resize(w,h); kipod::RenderScene::Resize(w,h); };
-    unsigned int SceneAsFramebuffer() { return framebuffer_->FrameBufferAsTexture(); };
+
 
     void SetupUniforms();
 
@@ -158,16 +164,26 @@ public:
 
 
     void SetupShaders();
-        void SetupShaderBasic();
-        void SetupShaderNormals();
-        void SetupShaderColoredTriangles();
-        void SetupShaderTexturedTriangles();
-        void SetupShaderShape();
+    void SetupShaderBasic();
+    void SetupShaderNormals();
+    void SetupShaderColoredTriangles();
+    void SetupShaderTexturedTriangles();
+    void SetupShaderShape();
 
-        void SetupShaderPointSet();
-        void SetupShaderQuasi();
-        void SetupBlockUniform(QuaCry *quacry);
+    void SetupShaderPointSet();
+    void SetupShaderQuasi();
+    void SetupBlockUniform(QuaCry *quacry);
 
 
+    virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
+    LISTENER_SIGNUP(kipod::EventCategoryKeyboard)
+    virtual void Receive(std::shared_ptr<kipod::Event> event) override{
 
+        Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(Scene::ProcessKeys));
+
+    }
+
+    void SetupOptions();
+
+    virtual void DrawGui() override;
 };

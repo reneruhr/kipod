@@ -2,8 +2,6 @@
 
 #include "core.h"
 
-
-
 namespace kipod{
 
 
@@ -23,7 +21,8 @@ enum EventCategory
     EventCategoryInput          =  1 << 1,
     EventCategoryKeyboard       =  1 << 2,
     EventCategoryMouse          =  1 << 3,
-    EventCategoryMouseButton    =  1 << 4
+    EventCategoryMouseButton    =  1 << 4,
+    EventCategoryRenderOptions  =  1 << 5
 };
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType()                 { return EventType::type; }\
@@ -56,8 +55,7 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e)
     return os << e.ToString();
 }
 
-
-#define LISTENER_SIGNUP(category_in)  virtual void Signup() override { Events::Signup(*this, category_in); LOG_ENGINE("Sign up for {}", #category_in);}
+#define LISTENER_SIGNUP(category_in)  virtual void Signup() override { kipod::Events::Signup(*this, category_in); LOG_ENGINE("Sign up for {}", #category_in);}
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 class Listener
@@ -65,15 +63,12 @@ class Listener
 public:
     virtual ~Listener() = default;
     virtual void Signup() = 0;
-    virtual bool Receive(std::shared_ptr<Event> event) = 0;
+    virtual void Receive(std::shared_ptr<kipod::Event> event) = 0;
 
     template<typename T, typename F>
-    bool Process(std::shared_ptr<Event> event, const F& func) {
+    void Process(std::shared_ptr<kipod::Event> event, const F& func) {
             if (event->GetEventType() == T::GetStaticType())
-            {
-                return func(static_cast<T&>(*event));
-            }
-            return false;
+               func(static_cast<T&>(*event));
     }
 };
 
@@ -82,7 +77,6 @@ public:
 class Events
 {
     Events(){}
-
 
 public:
     Events(Events const&) = delete;

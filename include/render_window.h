@@ -38,9 +38,9 @@ public:
     }
 
     LISTENER_SIGNUP(EventCategoryKeyboard)
-    virtual bool Receive(std::shared_ptr<Event> event) override{
+    virtual void Receive(std::shared_ptr<Event> event) override{
 
-        return Process<KeyPressedEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
+        Process<KeyPressedEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
 
     }
 

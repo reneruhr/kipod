@@ -1,3 +1,5 @@
+#pragma once
+
 #include "engine_events.h"
 #include "utils/key_table.h"
 

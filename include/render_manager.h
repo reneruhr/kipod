@@ -23,7 +23,7 @@ struct FrameBuffer{
             tex_ = std::make_shared<Texture>(width_, height_);
             tex_->RenderToTexture2(opengl_id_);
         } else
-            LOG_ENGINE("Created Empty FrameBuffer (count ={})", id_);
+            LOG_ENGINE("Created Empty FrameBuffer (count ={}), opengl id {}", id_, opengl_id_);
     }
 
     ~FrameBuffer(){

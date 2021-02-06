@@ -7,7 +7,7 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 {
    // EventManager *eventmanager;
     //eventmanager = reinterpret_cast<kipod::Window*>(glfwGetWindowUserPointer(window))->eventmanager;
-    LOG_ENGINE("Got key {}",key);
+    LOG_ENGINE("Got key {}", key);
     if (action == GLFW_PRESS)
 
         Events::Add<KeyPressedEvent>({Key(key),0});
@@ -16,9 +16,7 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
  //       LOG_DEBUG("PUSHED BUTTON {}", key);
  //       eventmanager->dispatch(Event(EventType::SceneUpdate, Mode::ON));
 //        switch ( key ) {
-//            case GLFW_KEY_ESCAPE:
-//                //glfwSetWindowShouldClose(window, true);
-//                break;
+
 //            case GLFW_KEY_W: {
 //                Event MoveCameraRight( EventType::TranslateCamera, MoveDirection::RIGHT);
 //                eventmanager->dispatch(MoveCameraRight);
@@ -63,22 +61,7 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 //                Event MoveModelBackward( EventType::TranslateModel, MoveDirection::BACKWARD);
 //                eventmanager->dispatch(MoveModelBackward);
 //                break;}
-//            case GLFW_KEY_SPACE:{
-//                eventmanager->dispatch(Event(EventType::WireframeMode, Mode::SWITCH));
-//                break;
-//                }
-//            case GLFW_KEY_N:
-//                eventmanager->dispatch(Event(EventType::NormalMode, Mode::SWITCH));
-//                break;
-//            case GLFW_KEY_B:
-//                eventmanager->dispatch(Event(EventType::BoxMode, Mode::SWITCH));
-//            break;
-//            case GLFW_KEY_C:
-//                eventmanager->dispatch(Event(EventType::CameraMode, Mode::SWITCH));
-//            break;
-//            case GLFW_KEY_X:
-//                eventmanager->dispatch(Event(EventType::ClippingMode, Mode::SWITCH));
-//            break;
+
 
 ////            case GLFW_KEY_F5:{
 ////                static bool debugmode = true;

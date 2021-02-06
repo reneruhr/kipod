@@ -85,11 +85,10 @@ class GLRenderer : public Renderer
 {
     unsigned int _width, _height;
 
-    std::unique_ptr<kipod::RenderObject> coordinate_axis_;
+
 
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){
-        SetupCoordinateAxis();
     }
     ~GLRenderer(void){};
 
@@ -98,8 +97,6 @@ public:
     void drawTriangles(shared_ptr<ModelData> model);
     void SwapPrograms();
 
-    void DrawCoordinateAxis(shared_ptr<kipod::RenderCamera> camera);
-    void SetupCoordinateAxis();
 };
 
 

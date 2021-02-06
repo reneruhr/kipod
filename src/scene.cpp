@@ -18,7 +18,7 @@ void Scene::Setup()
 {
     LOG_ENGINE("Seting up MeshModel Scene.");
 
-    _glrenderer->SetupCoordinateAxis();
+    SetupCoordinateAxis();
 
     Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
@@ -47,11 +47,36 @@ void Scene::Setup()
         boundingBox.AddLayout({"Normals Triangles", normal_layout});
     }
 
-    framebuffer_ = new kipod::FrameBuffer(width_, height_);
-    LOG_ENGINE("Scene Framebuffer id is {}", framebuffer_->opengl_id_);
+    SetupOptions();
+    Signup();
 }
 
 
+void Scene::SetupOptions(){
+    Add(kipod::ModeToggle("Normals Mode", false));
+    Add(kipod::ModeToggle("Camera Mode", false));
+    Add(kipod::ModeToggle("Camera Frustum Mode", false));
+    Add(kipod::ModeToggle("Color Mode", true));
+    Add(kipod::ModeToggle("Texture Mode", true));
+    Add(kipod::ModeToggle("Box Mode", false));
+    Add(kipod::ModeToggle("Wireframe Mode", false));
+    Add(kipod::ModeToggle("Emissive Mode",false));
+    Add(kipod::ModeToggle("Clipping Mode", true));
+}
+
+void Scene::DrawGui()
+{
+    using namespace kipod;
+    Gui::Get();
+
+    Gui::BeginWindow("MeshModels");
+
+    for(auto& [name,toggle] : mode_toggles_)
+        Gui::Checkbox(toggle);
+
+    Gui::EndWindow();
+
+}
 
 
 void Scene::AddPointSet(PointSet *point_set)
@@ -112,16 +137,16 @@ void Scene::draw()
     kipod::RenderManager::Bind(0);
 
 	for(auto model : models){
-        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
-        if( texture_mode && model->HasLayout("Textured Triangles") ){
+        if( Toggle("Texture Mode") && model->HasLayout("Textured Triangles") ){
            shaders_["Textured Triangles"].Use();
            SetUniformTex(lights, cameras[activeCamera], model);
            static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
         }
-        else if((color_mode || emissive_mode )&& model->HasLayout("Colored Triangles")  ){
+        else if((Toggle("Color Mode") || Toggle("Emissive Mode") )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"].Use();
             SetUniform(lights, cameras[activeCamera], model);
             static_cast<kipod::RenderObject*>(model)->Draw("Colored Triangles");
@@ -129,15 +154,15 @@ void Scene::draw()
 
         glDisable(GL_DEPTH_TEST);
 
-        if(wireframemode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        if(normals_mode && model->HasLayout("Normals Triangles") ){
+        if(Toggle("Normals Mode") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"].Use();
             SetUniformNormal(model, cameras[activeCamera]);
             static_cast<kipod::RenderObject*>(model)->Draw("Normals Triangles");
         }
 
-		if(box_mode){
+        if(Toggle("Box Mode")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             SetUniformBox(model);
             static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
@@ -145,7 +170,7 @@ void Scene::draw()
 		}
 
 	}
-	if(camera_mode){
+    if(Toggle("Camera Mode")){
         shaders_["Basic"].Use();
 		for(auto cam : cameras){
 			mat4 mvp = camMatrix * Translate((cam->getEye()));
@@ -153,7 +178,7 @@ void Scene::draw()
 			cam->draw();
 		}
 	}
-	if(camera_frustum_mode){
+    if(Toggle("Camera Frustum Mode")){
         shaders_["Basic"].Use();
 		for(auto cam : cameras){
 			mat4 mvp = camMatrix * Inverse(cam->getcTransform()) * Inverse(cam->getProjection(true));
@@ -162,7 +187,7 @@ void Scene::draw()
 		}
 	}
 
-    _glrenderer->DrawCoordinateAxis(make_shared<kipod::RenderCamera>(*cameras[activeCamera]));
+    DrawCoordinateAxis(cameras[activeCamera]);
 }
 
 
@@ -437,6 +462,8 @@ void Scene::SetupBlockUniform(QuaCry *quacry){
     glGenBuffers(1, &data->u_buffer);
     glBindBuffer(GL_UNIFORM_BUFFER, data->u_buffer);
 }
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -814,3 +841,18 @@ void Scene::processEvent(Event& event){
 }
 
 
+void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
+{
+        auto key = event.GetKeyCode();
+
+        if(key == Key::Space)
+            Toggle("Wireframe Mode").Switch();
+        else if(key == Key::N)
+            Toggle("Normals Mode").Switch();
+        else if(key == Key::B)
+            Toggle("Box Mode").Switch();
+        else if(key == Key::C)
+            Toggle("Camera Mode").Switch();
+        else if(key == Key::X)
+            Toggle("Clipping Mode").Switch();
+}

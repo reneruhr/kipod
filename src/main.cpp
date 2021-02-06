@@ -160,9 +160,6 @@ int my_main( int argc, char **argv )
     double limit = 1/30.0; // seconds per frame
     double gap;
 
-    double lastTime = glfwGetTime();
-    int nbFrames = 0;
-
     while (!window->windowShouldClose())
     {
 //        double currentTime = glfwGetTime();
@@ -186,6 +183,7 @@ int my_main( int argc, char **argv )
         //gui->draw(scene, softrenderer, window);
         gui->Begin(window);
         gui->Draw(scene, softrenderer, window);
+        scene->DrawGui();
         gui->End(window);
 
         window->updateWindow();
