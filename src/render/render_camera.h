@@ -1,6 +1,4 @@
-#ifndef RENDERCAMERA_H
-#define RENDERCAMERA_H
-
+#pragma once
 #include "../core.h"
 
 namespace kipod
@@ -27,7 +25,4 @@ public:
 
 };
 
-
-
 } // kipod
-#endif // RENDERCAMERA_H

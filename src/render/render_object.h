@@ -51,7 +51,6 @@ protected:
 
 class RenderObject{
 public:
-    RenderObjectType type_;
 
     RenderMaterial* mat_ = nullptr;
     Texture* tex_ = nullptr;

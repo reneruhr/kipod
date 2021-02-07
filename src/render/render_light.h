@@ -1,6 +1,4 @@
-#ifndef RENDERLIGHT_H
-#define RENDERLIGHT_H
-
+#pragma once
 #include <glm/matrix.hpp>
 
 #include "render_shader.h"
@@ -69,4 +67,3 @@ inline void SetLightToShader(Shader& shader, int id, RenderLight *light)
 }
 
 } // kipod
-#endif // RENDERLIGHT_H

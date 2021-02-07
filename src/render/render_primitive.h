@@ -15,7 +15,6 @@ enum RenderObjectType
 };
 
 
-
 class RenderPrimitive
 {
 public:

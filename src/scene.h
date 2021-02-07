@@ -70,18 +70,13 @@ public:
 
     }
 
-
     void loadOBJModel(string fileName, bool textures = false);
     void loadPrimitive(Primitive primitive, int numberPolygons=0);
-
 
     virtual void Setup() override;
     //virtual void Draw() override;
 
-
-
     void SetupUniforms();
-
 
 	Camera* getActiveCamera();
 	MeshModel* getActiveModel();
@@ -98,7 +93,6 @@ public:
 
     void addLight(Light *light);
     bool hasLight() { return !lights.empty(); }
-
 
     void AddPointSet(PointSet *point_set);
     bool HasPointSet(){ return !point_sets_.empty(); }
@@ -157,12 +151,9 @@ public:
     void SetUniformBox(MeshModel *model);
     void SetShapeUniform(Shape *shape);
 
-
-
     void SetUniformInternal(Camera *camera, QuaCry *quacry);
     void SetUniformPhysical(Camera *camera, QuaCry *quacry);
     void SetUniformPhysicalBox(Camera *camera, QuaCry *quacry);
-
 
     void SetupShaders();
     void SetupShaderBasic();
@@ -175,13 +166,10 @@ public:
     void SetupShaderQuasi();
     void SetupBlockUniform(QuaCry *quacry);
 
-
     virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
     LISTENER_SIGNUP(kipod::EventCategoryKeyboard)
     virtual void Receive(std::shared_ptr<kipod::Event> event) override{
-
         Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(Scene::ProcessKeys));
-
     }
 
     void SetupOptions();

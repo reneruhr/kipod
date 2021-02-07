@@ -42,6 +42,7 @@ add_executable(kipod
 
   src/utils/image_loader.h
   src/utils/obj_parsing.h
+  src/utils/key_table.h
 
 
   src/math/lattice.h
@@ -70,8 +71,6 @@ add_executable(kipod
   src/light.h
   src/light.cpp
 
-  src/render/initshader.h
-  src/render/initshader.cpp
 
   src/meshmodel.h
   src/meshmodel.cpp
@@ -92,8 +91,15 @@ add_executable(kipod
   src/engine/engine_gui.h
   src/engine/engine_gui.cpp
 
-  src/utils/key_table.h
+  src/engine/engine_transform.h
+  src/engine/engine_transform.cpp
 
+
+
+
+
+  src/render/initshader.h
+  src/render/initshader.cpp
 
   src/render/render_engine.h
   src/render/render_engine.cpp
