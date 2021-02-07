@@ -1,1 +1,1 @@
-#include "../../include/math/lattice.h"
+#include "lattice.h"

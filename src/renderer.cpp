@@ -1,9 +1,9 @@
-#include "../include/renderer.h"
-#include "../include/core.h"
-#include "../include/scene.h"
-#include "../include/meshmodel.h"
-#include "../include/glrenderer.h"
-#include "../include/initshader.h"
+#include "renderer.h"
+#include "core.h"
+#include "scene.h"
+#include "meshmodel.h"
+#include "glrenderer.h"
+#include "render/initshader.h"
 
 
 void Renderer::SetCameraTransform(const mat4& cTransform){

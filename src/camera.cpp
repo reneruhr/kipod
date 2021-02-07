@@ -1,6 +1,6 @@
-#include "../include/core.h"
-#include "../include/camera.h"
-#include "../include/meshmodel.h"
+#include "core.h"
+#include "camera.h"
+#include "meshmodel.h"
 
 using namespace std;
 

@@ -1,12 +1,12 @@
-#include "../include/core.h"
-#include "../include/scene.h"
-#include "../include/meshmodel.h"
-#include "../include/glrenderer.h"
-#include "../include/initshader.h"
-#include "../include/pointset.h"
+#include "core.h"
+#include "scene.h"
+#include "meshmodel.h"
+#include "glrenderer.h"
+#include "render/initshader.h"
+#include "pointset.h"
 
 #include <numeric>
-#include "../include/utils/buffer_packing.h"
+#include "utils/buffer_packing.h"
 
 
 

@@ -1,6 +1,6 @@
-#include "../include/inputmanager.h"
-#include "../include/eventmanager.h"
-#include "../include/core.h"
+#include "inputmanager.h"
+#include "eventmanager.h"
+#include "core.h"
 
 InputManager::InputManager(EventManager *eventmanager) : eventmanager(eventmanager)
 {

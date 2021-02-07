@@ -1,9 +1,9 @@
-#include "../include/core.h"
+#include "core.h"
 
-#include "../include/meshmodel.h"
-#include "../include/utils/vec.h"
+#include "meshmodel.h"
+#include "utils/vec.h"
 
-#include "../include/utils/obj_parsing.h"
+#include "utils/obj_parsing.h"
 
 #include <numeric>
 #include <map>

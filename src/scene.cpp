@@ -1,8 +1,8 @@
-#include "../include/core.h"
-#include "../include/scene.h"
-#include "../include/meshmodel.h"
+#include "core.h"
+#include "scene.h"
+#include "meshmodel.h"
 
-#include "../include/quacry.h"
+#include "quacry.h"
 
 
 using namespace std;
@@ -83,9 +83,6 @@ void Scene::AddPointSet(PointSet *point_set)
 {
     point_sets_.push_back(point_set);
 }
-
-
-
 
 
 

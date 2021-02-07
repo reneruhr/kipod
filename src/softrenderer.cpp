@@ -1,7 +1,7 @@
-#include "../include/core.h"
-#include "../include/softrenderer.h"
-#include "../include/initshader.h"
-#include "../include/graphicsalgorithms.h"
+#include "core.h"
+#include "softrenderer.h"
+#include "render/initshader.h"
+#include "graphicsalgorithms.h"
 #include <cmath>
 
 using namespace std::placeholders;

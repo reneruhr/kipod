@@ -1,4 +1,4 @@
-#include "../include/math/sl.h"
+#include "sl.h"
 //#include <algorithm>
 
 sl::sl()

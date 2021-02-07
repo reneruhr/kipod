@@ -1,4 +1,4 @@
-#include "../include/light.h"
+#include "light.h"
 
 float Light::attenuation(vec3 target)
 {

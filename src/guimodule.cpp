@@ -1,3 +1,3 @@
-#include "../include/guimodule.h"
+#include "guimodule.h"
 
 

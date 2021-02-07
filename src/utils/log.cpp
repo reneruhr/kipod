@@ -1,4 +1,4 @@
-#include "../../include/utils/log.h"
+#include "log.h"
 
 std::shared_ptr<spdlog::logger> Log::s_logger;
 

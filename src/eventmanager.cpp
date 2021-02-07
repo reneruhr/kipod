@@ -1,4 +1,4 @@
-#include "../include/eventmanager.h"
+#include "eventmanager.h"
 
 EventManager::EventManager()
 {

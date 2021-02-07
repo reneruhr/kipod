@@ -1,1 +1,1 @@
-#include "../../include/math/minkowski_embedding.h"
+#include "minkowski_embedding.h"

@@ -1,7 +1,7 @@
-#include "../include/gui.h"
+#include "gui.h"
 
-#include "../include/guielement.h"
-#include "../include/utils/log.h"
+#include "guielement.h"
+#include "utils/log.h"
 
 
 static void HelpMarker(const char* desc)

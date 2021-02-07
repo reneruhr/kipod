@@ -1,5 +1,5 @@
-#include "../include/graphicsalgorithms.h"
-#include "../include/core.h"
+#include "graphicsalgorithms.h"
+#include "core.h"
 #include <memory>
 
 graphicsalgorithms::graphicsalgorithms()

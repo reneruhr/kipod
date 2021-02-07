@@ -1,4 +1,4 @@
-#include "../include/primmeshmodel.h"
+#include "primmeshmodel.h"
 #include <numeric>
 
 

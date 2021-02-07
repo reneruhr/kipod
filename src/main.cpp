@@ -1,20 +1,20 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "../include/kipod.h"
+#include "kipod.h"
 
-#include "../include/scene.h"
-#include "../include/gui.h"
-#include "../include/inputmanager.h"
-#include "../include/eventmanager.h"
+#include "scene.h"
+#include "gui.h"
+#include "inputmanager.h"
+#include "eventmanager.h"
 
-#include "../include/graphicsalgorithms.h"
+#include "graphicsalgorithms.h"
 
-#include "../include/quacry.h"
-#include "../include/math/minkowski_embedding.h"
+#include "quacry.h"
+#include "math/minkowski_embedding.h"
 
-#include "../include/math/polygon.h"
+#include "math/polygon.h"
 
-#include "../include/engine_events.h"
+#include "engine/engine_events.h"
 
 
 #ifdef _DEBUG

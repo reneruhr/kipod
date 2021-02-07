@@ -29,151 +29,148 @@ file(GLOB stb
 
 add_executable(kipod
 
-  include/kipod.h
+  src/kipod.h
 
-  include/core.h
-  include/utils/mat.h
-  include/utils/vec.h
+  src/core.h
+  src/utils/mat.h
+  src/utils/vec.h
   
-  include/utils/buffer_packing.h
+  src/utils/buffer_packing.h
 
-  include/utils/log.h
+  src/utils/log.h
   src/utils/log.cpp
 
-  include/utils/image_loader.h
-  include/utils/obj_parsing.h
+  src/utils/image_loader.h
+  src/utils/obj_parsing.h
 
 
-  include/math/lattice.h
+  src/math/lattice.h
   src/math/lattice.cpp
 
-  include/math/sl.h
+  src/math/sl.h
   src/math/sl.cpp
 
-  include/math/minkowski_embedding.h
+  src/math/minkowski_embedding.h
   src/math/minkowski_embedding.cpp
 
-  include/math/polygon.h
+  src/math/polygon.h
   src/math/polygon.cpp
 
-  include/pointset.h
+  src/pointset.h
   src/pointset.cpp
 
-  include/shapes.h
+  src/shapes.h
   src/shapes.cpp
 
   src/main.cpp
 
-  include/camera.h
+  src/camera.h
   src/camera.cpp
 
-  include/light.h
+  src/light.h
   src/light.cpp
 
-  include/initshader.h
-  src/initshader.cpp
+  src/render/initshader.h
+  src/render/initshader.cpp
 
-  include/meshmodel.h
+  src/meshmodel.h
   src/meshmodel.cpp
 
-  include/primmeshmodel.h
+  src/primmeshmodel.h
   src/primmeshmodel.cpp
 
 
-  include/engine_input.h
-  src/engine_input.cpp
+  src/engine/engine_input.h
+  src/engine/engine_input.cpp
 
-  include/engine_events.h
-  src/engine_events.cpp
+  src/engine/engine_events.h
+  src/engine/engine_events.cpp
 
-  include/engine_controls.h
-  src/engine_controls.cpp
+  src/engine/engine_controls.h
+  src/engine/engine_controls.cpp
 
-  include/utils/key_table.h
+  src/engine/engine_gui.h
+  src/engine/engine_gui.cpp
 
-
-  include/render_engine.h
-  src/render_engine.cpp
-
-  include/render_shader.h
-  src/render_shader.cpp
-
-  include/render_manager.h
-  src/render_manager.cpp
-
-  include/render_object.h
-  src/render_object.cpp
-
-  include/render_buffer.h
-  src/render_buffer.cpp
-
-  include/render_uniform.h
-  src/render_uniform.cpp
-
-  include/render_primitive.h
-  src/render_primitive.cpp
-
-  include/render_scene.h
-  src/render_scene.cpp
-
-  include/render_material.h
-  src/render_material.cpp
-
-  include/render_light.h
-  src/render_light.cpp
-
-  include/render_camera.h
-  src/render_camera.cpp
-
-  include/render_texture.h
-  src/render_texture.cpp
-
-  include/render_window.h
-  src/render_window.cpp
-
-  include/render_gui.h
-  src/render_gui.cpp
+  src/utils/key_table.h
 
 
+  src/render/render_engine.h
+  src/render/render_engine.cpp
+
+  src/render/render_shader.h
+  src/render/render_shader.cpp
+
+  src/render/render_manager.h
+  src/render/render_manager.cpp
+
+  src/render/render_object.h
+  src/render/render_object.cpp
+
+  src/render/render_buffer.h
+  src/render/render_buffer.cpp
+
+  src/render/render_uniform.h
+  src/render/render_uniform.cpp
+
+  src/render/render_primitive.h
+  src/render/render_primitive.cpp
+
+  src/render/render_scene.h
+  src/render/render_scene.cpp
+
+  src/render/render_material.h
+  src/render/render_material.cpp
+
+  src/render/render_light.h
+  src/render/render_light.cpp
+
+  src/render/render_camera.h
+  src/render/render_camera.cpp
+
+  src/render/render_texture.h
+  src/render/render_texture.cpp
+
+  src/render/render_window.h
+  src/render/render_window.cpp
 
 
-  include/renderer.h
+  src/renderer.h
   src/renderer.cpp
 
-  include/glrenderer.h
+  src/glrenderer.h
   src/glrenderer.cpp
 
-  include/softrenderer.h
+  src/softrenderer.h
   src/softrenderer.cpp
 
-  include/scene.h
+  src/scene.h
   src/scene.cpp
 
-
-  include/gui.h
+  src/gui.h
   src/gui.cpp
 
-  include/guielement.h
+  src/guielement.h
   src/guielement.cpp
 
-  include/guimodule.h
+  src/guimodule.h
   src/guimodule.cpp
 
-  include/guimathcontrol.h
+  src/guimathcontrol.h
   src/guimathcontrol.cpp
 
 
 
-  include/graphicsalgorithms.h
+  src/graphicsalgorithms.h
   src/graphicsalgorithms.cpp
 
-  include/inputmanager.h
+  src/inputmanager.h
   src/inputmanager.cpp
 
-  include/eventmanager.h
+  src/eventmanager.h
   src/eventmanager.cpp
 
-  include/quacry.h
+  src/quacry.h
   src/quacry.cpp
 
   ${imgui}

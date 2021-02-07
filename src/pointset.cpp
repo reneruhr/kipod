@@ -1,4 +1,4 @@
-#include "../include/pointset.h"
+#include "pointset.h"
 
 
 void PointSet::Init()

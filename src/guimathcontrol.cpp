@@ -1,4 +1,4 @@
-#include "../include/guimathcontrol.h"
+#include "guimathcontrol.h"
 #include "gui.h"
 
 
