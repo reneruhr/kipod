@@ -1,4 +1,5 @@
 #include "render_window.h"
+#include "render_manager.h"
 
 unsigned int GLOBAL_SCR_WIDTH = 800;
 unsigned int GLOBAL_SCR_HEIGHT = 600;
@@ -70,6 +71,8 @@ int Window::init()
 
     Signup();
 
+    kipod::RenderManager::addFrameBuffer();
+
     return 0;
 }
 
@@ -105,12 +108,12 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     GLOBAL_SCR_HEIGHT = height;
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void key_callback(GLFWwindow*, int key, int scancode, int action, int mods)
 {
     Input::KeyBoard(key, scancode, action, mods);
 }
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+void mouse_button_callback(GLFWwindow*, int button, int action, int mods)
 {
 
 }

@@ -9,7 +9,7 @@
 #include "render_primitive.h"
 #include "render_material.h"
 
-
+#include "../engine/engine_transform.h"
 
 struct GLVertex{
     vec3 position_;
@@ -51,6 +51,20 @@ protected:
 
 class RenderObject{
 public:
+    std::unique_ptr<kipod::Transform> world_ = std::make_unique<kipod::Transform>();
+    std::unique_ptr<kipod::Transform> local_ = std::make_unique<kipod::Transform>();
+
+
+    RenderObject() = default;
+    RenderObject(RenderObject&&) = default;
+    RenderObject& operator=(RenderObject&&) = default;
+    RenderObject(RenderObject& other) : world_(new kipod::Transform(*other.world_)),
+                                        local_(new kipod::Transform(*other.local_)){}
+    RenderObject& operator=(const RenderObject& other) {
+        world_.reset(new kipod::Transform( *other.world_ ) );
+        local_.reset(new kipod::Transform( *other.local_ ) );
+        return *this;
+    }
 
     RenderMaterial* mat_ = nullptr;
     Texture* tex_ = nullptr;
@@ -62,19 +76,30 @@ public:
     glm::mat4 local_transform_ = glm::mat4(1.0);
     glm::mat4 world_transform_ = glm::mat4(1.0);
 
+
     glm::mat4 Transform() const
     {
-        return world_transform_*local_transform_;
+        return glm::mat4(*world_) * glm::mat4(*local_);
     }
 
-    void Draw(RenderLayout* layout_ = nullptr);
-    void Draw(std::string layout) { render_layouts_[layout]->Draw(); }
-    void Setup(RenderLayout* layout_ = nullptr);
-    void Setup(std::string layout){ render_layouts_[layout]->Setup();  }
-    RenderLayout* Layout(std::string layout) { return render_layouts_[layout]; }
-    void AddLayout(std::pair<std::string, RenderLayout*> named_layout)  {     render_layouts_.insert(named_layout);   }
-    void AddLayout(std::string name, RenderLayout* layout)  {     render_layouts_.insert({name,layout});   }
-    bool HasLayout(std::string name) { return render_layouts_.find(name)!=end(render_layouts_);}
+    const glm::mat4& TransformWorld() const
+    {
+        return *world_;
+    }
+    const glm::mat4& TransformLocal() const
+    {
+        return *local_;
+    }
+
+
+    virtual void Draw(RenderLayout* layout_ = nullptr);
+    virtual void Draw(std::string layout) { assert(HasLayout(layout)); render_layouts_[layout]->Draw(); }
+    virtual void Setup(RenderLayout* layout_ = nullptr);
+    virtual void Setup(std::string layout){ render_layouts_[layout]->Setup();  }
+    virtual RenderLayout* Layout(std::string layout) { return render_layouts_[layout]; }
+    virtual void AddLayout(std::pair<std::string, RenderLayout*> named_layout)  {     render_layouts_.insert(named_layout);   }
+    virtual void AddLayout(std::string name, RenderLayout* layout)  {     render_layouts_.insert({name,layout});   }
+    virtual bool HasLayout(std::string name) { return render_layouts_.find(name)!=end(render_layouts_);}
 
 };
 

@@ -20,21 +20,30 @@ void kipod::Gui::Checkbox(ModeToggle& toggle)
 
 void kipod::Gui::Transform(kipod::Transform& transform)
 {
-    float x=0, y=0, z=0;
+
+    float x = 0, y = 0, z = 0;
     float stepsize = 1.0f;
     bool pressed = false;
 
     ImGui::Text("x:");
     ImGui::SameLine();
-    pressed = pressed || ArrowButtons(&x, stepsize);
+    pressed =  ArrowButtons(&transform.x(), x , stepsize) || pressed;
+    ImGui::SameLine();
+    ImGui::Text("%f", transform.x());
+
     ImGui::Text("y:");
     ImGui::SameLine();
-    pressed = pressed || ArrowButtons(&y, stepsize);
+    pressed = ArrowButtons(&transform.y(), y , stepsize) || pressed;
+    ImGui::SameLine();
+    ImGui::Text("%f", transform.y());
+
     ImGui::Text("z:");
     ImGui::SameLine();
-    pressed = pressed || ArrowButtons(&z, stepsize);
+    pressed = ArrowButtons(&transform.z(), z , stepsize) || pressed;
+    ImGui::SameLine();
+    ImGui::Text("%f", transform.z());
 
-    if(pressed) transform.Translate({x,y,z});
+    if(pressed) { LOG_ENGINE("Pressed Transform Arrow Button"); transform.Translate({x,y,z}); }
 }
 
 bool kipod::Gui::CollapsingHeader(const char* name)
@@ -52,17 +61,18 @@ void kipod::Gui::TreePop()
     ImGui::TreePop();
 }
 
-bool Gui::ArrowButtons(float *f, float stepsize)
+bool Gui::ArrowButtons(float *f, float& value, float stepsize)
 {
     bool pressed = false;
     ImGui::PushButtonRepeat(true);
     ImGui::PushID(f);
     if (ImGui::ArrowButton("left", ImGuiDir_Left)) {
-        *f-=stepsize;
+        value-=stepsize;
         pressed = true;
     }
+    ImGui::SameLine();
     if (ImGui::ArrowButton("right", ImGuiDir_Right)) {
-        *f-=stepsize;
+        value+=stepsize;
         pressed = true;
     }
     ImGui::PopButtonRepeat();

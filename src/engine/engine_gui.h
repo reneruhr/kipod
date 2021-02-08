@@ -31,7 +31,7 @@ public:
     static bool TreeNode(const char*);
     static void TreePop();
 
-    static bool ArrowButtons(float* f, float stepsize);
+    static bool ArrowButtons(float* id, float& value, float stepsize);
 
     static void CreateSceneWindow(kipod::RenderScene*);
 };

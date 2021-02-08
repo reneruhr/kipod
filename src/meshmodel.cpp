@@ -257,8 +257,9 @@ void MeshModel::createBBox(){
 mat4 MeshModel::getmTransform() const{
     return _world_transform*_local_transform;
 }
-mat4 MeshModel::getmTransformBBox() const {
-    return _world_transform*_local_transform*_boundingBoxData._transform;
+glm::mat4 MeshModel::getmTransformBBox()  {
+    //return _world_transform*_local_transform*_boundingBoxData._transform;
+    return Transform() * MakeGLM(_boundingBoxData._transform);
 }
 
 void MeshModel::processEvent(Event &event)

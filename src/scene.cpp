@@ -74,6 +74,9 @@ void Scene::DrawGui()
     for(auto& [name,toggle] : mode_toggles_)
         Gui::Checkbox(toggle);
 
+    for(auto model : models)
+        Gui::Transform(*model->world_);
+
     Gui::EndWindow();
 
 }
@@ -141,12 +144,12 @@ void Scene::draw()
         if( Toggle("Texture Mode") && model->HasLayout("Textured Triangles") ){
            shaders_["Textured Triangles"].Use();
            SetUniformTex(lights, cameras[activeCamera], model);
-           static_cast<kipod::RenderObject*>(model)->Draw("Textured Triangles");
+           model->RenderObject::Draw("Textured Triangles");
         }
         else if((Toggle("Color Mode") || Toggle("Emissive Mode") )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"].Use();
             SetUniform(lights, cameras[activeCamera], model);
-            static_cast<kipod::RenderObject*>(model)->Draw("Colored Triangles");
+            model->RenderObject::Draw("Colored Triangles");
         }
 
         glDisable(GL_DEPTH_TEST);
@@ -156,13 +159,13 @@ void Scene::draw()
         if(Toggle("Normals Mode") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"].Use();
             SetUniformNormal(model, cameras[activeCamera]);
-            static_cast<kipod::RenderObject*>(model)->Draw("Normals Triangles");
+            model->RenderObject::Draw("Normals Triangles");
         }
 
         if(Toggle("Box Mode")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             SetUniformBox(model);
-            static_cast<kipod::RenderObject>(boundingBox).Draw("Colored Triangles");
+            boundingBox.RenderObject::Draw("Colored Triangles");
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
@@ -408,31 +411,31 @@ void Scene::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model)
 {
     auto shader = shaders_["Colored Triangles"];
     BindLightUniforms(shader, lights);
-    BindMatrixUniformsForMesh(shader, *model, *camera);
+    BindMatrixUniforms(shader, *model, *camera);
     BindMaterialUniforms(shader, *(model->mat_));
 }
 
 void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
 {
-    auto shader = shaders_["Normals Triangles"];
-    BindMatrixUniformsForMesh(shader, *model, *camera);
-    BindNormalUniforms(shader, model->normal_length);
+    kipod::Shader* shader = &shaders_["Normals Triangles"];
+    BindMatrixUniforms(*shader, *model, *camera);
+    BindNormalUniforms(*shader, model->normal_length);
 }
 
 void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
 {
-   auto shader = shaders_["Textured Triangles"];
-   BindTextureUniforms(shader, model->tex_);
-   BindLightUniforms(shader, lights);
-   BindMatrixUniformsForMesh(shader, *model, *camera);
-   BindMaterialUniforms(shader, *(model->mat_));
+   kipod::Shader* shader = &shaders_["Textured Triangles"];
+   BindTextureUniforms(*shader, model->tex_);
+   BindLightUniforms(*shader, lights);
+   BindMatrixUniforms(*shader, *model, *camera);
+   BindMaterialUniforms(*shader, *(model->mat_));
 }
 
 void Scene::SetUniformBox(MeshModel* model)
 {
-    mat4 box = model->getmTransformBBox();
+    glm::mat4 box = model->getmTransformBBox();
     mat4 camc = cameras[activeCamera]->getcTransform();
-    glm::mat4 mv = MakeGLM(camc) * MakeGLM(box);
+    glm::mat4 mv = MakeGLM(camc) * box;
     mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
     glm::mat4 p = MakeGLM(camp);
 
@@ -495,55 +498,25 @@ void Scene::BindNormalUniforms(kipod::Shader& shader, const float length)
 
 void Scene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject& model, const Camera& camera)
 {
-    vec4 eye = vec4(camera.getEye());
-    mat4 camp = camera.getProjection(camerasMode[activeCamera]);
-    mat4 camc = camera.getcTransform();
-    glm::vec4  camLocation = MakeGLM(eye);
-    glm::mat4 p = MakeGLM(camp);
-    glm::mat4 v = MakeGLM(camc);
+    glm::vec4  camLocation = glm::vec4(camera.eye_,1);
+    glm::mat4 p = camera.projection_matrix_;
+    glm::mat4 v = camera.view_matrix_;
 
-
-        shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
-        shader.SetUniform<glm::mat4>("v", v);
-        shader.SetUniform<glm::mat4>("projection", p);
-
+    shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
+    shader.SetUniform<glm::mat4>("v", v);
+    shader.SetUniform<glm::mat4>("projection", p);
 
     auto m = model.Transform();
 
     glm::mat4  mv = v*m;
     glm::mat4 mv_normal = glm::transpose(glm::inverse(mv));
 
-        shader.SetUniform<glm::mat4>("mv", mv);
-        shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
-
-}
-
-void Scene::BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel& model, const Camera& camera){
-    vec4 eye = vec4(camera.getEye());
-    mat4 camp = camera.getProjection(camerasMode[activeCamera]);
-    mat4 camc = camera.getcTransform();
-    glm::vec4  camLocation = MakeGLM(eye);
-    //glm::mat4 p = MakeGLM(camp);
-    glm::mat4 p = camera.projection_matrix_;
-    glm::mat4 v = MakeGLM(camc);
-
-    shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
-    shader.SetUniform<glm::mat4>("v", v);
-    shader.SetUniform<glm::mat4>("projection", p);
-
-    //auto m = model.Transform();
-    mat4 mm = camc*model.getmTransform();
-    //glm::mat4 mv = MakeGLM(mm);
-    glm::mat4 mv =  camera.view_matrix_ * glm::transpose(glm::mat4(model.getmTransform()));
-
-    //glm::mat4  mv = v*m;
-    glm::mat4 mv_normal = glm::transpose(glm::inverse(mv)); // order?
-    //glm::mat4 mv_normal = glm::inverse(glm::transpose(mv)); // order?
-
     shader.SetUniform<glm::mat4>("mv", mv);
     shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
 
 }
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -719,7 +692,7 @@ void Scene::drawSoft()
             model->draw(_softrenderer, wireframemode, clipping_mode, normals_mode);
 
         if(box_mode){
-             mat4 m = model->getmTransformBBox();
+             mat4 m = mat4( &model->getmTransformBBox()[0][0] ); //to be changed
              _softrenderer->SetObjectMatrices(m, mat3(1.0));
              boundingBox.draw(_softrenderer, true,false);
         }

@@ -123,7 +123,7 @@ public:
     void setLocal(const mat4& transform);
 
     mat4 getmTransform() const;
-    mat4 getmTransformBBox() const;
+    glm::mat4 getmTransformBBox() ;
 
     float normal_length=1;
 

@@ -106,10 +106,6 @@ int my_main( int argc, char **argv )
     window = new kipod::Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
     window->init();
 
-//    RenderManager::Init();
-    auto gl_frame_buffer = kipod::RenderManager::addFrameBuffer();
-//    kipod::TextureManager::Init();
-
 
     renderer = new GLRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     softrenderer = new SoftRenderer(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
