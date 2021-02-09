@@ -12,7 +12,7 @@ public:
     RenderCamera(const float fovy, const float aspect, const float zNear, const float zFar);
     RenderCamera(const float left, const float right, const float bottom, const float top, const float zNear, const float zFar);
 
-    glm::mat4 view_matrix_;
+    glm::mat4 view_matrix_ =glm::mat4(1.0f);
     glm::mat4 projection_matrix_;
     glm::mat4 projection_view_matrix_;
 

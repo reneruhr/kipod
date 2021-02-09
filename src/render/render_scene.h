@@ -20,7 +20,7 @@ protected:
     std::vector<RenderLight*> lights_;
 
     std::string name_;
-    unsigned int width_,height_;
+    unsigned int width_, height_;
     std::shared_ptr<kipod::FrameBuffer> framebuffer_;
     std::unique_ptr<kipod::RenderObject> coordinate_axis_;
 

@@ -192,8 +192,6 @@ void Scene::draw()
 
 
 
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //SHADER  SETUP                             ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -813,8 +811,11 @@ void Scene::processEvent(Event& event){
 
 void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
 {
+        float stepsize = 1.0f;
         auto key = event.GetKeyCode();
 
+
+        //TOGGLES:
         if(key == Key::Space)
             Toggle("Wireframe Mode").Switch();
         else if(key == Key::N)
@@ -825,4 +826,18 @@ void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
             Toggle("Camera Mode").Switch();
         else if(key == Key::X)
             Toggle("Clipping Mode").Switch();
+        //TRANSFORM CONTROL:
+        else if(key == Key::Left)
+            getActiveModel()->world_->Translate({-stepsize,0,0});
+        else if(key == Key::Right)
+            getActiveModel()->world_->Translate({+stepsize,0,0});
+        else if(key == Key::Up)
+            getActiveModel()->world_->Translate({0,stepsize,0});
+        else if(key == Key::Down)
+            getActiveModel()->world_->Translate({0,-stepsize,0});
+        else if(key == Key::PageUp)
+            getActiveModel()->world_->Translate({0,0, stepsize});
+        else if(key == Key::PageDown)
+            getActiveModel()->world_->Translate({0,0,-stepsize});
+
 }

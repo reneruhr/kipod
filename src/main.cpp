@@ -15,6 +15,7 @@
 #include "math/polygon.h"
 
 #include "engine/engine_events.h"
+#include "engine/engine_clock.h"
 
 
 #ifdef _DEBUG
@@ -149,12 +150,8 @@ int my_main( int argc, char **argv )
 //   quasi_texture->RenderToTexture(quasi_framebuffer->opengl_id_);
 //   kipod::TextureManager::Add(quasi_texture);
 
-
-
-    double then = glfwGetTime();
-    double now;
-    double limit = 1/30.0; // seconds per frame
-    double gap;
+    kipod::Clock clock;
+    clock.Now();
 
     while (!window->windowShouldClose())
     {
@@ -167,12 +164,7 @@ int my_main( int argc, char **argv )
 //            lastTime += 1.0;
 //        }
 
-        now = glfwGetTime();
-        gap = now-then;
-        if(gap < limit){
-            std::this_thread::sleep_for( std::chrono::milliseconds( (int)(1000*(limit-gap)) ) );
-        }
-        then = now;
+        clock.SlowDownTime(1/30.0f);
 
 
         display();
