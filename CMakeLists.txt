@@ -79,6 +79,9 @@ add_executable(kipod
   src/primmeshmodel.cpp
 
 
+  src/engine/engine_application.h
+  src/engine/engine_application.cpp
+
   src/engine/engine_input.h
   src/engine/engine_input.cpp
 
@@ -94,8 +97,8 @@ add_executable(kipod
   src/engine/engine_transform.h
   src/engine/engine_transform.cpp
 
-
-
+  src/engine/engine_clock.h
+  src/engine/engine_clock.cpp
 
 
   src/render/initshader.h
