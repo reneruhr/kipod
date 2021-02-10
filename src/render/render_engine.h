@@ -1,5 +1,4 @@
-#ifndef RENDERENGINE_H
-#define RENDERENGINE_H
+#pragma once
 
 #include "render_object.h"
 #include "render_light.h"
@@ -12,8 +11,6 @@
 #include "render_material.h"
 #include "render_primitive.h"
 #include "render_camera.h"
-
-
 
 namespace kipod{
 
@@ -28,10 +25,4 @@ public:
 };
 
 
-
-
-
 }
-
-
-#endif // RENDERENGINE_H

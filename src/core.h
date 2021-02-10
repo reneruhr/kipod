@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stdio.h>
 #include <cmath>
 #include <cassert>
@@ -10,12 +9,19 @@
 
 #include <algorithm>
 #include <numeric>
+
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
+
+#include "utils/vec.h"
+#include "utils/mat.h"
+#include "utils/log.h"
+#include "utils/key_table.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -30,7 +36,4 @@
 #include "../vendor/imgui/imgui_impl_opengl3.h"
 #include "../vendor/imgui/imguifilesystem.h"
 
-#include "utils/vec.h"
-#include "utils/mat.h"
-#include "utils/log.h"
-#include "utils/key_table.h"
+

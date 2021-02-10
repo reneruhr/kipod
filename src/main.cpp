@@ -1,5 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
-
 #include "kipod.h"
 
 #include "scene.h"
@@ -14,8 +12,6 @@
 
 #include "math/polygon.h"
 
-#include "engine/engine_events.h"
-#include "engine/engine_clock.h"
 
 
 #ifdef _DEBUG
@@ -121,17 +117,7 @@ int my_main( int argc, char **argv )
     gui->init(window);
 
 
-//    inputmanager = new InputManager(eventmanager);
-//    inputmanager->init(window);
-
     mat4 square_root = transpose(MinkowskiEmbedding(2).Embedding());
-
-//    QuaCry* quacry = new QuaCry(scene,
-//                                amman_benker,
-//                                {-10,10,-10,10,-5,5,-1,1},
-//                                {-10,10,-10,10,-10,10,0,0},
-//                                WindowType::Box);
-//    gui->AppendModule(quacry);
 
     QuaCry* quacryOctagon = new QuaCry(scene,
                                 square_root,
@@ -155,18 +141,8 @@ int my_main( int argc, char **argv )
 
     while (!window->windowShouldClose())
     {
-//        double currentTime = glfwGetTime();
-//        nbFrames++;
-//        if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1 sec ago
-//            // printf and reset timer
-//            printf("%f ms/frame\n", 1000.0/double(nbFrames));
-//            nbFrames = 0;
-//            lastTime += 1.0;
-//        }
 
         clock.SlowDownTime(1/30.0f);
-
-
         display();
         //gui->draw(scene, softrenderer, window);
         gui->Begin(window);
@@ -177,10 +153,7 @@ int my_main( int argc, char **argv )
         window->updateWindow();
         eventmanager->process();
         kipod::Events::Process();
-
-
     }
-
 
 	delete scene;
 	delete renderer;
@@ -197,9 +170,11 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-	
-	Log::Init();
-	LOG_INFO("Logger Started.");
+    kipod::Application portfolio;
+
+    portfolio.Init(argc, argv);
+
+    portfolio.Run();
 
 	my_main(argc, argv );
 	

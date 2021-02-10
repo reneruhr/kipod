@@ -40,7 +40,10 @@ add_executable(kipod
   src/utils/log.h
   src/utils/log.cpp
 
+
   src/utils/image_loader.h
+  src/utils/image_loader.cpp
+
   src/utils/obj_parsing.h
   src/utils/key_table.h
 
@@ -79,6 +82,17 @@ add_executable(kipod
   src/primmeshmodel.cpp
 
 
+
+  src/modules/meshmodels/meshmodelscene.h
+  src/modules/meshmodels/meshmodelscene.cpp
+
+  src/modules/softrenderer/softrenderscene.h
+  src/modules/softrenderer/softrenderscene.cpp
+
+  src/modules/quasicrystals/quasicrystalscene.h
+  src/modules/quasicrystals/quasicrystalscene.cpp
+
+
   src/engine/engine_application.h
   src/engine/engine_application.cpp
 
@@ -99,6 +113,9 @@ add_executable(kipod
 
   src/engine/engine_clock.h
   src/engine/engine_clock.cpp
+
+
+
 
 
   src/render/initshader.h
@@ -142,6 +159,10 @@ add_executable(kipod
 
   src/render/render_window.h
   src/render/render_window.cpp
+
+
+
+
 
 
   src/renderer.h
