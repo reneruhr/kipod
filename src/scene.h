@@ -116,7 +116,7 @@ public:
 	void setActiveModel(int id){
 		if(id<numberOfModels()) activeModel = id;
 	}
-	int activeModel=0;
+    int activeModel=-1;
 	int activeLight;
 	int activeCamera=0;
 

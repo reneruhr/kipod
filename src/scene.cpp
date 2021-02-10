@@ -640,32 +640,37 @@ void Scene::setLastCameraActive()
     activeCamera = cameras.size()-1;
 }
 
+Camera* Scene::getActiveCamera()
+{
+    return cameras[activeCamera];
+}
 
+MeshModel* Scene::getActiveModel(){
+    if(activeModel>=0) return models[activeModel];
+    else return nullptr;
+}
 
-Camera* Scene::getActiveCamera(){ return cameras[activeCamera];}
-
-MeshModel* Scene::getActiveModel(){ return models[activeModel]; }
-
-void Scene::moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up ){
+void Scene::moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up )
+{
     if(numberOfCameras() <= camera_id) return;
     Camera* cam = cameras[camera_id];
     cam->updateLookAt( eye, at, up );
 }
 
-void Scene::moveEyeOfCamera(int camera_id, const vec3& eye){
+void Scene::moveEyeOfCamera(int camera_id, const vec3& eye)
+{
     if(numberOfCameras() <= camera_id) return;
     Camera* cam = cameras[camera_id];
     cam->moveEye(eye);
 }
 
-void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far){
+void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far)
+{
     if(numberOfCameras() <= camera_id) return;
     Camera* cam =cameras[camera_id];
     cam->Perspective(fovy, aspect, near, far);
     needs_update = true;
 }
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -827,17 +832,48 @@ void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
         else if(key == Key::X)
             Toggle("Clipping Mode").Switch();
         //TRANSFORM CONTROL:
-        else if(key == Key::Left)
-            getActiveModel()->world_->Translate({-stepsize,0,0});
-        else if(key == Key::Right)
-            getActiveModel()->world_->Translate({+stepsize,0,0});
-        else if(key == Key::Up)
-            getActiveModel()->world_->Translate({0,stepsize,0});
-        else if(key == Key::Down)
-            getActiveModel()->world_->Translate({0,-stepsize,0});
-        else if(key == Key::PageUp)
-            getActiveModel()->world_->Translate({0,0, stepsize});
-        else if(key == Key::PageDown)
-            getActiveModel()->world_->Translate({0,0,-stepsize});
+        else if(key == Key::Left){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({-stepsize,0,0});
+                }
+        else if(key == Key::Right){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({+stepsize,0,0});
+                }
+        else if(key == Key::Up){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({0,stepsize,0});
+                }
+        else if(key == Key::Down){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({0,-stepsize,0});
+                }
+        else if(key == Key::PageUp){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({0,0, stepsize});
+                }
+        else if(key == Key::PageDown){
+                if(getActiveModel())
+                    getActiveModel()->world_->Translate({0,0,-stepsize});
+                }
+        //CAMERA CONTROL:
+        else if(key == Key::A){
+                    getActiveCamera()->Move({-stepsize,0,0});
+                }
+        else if(key == Key::D){
+                    getActiveCamera()->Move({+stepsize,0,0});
+                }
+        else if(key == Key::W){
+                    getActiveCamera()->Move({0,stepsize,0});
+                }
+        else if(key == Key::S){
+                    getActiveCamera()->Move({0,-stepsize,0});
+                }
+        else if(key == Key::R){
+                    getActiveCamera()->Move({0,0, stepsize});
+                }
+        else if(key == Key::F){
+                    getActiveCamera()->Move({0,0,-stepsize});
+                }
 
 }

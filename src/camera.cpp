@@ -108,7 +108,7 @@ void Camera::updateLookAtInternal(){
 						vec4(w,-dot(_eye,w)),
                         vec4(vec3(0.0f))
 		);
-        kipod::RenderCamera::LookAt(_eye, -_at, _up);
+        //kipod::RenderCamera::LookAt(_eye, _at, _up);
 }
 
 
