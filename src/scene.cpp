@@ -19,6 +19,7 @@ void Scene::Setup()
     LOG_ENGINE("Seting up MeshModel Scene.");
 
     _glrenderer->SetupCoordinateAxis();
+    _glrenderer->SetupGrid();
 
     Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
@@ -189,6 +190,7 @@ void Scene::draw()
 
     glEnable(GL_DEPTH_TEST);
     _glrenderer->DrawCoordinateAxis(cameras[activeCamera]);
+    _glrenderer->DrawGrid(cameras[activeCamera]);
     glDisable(GL_DEPTH_TEST);
 }
 

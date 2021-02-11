@@ -81,3 +81,32 @@ void GLRenderer::DrawCoordinateAxis(kipod::RenderCamera* camera){
     layout->Draw();
     layout->sha_->Unuse();
 }
+
+void GLRenderer::SetupGrid()
+{
+    grid_ = std::make_unique<kipod::RenderObject>();
+
+    std::vector<vec3> vertices;
+
+    for(int i=-10; i<=10; ++i){
+        vertices.push_back(vec3(-10,i,0));
+        vertices.push_back(vec3(10,i,0));
+        vertices.push_back(vec3(i,-10,0));
+        vertices.push_back(vec3(i,10,0));
+    }
+
+    std::string name = "Grid";
+    auto layout = new kipod::GLRenderLayout;
+    layout->SetupGrid(&vertices);
+    layout->sha_ = new kipod::Shader("grid.vert.glsl", "grid.frag.glsl");
+    layout->sha_->AttachUniform<glm::mat4>("mvp");
+    grid_->AddLayout(name, layout);
+}
+
+void GLRenderer::DrawGrid(kipod::RenderCamera* camera){
+    auto layout = static_cast<kipod::GLRenderLayout*>(grid_->Layout("Grid"));
+    layout->sha_->Use();
+    layout->sha_->SetUniform<glm::mat4>("mvp", *camera);
+    layout->Draw();
+    layout->sha_->Unuse();
+}

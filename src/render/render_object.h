@@ -126,6 +126,7 @@ public:
     void SetupShape(const std::vector<vec2>* vertices_);
     void SetupPointSet(const std::vector<vec4>* vertices);
     void SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors);
+    void SetupGrid(const std::vector<vec3> *vertices);
 };
 
 

@@ -481,7 +481,6 @@ void GUIMathControl::drawHull(Vectors2 hull){
         static ImVec4 colf = ImVec4(1.0f, 1.0f, 0.4f, 1.0f);
         const ImU32 col = ImColor(colf);
         float th = 2.0f;
-         static float sz = 36.0f;
 
         ImVec2 p = ImGui::GetCursorScreenPos();
         p.x = p.x + 4.0f, p.y = p.y + 4.0f;

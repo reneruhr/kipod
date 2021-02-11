@@ -209,3 +209,28 @@ void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const 
 
     Unbind();
 }
+
+void kipod::GLRenderLayout::SetupGrid(const std::vector<vec3> *vertices)
+{
+    LOG_ENGINE("Call: Grid Setup");
+
+    ebo_ = new kipod::ElementsBuffer();
+    ebo_->primitive_ = GL_LINES;
+
+    vao_ = new kipod::VertexAttributeObject;
+    vao_->Set();
+
+    unsigned int buffersize = vertices->size()*sizeof(vec3);
+
+    vbo_ = new kipod::VertexBuffer(nullptr, buffersize);
+    vbo_->count_ = vertices->size();
+    vbo_->Add(0, buffersize, (void*)vertices->data());
+    vbo_->Bind();
+
+
+    kipod::Attribute* att_v = new kipod::Attribute(0,3,sizeof(vec3),0);
+    vao_->Add(att_v);
+    vao_->SetAttributes();
+
+    Unbind();
+}
