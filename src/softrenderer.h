@@ -40,7 +40,7 @@ class SoftRenderer : public Renderer
 public:
     SoftRenderer();
     SoftRenderer(int width, int height);
-//    ~SoftRenderer(void);
+    virtual ~SoftRenderer() = default;
 
     void Init();
     void DrawTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,

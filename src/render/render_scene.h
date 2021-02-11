@@ -22,7 +22,7 @@ protected:
     std::string name_;
     unsigned int width_, height_;
     std::shared_ptr<kipod::FrameBuffer> framebuffer_;
-    std::unique_ptr<kipod::RenderObject> coordinate_axis_;
+
 
 public:
 
@@ -33,8 +33,6 @@ public:
         LOG_ENGINE("Create Scene with width {} and height {}", w, h);
 
         framebuffer_ =  std::make_shared<kipod::FrameBuffer>(width_, height_);
-
-        SetupCoordinateAxis();
     }
     virtual ~RenderScene() = default;
 
@@ -46,8 +44,7 @@ public:
     virtual void Resize(unsigned int w, unsigned int h) { framebuffer_->Resize(w,h); width_ = w; height_ = h;  };
     virtual unsigned int SceneAsFramebuffer() { return framebuffer_->FrameBufferAsTexture(); };
 
-    void DrawCoordinateAxis(RenderCamera* camera);
-    void SetupCoordinateAxis();
+
 
     void AddLight(RenderLight* light){
         lights_.emplace_back(light);

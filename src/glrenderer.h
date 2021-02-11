@@ -81,23 +81,24 @@ struct LightGLGS{
 };
 
 using namespace std;
+
+
 class GLRenderer : public Renderer
 {
     unsigned int _width, _height;
 
-
+    std::unique_ptr<kipod::RenderObject> coordinate_axis_;
 
 public:
     GLRenderer(unsigned int width=800, unsigned int height=600): Renderer(width, height){
     }
-    ~GLRenderer(void){};
+    virtual ~GLRenderer(void) = default;
 
     void UpdatePoints(PointSet *points);
     shared_ptr<ShapeData> UpdateShape(shared_ptr<ShapeData> shape, vector<vec2> *vertices_);
     void drawTriangles(shared_ptr<ModelData> model);
     void SwapPrograms();
 
+    void DrawCoordinateAxis(kipod::RenderCamera* camera);
+    void SetupCoordinateAxis();
 };
-
-
-

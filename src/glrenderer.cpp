@@ -8,17 +8,10 @@
 #include <numeric>
 #include "utils/buffer_packing.h"
 
-
-
-
-
-
-
-void GLRenderer::SwapPrograms(){
+void GLRenderer::SwapPrograms()
+{
   //  std::swap(programQuasiOctagon, programQuasiOctagonTexture);
 }
-
-
 
 void GLRenderer::drawTriangles(shared_ptr<ModelData> model)
 {
@@ -35,8 +28,6 @@ void GLRenderer::drawTriangles(shared_ptr<ModelData> model)
     glBindVertexArray(0);
 }
 
-
-
 void GLRenderer::UpdatePoints(PointSet* points)
 {
     shared_ptr<LatticeData> lattice = points->lattice_data_;
@@ -51,7 +42,6 @@ void GLRenderer::UpdatePoints(PointSet* points)
 
 }
 
-
 shared_ptr<ShapeData> GLRenderer::UpdateShape(shared_ptr<ShapeData> shape, vector<vec2>* vertices_)
 {
     glBindVertexArray(shape->vao_);
@@ -63,4 +53,31 @@ shared_ptr<ShapeData> GLRenderer::UpdateShape(shared_ptr<ShapeData> shape, vecto
     return shape;
 }
 
+void GLRenderer::SetupCoordinateAxis()
+{
+    coordinate_axis_ = std::make_unique<kipod::RenderObject>();
 
+    std::vector<vec3> vertices = {vec3(-2,0,0),vec3(10,0,0),
+                                  vec3(0,-2,0),vec3(0,10,0),
+                                  vec3(0,0,-2),vec3(0,0,10),
+                                 };
+    std::vector<vec3> colors =   {vec3(1.0,0.5,0.5),vec3(1,0,0),
+                                  vec3(0.5,1.0,0.5),vec3(0,1,0),
+                                  vec3(0.5,0.5,1.0),vec3(0,0,1),
+                                  };
+
+    std::string name = "Coordinate Axis";
+    auto layout = new kipod::GLRenderLayout;
+    layout->SetupLines(&vertices, &colors);
+    layout->sha_ = new kipod::Shader("lines.vert.glsl", "lines.frag.glsl");
+    layout->sha_->AttachUniform<glm::mat4>("mvp");
+    coordinate_axis_->AddLayout(name, layout);
+}
+
+void GLRenderer::DrawCoordinateAxis(kipod::RenderCamera* camera){
+    auto layout = static_cast<kipod::GLRenderLayout*>(coordinate_axis_->Layout("Coordinate Axis"));
+    layout->sha_->Use();
+    layout->sha_->SetUniform<glm::mat4>("mvp", *camera);
+    layout->Draw();
+    layout->sha_->Unuse();
+}

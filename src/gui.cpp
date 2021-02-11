@@ -833,7 +833,7 @@ void GUI::loadPrimitive(Scene* scene){
                             LOG_ENGINE("Loaded Primitive.");
                             //scene->initLastModel();
                             scene->setActiveModel(scene->numberOfModels()-1);
-                            scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
+                            //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }
 
 }
@@ -850,7 +850,7 @@ void GUI::loadOBJfile(Scene* scene){
                             scene->loadOBJModel(chosenPath, texturedOption);
                             //scene->initLastModel(texturedOption);
                             scene->setActiveModel(scene->numberOfModels()-1);
-                            scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
+                            //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
                         }
 
                         if (strlen(dlg.getChosenPath())>0) {

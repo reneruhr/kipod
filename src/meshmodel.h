@@ -127,7 +127,6 @@ public:
 
     float normal_length=1;
 
-    void processEvent(Event& event) override;
     void setUniformMaterial(MaterialStruct &material);
     void setUniformMaterial();
 };

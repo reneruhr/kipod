@@ -121,21 +121,19 @@ class VertexBuffer : public Buffer
 {
 public:
     VertexBuffer() = default;
-    VertexBuffer(void* data, unsigned int count, unsigned int size, VertexAttributeObject* vao, GLenum  flag = GL_STATIC_DRAW) : Buffer(data, count, size) {
-        SetFixed(vao, flag);
+    VertexBuffer(void* data, unsigned int count, unsigned int size, GLenum  flag = GL_STATIC_DRAW) : Buffer(data, count, size) {
+        SetFixed(flag);
     }
     VertexBuffer(void* data, unsigned int size) : Buffer(data, 0, size) {
         Set();
     }
 
-    void SetFixed(VertexAttributeObject* vao, GLenum  flag = GL_STATIC_DRAW){
+    void SetFixed(GLenum  flag = GL_STATIC_DRAW){
         LOG_ENGINE("Setting VertexBuffer");
         glGenBuffers(1, &id_);
-        //glBindVertexArray(vao->id_);
         glBindBuffer(GL_ARRAY_BUFFER, id_);
         glBufferData(GL_ARRAY_BUFFER, size_, data_, flag);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        //glBindVertexArray(0);
     }
 
     void Set(GLenum flag = GL_DYNAMIC_STORAGE_BIT)

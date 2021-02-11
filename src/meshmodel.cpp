@@ -245,7 +245,6 @@ void MeshModel::drawWithLight(SoftRenderer *softrenderer, const std::vector<Ligh
 }
 
 
-
 void MeshModel::move(const vec3& translate){
     _world_transform=Translate(translate)*_world_transform;
 }
@@ -260,11 +259,6 @@ mat4 MeshModel::getmTransform() const{
 glm::mat4 MeshModel::getmTransformBBox()  {
     //return _world_transform*_local_transform*_boundingBoxData._transform;
     return Transform() * MakeGLM(_boundingBoxData._transform);
-}
-
-void MeshModel::processEvent(Event &event)
-{
-
 }
 
 vec3 MeshModel::getCenter(){

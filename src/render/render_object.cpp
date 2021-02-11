@@ -171,7 +171,7 @@ void kipod::GLRenderLayout::SetupPointSet(const std::vector<vec4> *vertices)
     vao_->Set();
 
     unsigned int buffersize = vertices->size()*sizeof(vec4);
-    vbo_ = new kipod::VertexBuffer((void*)vertices->data(), vertices->size(), buffersize, vao_);
+    vbo_ = new kipod::VertexBuffer((void*)vertices->data(), vertices->size(), buffersize);
     vbo_->Bind();
 
 
@@ -193,7 +193,9 @@ void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const 
     vao_->Set();
 
     unsigned int buffersize = vertices->size()*sizeof(vec3);
+
     vbo_ = new kipod::VertexBuffer(nullptr, 2*buffersize);
+    vbo_->count_ = vertices->size();
     vbo_->Add(0, buffersize, (void*)vertices->data());
     vbo_->Add(buffersize, buffersize, (void*)colors->data());
     vbo_->Bind();

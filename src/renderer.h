@@ -25,7 +25,7 @@ protected:
 public:
     Renderer(int width=800, int height=600): _width(width), _height(height) { LOG_DEBUG("Called Render Constructor");}
     //~Renderer(void)
-    ~Renderer(void){}
+    virtual ~Renderer() = default;
 
     virtual void drawPoint(int x, int y){}
     virtual void drawPointWithColor(int x, int y, float* c){}
