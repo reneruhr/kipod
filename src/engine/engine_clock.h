@@ -2,34 +2,26 @@
 
 #include "../core.h"
 
+
 namespace kipod{
+
+
+using namespace std::chrono_literals;
+using Time = std::chrono::high_resolution_clock;
+
 
 class Clock
 {
-    float time_;
-    float step_;
+    std::chrono::milliseconds target_time_step_ = 16ms;
+    std::chrono::milliseconds current_time_step_;
+
+    std::chrono::time_point<Time> last_;
+
 public:
-    Clock(float now = 0.0f) : time_(now) {}
+    Clock() : last_(Time::now()) {}
 
-    float Now()
-    {
-        time_ = glfwGetTime();
-        return time_;
-    }
-
-    float Lap()
-    {
-        step_ = glfwGetTime()-time_;
-        return step_;
-    }
-
-    void SlowDownTime(float limit = 1/60.0)
-    {
-        if(Lap() < limit){
-            std::this_thread::sleep_for( std::chrono::milliseconds( (int)(1000*(limit-step_)) ) );
-        }
-        time_ = glfwGetTime();
-    }
+    int Timestep ();
+    void Synchronize();
 };
 
 }

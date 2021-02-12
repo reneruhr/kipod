@@ -137,12 +137,10 @@ int my_main( int argc, char **argv )
 //   kipod::TextureManager::Add(quasi_texture);
 
     kipod::Clock clock;
-    clock.Now();
 
     while (!window->windowShouldClose())
     {
 
-        clock.SlowDownTime(1/30.0f);
         display();
         //gui->draw(scene, softrenderer, window);
         gui->Begin(window);
@@ -153,6 +151,7 @@ int my_main( int argc, char **argv )
         window->updateWindow();
         eventmanager->process();
         kipod::Events::Process();
+        clock.Synchronize();
     }
 
 	delete scene;
@@ -170,11 +169,11 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-    kipod::Application portfolio;
+    kipod::Application kipod;
 
-    portfolio.Init(argc, argv);
+    kipod.Init(argc, argv);
 
-    portfolio.Run();
+    kipod.Run();
 
 	my_main(argc, argv );
 	
