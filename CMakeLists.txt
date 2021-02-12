@@ -114,6 +114,8 @@ add_executable(kipod
   src/engine/engine_clock.h
   src/engine/engine_clock.cpp
 
+  src/engine/engine_menu.h
+  src/engine/engine_menu.cpp
 
 
 

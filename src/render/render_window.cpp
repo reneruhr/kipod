@@ -1,8 +1,8 @@
 #include "render_window.h"
 #include "render_manager.h"
 
-unsigned int GLOBAL_SCR_WIDTH = 800;
-unsigned int GLOBAL_SCR_HEIGHT = 600;
+unsigned int GLOBAL_SCR_WIDTH = 1024;
+unsigned int GLOBAL_SCR_HEIGHT = 800;
 
 
 namespace kipod{
@@ -21,7 +21,7 @@ Window::Window(unsigned int width, unsigned int height, std::string title)
 Window::~Window()
 {
     glfwDestroyWindow(_window);
-    glfwTerminate();
+    LOG_ENGINE("Window deconstructor");
 }
 
 int Window::init()
@@ -106,6 +106,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     bool splitScreen = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window))->splitScreen;
     GLOBAL_SCR_WIDTH = width/2 * ( splitScreen? 1 : 2 );
     GLOBAL_SCR_HEIGHT = height;
+    LOG_ENGINE("Resized Window. Width {} and height {}", width, height);
 }
 
 void key_callback(GLFWwindow*, int key, int scancode, int action, int mods)

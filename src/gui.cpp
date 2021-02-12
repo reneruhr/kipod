@@ -4,18 +4,7 @@
 #include "utils/log.h"
 
 
-static void HelpMarker(const char* desc)
-{
-    ImGui::TextDisabled("(?)");
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::BeginTooltip();
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
+
 
 GUI::~GUI()
 {
@@ -145,17 +134,17 @@ void GUI::Begin(kipod::Window* window){
 //                    *p_open = false;
                 ImGui::EndMenu();
             }
-            HelpMarker(
-                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
-                " > if io.ConfigDockingWithShift==false (default):" "\n"
-                "   drag windows from title bar to dock" "\n"
-                " > if io.ConfigDockingWithShift==true:" "\n"
-                "   drag windows from anywhere and hold Shift to dock" "\n\n"
-                "This demo app has nothing to do with it!" "\n\n"
-                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
-                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
-                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
-            );
+//            HelpMarker(
+//                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
+//                " > if io.ConfigDockingWithShift==false (default):" "\n"
+//                "   drag windows from title bar to dock" "\n"
+//                " > if io.ConfigDockingWithShift==true:" "\n"
+//                "   drag windows from anywhere and hold Shift to dock" "\n\n"
+//                "This demo app has nothing to do with it!" "\n\n"
+//                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
+//                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
+//                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
+//            );
 
             ImGui::EndMenuBar();
         }
@@ -165,25 +154,25 @@ void GUI::Begin(kipod::Window* window){
 
 void GUI::Draw(Scene* scene, SoftRenderer* softrenderer, kipod::Window* window)
 {
-    ImGui::Begin("Modules");
 
+    ImGui::Begin("Modules");
     draw_menus(scene, softrenderer, window);
 
     for(auto m : gui_modules_) m->Draw();
-
     ImGui::End();
 
-    ImGui::Begin("Quasicrystal");
 
-    unsigned int scene_texture = scene->SceneAsFramebuffer();
-    ImVec2 viewport_size = ImGui::GetContentRegionAvail();
-    unsigned int x = static_cast<unsigned int>(viewport_size.x*1.2);
-    unsigned int y = static_cast<unsigned int>(viewport_size.y*1.2);
-    if(scene->width_ != x || scene->height_ != y)
-        scene->Resize(x, y);
-    ImGui::Image(reinterpret_cast<void*>(scene_texture), viewport_size, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+//    ImGui::Begin("Quasicrystal");
 
-    ImGui::End();
+//    unsigned int scene_texture = scene->SceneAsFramebuffer();
+//    ImVec2 viewport_size = ImGui::GetContentRegionAvail();
+//    unsigned int x = static_cast<unsigned int>(viewport_size.x*1.2);
+//    unsigned int y = static_cast<unsigned int>(viewport_size.y*1.2);
+//    if(scene->width_ != x || scene->height_ != y)
+//        scene->Resize(x, y);
+//    ImGui::Image(reinterpret_cast<void*>(scene_texture), viewport_size, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+//    ImGui::End();
 
 
 

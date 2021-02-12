@@ -18,6 +18,8 @@ void Scene::Setup()
 {
     LOG_ENGINE("Seting up MeshModel Scene.");
 
+    name_ = "Quasicrystals";
+
     _glrenderer->SetupCoordinateAxis();
     _glrenderer->SetupGrid();
 
@@ -68,10 +70,10 @@ void Scene::SetupOptions(){
 void Scene::DrawGui()
 {
     using namespace kipod;
-    Gui::Get();
+
 
     Gui::BeginWindow("MeshModels");
-
+    auto v = ImGui::GetWindowSize();
     for(auto& [name,toggle] : mode_toggles_)
         Gui::Checkbox(toggle);
 

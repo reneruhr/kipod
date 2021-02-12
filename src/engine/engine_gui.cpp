@@ -128,75 +128,36 @@ void kipod::Gui::Begin()
     ImGuiIO &io = ImGui::GetIO();
     static ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-    static bool opt_fullscreen = true;
     static bool dockspace = true;
 
 
-    if (opt_fullscreen)
-    {
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->GetWorkPos());
-        ImGui::SetNextWindowSize(viewport->GetWorkSize());
-        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-    }
+
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->GetWorkPos());
+    ImGui::SetNextWindowSize(viewport->GetWorkSize());
+    ImGui::SetNextWindowViewport(viewport->ID);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    //window_flags |= ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground;
+
 
     if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
         window_flags |= ImGuiWindowFlags_NoBackground;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", &dockspace, window_flags);
+    ImGui::Begin("DockSpace", &dockspace, window_flags);
     ImGui::PopStyleVar();
 
-    if (opt_fullscreen)
-        ImGui::PopStyleVar(2);
+
+    ImGui::PopStyleVar(2);
 
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGuiID dockspace_id = ImGui::GetID("DockSpace_ID");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
-
-
-    if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("Options"))
-            {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::Separator();
-
-
-                if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-                if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-                if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-                if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-                if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-                ImGui::Separator();
-
-//                if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
-//                    *p_open = false;
-                ImGui::EndMenu();
-            }
-//            HelpMarker(
-//                "When docking is enabled, you can ALWAYS dock MOST window into another! Try it now!" "\n\n"
-//                " > if io.ConfigDockingWithShift==false (default):" "\n"
-//                "   drag windows from title bar to dock" "\n"
-//                " > if io.ConfigDockingWithShift==true:" "\n"
-//                "   drag windows from anywhere and hold Shift to dock" "\n\n"
-//                "This demo app has nothing to do with it!" "\n\n"
-//                "This demo app only demonstrate the use of ImGui::DockSpace() which allows you to manually create a docking node _within_ another window. This is useful so you can decorate your main application window (e.g. with a menu bar)." "\n\n"
-//                "ImGui::DockSpace() comes with one hard constraint: it needs to be submitted _before_ any window which may be docked into it. Therefore, if you use a dock spot as the central point of your application, you'll probably want it to be part of the very first window you are submitting to imgui every frame." "\n\n"
-//                "(NB: because of this constraint, the implicit \"Debug\" window can not be docked into an explicit DockSpace() node, because that window is submitted as part of the NewFrame() call. An easy workaround is that you can create your own implicit \"Debug##2\" window after calling DockSpace() and leave it in the window stack for anyone to use.)"
-//            );
-
-            ImGui::EndMenuBar();
-        }
-
 
 }
 
@@ -231,15 +192,15 @@ void kipod::Gui::End()
 
 void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
 {
-    ImGui::Begin(scene->name_.c_str());
-
+    ImGui::Begin(scene->name_.c_str(), (bool*)true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
     unsigned int scene_texture = scene->SceneAsFramebuffer();
     ImVec2 viewport_size = ImGui::GetContentRegionAvail();
-    unsigned int x = static_cast<unsigned int>(viewport_size.x*1.2);
-    unsigned int y = static_cast<unsigned int>(viewport_size.y*1.2);
-    if(scene->width_ != x || scene->height_ != y)
-        scene->Resize(x, y);
-    ImGui::Image(reinterpret_cast<void*>(scene_texture), viewport_size, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    unsigned int x = static_cast<unsigned int>(viewport_size.x);
+    unsigned int y = static_cast<unsigned int>(viewport_size.y);
+    if(scene->width_ != x)   {
+        LOG_ENGINE("Viewport Resized w={} h={}",x,y);
+        scene->Resize(x, y);}
+    ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
     ImGui::End();
 }
@@ -253,6 +214,7 @@ void SetGuiColors(){
 
     auto& colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
+    //colors[ImGuiCol_WindowBg] = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
 
     // Headers
     colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };

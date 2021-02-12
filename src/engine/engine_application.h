@@ -5,6 +5,7 @@
 #include "engine_controls.h"
 #include "engine_events.h"
 #include "engine_gui.h"
+#include "engine_menu.h"
 #include "engine_input.h"
 #include "engine_transform.h"
 

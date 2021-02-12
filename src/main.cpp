@@ -1,5 +1,7 @@
 #include "kipod.h"
 
+
+
 #include "scene.h"
 #include "gui.h"
 #include "inputmanager.h"
@@ -24,7 +26,7 @@ Scene *scene;
 GLRenderer *renderer;
 SoftRenderer *softrenderer;
 GUI *gui;
-kipod::Window *window;
+std::shared_ptr<kipod::Window> window;
 InputManager *inputmanager;
 EventManager *eventmanager;
 
@@ -100,7 +102,7 @@ void screenToPixel_y(double& y, int& q){
 
 int my_main( int argc, char **argv )
 {
-    window = new kipod::Window(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)");
+    window = std::shared_ptr<kipod::Window>(new kipod::Window(GLOBAL_SCR_WIDTH*1.1, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)"));
     window->init();
 
 
@@ -114,7 +116,7 @@ int my_main( int argc, char **argv )
     eventmanager->addListener(scene);
 
     gui = new GUI(eventmanager);
-    gui->init(window);
+    //gui->init(window.get());
 
 
     mat4 square_root = transpose(MinkowskiEmbedding(2).Embedding());
@@ -138,15 +140,21 @@ int my_main( int argc, char **argv )
 
     kipod::Clock clock;
 
+    kipod::Gui::Init(window);
+
+
     while (!window->windowShouldClose())
     {
+        kipod::Gui::Begin();
+        kipod::Menu();
 
         display();
-        //gui->draw(scene, softrenderer, window);
-        gui->Begin(window);
-        gui->Draw(scene, softrenderer, window);
+
+
+        gui->Draw(scene, softrenderer, window.get());
         scene->DrawGui();
-        gui->End(window);
+        kipod::Gui::CreateSceneWindow(scene);
+        kipod::Gui::End();
 
         window->updateWindow();
         eventmanager->process();
@@ -158,9 +166,9 @@ int my_main( int argc, char **argv )
 	delete renderer;
     delete softrenderer;
     delete gui;
-    delete window;
     delete inputmanager;
 
+    glfwTerminate();
 	return 0;
 }
 
