@@ -73,7 +73,6 @@ void Scene::DrawGui()
 
 
     Gui::BeginWindow("MeshModels");
-    auto v = ImGui::GetWindowSize();
     for(auto& [name,toggle] : mode_toggles_)
         Gui::Checkbox(toggle);
 

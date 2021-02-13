@@ -4,6 +4,7 @@
 
 namespace kipod{
 
+// From Hazel
 
 enum class EventType
 {

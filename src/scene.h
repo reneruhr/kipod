@@ -74,7 +74,7 @@ public:
     void loadPrimitive(Primitive primitive, int numberPolygons=0);
 
     virtual void Setup() override;
-    //virtual void Draw() override;
+    virtual void Draw() override {} ;
 
     void SetupUniforms();
 

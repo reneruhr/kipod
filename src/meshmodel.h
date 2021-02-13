@@ -48,7 +48,9 @@ protected :
 
 public:
     MeshModel(string fileName, bool textured = false);
-    ~MeshModel(void);
+    virtual ~MeshModel(void);
+    MeshModel(MeshModel&&) = default;
+    MeshModel& operator=(MeshModel&&) = default;
 
     shared_ptr<ModelData> modelDataWired = nullptr;
     shared_ptr<ModelData> modelTexturedData = nullptr;

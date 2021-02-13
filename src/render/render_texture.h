@@ -21,14 +21,15 @@ public:
     }
 
     ~Texture(){
-        glDeleteTextures(1, &depth_render_buffer);
+        glDeleteTextures(1, &depths_id_);
         glDeleteTextures(1, &id_);
     }
 
 
     unsigned int id_;
+    unsigned int depths_id_;
     std::string name_ ="tex";
-    GLuint depth_render_buffer;
+
 
     void LoadTexture(const char path[]);
 

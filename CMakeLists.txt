@@ -83,8 +83,13 @@ add_executable(kipod
 
 
 
-  src/modules/meshmodels/meshmodelscene.h
-  src/modules/meshmodels/meshmodelscene.cpp
+  src/modules/meshmodels/meshmodel_opengl_module.h
+  src/modules/meshmodels/meshmodel_opengl_module.cpp
+  src/modules/meshmodels/meshmodel_opengl_scene.h
+  src/modules/meshmodels/meshmodel_opengl_scene.cpp
+  src/modules/meshmodels/meshmodel_sidebar.h
+  src/modules/meshmodels/meshmodel_sidebar.cpp
+
 
   src/modules/softrenderer/softrenderscene.h
   src/modules/softrenderer/softrenderscene.cpp
@@ -92,6 +97,9 @@ add_executable(kipod
   src/modules/quasicrystals/quasicrystalscene.h
   src/modules/quasicrystals/quasicrystalscene.cpp
 
+
+  src/engine/engine_module.h
+  src/engine/engine_module.cpp
 
   src/engine/engine_application.h
   src/engine/engine_application.cpp
@@ -117,6 +125,8 @@ add_executable(kipod
   src/engine/engine_menu.h
   src/engine/engine_menu.cpp
 
+  src/engine/engine_sidebar.h
+  src/engine/engine_sidebar.cpp
 
 
 

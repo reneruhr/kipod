@@ -26,6 +26,7 @@ void RenderCamera::Move(const glm::vec3 &translate)
     eye_+=translate;
     view_matrix_ = glm::lookAt(eye_, at_, up_);
     UpdatepojectionView();
+    LOG_ENGINE("Moved Camera by {},{},{}", translate.x,translate.y,translate.z);
 }
 
 

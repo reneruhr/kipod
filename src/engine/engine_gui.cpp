@@ -133,8 +133,10 @@ void kipod::Gui::Begin()
 
 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->GetWorkPos());
-    ImGui::SetNextWindowSize(viewport->GetWorkSize());
+//    ImGui::SetNextWindowPos(viewport->GetWorkPos());
+//    ImGui::SetNextWindowSize(viewport->GetWorkSize());
+    ImGui::SetNextWindowPos(viewport->Pos);
+    ImGui::SetNextWindowSize(viewport->Size);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -168,6 +170,8 @@ void kipod::Gui::End()
         if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
         if(show_demo_) ImGui::ShowDemoWindow();
         ImGui::End();
+
+
         ImGui::End();
 
 
@@ -192,7 +196,8 @@ void kipod::Gui::End()
 
 void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
 {
-    ImGui::Begin(scene->name_.c_str(), (bool*)true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+    ImGui::SetNextWindowSize(ImGui::GetContentRegionAvail(), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Module Viewport", (bool*)false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
     unsigned int scene_texture = scene->SceneAsFramebuffer();
     ImVec2 viewport_size = ImGui::GetContentRegionAvail();
     unsigned int x = static_cast<unsigned int>(viewport_size.x);
@@ -201,7 +206,6 @@ void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
         LOG_ENGINE("Viewport Resized w={} h={}",x,y);
         scene->Resize(x, y);}
     ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
     ImGui::End();
 }
 

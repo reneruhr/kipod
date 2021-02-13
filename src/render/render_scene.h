@@ -30,41 +30,22 @@ public:
 
 
     RenderScene() = default;
-    RenderScene(unsigned int w, unsigned int h) : width_(w), height_(h), ratio_(float(w)/float(h))
-    {
-        LOG_ENGINE("Create Scene with width {} and height {}", w, h);
-
-        framebuffer_ =  std::make_shared<kipod::FrameBuffer>(width_, height_);
-    }
+    RenderScene(int w, int h);
     virtual ~RenderScene() = default;
 
-    virtual void Setup(){}
-    virtual void Draw(){}
+    virtual void Setup() = 0;
+    virtual void Draw() = 0;
 
     virtual void DrawGui(){}
 
-    virtual void Resize(unsigned int w, unsigned int h) {
-        if(fixed_ratio_) h = 1/ratio_*w;
-        width_ = w; height_ = h;
-        LOG_ENGINE("Resized Scene. Width {} and height {}", w, h);
-        framebuffer_->Resize(width_,height_);
-     };
-    virtual unsigned int SceneAsFramebuffer() { return framebuffer_->FrameBufferAsTexture(); };
+    virtual void Resize(int w, int h);
+    virtual unsigned int SceneAsFramebuffer();
 
+    void AddLight(RenderLight* light);
+    void AddCamera(RenderCamera* camera);
+    void AddModel(RenderObject* model);
 
-
-    void AddLight(RenderLight* light){
-        lights_.emplace_back(light);
-    }
-
-    void AddCamera(RenderCamera* camera){
-        cameras_.emplace_back(camera);
-    }
-
-    void AddModel(RenderObject* model){
-        render_objects_.emplace_back(model);
-    }
-
+    void SwapFrameBuffer();
 };
 
 

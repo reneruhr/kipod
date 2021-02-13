@@ -4,10 +4,5 @@ namespace kipod{
 
 void Menu();
 
-class Sidebar{
-    int width_;
-   public:
-    void Draw();
-};
 
 }

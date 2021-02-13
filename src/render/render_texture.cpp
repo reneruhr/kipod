@@ -45,10 +45,10 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
 
 
 
-        glGenRenderbuffers(1, &depth_render_buffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depth_render_buffer);
+        glGenRenderbuffers(1, &depths_id_);
+        glBindRenderbuffer(GL_RENDERBUFFER, depths_id_);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, image_->width_, image_->height_);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_render_buffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depths_id_);
 
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id_, 0);
 
@@ -75,14 +75,14 @@ void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id_, 0);
 
-            GLuint depth_render_buffer;
-            glCreateTextures(GL_TEXTURE_2D, 1, &depth_render_buffer);
-            glBindTexture(GL_TEXTURE_2D, depth_render_buffer);
+            glCreateTextures(GL_TEXTURE_2D, 1, &depths_id_);
+            glBindTexture(GL_TEXTURE_2D, depths_id_);
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, image_->width_, image_->height_);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth_render_buffer, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depths_id_, 0);
 
-           if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                LOG_ENGINE("Failed to Render to Texture");
+
+           assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+                //LOG_ENGINE("Framebuffer not complete!");
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

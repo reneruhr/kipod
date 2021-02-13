@@ -55,14 +55,4 @@ void Menu()
     }
 }
 
-void Sidebar::Draw()
-{
-    int width = ImGui::GetWindowSize().y;
-    if(width!=width_){
-
-    }
-
-
-}
-
 }

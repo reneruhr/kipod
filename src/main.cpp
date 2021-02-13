@@ -1,5 +1,6 @@
 #include "kipod.h"
 
+#include "modules/meshmodels/meshmodel_opengl_module.h"
 
 
 #include "scene.h"
@@ -91,17 +92,11 @@ void display()
 }
 
 
-void screenToPixel_x(double& x, int& p){
-	p = (int)(x);
-}
-
-void screenToPixel_y(double& y, int& q){
-    q = (int)(GLOBAL_SCR_HEIGHT-y);
-}
-
 
 int my_main( int argc, char **argv )
 {
+    Log::Init();
+    LOG_ENGINE("Logger Started.");
     window = std::shared_ptr<kipod::Window>(new kipod::Window(GLOBAL_SCR_WIDTH*1.1, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)"));
     window->init();
 
@@ -177,13 +172,15 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-    kipod::Application kipod;
+    bool appmode = true;
 
-    kipod.Init(argc, argv);
-
-    kipod.Run();
-
-	my_main(argc, argv );
+    if(appmode){
+        int width = 1024, height = 768;
+        kipod::Application kipod(width, height);
+        kipod.Init();
+        kipod.Add("OpenGL Meshmodels", MeshModelModule(width,height));
+        kipod.Run();
+    }else    my_main(argc, argv );
 	
-	return 0;
+    return 0;
 }
