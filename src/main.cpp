@@ -67,7 +67,6 @@ void mainMenu(int id);
 void display()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    //glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPointSize(4);
     glEnable(GL_PROGRAM_POINT_SIZE);
@@ -86,9 +85,6 @@ void display()
 
     glViewport(0, 0, GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
     scene->draw();
-
-    //scene->Draw();
-
 }
 
 
@@ -172,7 +168,7 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-    bool appmode = true;
+    bool appmode = false;
 
     if(appmode){
         int width = 1024, height = 768;

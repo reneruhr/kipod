@@ -59,6 +59,19 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
             LOG_ENGINE("Failed to Render to Texture");
 }
 
+kipod::Texture::Texture(int w, int h){
+    image_ = new Image(w,h);
+}
+
+kipod::Texture::~Texture(){
+    glDeleteTextures(1, &depths_id_);
+    glDeleteTextures(1, &id_);
+}
+
+void kipod::Texture::Bind() const {
+    glBindTexture(GL_TEXTURE_2D, id_);
+}
+
 //No Shader needed
 // From Hazel:
 void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)

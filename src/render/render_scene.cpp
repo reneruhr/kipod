@@ -1,4 +1,5 @@
 #include "render_scene.h"
+#include "render_manager.h"
 
 kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(float(w)/float(h))
 {

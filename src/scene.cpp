@@ -125,7 +125,7 @@ void Scene::draw()
         Shape* shape = (Shape*)(QuaCry*)point_set;
         shaders_["Shape"].Use();
         SetShapeUniform(shape);
-        shape->Draw();
+        shape->Shape::Draw();
 
         shaders_["Quasi Internal"].Use();
         SetUniformInternal(cameras[activeCamera], (QuaCry*)point_set);

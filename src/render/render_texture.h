@@ -5,40 +5,33 @@
 #include "../utils/log.h"
 
 #include "vector"
+#include "render_object.h"
 
 namespace kipod{
 
 class Texture
 {
-
     Image* image_;
-
+    std::unique_ptr<RenderObject> textured_square_;
 
 public:
     Texture() = default;
-    Texture(int w, int h){
-        image_ = new Image(w,h);
-    }
-
-    ~Texture(){
-        glDeleteTextures(1, &depths_id_);
-        glDeleteTextures(1, &id_);
-    }
-
+    Texture(int w, int h);
+    Texture(Texture&&) = default;
+    Texture& operator=(Texture&&) = default;
+    ~Texture();
 
     unsigned int id_;
     unsigned int depths_id_;
     std::string name_ ="tex";
 
-
+    void Bind() const;
     void LoadTexture(const char path[]);
-
     void RenderToTexture(GLuint& frame_buffer);
-
-    void Bind() const {
-        glBindTexture(GL_TEXTURE_2D, id_);
-    }
     void RenderToTexture2(GLuint &frame_buffer);
+
+    void Setup();
+    void Draw();
 };
 
 
@@ -47,10 +40,6 @@ class TextureManager{
     inline static std::vector<Texture*> textures_;
 
 public:
-
-//    static void Init(){
-//        std::vector<Texture*> textures_ = {};
-//    }
 
     static Texture* Get(int id)
     {

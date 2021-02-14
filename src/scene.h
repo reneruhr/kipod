@@ -14,13 +14,13 @@
 
 
 #include "pointset.h"
-#include "shapes.h"
 
 
 #include "render/render_manager.h"
 #include "render/render_object.h"
 #include "render/render_scene.h"
 #include "render/render_material.h"
+#include "render/render_shape.h"
 
 #include "engine/engine_gui.h"
 #include "engine/engine_events.h"

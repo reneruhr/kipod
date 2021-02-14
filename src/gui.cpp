@@ -230,7 +230,7 @@ void GUI::draw_menus(Scene* scene, SoftRenderer* softrenderer, kipod::Window* wi
         drawCameraControl(scene);
 
         drawMaterialsControl(scene);
-        drawTextureControl(scene);
+        //drawTextureControl(scene);
         drawLightControl(scene);
         drawNormalControl(scene);
         drawBBOXControl(scene);
@@ -1003,25 +1003,25 @@ void GUI::translateModelLocalSpace(Scene* scene){
 }
 
 
-void GUI::drawTextureControl(Scene *scene)
-{
-    static bool rendered_texturedOption = false;
-    if(ImGui::Checkbox("Model Texture = Render to Texture", &rendered_texturedOption)){
-        if(rendered_texturedOption && !scene->models.empty()){
-            MeshModel* model = scene->models.back();
-            if(model->modelTexturedData){
-                model->tex_ = kipod::TextureManager::Get(0);
-                model->modelTexturedData->texture_ = *model->tex_;
-            }// Has a Texture
-        }//Yes and non-empty
-    }//Checkbox
+//void GUI::drawTextureControl(Scene *scene)
+//{
+//    static bool rendered_texturedOption = false;
+//    if(ImGui::Checkbox("Model Texture = Render to Texture", &rendered_texturedOption)){
+//        if(rendered_texturedOption && !scene->models.empty()){
+//            MeshModel* model = scene->models.back();
+//            if(model->modelTexturedData){
+//                model->tex_ = kipod::TextureManager::Get(0);
+//                model->modelTexturedData->texture_ = *model->tex_;
+//            }// Has a Texture
+//        }//Yes and non-empty
+//    }//Checkbox
 
-    static bool renderedToTextureScene = scene->pointsetToTexture_mode;
-    if(ImGui::Checkbox("Activate Render to Texture", &renderedToTextureScene)){
-            scene->pointsetToTexture_mode = !scene->pointsetToTexture_mode;
-            scene->_glrenderer->SwapPrograms();
-    }
-}
+//    static bool renderedToTextureScene = scene->pointsetToTexture_mode;
+//    if(ImGui::Checkbox("Activate Render to Texture", &renderedToTextureScene)){
+//            scene->pointsetToTexture_mode = !scene->pointsetToTexture_mode;
+//            scene->_glrenderer->SwapPrograms();
+//    }
+//}
 
 void GUI::drawBoundingBox(Scene *scene)
 {

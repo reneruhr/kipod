@@ -1,6 +1,6 @@
 #include "render_object.h"
 #include "../utils/buffer_packing.h"
-
+#include "render_manager.h"
 
 
 void kipod::GLRenderLayout::Draw()
@@ -41,9 +41,40 @@ void kipod::GLRenderLayout::Unbind()
 }
 
 
+glm::mat4 kipod::RenderObject::Transform() const
+{
+    return glm::mat4(*world_) * glm::mat4(*local_);
+}
+
+const glm::mat4 &kipod::RenderObject::TransformWorld() const
+{
+    return *world_;
+}
+
+const glm::mat4 &kipod::RenderObject::TransformLocal() const
+{
+    return *local_;
+}
+
+void kipod::RenderObject::Draw()
+{
+    if(lay_)  lay_->Draw();
+}
+
 void kipod::RenderObject::Draw(kipod::RenderLayout *layout)
 {
     if(layout)  layout->Draw();
+}
+
+void kipod::RenderObject::Draw(std::string layout)
+{
+    assert(HasLayout(layout));
+    render_layouts_[layout]->Draw();
+}
+
+void kipod::RenderObject::Setup()
+{
+    if(lay_)  lay_->Setup();
 }
 
 void kipod::RenderObject::Setup(kipod::RenderLayout *layout)
@@ -51,6 +82,33 @@ void kipod::RenderObject::Setup(kipod::RenderLayout *layout)
     if(layout)  layout->Setup();
 }
 
+void kipod::RenderObject::Setup(std::string layout)
+{
+    assert(HasLayout(layout));
+    render_layouts_[layout]->Setup();
+}
+
+kipod::RenderLayout *kipod::RenderObject::Layout(std::string layout)
+{
+    return render_layouts_[layout];
+}
+
+void kipod::RenderObject::AddLayout(std::pair<std::string, kipod::RenderLayout *> named_layout)
+{
+    render_layouts_.insert(named_layout);
+    if(lay_==nullptr) lay_ = named_layout.second;
+}
+
+void kipod::RenderObject::AddLayout(std::string name, kipod::RenderLayout *layout)
+{
+    render_layouts_.insert({name,layout});
+    if(lay_==nullptr) lay_ = layout;
+}
+
+bool kipod::RenderObject::HasLayout(std::string name)
+{
+    return render_layouts_.find(name)!=end(render_layouts_);
+}
 
 void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
                                                   const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices)
@@ -81,7 +139,6 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* verti
 
     Unbind();
 }
-
 
 void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices_vector)
 {

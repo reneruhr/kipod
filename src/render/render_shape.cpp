@@ -1,9 +1,6 @@
-#include "shapes.h"
+#include "render_shape.h"
 
-
-
-
-void Shape::MakeFan()
+void Shape::MakeFan() // Makes a fan with origin vector for TRIANGLE_FAN at center_=0
 {
     triangleFan_.push_back(center_);
     for(auto& v : transformed_vertices_)
@@ -15,22 +12,13 @@ Shape::Shape(Polygon polygon): Polygon(polygon)
 {    
 }
 
-
 void Shape::Init()
 {
-    //MakeFan();
     std::string name = "Shape";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupShape(&transformed_vertices_);
     AddLayout(name, layout);
-
 }
-
-void Shape::Draw()
-{
-    RenderObject::Draw("Shape");
-}
-
 
 void Shape::ScaleShape(const float scale)
 {

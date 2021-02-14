@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../core.h"
 #include "render_object.h"
 #include "render_camera.h"
 #include "render_light.h"
-#include "../core.h"
+
 
 namespace kipod
 {

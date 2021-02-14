@@ -8,7 +8,7 @@
 #include "guimathcontrol.h"
 
 #include "pointset.h"
-#include "shapes.h"
+#include "render/render_shape.h"
 
 class Scene;
 class PrimMeshModel;

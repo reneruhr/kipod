@@ -63,8 +63,7 @@ add_executable(kipod
   src/pointset.h
   src/pointset.cpp
 
-  src/shapes.h
-  src/shapes.cpp
+
 
   src/main.cpp
 
@@ -172,6 +171,11 @@ add_executable(kipod
   src/render/render_window.h
   src/render/render_window.cpp
 
+  src/render/render_shape.h
+  src/render/render_shape.cpp
+
+  src/render/render_framebuffer.h
+  src/render/render_framebuffer.cpp
 
 
 
