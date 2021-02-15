@@ -170,7 +170,7 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-    bool appmode = false;
+    bool appmode = true;
 
     if(appmode){
         int width = 1024, height = 768;

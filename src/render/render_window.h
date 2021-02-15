@@ -3,10 +3,10 @@
 #include "../core.h"
 #include "../engine/engine_input.h"
 #include "../engine/engine_events.h"
+#include "../engine/engine_menu.h"
 
 extern unsigned int GLOBAL_SCR_WIDTH;
 extern unsigned int GLOBAL_SCR_HEIGHT;
-
 
 namespace kipod{
 
@@ -31,18 +31,11 @@ public:
     unsigned Width(){ return _width; }
     unsigned Height(){ return _height; }
 
-    bool CloseWindow(KeyPressedEvent& e) {
-        if(e.GetKeyCode() == Key::Escape)
-            glfwSetWindowShouldClose(_window, true);
-        return false;
-    }
+    bool CloseWindow(KeyPressedEvent& e);
+    bool CloseWindow(MenuEvent &e);
+    virtual void Signup() override;
+    virtual void Receive(std::shared_ptr<Event> event) override;
 
-    LISTENER_SIGNUP(EventCategoryKeyboard)
-    virtual void Receive(std::shared_ptr<Event> event) override{
-
-        Process<KeyPressedEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
-
-    }
 
 };
 

@@ -189,15 +189,11 @@ void Scene::draw()
 		}
 	}
 
-    framebuffer_->Bind();
     glEnable(GL_DEPTH_TEST);
     _glrenderer->DrawCoordinateAxis(cameras[activeCamera]);
     _glrenderer->DrawGrid(cameras[activeCamera]);
     glDisable(GL_DEPTH_TEST);
 
-    kipod::RenderManager::Bind(0);
-
-    framebuffer_->tex_->Draw();
 }
 
 

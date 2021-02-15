@@ -81,7 +81,8 @@ bool Window::windowShouldClose()
     return glfwWindowShouldClose(_window);
 }
 
-void Window::updateWindow(){
+void Window::updateWindow()
+{
     glfwSwapBuffers(_window);
     glfwPollEvents();
 }
@@ -90,7 +91,6 @@ void Window::SplitScreen(bool active)
 {
     if(active == splitScreen)   return;
 
-
     if(splitScreen) _width /= 2;
     else _width *= 2;
 
@@ -98,6 +98,31 @@ void Window::SplitScreen(bool active)
     splitScreen = !splitScreen;
     glfwSetWindowSize(_window,_width,_height);
 
+}
+
+bool Window::CloseWindow(KeyPressedEvent &e)
+{
+    if(e.GetKeyCode() == Key::Escape)
+        glfwSetWindowShouldClose(_window, true);
+    return false;
+}
+bool Window::CloseWindow(MenuEvent &e)
+{
+    if(e.GetMenuSelection() == MenuEventTypes::AppClose)
+        glfwSetWindowShouldClose(_window, true);
+    return false;
+}
+
+void Window::Signup()
+{
+    kipod::Events::Signup(*this, EventCategoryKeyboard);
+    kipod::Events::Signup(*this, EventCategoryApplication);
+}
+
+void Window::Receive(std::shared_ptr<Event> event)
+{
+    Process<KeyPressedEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
+    Process<MenuEvent>(event, BIND_EVENT_FN(Window::CloseWindow));
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
