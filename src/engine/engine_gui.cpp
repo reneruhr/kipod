@@ -198,13 +198,15 @@ void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
 {
     ImGui::SetNextWindowSize(ImGui::GetContentRegionAvail(), ImGuiCond_FirstUseEver);
     ImGui::Begin("Module Viewport", (bool*)false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
-    unsigned int scene_texture = scene->SceneAsFramebuffer();
     ImVec2 viewport_size = ImGui::GetContentRegionAvail();
     unsigned int x = static_cast<unsigned int>(viewport_size.x);
     unsigned int y = static_cast<unsigned int>(viewport_size.y);
     if(scene->width_ != x)   {
         LOG_ENGINE("Viewport Resized w={} h={}",x,y);
-        scene->Resize(x, y);}
+        scene->Resize(x, y);
+
+    }
+    unsigned int scene_texture = scene->SceneAsFramebuffer();
     ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::End();
 }

@@ -27,9 +27,17 @@ void kipod::Texture::LoadTexture(const char path[]){
        ImageLoader::FreeImage(image_);
 }
 
-//Needs Shader
+
 void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
 {
+        if(frame_buffer){
+            glDeleteFramebuffers(1, &frame_buffer);
+            glDeleteTextures(1, &id_);
+            glDeleteTextures(1, &depths_id_);
+            id_=0;
+            depths_id_=0;
+        }
+
         glGenFramebuffers(1, &frame_buffer);
         glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
 
@@ -43,8 +51,6 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-
-
         glGenRenderbuffers(1, &depths_id_);
         glBindRenderbuffer(GL_RENDERBUFFER, depths_id_);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, image_->width_, image_->height_);
@@ -57,6 +63,8 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
 
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             LOG_ENGINE("Failed to Render to Texture");
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 kipod::Texture::Texture(int w, int h){
@@ -72,10 +80,16 @@ void kipod::Texture::Bind() const {
     glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-//No Shader needed
 // From Hazel:
 void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)
 {
+        if(frame_buffer){
+            glDeleteFramebuffers(1, &frame_buffer);
+            glDeleteTextures(1, &id_);
+            glDeleteTextures(1, &depths_id_);
+            id_=0;
+            depths_id_=0;
+        }
             glCreateFramebuffers(1, &frame_buffer);
 
             glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);

@@ -5,7 +5,7 @@ namespace kipod{
 class Texture;
 
 struct FrameBuffer{
-    int id_;
+    int id_ = 0;
     unsigned int opengl_id_ = 0;
     unsigned int depth_buffer_id_ = 0;
 

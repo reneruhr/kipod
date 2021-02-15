@@ -17,8 +17,8 @@ public:
     Texture& operator=(Texture&&) = default;
     ~Texture();
 
-    unsigned int id_;
-    unsigned int depths_id_;
+    unsigned int id_ = 0;
+    unsigned int depths_id_ = 0;
     std::string name_ ="tex";
 
     void Bind() const;
