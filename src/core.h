@@ -22,6 +22,7 @@
 #include "utils/mat.h"
 #include "utils/log.h"
 #include "utils/key_table.h"
+#include "utils/image_loader.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

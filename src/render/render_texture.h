@@ -1,18 +1,14 @@
 #pragma once
-
-#include "GL/glew.h"
-#include "../utils/image_loader.h"
-#include "../utils/log.h"
-
-#include "vector"
+#include "../core.h"
 #include "render_object.h"
+#include "render_shape.h"
 
 namespace kipod{
 
 class Texture
 {
     Image* image_;
-    std::unique_ptr<RenderObject> textured_square_;
+    std::unique_ptr<Shape> textured_square_;
 
 public:
     Texture() = default;
@@ -30,7 +26,7 @@ public:
     void RenderToTexture(GLuint& frame_buffer);
     void RenderToTexture2(GLuint &frame_buffer);
 
-    void Setup();
+    void SetupTextureToSquare();
     void Draw();
 };
 

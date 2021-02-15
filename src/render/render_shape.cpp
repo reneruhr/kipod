@@ -25,6 +25,11 @@ void Shape::ScaleShape(const float scale)
     world_transform_ = Scale(vec3(scale,scale,1)) * world_transform_;
 }
 
+void Shape::ScaleShape(const float x, const float y)
+{
+    world_transform_ = Scale(vec3(x,y,1)) * world_transform_;
+}
+
 void Shape::Move(const vec2 &translate)
 {
     world_transform_=Translate(translate)*world_transform_;

@@ -93,6 +93,12 @@ kipod::RenderLayout *kipod::RenderObject::Layout(std::string layout)
     return render_layouts_[layout];
 }
 
+kipod::RenderLayout *kipod::RenderObject::Layout()
+{
+    if(lay_) return lay_;
+    else return nullptr;
+}
+
 void kipod::RenderObject::AddLayout(std::pair<std::string, kipod::RenderLayout *> named_layout)
 {
     render_layouts_.insert(named_layout);

@@ -13,7 +13,7 @@ class FrameBuffer;
 
 class RenderLayout{
     friend class RenderObject;
-protected:
+public:
     virtual ~RenderLayout() = default;
 
     RenderMaterial* mat_ = nullptr;
@@ -63,6 +63,7 @@ public:
     virtual void Setup(RenderLayout* layout_);
     virtual void Setup(std::string layout);
     virtual RenderLayout* Layout(std::string layout);
+    virtual RenderLayout* Layout();
     virtual void AddLayout(std::pair<std::string, RenderLayout*> named_layout);
     virtual void AddLayout(std::string name, RenderLayout* layout);
     virtual bool HasLayout(std::string name);

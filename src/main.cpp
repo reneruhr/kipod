@@ -125,9 +125,11 @@ int my_main( int argc, char **argv )
 
    //????? Breaks Imgui Viewport
 //   auto quasi_framebuffer = kipod::RenderManager::addFrameBuffer();
-//   Texture* quasi_texture = new kipod::Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
+//   kipod::Texture* quasi_texture = new kipod::Texture(GLOBAL_SCR_WIDTH, GLOBAL_SCR_HEIGHT);
 //   quasi_texture->RenderToTexture(quasi_framebuffer->opengl_id_);
 //   kipod::TextureManager::Add(quasi_texture);
+
+
 
     kipod::Clock clock;
 
