@@ -128,6 +128,9 @@ add_executable(kipod
   src/engine/engine_menu.h
   src/engine/engine_menu.cpp
 
+  src/engine/engine_menu_events.h
+  src/engine/engine_menu_events.cpp
+
   src/engine/engine_sidebar.h
   src/engine/engine_sidebar.cpp
 

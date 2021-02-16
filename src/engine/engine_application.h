@@ -21,6 +21,7 @@ class Application
     std::unordered_map< std::string, std::unique_ptr<Module> > modules_;
     std::shared_ptr<Window> window_;
     std::unique_ptr<Clock> clock_;
+    std::unique_ptr<Menu> menu_;
 
     std::string active_module_;
 

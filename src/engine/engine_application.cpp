@@ -15,8 +15,7 @@ void kipod::Application::Init()
     kipod::Gui::Init(window_);
 
     clock_ = std::make_unique<Clock>(Clock());
-
-
+    menu_ = std::make_unique<Menu>(Menu());
 
 }
 
@@ -29,7 +28,8 @@ void kipod::Application::Run()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glViewport(0, 0, window_->Width(),window_->Height());
         kipod::Gui::Begin();
-        kipod::Menu();
+        menu_->DrawFiles();
+        menu_->DrawModuleMenu(modules_, active_module_);
         ActiveModule().DrawSidebar();
         ActiveModule().DrawConsole();
         ActiveModule().DrawScene();

@@ -139,7 +139,7 @@ int my_main( int argc, char **argv )
     while (!window->windowShouldClose())
     {
         kipod::Gui::Begin();
-        kipod::Menu();
+        //kipod::Menu();
 
         display();
 

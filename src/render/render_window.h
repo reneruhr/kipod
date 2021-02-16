@@ -3,7 +3,7 @@
 #include "../core.h"
 #include "../engine/engine_input.h"
 #include "../engine/engine_events.h"
-#include "../engine/engine_menu.h"
+#include "../engine/engine_menu_events.h"
 
 extern unsigned int GLOBAL_SCR_WIDTH;
 extern unsigned int GLOBAL_SCR_HEIGHT;
