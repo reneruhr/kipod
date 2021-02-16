@@ -10,6 +10,7 @@
 #include "engine_transform.h"
 #include "engine_module.h"
 #include "engine_sidebar.h"
+#include "engine_console.h"
 
 #include "../render/render_engine.h"
 

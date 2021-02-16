@@ -101,6 +101,8 @@ void kipod::Gui::Init(std::shared_ptr<kipod::Window> window)
     ImGuiIO &io = ImGui::GetIO();  (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 14.0f);
+    io.Fonts->Build();
 
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

@@ -31,6 +31,7 @@ void kipod::Application::Run()
         kipod::Gui::Begin();
         kipod::Menu();
         ActiveModule().DrawSidebar();
+        ActiveModule().DrawConsole();
         ActiveModule().DrawScene();
         kipod::Gui::End();
 

@@ -177,6 +177,8 @@ int main( int argc, char **argv )
         kipod::Application kipod(width, height);
         kipod.Init();
         kipod.Add("OpenGL Meshmodels", MeshModelModule(width,height));
+        LOG_CONSOLE("Test");
+        LOG_CONSOLE("Complicated test %i", 10);
         kipod.Run();
     }else    my_main(argc, argv );
 	

@@ -26,3 +26,8 @@ void kipod::Module::DrawSidebar()
 {
     sidebar_->Draw();
 }
+
+void kipod::Module::DrawConsole()
+{
+    console_->Draw();
+}

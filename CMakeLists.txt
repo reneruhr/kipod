@@ -51,6 +51,7 @@ add_executable(kipod
   src/utils/obj_parsing.h
   src/utils/key_table.h
   src/utils/imgui_utils.h
+  src/utils/imgui_console.h
 
   src/math/lattice.h
   src/math/lattice.cpp
@@ -61,13 +62,12 @@ add_executable(kipod
   src/math/minkowski_embedding.h
   src/math/minkowski_embedding.cpp
 
+
   src/math/polygon.h
   src/math/polygon.cpp
 
   src/pointset.h
   src/pointset.cpp
-
-
 
   src/main.cpp
 
@@ -130,6 +130,9 @@ add_executable(kipod
 
   src/engine/engine_sidebar.h
   src/engine/engine_sidebar.cpp
+
+  src/engine/engine_console.h
+  src/engine/engine_console.cpp
 
 
 
