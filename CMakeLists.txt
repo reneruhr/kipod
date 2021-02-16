@@ -27,6 +27,10 @@ file(GLOB stb
     "vendor/stb/*.h"
 )
 
+file(GLOB IconsFontAwesome
+    "vendor/IconsFontAwesome/*.h"
+)
+
 add_executable(kipod
 
   src/kipod.h
@@ -46,7 +50,7 @@ add_executable(kipod
 
   src/utils/obj_parsing.h
   src/utils/key_table.h
-
+  src/utils/imgui_utils.h
 
   src/math/lattice.h
   src/math/lattice.cpp

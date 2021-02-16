@@ -24,6 +24,7 @@ protected:
     unsigned int width_, height_;
     bool fixed_ratio_ = true;
     float ratio_;
+    float reverse_ratio_;
     std::shared_ptr<kipod::FrameBuffer> framebuffer_;
 
 

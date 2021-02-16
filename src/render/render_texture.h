@@ -28,6 +28,7 @@ public:
 
     void SetupTextureToSquare();
     void Draw();
+    void Resize(int w,int h);
 };
 
 

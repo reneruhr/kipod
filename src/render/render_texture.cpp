@@ -138,3 +138,9 @@ void kipod::Texture::Draw()
     textured_square_->Draw();
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->Unuse();
 }
+
+void kipod::Texture::Resize(int w,int h)
+{
+    image_->width_ = w;
+    image_->height_ = h;
+}

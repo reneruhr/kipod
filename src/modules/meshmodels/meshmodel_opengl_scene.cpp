@@ -73,10 +73,14 @@ void MeshModelOpenGLScene::Draw()
     framebuffer_->Bind();
     //kipod::RenderManager::Bind(0);
     glViewport(0, 0, width_, height_);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_DEPTH_TEST);
+    DrawCoordinateAxis(cameras[activeCamera]);
+    DrawGrid(cameras[activeCamera]);
+    glDisable(GL_DEPTH_TEST);
 
     for(auto model : models){
         if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -134,12 +138,6 @@ void MeshModelOpenGLScene::Draw()
         }
     }
 
-    glEnable(GL_DEPTH_TEST);
-
-    DrawCoordinateAxis(cameras[activeCamera]);
-    DrawGrid(cameras[activeCamera]);
-
-    glDisable(GL_DEPTH_TEST);
     kipod::RenderManager::Bind(0);
 }
 

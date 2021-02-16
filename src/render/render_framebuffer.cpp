@@ -29,5 +29,6 @@ unsigned int kipod::FrameBuffer::FrameBufferAsTexture(){
 
 void kipod::FrameBuffer::Resize(unsigned int w, unsigned int h){
     width_ = w; height_ = h;
+    tex_->Resize(w,h);
     tex_->RenderToTexture2(opengl_id_);
 }
