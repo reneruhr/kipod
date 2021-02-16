@@ -206,6 +206,10 @@ void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("Module Viewport", (bool*)false,  ImGuiWindowFlags_NoBackground); //ImGuiWindowFlags_NoScrollbar
 
+
+    ImGuiIO &io = ImGui::GetIO();  (void)io;
+    io.WantCaptureKeyboard=1;
+
     ImVec2 viewport_size = ImGui::GetContentRegionAvail();
     unsigned int x = static_cast<unsigned int>(viewport_size.x);
     unsigned int y = static_cast<unsigned int>(viewport_size.y);

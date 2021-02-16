@@ -1,5 +1,6 @@
 #pragma once
 #include "../core.h"
+#include "../engine/engine_events.h"
 // Demonstrate creating a simple console window, with scrolling, filtering, completion and history.
 // For the console example, we are using a more C++ like approach of declaring a class to hold both data and functions.
 struct ExampleAppConsole
@@ -68,6 +69,8 @@ struct ExampleAppConsole
             ImGui::End();
             return;
         }
+        if(ImGui::IsWindowFocused()) kipod::Events::BlockKeyboard(true);
+        else kipod::Events::BlockKeyboard(false);
 
         // As a specific feature guaranteed by the library, after calling Begin() the last Item represent the title bar.
         // So e.g. IsItemHovered() will return true when hovering the title bar.

@@ -79,6 +79,7 @@ public:
 class Events
 {
     Events(){}
+    inline static bool block_keyboard_ = false;
 
 public:
     Events(Events const&) = delete;
@@ -96,6 +97,9 @@ public:
     static void Signup(Listener& l, EventCategory category){ Events::listeners_[category].push_back(std::ref(l)); }
 
     static void Process();
+
+    static void BlockKeyboard(bool mode) { block_keyboard_ = mode; };
+    static bool BlockKeyboard() { return block_keyboard_; }
 
 };
 

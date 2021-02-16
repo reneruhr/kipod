@@ -8,7 +8,7 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
    // EventManager *eventmanager;
     //eventmanager = reinterpret_cast<kipod::Window*>(glfwGetWindowUserPointer(window))->eventmanager;
     LOG_ENGINE("Got key {}", key);
-    if (action == GLFW_PRESS)
+    if (action == GLFW_PRESS && !Events::BlockKeyboard() )
 
         Events::Add<KeyPressedEvent>({Key(key),0});
 
