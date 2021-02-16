@@ -1,6 +1,6 @@
 #include "image_loader.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../../vendor/stb/stb_image.h"
+#include "../../external_libs/stb/stb_image.h"
 
 Image *ImageLoader::LoadImage(const char path[])
 {

@@ -13,22 +13,22 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/vendor/spdlog/include/)
+set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/external_libs/spdlog/include/)
 
 include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${glfw3_INCLUDE_DIR} ${SPDLOG_DIR})
 include_directories(include)
 
 file(GLOB imgui
-    "vendor/imgui/*.h"
-    "vendor/imgui/*.cpp"
+    "external_libs/imgui/*.h"
+    "external_libs/imgui/*.cpp"
 )
 
 file(GLOB stb
-    "vendor/stb/*.h"
+    "external_libs/stb/*.h"
 )
 
 file(GLOB IconsFontAwesome
-    "vendor/IconsFontAwesome/*.h"
+    "external_libs/IconsFontAwesome/*.h"
 )
 
 add_executable(kipod
