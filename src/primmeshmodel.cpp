@@ -1,17 +1,19 @@
 #include "primmeshmodel.h"
 #include <numeric>
 
-
 PrimMeshModel::PrimMeshModel(Primitive primitive, int n){
     _world_transform = mat4(1.0);
-    loadPrimitive(primitive, n);
+    LoadPrimitive(primitive, n);
 }
 
-void PrimMeshModel::loadPrimitive(Primitive primitive, int n){
+void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
 
     switch(primitive){
         case Cube:{
-         LOG_INFO("Create a Cube");
+         LOG_ENGINE("Create a Cube");
+         LOG_CONSOLE("Create a Cube");
+         name_ = "Cube";
+
                     vec3 vertices[] = {
                                     {-1.0f,-1.0f,-1.0f},
                                     {-1.0f,-1.0f, 1.0f},
@@ -56,12 +58,15 @@ void PrimMeshModel::loadPrimitive(Primitive primitive, int n){
                     vertices_vector = vector<vec3>(vertices,vertices+36);
                     indices_vector = vector<unsigned int>(indices, indices+36);
 
-                    calculateNormals();
+                    CalculateNormals();
 
                 break;
         } // cube
         case Tetrahedron:{
-            LOG_INFO("Create a Tetrahedron");
+            LOG_ENGINE("Create a Tetrahedron");
+            LOG_CONSOLE("Create a Tetrahedron");
+            name_ = "Tetrahedron";
+
             vec3 vertices[12] = {
                 {0.0, 0.0, 1.0},
                 {0.0, 0.942809, -0.333333},
@@ -91,12 +96,14 @@ void PrimMeshModel::loadPrimitive(Primitive primitive, int n){
             vertices_vector = vector<vec3>(vertices,vertices+12);
             indices_vector = vector<unsigned int>(indices, indices+12);
 
-            calculateNormals();
+            CalculateNormals();
             break;
         } //tetrahedron
     case Sphere:{
         // Interactive computer graphics p281
-        LOG_INFO("Create a Sphere");
+        LOG_ENGINE("Create a Sphere");
+        LOG_CONSOLE("Create a Sphere");
+        name_ = "Sphere";
         vector<vec3> tetra = {{0.0, 0.0, 1.0},
                                {0.0, 0.942809, -0.333333},
                                {-0.816497, -0.471405, -0.333333},
@@ -110,7 +117,6 @@ void PrimMeshModel::loadPrimitive(Primitive primitive, int n){
                                 };
 
         std::function<void(const vec3&,const vec3&,const vec3&,const int)> divide_triangle = [&divide_triangle,&triangle](const vec3& a, const vec3& b, const vec3& c, const int n){
-            LOG_DEBUG("Call for n={} divide triangle on {} {} {}", n, a, b, c);
             if(n>0){
                 vec3 v1 = normalize(a+b);
                 vec3 v2 = normalize(a+c);
@@ -136,13 +142,13 @@ void PrimMeshModel::loadPrimitive(Primitive primitive, int n){
         std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
 
 
-        //reduceVertices();
+        //ReduceVertices();
         nindices_vector = indices_vector;
         normals_vector = vertices_vector;
         break;
     } //sphere
 
     }//switch
-    createBBox();
-    centerModel();
+    CreateBoundingBox();
+    CenterModel();
 }

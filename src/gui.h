@@ -51,7 +51,7 @@ private:
     void perspective_camera(Camera *cam);
     void projective_camera(Camera *cam);
     void control_camera(Camera *cam);
-    void loadPrimitive(Scene *scene);
+    void LoadPrimitive(Scene *scene);
     void loadOBJfile(Scene *scene);
     void focusCamera(Scene *scene);
     void rotateModelLocalSpace();

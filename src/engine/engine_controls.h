@@ -6,6 +6,34 @@
 
 namespace kipod{
 
+
+
+struct MultipleModeToggle
+{
+    MultipleModeToggle() = default;
+    MultipleModeToggle(std::vector<std::string> toggle_names)
+        : toggle_names_(toggle_names){}
+
+    operator const int () const { return state_; }
+    operator int& () { return state_; }
+
+
+    entt::delegate<void(void*, int)> delegate_;
+    int state_ = -1;
+    std::string name_;
+    bool verbose_ = true;
+
+    std::vector<std::string> toggle_names_;
+
+    void Set(int state);
+    void Apply(void *ptr){ delegate_(ptr, state_); };
+};
+
+inline std::ostream& operator<<(std::ostream& os, const MultipleModeToggle& mode)
+{
+    return os << "Mode" << mode.name_ << " is set " << mode.state_;
+}
+
 struct ModeToggle
 {
     ModeToggle() = default;

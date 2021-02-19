@@ -56,13 +56,13 @@ void Scene::Setup()
 
 
 void Scene::SetupOptions(){
-    Add(kipod::ModeToggle("Normals Mode", false));
+    Add(kipod::ModeToggle("Normals", false));
     Add(kipod::ModeToggle("Camera Mode", false));
     Add(kipod::ModeToggle("Camera Frustum Mode", false));
     Add(kipod::ModeToggle("Color Mode", true));
     Add(kipod::ModeToggle("Texture Mode", true));
-    Add(kipod::ModeToggle("Box Mode", false));
-    Add(kipod::ModeToggle("Wireframe Mode", false));
+    Add(kipod::ModeToggle("Bounding Box", false));
+    Add(kipod::ModeToggle("Wireframe", false));
     Add(kipod::ModeToggle("Emissive Mode",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
 }
@@ -139,7 +139,7 @@ void Scene::draw()
     kipod::RenderManager::Bind(0);
 
 	for(auto model : models){
-        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -156,15 +156,15 @@ void Scene::draw()
 
         glDisable(GL_DEPTH_TEST);
 
-        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        if(Toggle("Normals Mode") && model->HasLayout("Normals Triangles") ){
+        if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"].Use();
             SetUniformNormal(model, cameras[activeCamera]);
             model->RenderObject::Draw("Normals Triangles");
         }
 
-        if(Toggle("Box Mode")){
+        if(Toggle("Bounding Box")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             SetUniformBox(model);
             boundingBox.RenderObject::Draw("Colored Triangles");
@@ -437,7 +437,7 @@ void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* mod
 
 void Scene::SetUniformBox(MeshModel* model)
 {
-    glm::mat4 box = model->getmTransformBBox();
+    glm::mat4 box = model->TansformBoundingBox();
     mat4 camc = cameras[activeCamera]->getcTransform();
     glm::mat4 mv = MakeGLM(camc) * box;
     mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
@@ -531,7 +531,7 @@ void Scene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject&
 
 
 
-void Scene::loadOBJModel(string fileName, bool textured)
+void Scene::LoadOBJModel(string fileName, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
 
@@ -560,7 +560,7 @@ void Scene::loadOBJModel(string fileName, bool textured)
 
 }
 
-void Scene::loadPrimitive(Primitive primitive, int numberPolygons)
+void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
     model->setUniformMaterial();
@@ -701,7 +701,7 @@ void Scene::drawSoft()
             model->draw(_softrenderer, wireframemode, clipping_mode, normals_mode);
 
         if(box_mode){
-             mat4 m = mat4( &model->getmTransformBBox()[0][0] ); //to be changed
+             mat4 m = mat4( &model->TansformBoundingBox()[0][0] ); //to be changed
              _softrenderer->SetObjectMatrices(m, mat3(1.0));
              boundingBox.draw(_softrenderer, true,false);
         }
@@ -780,7 +780,7 @@ void Scene::processEvent(Event& event){
         return;
     }
     if(event.getType() == EventType::WireframeMode){
-        LOG_DEBUG("Switched Wireframe Mode");
+        LOG_DEBUG("Switched Wireframe");
         wireframemode = !wireframemode;
         color_mode = !wireframemode;
         emissive_mode = !wireframemode;
@@ -795,7 +795,7 @@ void Scene::processEvent(Event& event){
         return;
     }
     if(event.getType() == EventType::BoxMode){
-        LOG_DEBUG("Switched Box Mode");
+        LOG_DEBUG("Switched Bounding Box");
         box_mode = !box_mode;
         return;
     }
@@ -805,7 +805,7 @@ void Scene::processEvent(Event& event){
         return;
     }
     if(event.getType() == EventType::CameraMode){
-        LOG_DEBUG("Camera Box Mode");
+        LOG_DEBUG("Camera Bounding Box");
         camera_mode = !camera_mode;
         return;
     }
@@ -828,11 +828,11 @@ void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
 
         //TOGGLES:
         if(key == Key::Space)
-            Toggle("Wireframe Mode").Switch();
+            Toggle("Wireframe").Switch();
         else if(key == Key::N)
-            Toggle("Normals Mode").Switch();
+            Toggle("Normals").Switch();
         else if(key == Key::B)
-            Toggle("Box Mode").Switch();
+            Toggle("Bounding Box").Switch();
         else if(key == Key::C)
             Toggle("Camera Mode").Switch();
         else if(key == Key::X)

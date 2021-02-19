@@ -5,6 +5,9 @@
 #include "engine_transform.h"
 
 namespace kipod{
+
+void HelpMarker(const char* desc);
+
 class Gui
 {
     Gui(){}
@@ -24,6 +27,7 @@ public:
     static void EndWindow();
 
     static void Checkbox(ModeToggle&);
+    static void RadioButtons(MultipleModeToggle&, void* ptr);
     static void Transform(Transform&);
 
     static bool CollapsingHeader(const char*);

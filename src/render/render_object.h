@@ -40,6 +40,8 @@ public:
         return *this;
     }
 
+    std::string name_;
+
     RenderMaterial* mat_ = nullptr;
     Texture* tex_ = nullptr;
     FrameBuffer* fra_ = nullptr;

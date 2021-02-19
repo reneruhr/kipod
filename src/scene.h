@@ -70,8 +70,8 @@ public:
 
     }
 
-    void loadOBJModel(string fileName, bool textures = false);
-    void loadPrimitive(Primitive primitive, int numberPolygons=0);
+    void LoadOBJModel(string fileName, bool textures = false);
+    void LoadPrimitive(Primitive primitive, int numberPolygons=0);
 
     virtual void Setup() override;
     virtual void Draw() override {} ;

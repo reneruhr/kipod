@@ -1,59 +1,37 @@
 #pragma once
 
-#include <vector>
-#include "utils/vec.h"
-#include "utils/mat.h"
+#include "core.h"
 #include "softrenderer.h"
-#include "glrenderer.h"
-#include <string>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "eventmanager.h"
-
 #include "render/render_object.h"
-
-using namespace std;
-
-class Model {
-public:
-    shared_ptr<ModelData> modelData= nullptr;
-	virtual ~Model() {}
-	void virtual draw()=0;
-};
+#include "engine/engine_console.h"
 
 
 struct BoundingBoxData{
-    vec3 _size;
-    vec3 _center;
-    mat4 _transform;
+    glm::vec3 size_;
+    glm::vec3 center_;
+    glm::mat4 transform_;
 
-    BoundingBoxData(){}
+    BoundingBoxData() = default;
     BoundingBoxData(const vector<vec3> &vertices);
+    BoundingBoxData(BoundingBoxData&&) = default;
+    BoundingBoxData& operator=(BoundingBoxData&&) = default;
 };
 
 
-
-class MeshModel : public Model, public Listener, public kipod::RenderObject
+class MeshModel : public kipod::RenderObject
 {
 protected :
-	MeshModel() {}
-	//vec3 *vertex_positions;
-	//add more attributes
-
 	mat4 _local_transform;
 	mat4 _world_transform;
 	mat3 _normal_transform;
 
-    BoundingBoxData _boundingBoxData;
-
+    std::unique_ptr<BoundingBoxData> boundingBoxData_;
 public:
+    MeshModel() = default;
     MeshModel(string fileName, bool textured = false);
     virtual ~MeshModel(void);
     MeshModel(MeshModel&&) = default;
     MeshModel& operator=(MeshModel&&) = default;
-
-    shared_ptr<ModelData> modelDataWired = nullptr;
-    shared_ptr<ModelData> modelTexturedData = nullptr;
 
     vector<vec3> vertices_vector;
     vector<vec3> normals_vector;
@@ -68,67 +46,38 @@ public:
 
     kipod::RenderMaterial* material = nullptr;
 
-    void CreateTriangleVector()
-    {
-        for(int i=0, n=indices_vector.size(); i<n; i+=3){
-                     triangles_.emplace_back(
-                     GLTriangle(GLVertex(
-                                  vertices_vector[indices_vector[i]],
-                                  normals_vector[nindices_vector[i]],
-                                  texture_vector[tindices_vector[i]]),
-                                GLVertex(
-                                    vertices_vector[indices_vector[i+1]],
-                                    normals_vector[nindices_vector[i+1]],
-                                    texture_vector[tindices_vector[i+1]]),
-                                GLVertex(
-                                    vertices_vector[indices_vector[i+2]],
-                                    normals_vector[nindices_vector[i+2]],
-                                    texture_vector[tindices_vector[i+2]])
-                                ));
-        }
-    }
-
+    float normal_length=1;
 
     vector<MaterialStruct> colors_vector;
     vector<unsigned int> cindices_vector;
 
-
-//    virtual void Setup() override;
-
-
-	void loadFile(string fileName);
-    void calculateNormals();
-    void reduceVertices();
+    void LoadFile(string fileName);
+    void CalculateNormals();
+    void ReduceVertices();
+    bool Valid();
+    void CreateTriangleVector();
 
 
     void Init(bool textured, bool normals=true);
 
-    void Draw(GLRenderer *glrenderer);
+    void setUniformMaterial(MaterialStruct &material);
+    void setUniformMaterial();
 
-    void draw() override{}
 
-    void draw(GLRenderer *glrenderer);
-    void drawNormals(GLRenderer *glrenderer);
+    void CreateBoundingBox();
+    void CenterModel();
+    glm::mat4 TansformBoundingBox() ;
+
+
     void draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals=false);
     void drawWithLight(SoftRenderer *softrenderer, const std::vector<Light*> &lights, bool lightMode=true, bool emissiveMode=false);
 
-    void drawColored(GLRenderer *glrenderer);
-
-	void createBBox();
-	vec3 getCenter();
-	void centerModel();
+    vec3 getCenter();
 	void move(const vec3& translate);
-
 	void moveLocal(const mat4& transform);
 	void moveWorld(const mat4& transform);
-
     void setLocal(const mat4& transform);
-
     mat4 getmTransform() const;
-    glm::mat4 getmTransformBBox() ;
 
-    float normal_length=1;
 
-    void setUniformMaterial(MaterialStruct &material);
-    void setUniformMaterial();
 };

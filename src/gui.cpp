@@ -211,7 +211,7 @@ void GUI::End(kipod::Window* window)
 void GUI::drawYotamBirthday(Scene* scene){
     if(ImGui::Button("Mazal Tov")){
         const char* path = "shaders/extra/Teddy.obj";
-        scene->loadOBJModel(path);
+        scene->LoadOBJModel(path);
 //        scene->initLastModel();
         scene->setActiveModel(scene->numberOfModels()-1);
         scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
@@ -302,7 +302,7 @@ void GUI::drawBBOXControl(Scene* scene){
 void GUI::drawModelControl(Scene* scene){
 
     if (ImGui::TreeNode("Load Models")){
-            loadPrimitive(scene);
+            LoadPrimitive(scene);
             loadOBJfile(scene);
         ImGui::TreePop();
     }
@@ -806,7 +806,7 @@ ImGui::Text("Eye/At Location");
 
 
 
-void GUI::loadPrimitive(Scene* scene){
+void GUI::LoadPrimitive(Scene* scene){
     ImGui::Text("Load Primitive:");
     const char* primitiveChoice[] = { "Cube", "Tetrahedron", "Sphere"};
     static int primitiveChoice_current = 0;
@@ -816,9 +816,9 @@ void GUI::loadPrimitive(Scene* scene){
         ImGui::InputInt("input int", &numberPolygons);
     }
     if(ImGui::Button("Add Primitive")){
-                            if(primitiveChoice_current==0)      scene->loadPrimitive(Cube);
-                            else if(primitiveChoice_current==1) scene->loadPrimitive(Tetrahedron);
-                            else if(primitiveChoice_current==2) scene->loadPrimitive(Sphere, std::max(0,numberPolygons));
+                            if(primitiveChoice_current==0)      scene->LoadPrimitive(Cube);
+                            else if(primitiveChoice_current==1) scene->LoadPrimitive(Tetrahedron);
+                            else if(primitiveChoice_current==2) scene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Primitive.");
                             //scene->initLastModel();
                             scene->setActiveModel(scene->numberOfModels()-1);
@@ -836,7 +836,7 @@ void GUI::loadOBJfile(Scene* scene){
                         const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
                         if (strlen(chosenPath)>0) {
                             LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
-                            scene->loadOBJModel(chosenPath, texturedOption);
+                            scene->LoadOBJModel(chosenPath, texturedOption);
                             //scene->initLastModel(texturedOption);
                             scene->setActiveModel(scene->numberOfModels()-1);
                             //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );

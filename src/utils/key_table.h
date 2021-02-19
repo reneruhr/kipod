@@ -3,7 +3,7 @@
 #include <cstdint>
 
 // GLFW Keys minus "GLFW_KEY_" tag
-enum class MouseKey : std::int8_t {
+enum class MouseButton : std::int8_t {
     Button0                = 0,
     Button1                = 1,
     Button2                = 2,
@@ -152,3 +152,12 @@ enum class Key : std::int16_t{
     Menu                = 348
 };
 
+enum class Mod : std::int16_t{
+    None        = 0,
+    MOD_SHIFT   = 0x0001,
+    MOD_CONTROL = 0x0002,
+    MOD_ALT     = 0x0004,
+    MOD_SUPER   = 0x0008,
+    MOD_CAPS_LOCK=0x0010,
+    MOD_NUM_LOCK= 0x0020,
+};

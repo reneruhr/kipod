@@ -35,6 +35,7 @@ public:
 
     void Init();
     void Run();
+    void ShutDown();
 
     void Add(Module&& module);
     void Add(std::string name, kipod::Module &&module);

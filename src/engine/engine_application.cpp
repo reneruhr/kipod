@@ -39,6 +39,12 @@ void kipod::Application::Run()
         kipod::Events::Process();
         clock_->Synchronize();
     }
+
+}
+
+void kipod::Application::ShutDown()
+{
+     glfwTerminate();
 }
 
 void kipod::Application::Add(kipod::Module&& module)

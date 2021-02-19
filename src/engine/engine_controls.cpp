@@ -28,5 +28,10 @@ void ModeToggle::Set(int state){
     if(state == -1) state_=!state_;
 }
 
+void MultipleModeToggle::Set(int state)
+{
+    state_ = state;
+}
+
 
 }

@@ -8,9 +8,18 @@ public:
 
     virtual void SideBarContent() override;
 
-
     void ModelControl();
-    void loadPrimitive();
-    void loadOBJfile();
+    void CameraControl();
+
+
+    void LoadPrimitive();
+    void LoadOBJfile();
+    void ModelList();
+    void ModelViewOptions();
+    void ModelMoveOptions();
+
+    void CameraList();
+    void CameraViewOption();
+
 };
 

@@ -1,9 +1,11 @@
 #pragma once
 #include "../core.h"
-#include "../render/render_scene.h"
+//#include "../render/render_scene.h"
 #include "../utils/imgui_console.h"
 
 namespace kipod{
+
+class RenderScene;
 
 class Console
 {

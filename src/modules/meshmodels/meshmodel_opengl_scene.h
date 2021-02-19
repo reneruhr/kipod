@@ -4,6 +4,7 @@
 #include "../../meshmodel.h"
 #include "../../primmeshmodel.h"
 
+
 class MeshModelOpenGLScene :  public kipod::Listener, public kipod::Controls, public kipod::RenderScene{
 friend class MeshmodelSidebar;
 protected:
@@ -11,24 +12,22 @@ protected:
 
         std::vector<MeshModel*> models;
         std::vector<Light*> lights;
-        std::vector<Camera*> cameras;
+        std::vector<kipod::RenderCamera*> cameras;
 
         PrimMeshModel boundingBox;
-
-        void drawBoundingBox();
 
         std::unique_ptr<kipod::RenderObject> coordinate_axis_;
         std::unique_ptr<kipod::RenderObject> grid_;
 
+        void DrawBoundingBox();
+
+        bool mouse_rotation_active_ = false;
 public:
         MeshModelOpenGLScene(int width, int height)
-            : RenderScene(width, height), boundingBox(Cube)
-        {
+            : RenderScene(width, height), boundingBox(Cube){}
 
-        }
-
-        void loadOBJModel(string fileName, bool textures = false);
-        void loadPrimitive(Primitive primitive, int numberPolygons=0);
+        void LoadOBJModel(string fileName, bool textures = false);
+        void LoadPrimitive(Primitive primitive, int numberPolygons=0);
 
         virtual void Setup() override;
         virtual void Draw() override;
@@ -36,10 +35,12 @@ public:
 
         void SetupOptions();
 
-        Camera* getActiveCamera();
+        kipod::RenderCamera* getActiveCamera();
         MeshModel* getActiveModel();
 
-        void addCamera(Camera *cam);
+        void addCamera(kipod::RenderCamera *cam);
+
+
         void moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up );
         void moveEyeOfCamera(int camera_id, const vec3& eye);
         void perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far);
@@ -72,15 +73,15 @@ public:
 
         void BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material);
         void BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights);
-        void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const Camera &camera);
-        void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const Camera &camera);
+        void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const kipod::RenderCamera &camera);
+        void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const kipod::RenderCamera &camera);
         void BindTextureUniforms(kipod::Shader& shader, const kipod::Texture *texture);
         void BindNormalUniforms(kipod::Shader& shader, const float length);
 
-        void SetUniform(vector<Light *> &lights, Camera *camera, MeshModel *model);
-        void SetUniformNormal(MeshModel *model, Camera *camera);
-        void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model);
-        void SetUniformBox(MeshModel *model);
+        void SetUniform(vector<Light *> &lights, kipod::RenderCamera *camera, MeshModel *model);
+        void SetUniformNormal(MeshModel *model, kipod::RenderCamera *camera);
+        void SetUniformTex(vector<Light *> &lights, kipod::RenderCamera *camera, MeshModel *model);
+        void SetUniformBox(MeshModel *model, kipod::RenderCamera* camera);
 
 
         void SetupShaders();
@@ -91,10 +92,10 @@ public:
 
 
         virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
-        LISTENER_SIGNUP(kipod::EventCategoryKeyboard)
-        virtual void Receive(std::shared_ptr<kipod::Event> event) override{
-            Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(MeshModelOpenGLScene::ProcessKeys));
-        }
+        virtual void Signup() override;
+        virtual void Receive(std::shared_ptr<kipod::Event> event) override;
+        void ProcessMouseButtons(kipod::MouseButtonEvent& event);
+        void ProcessMouseMoves(kipod::MouseMoveEvent& event);
 
 
 

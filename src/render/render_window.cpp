@@ -10,6 +10,7 @@ namespace kipod{
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void cursor_position_callback(GLFWwindow* window, double x, double y);
 
 
 
@@ -21,6 +22,7 @@ Window::Window(unsigned int width, unsigned int height, std::string title)
 Window::~Window()
 {
     glfwDestroyWindow(_window);
+
     LOG_ENGINE("Window deconstructor");
 }
 
@@ -50,9 +52,10 @@ int Window::init()
     glfwMakeContextCurrent(_window);
 
     glfwSetKeyCallback(_window, key_callback);
-    glfwSetInputMode(_window, GLFW_STICKY_KEYS, GLFW_TRUE);
     glfwSetMouseButtonCallback(_window, mouse_button_callback);
+    glfwSetCursorPosCallback(_window, cursor_position_callback);
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
+
 
     glfwSetWindowUserPointer(_window, reinterpret_cast<void*>(this));
 
@@ -141,8 +144,12 @@ void key_callback(GLFWwindow*, int key, int scancode, int action, int mods)
 
 void mouse_button_callback(GLFWwindow*, int button, int action, int mods)
 {
-
+    Input::MouseButton(button, action, mods);
 }
 
+void cursor_position_callback(GLFWwindow*, double x, double y)
+{
+    Input::MousePosition(x,y);
+}
 
 }

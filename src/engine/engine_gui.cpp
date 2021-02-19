@@ -3,6 +3,20 @@
 
 namespace kipod{
 
+void HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+
 void kipod::Gui::BeginWindow(const char * name)
 {
     ImGui::Begin(name);
@@ -19,6 +33,15 @@ void kipod::Gui::Checkbox(ModeToggle& toggle)
         toggle.Apply();
 }
 
+void Gui::RadioButtons(MultipleModeToggle& toggle, void* ptr)
+{
+    int size = toggle.toggle_names_.size();
+    for(int i = 0; i<size; ++i){
+        if(ImGui::RadioButton(toggle.toggle_names_[i].c_str(), &toggle.state_, i))
+            toggle.Apply(ptr);
+    }
+}
+
 void kipod::Gui::Transform(kipod::Transform& transform)
 {
 
@@ -27,22 +50,22 @@ void kipod::Gui::Transform(kipod::Transform& transform)
     bool pressed = false;
 
     ImGui::Text("x:");
-    ImGui::SameLine();
+    ImGui::SameLine();    
     pressed =  ArrowButtons(&transform.x(), x , stepsize) || pressed;
     ImGui::SameLine();
-    ImGui::Text("%f", transform.x());
+    ImGui::Text("%.2f", transform.x());
 
     ImGui::Text("y:");
     ImGui::SameLine();
     pressed = ArrowButtons(&transform.y(), y , stepsize) || pressed;
     ImGui::SameLine();
-    ImGui::Text("%f", transform.y());
+    ImGui::Text("%.2f", transform.y());
 
     ImGui::Text("z:");
     ImGui::SameLine();
     pressed = ArrowButtons(&transform.z(), z , stepsize) || pressed;
     ImGui::SameLine();
-    ImGui::Text("%f", transform.z());
+    ImGui::Text("%.2f", transform.z());
 
     if(pressed) { LOG_ENGINE("Pressed Transform Arrow Button"); transform.Translate({x,y,z}); }
 }

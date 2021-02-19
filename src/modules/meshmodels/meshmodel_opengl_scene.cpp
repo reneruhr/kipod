@@ -1,6 +1,7 @@
 #include "meshmodel_opengl_scene.h"
 
-#include "../../camera.h"
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,8 +16,7 @@ void MeshModelOpenGLScene::Setup()
 
     name_ = "Mesh Model OpenGL";
 
-    Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
-    cam->createFrustum(); // Needed for very first Camera
+    kipod::RenderCamera* cam = new kipod::RenderCamera({0.0f,0.0f,3.0f});
     addCamera(cam);
 
     Light* light = new Light(LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
@@ -50,13 +50,13 @@ void MeshModelOpenGLScene::Setup()
 }
 
 void MeshModelOpenGLScene::SetupOptions(){
-    Add(kipod::ModeToggle("Normals Mode", false));
+    Add(kipod::ModeToggle("Normals", false));
     Add(kipod::ModeToggle("Camera Mode", false));
     Add(kipod::ModeToggle("Camera Frustum Mode", false));
     Add(kipod::ModeToggle("Color Mode", true));
     Add(kipod::ModeToggle("Texture Mode", true));
-    Add(kipod::ModeToggle("Box Mode", false));
-    Add(kipod::ModeToggle("Wireframe Mode", false));
+    Add(kipod::ModeToggle("Bounding Box", false));
+    Add(kipod::ModeToggle("Wireframe", false));
     Add(kipod::ModeToggle("Emissive Mode",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
 }
@@ -83,7 +83,7 @@ void MeshModelOpenGLScene::Draw()
     glDisable(GL_DEPTH_TEST);
 
     for(auto model : models){
-        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -100,43 +100,43 @@ void MeshModelOpenGLScene::Draw()
 
         glDisable(GL_DEPTH_TEST);
 
-        if(Toggle("Wireframe Mode")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        if(Toggle("Normals Mode") && model->HasLayout("Normals Triangles") ){
+        if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"].Use();
             SetUniformNormal(model, cameras[activeCamera]);
             model->RenderObject::Draw("Normals Triangles");
         }
 
-        if(Toggle("Box Mode")){
+        if(Toggle("Bounding Box")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            SetUniformBox(model);
+            SetUniformBox(model,cameras[activeCamera]);
             boundingBox.RenderObject::Draw("Colored Triangles");
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
 
     }
 
-    if(Toggle("Camera Mode")){
-        shaders_["Basic"].Use();
-        for(auto cam : cameras){
-            glm::mat4 pv = cam->projection_view_matrix_;
-            auto mvp = pv * glm::mat4(Translate(cam->getEye()));
-            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
-            cam->draw();
-        }
-    }
-    if(Toggle("Camera Frustum Mode")){
-        shaders_["Basic"].Use();
-        for(auto cam : cameras){
-            glm::mat4 pv = cam->projection_view_matrix_;
-            glm::mat4 v = cam->view_matrix_;
-            glm::mat4 p = cam->projection_matrix_;
-            auto mvp = pv * glm::inverse(v) * glm::inverse(p);
-            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
-            cam->drawFrustum();
-        }
-    }
+//    if(Toggle("Camera Mode")){
+//        shaders_["Basic"].Use();
+//        for(auto cam : cameras){
+//            glm::mat4 pv = cam->projection_view_matrix_;
+//            auto mvp = pv * glm::mat4(Translate(cam->getEye()));
+//            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
+//            cam->draw();
+//        }
+//    }
+//    if(Toggle("Camera Frustum Mode")){
+//        shaders_["Basic"].Use();
+//        for(auto cam : cameras){
+//            glm::mat4 pv = cam->projection_view_matrix_;
+//            glm::mat4 v = cam->view_matrix_;
+//            glm::mat4 p = cam->projection_matrix_;
+//            auto mvp = pv * glm::inverse(v) * glm::inverse(p);
+//            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
+//            cam->drawFrustum();
+//        }
+//    }
 
     kipod::RenderManager::Bind(0);
 }
@@ -227,7 +227,7 @@ void MeshModelOpenGLScene::SetupShaderBasic()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void MeshModelOpenGLScene::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniform(vector<Light*>& lights, kipod::RenderCamera* camera, MeshModel* model)
 {
     auto shader = shaders_["Colored Triangles"];
     BindLightUniforms(shader, lights);
@@ -235,14 +235,14 @@ void MeshModelOpenGLScene::SetUniform(vector<Light*>& lights, Camera* camera, Me
     BindMaterialUniforms(shader, *(model->mat_));
 }
 
-void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, Camera* camera)
+void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, kipod::RenderCamera* camera)
 {
     kipod::Shader* shader = &shaders_["Normals Triangles"];
     BindMatrixUniforms(*shader, *model, *camera);
     BindNormalUniforms(*shader, model->normal_length);
 }
 
-void MeshModelOpenGLScene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniformTex(vector<Light*>& lights, kipod::RenderCamera* camera, MeshModel* model)
 {
    kipod::Shader* shader = &shaders_["Textured Triangles"];
    BindTextureUniforms(*shader, model->tex_);
@@ -251,12 +251,12 @@ void MeshModelOpenGLScene::SetUniformTex(vector<Light*>& lights, Camera* camera,
    BindMaterialUniforms(*shader, *(model->mat_));
 }
 
-void MeshModelOpenGLScene::SetUniformBox(MeshModel* model)
+void MeshModelOpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* camera)
 {
-    glm::mat4 box = model->getmTransformBBox();
-    mat4 camc = cameras[activeCamera]->getcTransform();
-    glm::mat4 mv = MakeGLM(camc) * box;
-    glm::mat4 p = cameras[activeCamera]->projection_matrix_;
+    glm::mat4 box = model->TansformBoundingBox();
+    glm::mat4 p = camera->projection_matrix_;
+    glm::mat4 v = camera->view_matrix_;
+    glm::mat4 mv = v * box;
 
     shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
     shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
@@ -293,7 +293,7 @@ void MeshModelOpenGLScene::BindNormalUniforms(kipod::Shader& shader, const float
     shader.SetUniform<float>("normal_length", length);
 }
 
-void MeshModelOpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject& model, const Camera& camera)
+void MeshModelOpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject& model, const kipod::RenderCamera& camera)
 {
     glm::vec4  camLocation = glm::vec4(camera.eye_,1);
     glm::mat4 p = camera.projection_matrix_;
@@ -324,14 +324,12 @@ void MeshModelOpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod
 
 
 
-void MeshModelOpenGLScene::loadOBJModel(string fileName, bool textured)
+void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
-
+    if(!model->Valid()) return;
     model->setUniformMaterial();
-    models.push_back(model);
 
-    AddModel(model);
     std::string name;
     bool foundTexture;
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
@@ -351,9 +349,11 @@ void MeshModelOpenGLScene::loadOBJModel(string fileName, bool textured)
         model->AddLayout({"Normals Triangles", normal_layout});
     }
 
+    models.push_back(model);
+    AddModel(model);
 }
 
-void MeshModelOpenGLScene::loadPrimitive(Primitive primitive, int numberPolygons)
+void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
     model->setUniformMaterial();
@@ -386,9 +386,9 @@ void MeshModelOpenGLScene::moveModel(int model_id, const vec3& translate){
 void MeshModelOpenGLScene::lookAtModel(int camera_id, int model_id){
     if(numberOfModels() <= model_id) return;
     if(numberOfCameras() <= camera_id) return;
-    Camera* cam =cameras[camera_id];
+    kipod::RenderCamera* cam =cameras[camera_id];
     MeshModel* model = models[model_id];
-    cam->updateAt(model->getCenter());
+    cam->UpdateAt(model->getCenter());
 }
 
 
@@ -410,7 +410,7 @@ void MeshModelOpenGLScene::addLight(Light *light)
 //CAMERA  CONTROL                              ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void MeshModelOpenGLScene::addCamera(Camera *cam)
+void MeshModelOpenGLScene::addCamera(kipod::RenderCamera *cam)
 {
     cameras.push_back(cam);
 }
@@ -421,7 +421,7 @@ void MeshModelOpenGLScene::setLastCameraActive()
     activeCamera = cameras.size()-1;
 }
 
-Camera* MeshModelOpenGLScene::getActiveCamera()
+kipod::RenderCamera* MeshModelOpenGLScene::getActiveCamera()
 {
     return cameras[activeCamera];
 }
@@ -429,27 +429,6 @@ Camera* MeshModelOpenGLScene::getActiveCamera()
 MeshModel* MeshModelOpenGLScene::getActiveModel(){
     if(activeModel>=0) return models[activeModel];
     else return nullptr;
-}
-
-void MeshModelOpenGLScene::moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up )
-{
-    if(numberOfCameras() <= camera_id) return;
-    Camera* cam = cameras[camera_id];
-    cam->updateLookAt( eye, at, up );
-}
-
-void MeshModelOpenGLScene::moveEyeOfCamera(int camera_id, const vec3& eye)
-{
-    if(numberOfCameras() <= camera_id) return;
-    Camera* cam = cameras[camera_id];
-    cam->moveEye(eye);
-}
-
-void MeshModelOpenGLScene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far)
-{
-    if(numberOfCameras() <= camera_id) return;
-    Camera* cam =cameras[camera_id];
-    cam->Perspective(fovy, aspect, near, far);
 }
 
 
@@ -463,15 +442,16 @@ void MeshModelOpenGLScene::ProcessKeys(kipod::KeyPressedEvent &event)
 {
         float stepsize = 1.0f;
         auto key = event.GetKeyCode();
+        auto mod = event.GetMod();
 
 
         //TOGGLES:
         if(key == Key::Space)
-            Toggle("Wireframe Mode").Switch();
+            Toggle("Wireframe").Switch();
         else if(key == Key::N)
-            Toggle("Normals Mode").Switch();
+            Toggle("Normals").Switch();
         else if(key == Key::B)
-            Toggle("Box Mode").Switch();
+            Toggle("Bounding Box").Switch();
         else if(key == Key::C)
             Toggle("Camera Mode").Switch();
         else if(key == Key::X)
@@ -502,26 +482,76 @@ void MeshModelOpenGLScene::ProcessKeys(kipod::KeyPressedEvent &event)
                     getActiveModel()->world_->Translate({0,0,-stepsize});
                 }
         //CAMERA CONTROL:
-        else if(key == Key::A){
+        else if(key == Key::A && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({-stepsize,0,0});
                 }
-        else if(key == Key::D){
+        else if(key == Key::D && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({+stepsize,0,0});
                 }
-        else if(key == Key::W){
+        else if(key == Key::W && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({0,stepsize,0});
                 }
-        else if(key == Key::S){
+        else if(key == Key::S && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({0,-stepsize,0});
                 }
-        else if(key == Key::R){
+        else if(key == Key::R && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({0,0, stepsize});
                 }
-        else if(key == Key::F){
+        else if(key == Key::F && mod == Mod::MOD_CONTROL){
                     getActiveCamera()->Move({0,0,-stepsize});
                 }
 
+        else if(key == Key::A && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::LEFT, stepsize);
+                }
+        else if(key == Key::D && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::RIGHT, stepsize);
+                }
+        else if(key == Key::W && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::FORWARD, stepsize);
+                }
+        else if(key == Key::S && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::BACKWARD, stepsize);
+                }
+        else if(key == Key::R && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::UP, stepsize);
+                }
+        else if(key == Key::F && mod == Mod::None){
+                    getActiveCamera()->Move(kipod::RenderCamera::Movement::DOWN, stepsize);
+                }
+
 }
+
+void MeshModelOpenGLScene::ProcessMouseButtons(kipod::MouseButtonEvent &event)
+{
+    auto button = event.GetButton();
+
+    if(button == MouseButton::Button0 && event.GetEventType() == kipod::EventType::MouseButtonPressed)
+        mouse_rotation_active_ = true;
+    else if(button == MouseButton::Button0 && event.GetEventType() == kipod::EventType::MouseButtonReleased)
+        mouse_rotation_active_ = false;
+}
+
+void MeshModelOpenGLScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
+{
+    if(mouse_rotation_active_)
+        getActiveCamera()->Rotate(event.x(),event.y());
+}
+
+void MeshModelOpenGLScene::Signup() {
+    kipod::Events::Signup(*this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
+    kipod::Events::Signup(*this, kipod::EventCategoryMouseButton); LOG_CATEGORY_NAME(kipod::EventCategoryMouseButton);
+    kipod::Events::Signup(*this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouseB);
+}
+
+void MeshModelOpenGLScene::Receive(std::shared_ptr<kipod::Event> event){
+    Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(MeshModelOpenGLScene::ProcessKeys));
+    Process<kipod::MouseButtonPressEvent>(event, BIND_EVENT_FN(MeshModelOpenGLScene::ProcessMouseButtons));
+    Process<kipod::MouseButtonReleaseEvent>(event, BIND_EVENT_FN(MeshModelOpenGLScene::ProcessMouseButtons));
+    Process<kipod::MouseMoveEvent>(event, BIND_EVENT_FN(MeshModelOpenGLScene::ProcessMouseMoves));
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

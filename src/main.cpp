@@ -15,41 +15,11 @@
 
 #include "math/polygon.h"
 
-
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
-
-Scene *scene;
-GLRenderer *renderer;
-SoftRenderer *softrenderer;
-GUI *gui;
-std::shared_ptr<kipod::Window> window;
-InputManager *inputmanager;
-EventManager *eventmanager;
-
-
-int last_x,last_y;
-bool lb_down,rb_down,mb_down;
-
-bool scene_active = false;
-bool demo_active = false;
-bool line_active = false;
-
-
-
-vec3 zero = vec3(0.0f);
-vec3 translateModel = zero;
-vec3 translateEye = zero;
-
-float translation_stepsize = 1.0;
-
-
-int p[2];
-int q[2];
 
 
 extern unsigned int GLOBAL_SCR_WIDTH;
@@ -57,14 +27,7 @@ extern unsigned int GLOBAL_SCR_HEIGHT;
 //----------------------------------------------------------------------------
 // Callbacks
 
-void display( void );
-void reshape( int width, int height );
-void keyboard( unsigned char key, int x, int y );
-void mouse(int button, int state, int x, int y);
-void fileMenu(int id);
-void mainMenu(int id);
-
-void display()
+void display(Scene* scene)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,6 +54,13 @@ void display()
 
 int my_main( int argc, char **argv )
 {
+    Scene *scene;
+    GLRenderer *renderer;
+    SoftRenderer *softrenderer;
+    GUI *gui;
+    std::shared_ptr<kipod::Window> window;
+    EventManager *eventmanager;
+
     Log::Init();
     LOG_ENGINE("Logger Started.");
     window = std::shared_ptr<kipod::Window>(new kipod::Window(GLOBAL_SCR_WIDTH*1.1, GLOBAL_SCR_HEIGHT, "קיפוד(renderer)"));
@@ -141,7 +111,7 @@ int my_main( int argc, char **argv )
         kipod::Gui::Begin();
         //kipod::Menu();
 
-        display();
+        display(scene);
 
 
         gui->Draw(scene, softrenderer, window.get());
@@ -159,9 +129,8 @@ int my_main( int argc, char **argv )
 	delete renderer;
     delete softrenderer;
     delete gui;
-    delete inputmanager;
 
-    glfwTerminate();
+
 	return 0;
 }
 
@@ -177,9 +146,8 @@ int main( int argc, char **argv )
         kipod::Application kipod(width, height);
         kipod.Init();
         kipod.Add("OpenGL Meshmodels", MeshModelModule(width,height));
-        LOG_CONSOLE("Test");
-        LOG_CONSOLE("Complicated test %i", 10);
         kipod.Run();
+        kipod.ShutDown();
     }else    my_main(argc, argv );
 	
     return 0;

@@ -63,7 +63,7 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e)
 
 
 
-
+#define LOG_CATEGORY_NAME(category_in) LOG_ENGINE("Sign up for {}", #category_in)
 #define LISTENER_SIGNUP(category_in)  virtual void Signup() override { kipod::Events::Signup(*this, category_in); LOG_ENGINE("Sign up for {}", #category_in); }
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 

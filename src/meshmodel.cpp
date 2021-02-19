@@ -14,8 +14,8 @@ using namespace std;
 
 
 BoundingBoxData::BoundingBoxData(const vector<vec3> &vertices){
-        vec3 min = vertices[0];
-        vec3 max = vertices[0];
+        glm::vec3 min = vertices[0];
+        glm::vec3 max = vertices[0];
         for (auto v : vertices){
             if (v[0] < min[0]) min[0] = v[0];
             if (v[0] > max[0]) max[0] = v[0];
@@ -24,18 +24,23 @@ BoundingBoxData::BoundingBoxData(const vector<vec3> &vertices){
             if (v[2] < min[2]) min[2] = v[2];
             if (v[2] > max[2]) max[2] = v[2];
         }
-        _size = (max-min)/2;
-        _center= (max+min)/2;
-        _transform = Translate(_center)*Scale(_size);
+        size_ = (max-min)/2.0f;
+        center_= (max+min)/2.0f;
+        transform_ = glm::translate(glm::mat4(1.0f), center_)*glm::scale(glm::mat4(1.0f), size_);
     }
 
 
 MeshModel::MeshModel(string fileName, bool textured)
 {
     _world_transform = mat4(1.0);
-	loadFile(fileName);
-	createBBox();
-	centerModel();
+    LoadFile(fileName);
+    if(Valid()==false) {
+        LOG_CONSOLE("[error] Could not load Object Model");
+        LOG_ENGINE("Could not load Object Model");
+        return;
+    }
+    CreateBoundingBox();
+    CenterModel();
 
     if(textured){
         tex_ = new kipod::Texture;
@@ -62,49 +67,70 @@ MeshModel::MeshModel(string fileName, bool textured)
     }
 }
 
+void MeshModel::CreateTriangleVector()
+{
+    for(int i=0, n=indices_vector.size(); i<n; i+=3){
+        triangles_.emplace_back(
+                    GLTriangle(GLVertex(
+                                   vertices_vector[indices_vector[i]],
+                               normals_vector[nindices_vector[i]],
+                    texture_vector[tindices_vector[i]]),
+                GLVertex(
+                    vertices_vector[indices_vector[i+1]],
+                normals_vector[nindices_vector[i+1]],
+                texture_vector[tindices_vector[i+1]]),
+                GLVertex(
+                    vertices_vector[indices_vector[i+2]],
+                normals_vector[nindices_vector[i+2]],
+                texture_vector[tindices_vector[i+2]])
+                ));
+    }
+}
+
 
 MeshModel::~MeshModel(void)
 {
 }
 
 
-void MeshModel::loadFile(string fileName)
+void MeshModel::LoadFile(std::string fileName)
 {
     LOG_ENGINE("Start loading MeshModel from File.");
-	ifstream ifile(fileName.c_str());
-	vector<FaceIdcs> faces;
+    name_ = fileName;
+    ifstream ifile(fileName.c_str());
+    vector<FaceIdcs> faces;
     bool hasNormals=false;
     bool hasTextures=false;
 
-	// while not end of file
-	while (!ifile.eof())
-	{
-		// get line
-		string curLine;
-		getline(ifile, curLine);
+    // while not end of file
+    while (!ifile.eof())
+    {
+        // get line
+        string curLine;
+        getline(ifile, curLine);
 
         //LOG_ENGINE(curLine);
 
-		// read type of the line
-		istringstream issLine(curLine);
-		string lineType;
+        // read type of the line
+        istringstream issLine(curLine);
+        string lineType;
 
-		issLine >> std::ws >> lineType;
+        issLine >> std::ws >> lineType;
 
 
-		// based on the type parse data
-		if (lineType == "v") 
-			vertices_vector.push_back(vec3fFromStream(issLine));
-		else if (lineType == "vn"){
-			hasNormals=true;
-			normals_vector.push_back(vec3fFromStream(issLine));}
+        // based on the type parse data
+        if (lineType == "v")
+            vertices_vector.push_back(vec3fFromStream(issLine));
+        else if (lineType == "vn"){
+            hasNormals=true;
+            normals_vector.push_back(vec3fFromStream(issLine));}
         else if (lineType == "vt"){
             hasTextures=true;
             texture_vector.push_back(vec2fFromStream(issLine));}
         else if (lineType == "f"){
-			faces.push_back(issLine);
+            faces.push_back(issLine);
         }
-		else if (lineType == "#" || lineType == "")
+        else if (lineType == "#" || lineType == "")
 		{
 			// comment / empty line
 		}
@@ -139,7 +165,7 @@ void MeshModel::loadFile(string fileName)
             }
 		}
 	}
-    if(hasNormals == false) calculateNormals();
+    if(hasNormals == false) CalculateNormals();
 }
 
 struct compareVector {
@@ -148,7 +174,7 @@ struct compareVector {
     }
 };
 
-void MeshModel::reduceVertices(){
+void MeshModel::ReduceVertices(){
     std::map<vec3, unsigned int, compareVector> vertices_map;
     vector<vec3> new_vertices;
     for(unsigned int j = 0, l=0; j<indices_vector.size(); ++j){
@@ -158,18 +184,20 @@ void MeshModel::reduceVertices(){
         if(success) {
             new_vertices.push_back(vertices_vector[i]);
             indices_vector[j]=l++;
-            LOG_DEBUG("Found a new vector {} with index {}", it->first,it->second);
-
         }
-        else {indices_vector[j] = it->second;
-             LOG_DEBUG("Found an old vector {} with index {}", it->first,it->second);
-             }
+        else indices_vector[j] = it->second;
+
     }
     vertices_vector = new_vertices;
 }
 
-void MeshModel::calculateNormals(){
-     LOG_INFO("Calculate Normals from Faces");
+bool MeshModel::Valid()
+{
+    return !vertices_vector.empty();
+}
+
+void MeshModel::CalculateNormals(){
+     LOG_ENGINE("Calculate Normals from Faces");
 
     vector<vec3> face_normals;
     for(unsigned int k=0; k<indices_vector.size(); k+=3)
@@ -208,7 +236,6 @@ void MeshModel::Init(bool textured, bool normals)
         CreateTriangleVector();
         triangles_indices_ = vector<unsigned int>(triangles_.size()*3);
         std::iota(std::begin(triangles_indices_), std::end(triangles_indices_), 0);
-        //    modelTexturedData = glrenderer->LoadGLTriangles(&triangles_, &triangles_indices_);
         auto layout = Layout("Textured Triangles");
         static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_, &triangles_indices_);
     }else if(normals){
@@ -220,10 +247,6 @@ void MeshModel::Init(bool textured, bool normals)
         layout->SetupColoredTriangles(&vertices_vector,&indices_vector);
     }
 
-
-    modelDataWired =make_shared<ModelData>(ModelData());
-    modelDataWired->indices_size = size(indices_vector);
-    if(!normals_vector.empty()) modelDataWired->hasNormals = false;
 }
 
 
@@ -249,16 +272,15 @@ void MeshModel::move(const vec3& translate){
     _world_transform=Translate(translate)*_world_transform;
 }
 
-void MeshModel::createBBox(){
-    _boundingBoxData = BoundingBoxData(vertices_vector);
+void MeshModel::CreateBoundingBox(){
+    boundingBoxData_ = std::make_unique<BoundingBoxData>(vertices_vector);
 }
 
 mat4 MeshModel::getmTransform() const{
     return _world_transform*_local_transform;
 }
-glm::mat4 MeshModel::getmTransformBBox()  {
-    //return _world_transform*_local_transform*_boundingBoxData._transform;
-    return Transform() * MakeGLM(_boundingBoxData._transform);
+glm::mat4 MeshModel::TansformBoundingBox()  {
+    return Transform() * boundingBoxData_->transform_;
 }
 
 vec3 MeshModel::getCenter(){
@@ -267,8 +289,8 @@ vec3 MeshModel::getCenter(){
 	return center;
 }
 
-void MeshModel::centerModel(){
-    _local_transform = Translate(-_boundingBoxData._center);
+void MeshModel::CenterModel(){
+    local_->Translate(-boundingBoxData_->center_);
 }
 
 void MeshModel::moveLocal(const mat4& transform){
