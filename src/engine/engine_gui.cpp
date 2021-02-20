@@ -3,9 +3,9 @@
 
 namespace kipod{
 
-void HelpMarker(const char* desc)
+void HoverInfo(const char* name, const char* desc)
 {
-    ImGui::TextDisabled("(?)");
+    ImGui::TextDisabled("%s", name);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -15,6 +15,12 @@ void HelpMarker(const char* desc)
         ImGui::EndTooltip();
     }
 }
+
+void HelpMarker(const char* desc)
+{
+    HoverInfo("(?)", desc);
+}
+
 
 
 void kipod::Gui::BeginWindow(const char * name)
@@ -83,10 +89,10 @@ void Gui::Scale(kipod::Transform& transform)
 
 void Gui::Color(RenderMaterial &material)
 {
-        ImGui::ColorEdit4("Ambient Color##1", (float*)&material.ambient_);
-        ImGui::ColorEdit4("Diffuse Color##2", (float*)&material.diffuse_);
-        ImGui::ColorEdit4("Specular Color##3", (float*)&material.specular_);
-        ImGui::ColorEdit4("Emission Color##4", (float*)&material.emission_);
+        ImGui::ColorEdit4("Ambient##1", (float*)&material.ambient_);
+        ImGui::ColorEdit4("Diffuse##2", (float*)&material.diffuse_);
+        ImGui::ColorEdit4("Specular##3", (float*)&material.specular_);
+        ImGui::ColorEdit4("Emission##4", (float*)&material.emission_);
         ImGui::SliderFloat("Shininess", &material.shininess_, 0.0f, 500.0f, "%.1f");
 }
 

@@ -12,6 +12,7 @@ public:
     void Help();
     void ModelControl();
     void CameraControl();
+    void LightControl();
 
 
     void LoadPrimitive();
@@ -24,6 +25,10 @@ public:
 
     void CameraList();
     void CameraViewOption();
+
+    void LightOptions();
+    void LightAdd();
+    void LightViewOptions();
 
 };
 

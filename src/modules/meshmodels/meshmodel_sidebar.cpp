@@ -5,21 +5,25 @@
 void MeshmodelSidebar::SideBarContent()
 {
     Help();
-    ModelControl();
-    CameraControl();
+    if(kipod::Gui::TreeNode("Models")){
+        ModelControl();
+        kipod::Gui::TreePop();}
+    if(kipod::Gui::TreeNode("Lights")){
+        LightControl();
+        kipod::Gui::TreePop();}
+    if(kipod::Gui::TreeNode("Camera")){
+        CameraControl();
+        kipod::Gui::TreePop();}
 }
 
 void MeshmodelSidebar::Help()
 {
-    ImGui::Text("Controls:");
-    ImGui::SameLine();
-    kipod::HelpMarker("Keyboard controls only work if the 'Viewport' window is active. "
+    kipod::HoverInfo("Controls", "Keyboard controls only work if the 'Viewport' window is active. "
                       "Click inside to active it.\n"
                       "Mouse Control View: Hold left mouse button and move mouse.\n"
                       "Camera: ASDFRF Keys. Optional: Hold CTRL.\n"
                       "Model: Arrow & Page Down/Up Keys.\n"
-                      "It is possible to drag windows around.\n"
-);
+                      "It is possible to drag windows around.\n");
 }
 
 void MeshmodelSidebar::ModelControl(){
@@ -32,13 +36,90 @@ void MeshmodelSidebar::ModelControl(){
     ModelScaleOptions();
     ModelMaterialOptions();
     ModelViewOptions();
-
 }
 
 void MeshmodelSidebar::CameraControl()
 {
     CameraList();
     CameraViewOption();
+}
+
+
+void MeshmodelSidebar::LightControl()
+{
+
+    LightOptions();
+    LightAdd();
+    LightViewOptions();
+
+}
+
+void MeshmodelSidebar::LightViewOptions()
+{
+    auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
+
+    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Colors"]);
+    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Textures"]);
+    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Emissive"]);
+
+    ImGui::Separator();
+}
+
+void MeshmodelSidebar::LightOptions()
+{
+    auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    if(meshmodelscene->HasLight()){
+        static unsigned int selectedLight = 0;
+        for (unsigned int n = 0; n <  meshmodelscene->lights.size(); n++)
+        {
+            char buf[32];
+            sprintf(buf, "Light %d", n);
+            if (ImGui::Selectable(buf, selectedLight == n)) selectedLight = n;
+        }
+        kipod::RenderLight* light = meshmodelscene->lights[selectedLight];
+        if(light->Type() == kipod::LightSource::AMBIENT) ImGui::Text("Ambient");
+        else if(light->Type() == kipod::LightSource::DIFFUSE) ImGui::Text("Diffuse");
+        else if(light->Type() == kipod::LightSource::SPECULAR) ImGui::Text("Specular");
+
+        glm::vec4 lightSourceLocationLocal = light->Source();
+        glm::vec4 lightColor = light->Color();
+        ImGui::ColorEdit4("##LightColorChoice2", (float*)&lightColor, 0);
+        ImGui::SliderFloat3("##Source Location2", &lightSourceLocationLocal[0], -10.0f, 10.0f);
+        light->Color() = lightColor;
+        light->Source() = lightSourceLocationLocal;
+    }
+    ImGui::Separator();
+}
+
+void MeshmodelSidebar::LightAdd()
+{
+    auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
+
+    static ImVec4 clight = ImVec4(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f, 1.0f);
+    const char* lightChoices[] = { "Ambient", "Diffuse", "Specular"};
+    static glm::vec4 lightSourceLocation = {0,0,0,1};
+    static int lightChoice_current = 0;
+
+    ImGui::SetNextItemWidth(70.0f);
+    ImGui::Combo("##AddType", &lightChoice_current, lightChoices, IM_ARRAYSIZE(lightChoices));
+    ImGui::SameLine();
+    if (ImGui::Button("Add##Light")){
+            static kipod::LightSource source;
+            if(lightChoice_current==0) source = kipod::LightSource::AMBIENT;
+            else if(lightChoice_current==1) source = kipod::LightSource::DIFFUSE;
+            else if(lightChoice_current==2) source = kipod::LightSource::SPECULAR;
+            kipod::RenderLight* light =
+            new kipod::RenderLight(source,
+                      glm::vec4(lightSourceLocation),
+                      glm::vec4(float(clight.x),float(clight.y),float(clight.z),float(clight.w)));
+            meshmodelscene->AddLight(light);
+    }
+    ImGui::ColorEdit4("##LightAddColor", (float*)&clight, 0);
+    if(lightChoice_current) {
+        ImGui::SliderFloat3("##newlightpos", &lightSourceLocation[0], -10.0f, 10.0f);
+    }
+    ImGui::Separator();
+
 }
 
 
@@ -59,7 +140,7 @@ void MeshmodelSidebar::LoadPrimitive(){
                             else if(primitiveChoice_current==1) meshmodelscene->LoadPrimitive(Tetrahedron);
                             else if(primitiveChoice_current==2) meshmodelscene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Primitive.");
-                            meshmodelscene->setActiveModel(meshmodelscene->numberOfModels()-1);
+                            meshmodelscene->SetActiveModel(meshmodelscene->numberOfModels()-1);
                         }
 
     if(primitiveChoice_current==2){
@@ -88,7 +169,7 @@ void MeshmodelSidebar::LoadOBJfile(){
         LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
         LOG_CONSOLE("Chosen file: \"%s\"",chosenPath);
         meshmodelscene->LoadOBJModel(chosenPath, texturedOption);
-        meshmodelscene->setActiveModel(meshmodelscene->numberOfModels()-1);
+        meshmodelscene->SetActiveModel(meshmodelscene->numberOfModels()-1);
     }
      ImGui::Separator();
 }
@@ -103,10 +184,10 @@ void MeshmodelSidebar::ModelList()
         sprintf(buf, "Model %d", n);
         if (ImGui::Selectable(buf, selectedModel == n)){
             selectedModel = n;
-            meshmodelscene->setActiveModel(selectedModel);
+            meshmodelscene->SetActiveModel(selectedModel);
             }
     }
-   ImGui::Separator();
+   if(meshmodelscene->HasModel()) ImGui::Separator();
 }
 
 void MeshmodelSidebar::ModelViewOptions()
@@ -125,7 +206,7 @@ void MeshmodelSidebar::ModelViewOptions()
 
 void MeshmodelSidebar::ModelMoveOptions(){
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
-    auto model = meshmodelscene->getActiveModel();
+    auto model = meshmodelscene->GetActiveModel();
     if(model) {
         ImGui::Text("Move Model");  ImGui::SameLine(); kipod::HelpMarker("Arrow & Page Keys");
         kipod::Gui::Transform(*model->world_);
@@ -136,7 +217,7 @@ void MeshmodelSidebar::ModelMoveOptions(){
 void MeshmodelSidebar::ModelScaleOptions()
 {
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
-    auto model = meshmodelscene->getActiveModel();
+    auto model = meshmodelscene->GetActiveModel();
     if(model) {
         kipod::Gui::Scale(*model->local_);
         ImGui::Separator();
@@ -146,7 +227,7 @@ void MeshmodelSidebar::ModelScaleOptions()
 void MeshmodelSidebar::ModelMaterialOptions()
 {
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
-    auto model = meshmodelscene->getActiveModel();
+    auto model = meshmodelscene->GetActiveModel();
     if(model) {
         kipod::Gui::Color(*model->mat_);
         ImGui::Separator();
@@ -159,7 +240,7 @@ void MeshmodelSidebar::CameraList()
     ImGui::Text("Camera"); ImGui::SameLine();
     if (ImGui::Button("Add##Camera")){
         kipod::RenderCamera* cam = new kipod::RenderCamera({0.0,0.0,3.0});
-            meshmodelscene->addCamera(cam);
+            meshmodelscene->AddCamera(cam);
     }
     ImGui::SameLine(); kipod::HelpMarker("Camera Movement:\n"
                                          "ASWDRF Keys for movement w.r.t. looking direction. Changes focus.\n"
@@ -173,7 +254,7 @@ void MeshmodelSidebar::CameraList()
         sprintf(buf, "Camera %d", n);
         if (ImGui::Selectable(buf, selectedCamera == n)){
             selectedCamera = n;
-            meshmodelscene->setActiveCamera(selectedCamera);
+            meshmodelscene->SetActiveCamera(selectedCamera);
         }
     }
 
@@ -196,7 +277,7 @@ void MeshmodelSidebar::CameraViewOption()
 {
     static bool setup = true;
     static kipod::MultipleModeToggle camera_projection_toggle({"Orthographic", "Projective"});
-    auto cam = static_pointer_cast<MeshModelOpenGLScene>(scene_)->getActiveCamera();
+    auto cam = static_pointer_cast<MeshModelOpenGLScene>(scene_)->GetActiveCamera();
     camera_projection_toggle.state_ = cam->projection_type_==kipod::RenderCamera::ProjectionType::ORTHOGONAL ? 0 : 1;
     if(setup){
         camera_projection_toggle.delegate_  = {};
@@ -207,6 +288,7 @@ void MeshmodelSidebar::CameraViewOption()
     kipod::Gui::RadioButtons(camera_projection_toggle, (void*) cam);
     ImGui::Separator();
 }
+
 
 
 

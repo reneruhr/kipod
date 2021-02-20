@@ -6,6 +6,7 @@
 
 namespace kipod{
 
+void HoverInfo(const char* name, const char* desc);
 void HelpMarker(const char* desc);
 
 class Gui

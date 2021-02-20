@@ -37,7 +37,7 @@ typedef struct MaterialStruct {
 
 class Light : public kipod::RenderLight
 {
-    LightSource type;
+    kipod::LightSource type;
     vec4 source;
     vec4 color;
 
@@ -49,14 +49,14 @@ class Light : public kipod::RenderLight
     float spotlightAngle;
     friend class GUI;
 public:
-    Light(LightSource type, vec4 source, vec4 color):
+    Light(kipod::LightSource type, vec4 source, vec4 color):
         RenderLight(type, MakeGLM(source), MakeGLM(color)),
         type(type), source(source), color(color){}
     Light():
         RenderLight(),
-        type(LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.5,1)){}
+        type(kipod::LightSource::AMBIENT), source(vec4(0.0f)), color(vec4(0.2,0.2,0.5,1)){}
 
-    LightSource getType(){ return type;}
+    kipod::LightSource getType(){ return type;}
     vec4 getColor(){ return color;}
     vec4 getSource(){ return source;}
     float attenuation(vec3 target);

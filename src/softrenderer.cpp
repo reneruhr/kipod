@@ -179,16 +179,16 @@ void SoftRenderer::DrawColoredTriangles(const std::vector<vec3> *vertices, const
 
                  if(lightMode){
                      for(const auto light : lights){
-                         if(light->getType()==LightSource::AMBIENT)
+                         if(light->getType()==kipod::LightSource::AMBIENT)
                             triangleColors[i]+=colorAmbient( (*colors)[(*cindices)[j+i]].ambient,
                                                              light->getColor());
-                         if(light->getType()==LightSource::DIFFUSE)
+                         if(light->getType()==kipod::LightSource::DIFFUSE)
                              triangleColors[i]+=colorDiffuse((*colors)[(*cindices)[j+i]].diffuse,
                                                              triangle,
                                                              triangle_normals,
                                                              _cTransform,
                                                              light);
-                         if(light->getType()==LightSource::SPECULAR)
+                         if(light->getType()==kipod::LightSource::SPECULAR)
                              triangleColors[i]+=colorSpecular((*colors)[(*cindices)[j+i]].specular,
                                                  (*colors)[(*cindices)[j+i]].shininess,
                                                  vec4(0,0,0,1), // CHANGED TO CAM

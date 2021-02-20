@@ -17,14 +17,14 @@ void MeshModelOpenGLScene::Setup()
     name_ = "Mesh Model OpenGL";
 
     kipod::RenderCamera* cam = new kipod::RenderCamera({0.0f,0.0f,3.0f});
-    addCamera(cam);
+    AddCamera(cam);
 
-    Light* light = new Light(LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
-    addLight(light);
-    Light* light1 = new Light(LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
-    addLight(light1);
-    Light* light2 = new Light(LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
-    addLight(light2);
+    kipod::RenderLight* light = new kipod::RenderLight(kipod::LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
+    AddLight(light);
+    kipod::RenderLight* light1 = new kipod::RenderLight(kipod::LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
+    AddLight(light1);
+    kipod::RenderLight* light2 = new kipod::RenderLight(kipod::LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
+    AddLight(light2);
 
     SetupShaders();
 
@@ -53,11 +53,11 @@ void MeshModelOpenGLScene::SetupOptions(){
     Add(kipod::ModeToggle("Normals", false));
     Add(kipod::ModeToggle("Camera Mode", false));
     Add(kipod::ModeToggle("Camera Frustum Mode", false));
-    Add(kipod::ModeToggle("Color Mode", true));
-    Add(kipod::ModeToggle("Texture Mode", true));
+    Add(kipod::ModeToggle("Colors", true));
+    Add(kipod::ModeToggle("Textures", true));
     Add(kipod::ModeToggle("Bounding Box", false));
     Add(kipod::ModeToggle("Wireframe", false));
-    Add(kipod::ModeToggle("Emissive Mode",false));
+    Add(kipod::ModeToggle("Emissive",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
 }
 
@@ -87,12 +87,12 @@ void MeshModelOpenGLScene::Draw()
 
         glEnable(GL_DEPTH_TEST);
 
-        if( Toggle("Texture Mode") && model->HasLayout("Textured Triangles") ){
+        if( Toggle("Textures") && model->HasLayout("Textured Triangles") ){
            shaders_["Textured Triangles"].Use();
            SetUniformTex(lights, cameras[activeCamera], model);
            model->RenderObject::Draw("Textured Triangles");
         }
-        else if((Toggle("Color Mode") || Toggle("Emissive Mode") )&& model->HasLayout("Colored Triangles")  ){
+        else if((Toggle("Colors") || Toggle("Emissive") )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"].Use();
             SetUniform(lights, cameras[activeCamera], model);
             model->RenderObject::Draw("Colored Triangles");
@@ -216,18 +216,13 @@ void MeshModelOpenGLScene::SetupShaderBasic()
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//QUASICRYSTAL UNIFORMS                             ///////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //SETTING UNIFORMS                             ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void MeshModelOpenGLScene::SetUniform(vector<Light*>& lights, kipod::RenderCamera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniform(vector<kipod::RenderLight*>& lights, kipod::RenderCamera* camera, MeshModel* model)
 {
     auto shader = shaders_["Colored Triangles"];
     BindLightUniforms(shader, lights);
@@ -242,7 +237,7 @@ void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, kipod::RenderCamer
     BindNormalUniforms(*shader, model->normal_length);
 }
 
-void MeshModelOpenGLScene::SetUniformTex(vector<Light*>& lights, kipod::RenderCamera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniformTex(vector<kipod::RenderLight*>& lights, kipod::RenderCamera* camera, MeshModel* model)
 {
    kipod::Shader* shader = &shaders_["Textured Triangles"];
    BindTextureUniforms(*shader, model->tex_);
@@ -269,7 +264,7 @@ void MeshModelOpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* 
 
 
 
-void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights)
+void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader, vector<kipod::RenderLight *> &lights)
 {
     for(int i = 0; i<3; ++i){
             SetLightToShader(shader, i, lights[i]);
@@ -323,6 +318,14 @@ void MeshModelOpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod
 
 
 
+void MeshModelOpenGLScene::SetActiveModel(int id){
+    if(id<numberOfModels()) activeModel = id;
+}
+
+MeshModel* MeshModelOpenGLScene::GetActiveModel(){
+    if(activeModel>=0) return models[activeModel];
+    else return nullptr;
+}
 
 void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
 {
@@ -400,37 +403,32 @@ void MeshModelOpenGLScene::lookAtModel(int camera_id, int model_id){
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void MeshModelOpenGLScene::addLight(Light *light)
+void MeshModelOpenGLScene::AddLight(kipod::RenderLight *light)
 {
     lights.push_back(light);
 }
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //CAMERA  CONTROL                              ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void MeshModelOpenGLScene::addCamera(kipod::RenderCamera *cam)
+void MeshModelOpenGLScene::AddCamera(kipod::RenderCamera *cam)
 {
     cameras.push_back(cam);
 }
-
-void MeshModelOpenGLScene::setLastCameraActive()
-{
-    if(cameras.empty()) return;
-    activeCamera = cameras.size()-1;
-}
-
-kipod::RenderCamera* MeshModelOpenGLScene::getActiveCamera()
+kipod::RenderCamera* MeshModelOpenGLScene::GetActiveCamera()
 {
     return cameras[activeCamera];
 }
 
-MeshModel* MeshModelOpenGLScene::getActiveModel(){
-    if(activeModel>=0) return models[activeModel];
-    else return nullptr;
-}
 
+
+void MeshModelOpenGLScene::SetActiveCamera(int id){
+    if(id<numberOfCameras()) activeCamera = id;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -458,66 +456,66 @@ void MeshModelOpenGLScene::ProcessKeys(kipod::KeyPressedEvent &event)
             Toggle("Clipping Mode").Switch();
         //TRANSFORM CONTROL:
         else if(key == Key::Left){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({-stepsize,0,0});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({-stepsize,0,0});
                 }
         else if(key == Key::Right){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({+stepsize,0,0});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({+stepsize,0,0});
                 }
         else if(key == Key::Up){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,stepsize,0});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({0,stepsize,0});
                 }
         else if(key == Key::Down){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,-stepsize,0});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({0,-stepsize,0});
                 }
         else if(key == Key::PageUp){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,0, stepsize});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({0,0, stepsize});
                 }
         else if(key == Key::PageDown){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,0,-stepsize});
+                if(GetActiveModel())
+                    GetActiveModel()->world_->Translate({0,0,-stepsize});
                 }
         //CAMERA CONTROL:
         else if(key == Key::A && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({-stepsize,0,0});
+                    GetActiveCamera()->Move({-stepsize,0,0});
                 }
         else if(key == Key::D && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({+stepsize,0,0});
+                    GetActiveCamera()->Move({+stepsize,0,0});
                 }
         else if(key == Key::W && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({0,stepsize,0});
+                    GetActiveCamera()->Move({0,stepsize,0});
                 }
         else if(key == Key::S && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({0,-stepsize,0});
+                    GetActiveCamera()->Move({0,-stepsize,0});
                 }
         else if(key == Key::R && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({0,0, stepsize});
+                    GetActiveCamera()->Move({0,0, stepsize});
                 }
         else if(key == Key::F && mod == Mod::MOD_CONTROL){
-                    getActiveCamera()->Move({0,0,-stepsize});
+                    GetActiveCamera()->Move({0,0,-stepsize});
                 }
 
         else if(key == Key::A && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::LEFT, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::LEFT, stepsize);
                 }
         else if(key == Key::D && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::RIGHT, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::RIGHT, stepsize);
                 }
         else if(key == Key::W && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::FORWARD, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::FORWARD, stepsize);
                 }
         else if(key == Key::S && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::BACKWARD, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::BACKWARD, stepsize);
                 }
         else if(key == Key::R && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::UP, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::UP, stepsize);
                 }
         else if(key == Key::F && mod == Mod::None){
-                    getActiveCamera()->Move(kipod::RenderCamera::Movement::DOWN, stepsize);
+                    GetActiveCamera()->Move(kipod::RenderCamera::Movement::DOWN, stepsize);
                 }
 
 }
@@ -535,7 +533,7 @@ void MeshModelOpenGLScene::ProcessMouseButtons(kipod::MouseButtonEvent &event)
 void MeshModelOpenGLScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
 {
     if(mouse_rotation_active_)
-        getActiveCamera()->Rotate(event.x(),event.y());
+        GetActiveCamera()->Rotate(event.x(),event.y());
 }
 
 void MeshModelOpenGLScene::Signup() {

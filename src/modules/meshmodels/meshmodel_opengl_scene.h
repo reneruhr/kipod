@@ -11,7 +11,7 @@ protected:
         std::unordered_map<std::string, kipod::Shader> shaders_;
 
         std::vector<MeshModel*> models;
-        std::vector<Light*> lights;
+        std::vector<kipod::RenderLight*> lights;
         std::vector<kipod::RenderCamera*> cameras;
 
         PrimMeshModel boundingBox;
@@ -22,6 +22,10 @@ protected:
         void DrawBoundingBox();
 
         bool mouse_rotation_active_ = false;
+
+        int activeModel=-1;
+        int activeLight;
+        int activeCamera=0;
 public:
         MeshModelOpenGLScene(int width, int height)
             : RenderScene(width, height), boundingBox(Cube){}
@@ -35,10 +39,10 @@ public:
 
         void SetupOptions();
 
-        kipod::RenderCamera* getActiveCamera();
-        MeshModel* getActiveModel();
+        kipod::RenderCamera* GetActiveCamera();
+        MeshModel* GetActiveModel();
 
-        void addCamera(kipod::RenderCamera *cam);
+        void AddCamera(kipod::RenderCamera *cam);
 
 
         void moveCamera(int camera_id, const vec3& eye, const vec3& at, const vec3& up );
@@ -47,40 +51,28 @@ public:
         void moveModel(int model_id, const vec3& translate);
         void lookAtModel(int camera_id, int model_id);
 
-        void setCameraMode(int camera_id, bool projective);
-
-        void setLastCameraActive();
-
-        void addLight(Light *light);
-        bool hasLight() { return !lights.empty(); }
-
-
+        void AddLight(kipod::RenderLight *light);
+        bool HasLight() { return !lights.empty(); }
 
         int numberOfCameras(){ return cameras.size();}
         int numberOfModels(){ return models.size();}
+        bool HasModel() { return !models.empty(); }
 
-        void setActiveCamera(int id){
-            if(id<numberOfCameras()) activeCamera = id;
-        }
-        void setActiveModel(int id){
-            if(id<numberOfModels()) activeModel = id;
-        }
+        void SetActiveCamera(int id);
+        void SetActiveModel(int id);
 
-        int activeModel=-1;
-        int activeLight;
-        int activeCamera=0;
 
 
         void BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material);
-        void BindLightUniforms(kipod::Shader& shader, vector<Light *> &lights);
+        void BindLightUniforms(kipod::Shader& shader, vector<kipod::RenderLight *> &lights);
         void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const kipod::RenderCamera &camera);
         void BindMatrixUniformsForMesh(kipod::Shader& shader, const MeshModel &model, const kipod::RenderCamera &camera);
         void BindTextureUniforms(kipod::Shader& shader, const kipod::Texture *texture);
         void BindNormalUniforms(kipod::Shader& shader, const float length);
 
-        void SetUniform(vector<Light *> &lights, kipod::RenderCamera *camera, MeshModel *model);
+        void SetUniform(vector<kipod::RenderLight *> &lights, kipod::RenderCamera *camera, MeshModel *model);
         void SetUniformNormal(MeshModel *model, kipod::RenderCamera *camera);
-        void SetUniformTex(vector<Light *> &lights, kipod::RenderCamera *camera, MeshModel *model);
+        void SetUniformTex(vector<kipod::RenderLight *> &lights, kipod::RenderCamera *camera, MeshModel *model);
         void SetUniformBox(MeshModel *model, kipod::RenderCamera* camera);
 
 

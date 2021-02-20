@@ -484,10 +484,10 @@ void GUI::lightControl(Scene *scene)
     }
 
     if (ImGui::Button("Add Light")){
-            static LightSource source;
-            if(lightChoice_current==0) source = LightSource::AMBIENT;
-            else if(lightChoice_current==1) source = LightSource::DIFFUSE;
-            else if(lightChoice_current==2) source = LightSource::SPECULAR;
+            static kipod::LightSource source;
+            if(lightChoice_current==0) source = kipod::LightSource::AMBIENT;
+            else if(lightChoice_current==1) source = kipod::LightSource::DIFFUSE;
+            else if(lightChoice_current==2) source = kipod::LightSource::SPECULAR;
             Light* light =
             new Light(source,
                       vec4(lightSourceLocation),
@@ -504,9 +504,9 @@ void GUI::lightControl(Scene *scene)
             if (ImGui::Selectable(buf, selectedLight == n)) selectedLight = n;
         }
         Light* light = scene->lights[selectedLight];
-        if(light->getType() == LightSource::AMBIENT) ImGui::Text("Ambient");
-        else if(light->getType() == LightSource::DIFFUSE) ImGui::Text("Diffuse");
-        else if(light->getType() == LightSource::SPECULAR) ImGui::Text("Specular");
+        if(light->getType() == kipod::LightSource::AMBIENT) ImGui::Text("Ambient");
+        else if(light->getType() == kipod::LightSource::DIFFUSE) ImGui::Text("Diffuse");
+        else if(light->getType() == kipod::LightSource::SPECULAR) ImGui::Text("Specular");
 
         vec4 lightSourceLocationLocal = light->getSource();
         vec4 lightColor = light->getColor();

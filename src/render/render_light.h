@@ -1,9 +1,11 @@
 #pragma once
-#include <glm/matrix.hpp>
 
+#include "../core.h"
 #include "render_shader.h"
-#include <string>
 
+
+namespace kipod
+{
 typedef enum LightSource{
     AMBIENT,
     POINT,
@@ -14,8 +16,6 @@ typedef enum LightSource{
 } LightSource;
 
 
-namespace kipod
-{
 
 class RenderLight
 {
@@ -26,16 +26,16 @@ protected:
     int on_;
 public:
 
-    RenderLight(LightSource type, glm::vec4 source, glm::vec4 color)    :   type_(type), source_(source), color_(color){}
-
-    RenderLight()   :  type_(LightSource::AMBIENT), source_(glm::vec4(0.0)), color_(glm::vec4(0.2,0.2,0.5,1)){}
-
+    RenderLight(LightSource type, glm::vec4 source, glm::vec4 color)    :
+        type_(type), source_(source), color_(color){}
+    RenderLight()   :
+        type_(LightSource::AMBIENT), source_(glm::vec4(0.0)), color_(glm::vec4(0.2,0.2,0.5,1)){}
     virtual ~RenderLight() = default;
 
-    LightSource Type() const { return type_;}
-    glm::vec4 Color()  const { return color_;}
-    glm::vec4 Source() const { return source_;}
-    int TurnedOn()     const { return on_;}
+    LightSource& Type()  { return type_;}
+    glm::vec4& Color()   { return color_;}
+    glm::vec4& Source()  { return source_;}
+    int& TurnedOn()      { return on_;}
 };
 
 inline void AttachLightToShader(Shader& shader, int id)
