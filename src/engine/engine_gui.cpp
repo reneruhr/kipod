@@ -67,7 +67,18 @@ void kipod::Gui::Transform(kipod::Transform& transform)
     ImGui::SameLine();
     ImGui::Text("%.2f", transform.z());
 
+
     if(pressed) { LOG_ENGINE("Pressed Transform Arrow Button"); transform.Translate({x,y,z}); }
+}
+
+void Gui::Scale(kipod::Transform& transform)
+{
+    float stepsize = 0.05;;
+    float s = 1.0;
+    ImGui::Text("Scale:");
+    ImGui::SameLine();
+    if(ArrowButtons(&s, s, stepsize))
+        transform.Scale({s,s,s});
 }
 
 bool kipod::Gui::CollapsingHeader(const char* name)

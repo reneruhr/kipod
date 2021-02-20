@@ -15,6 +15,7 @@ void MeshmodelSidebar::ModelControl(){
     LoadOBJfile();
     ModelList();
     ModelMoveOptions();
+    ModelScaleOptions();
     ModelViewOptions();
 }
 
@@ -113,6 +114,16 @@ void MeshmodelSidebar::ModelMoveOptions(){
     if(model) {
         ImGui::Text("Move Model");  ImGui::SameLine(); kipod::HelpMarker("Arrow & Page Keys");
         kipod::Gui::Transform(*model->world_);
+        ImGui::Separator();
+    }
+}
+
+void MeshmodelSidebar::ModelScaleOptions()
+{
+    auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto model = meshmodelscene->getActiveModel();
+    if(model) {
+        kipod::Gui::Scale(*model->local_);
         ImGui::Separator();
     }
 }

@@ -29,6 +29,7 @@ public:
     static void Checkbox(ModeToggle&);
     static void RadioButtons(MultipleModeToggle&, void* ptr);
     static void Transform(Transform&);
+    static void Scale(kipod::Transform&);
 
     static bool CollapsingHeader(const char*);
 

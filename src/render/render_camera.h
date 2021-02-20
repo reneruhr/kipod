@@ -35,7 +35,7 @@ public:
     glm::vec3 frontCam_, rightCam_, upCam_;
     float fovy_ = 45.0f;
     float aspect_ = 4.f/3.f;
-    float near_=0.1, far_=100.0f;
+    float near_=0.1, far_=1000.0f;
     float left_ = -10.0f, right_ = 10.0f, bottom_ = -10.0f, top_ = 10.0f;
 
 

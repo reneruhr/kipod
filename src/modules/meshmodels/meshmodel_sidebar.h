@@ -17,6 +17,7 @@ public:
     void ModelList();
     void ModelViewOptions();
     void ModelMoveOptions();
+    void ModelScaleOptions();
 
     void CameraList();
     void CameraViewOption();
