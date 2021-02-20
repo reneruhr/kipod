@@ -154,6 +154,9 @@ add_executable(kipod
   src/render/render_object.h
   src/render/render_object.cpp
 
+  src/render/render_layout.h
+  src/render/render_layout.cpp
+
   src/render/render_buffer.h
   src/render/render_buffer.cpp
 
@@ -187,6 +190,9 @@ add_executable(kipod
   src/render/render_framebuffer.h
   src/render/render_framebuffer.cpp
 
+
+  src/render/opengl/opengl_layout.h
+  src/render/opengl/opengl_layout.cpp
 
 
 

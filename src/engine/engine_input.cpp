@@ -6,15 +6,15 @@
 void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 {
     LOG_ENGINE("Got key {}", key);
-    if ((action == GLFW_PRESS || action == GLFW_REPEAT) && !Events::BlockKeyboard() )
+    if ((action == GLFW_PRESS || action == GLFW_REPEAT) && !Events::BlockKeyboard() && !Events::BlockInput()  )
         Events::Add<KeyPressedEvent>({Key(key),0, Mod(mods)});
 }
 
 void kipod::Input::MouseButton(int button, int action, int mods)
 {
-    if (action == GLFW_PRESS )
+    if (action == GLFW_PRESS && !Events::BlockInput() )
         Events::Add<MouseButtonPressEvent>({::MouseButton(button), Mod(mods)});
-    else if (action == GLFW_RELEASE )
+    else if (action == GLFW_RELEASE && !Events::BlockInput() )
         Events::Add<MouseButtonReleaseEvent>({::MouseButton(button), Mod(mods)});
 }
 

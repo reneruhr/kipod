@@ -4,6 +4,7 @@
 #include "render_shader.h"
 #include "render_primitive.h"
 #include "render_material.h"
+#include "render_layout.h"
 #include "../engine/engine_transform.h"
 
 namespace kipod{
@@ -11,18 +12,6 @@ namespace kipod{
 class Texture;
 class FrameBuffer;
 
-class RenderLayout{
-    friend class RenderObject;
-public:
-    virtual ~RenderLayout() = default;
-
-    RenderMaterial* mat_ = nullptr;
-    Texture* tex_ = nullptr;
-    FrameBuffer* fra_ = nullptr;
-
-    virtual void Draw()=0;
-    virtual void Setup()=0;
-};
 
 class RenderObject{
 public:
@@ -70,29 +59,6 @@ public:
     virtual void AddLayout(std::string name, RenderLayout* layout);
     virtual bool HasLayout(std::string name);
 };
-
-class GLRenderLayout : public RenderLayout{
-
-public:
-    ElementsBuffer* ebo_ = nullptr;
-    VertexAttributeObject* vao_ = nullptr;
-    VertexBuffer* vbo_ = nullptr;
-    Shader* sha_ = nullptr;
-
-    virtual void Draw() override;
-    virtual void Setup() override;
-    void Unbind();
-
-    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices);
-    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
-                               const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
-    void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
-    void SetupShape(const std::vector<vec2>* vertices_);
-    void SetupPointSet(const std::vector<vec4>* vertices);
-    void SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors);
-    void SetupGrid(const std::vector<vec3> *vertices);
-};
-
 
 
 }

@@ -30,6 +30,7 @@ public:
     static void RadioButtons(MultipleModeToggle&, void* ptr);
     static void Transform(Transform&);
     static void Scale(kipod::Transform&);
+    static void Color(RenderMaterial&);
 
     static bool CollapsingHeader(const char*);
 

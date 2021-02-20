@@ -4,8 +4,22 @@
 
 void MeshmodelSidebar::SideBarContent()
 {
+    Help();
     ModelControl();
     CameraControl();
+}
+
+void MeshmodelSidebar::Help()
+{
+    ImGui::Text("Controls:");
+    ImGui::SameLine();
+    kipod::HelpMarker("Keyboard controls only work if the 'Viewport' window is active. "
+                      "Click inside to active it.\n"
+                      "Mouse Control View: Hold left mouse button and move mouse.\n"
+                      "Camera: ASDFRF Keys. Optional: Hold CTRL.\n"
+                      "Model: Arrow & Page Down/Up Keys.\n"
+                      "It is possible to drag windows around.\n"
+);
 }
 
 void MeshmodelSidebar::ModelControl(){
@@ -16,7 +30,9 @@ void MeshmodelSidebar::ModelControl(){
     ModelList();
     ModelMoveOptions();
     ModelScaleOptions();
+    ModelMaterialOptions();
     ModelViewOptions();
+
 }
 
 void MeshmodelSidebar::CameraControl()
@@ -37,7 +53,6 @@ void MeshmodelSidebar::LoadPrimitive(){
     ImGui::Combo("##Type", &primitiveChoice_current, primitiveChoice, IM_ARRAYSIZE(primitiveChoice));
     ImGui::PopItemWidth();
     ImGui::SameLine();
-    ImGui::PushItemWidth(40);
     ImGui::PushID("Add primitive");
     if(ImGui::Button("Add")){
                             if(primitiveChoice_current==0)      meshmodelscene->LoadPrimitive(Cube);
@@ -124,6 +139,16 @@ void MeshmodelSidebar::ModelScaleOptions()
     auto model = meshmodelscene->getActiveModel();
     if(model) {
         kipod::Gui::Scale(*model->local_);
+        ImGui::Separator();
+    }
+}
+
+void MeshmodelSidebar::ModelMaterialOptions()
+{
+    auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto model = meshmodelscene->getActiveModel();
+    if(model) {
+        kipod::Gui::Color(*model->mat_);
         ImGui::Separator();
     }
 }

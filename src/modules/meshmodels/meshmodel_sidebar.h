@@ -8,6 +8,8 @@ public:
 
     virtual void SideBarContent() override;
 
+
+    void Help();
     void ModelControl();
     void CameraControl();
 
@@ -18,6 +20,7 @@ public:
     void ModelViewOptions();
     void ModelMoveOptions();
     void ModelScaleOptions();
+    void ModelMaterialOptions();
 
     void CameraList();
     void CameraViewOption();

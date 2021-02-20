@@ -87,6 +87,7 @@ class Events
 {
     Events(){}
     inline static bool block_keyboard_ = false;
+    inline static bool block_input_ = false;
 
 public:
     Events(Events const&) = delete;
@@ -107,6 +108,9 @@ public:
 
     static void BlockKeyboard(bool mode) { block_keyboard_ = mode; };
     static bool BlockKeyboard() { return block_keyboard_; }
+
+    static void BlockInput(bool mode) { block_input_ = mode; };
+    static bool BlockInput() { return block_input_; }
 
 };
 

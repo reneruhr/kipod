@@ -1,4 +1,5 @@
 #include "render_shape.h"
+#include "opengl/opengl_layout.h"
 
 void Shape::MakeFan() // Makes a fan with origin vector for TRIANGLE_FAN at center_=0
 {

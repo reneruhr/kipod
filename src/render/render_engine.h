@@ -12,6 +12,8 @@
 #include "render_primitive.h"
 #include "render_camera.h"
 
+#include "opengl/opengl_layout.h"
+
 namespace kipod{
 
 class RenderEngine

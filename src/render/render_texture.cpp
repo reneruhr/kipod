@@ -1,4 +1,5 @@
 #include "render_texture.h"
+#include "opengl/opengl_layout.h"
 
 
 void kipod::Texture::LoadTexture(const char path[]){
@@ -124,7 +125,7 @@ void kipod::Texture::SetupTextureToSquare()
     textured_square_->ScaleShape(ratio*height, height);
     textured_square_->UpdatedTransformedVertices();
     textured_square_->Init();
-    textured_square_->Layout()->tex_ = this;
+    textured_square_->tex_ = this;
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_ = new kipod::Shader("passthrough.vert.glsl", "passthrough.frag.glsl");
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->AttachUniform<int>("tex");
 }
