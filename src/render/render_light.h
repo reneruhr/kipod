@@ -23,7 +23,7 @@ protected:
     LightSource type_;
     glm::vec4 source_;
     glm::vec4 color_;
-    int on_;
+    int on_ = 1;
 public:
 
     RenderLight(LightSource type, glm::vec4 source, glm::vec4 color)    :

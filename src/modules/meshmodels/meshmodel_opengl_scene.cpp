@@ -21,9 +21,9 @@ void MeshModelOpenGLScene::Setup()
 
     kipod::RenderLight* light = new kipod::RenderLight(kipod::LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
     AddLight(light);
-    kipod::RenderLight* light1 = new kipod::RenderLight(kipod::LightSource::DIFFUSE, vec4(10.0f,1.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
+    kipod::RenderLight* light1 = new kipod::RenderLight(kipod::LightSource::DIFFUSE, vec4(10.0f,5.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
     AddLight(light1);
-    kipod::RenderLight* light2 = new kipod::RenderLight(kipod::LightSource::SPECULAR, vec4(0.0f,1.0f,10.0f,1.0f), vec4(1.0f));
+    kipod::RenderLight* light2 = new kipod::RenderLight(kipod::LightSource::SPECULAR, vec4(5.0f,10.0f,0.0f,1.0f), vec4(1.0f));
     AddLight(light2);
 
     SetupShaders();
@@ -71,7 +71,6 @@ void MeshModelOpenGLScene::SetupOptions(){
 void MeshModelOpenGLScene::Draw()
 {
     framebuffer_->Bind();
-    //kipod::RenderManager::Bind(0);
     glViewport(0, 0, width_, height_);
     glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -197,6 +196,7 @@ void MeshModelOpenGLScene::SetupShaderColoredTriangles()
         for(int i = 0; i<3; ++i){
             AttachLightToShader(shaders_["Colored Triangles"], i);
         }
+        shaders_["Colored Triangles"].AttachUniform<int>("EmissiveOn");
 }
 
 void MeshModelOpenGLScene::SetupShaderNormals()
@@ -269,6 +269,8 @@ void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader, vector<kipod
     for(int i = 0; i<3; ++i){
             SetLightToShader(shader, i, lights[i]);
     }
+
+    shaders_["Colored Triangles"].SetUniform<int>("EmissiveOn", Toggle("Emissive") );
 }
 
 void MeshModelOpenGLScene::BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material)

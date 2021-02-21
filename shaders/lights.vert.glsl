@@ -68,6 +68,7 @@ uniform mat4 projection;
 uniform mat4 v;
 uniform mat4 mv;
 uniform mat4 mv_normal;
+uniform bool EmissiveOn;
 
 uniform Material material;
 uniform Light Lights[3];
@@ -85,7 +86,8 @@ void main()
     normal = normalize(vec3(mv_normal*vec4(vNormal,0.0f)));
 	//normal = normalize(vec3(vNormal));
 
-	vColor = material.emission;
+	if(EmissiveOn) vColor = material.emission;
+	else vColor = vec4(0.0f);
 
     for(int light =0; light < 3; ++light){
     	if(!Lights[light].on) continue;
