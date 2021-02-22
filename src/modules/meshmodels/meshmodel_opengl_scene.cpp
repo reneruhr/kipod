@@ -16,15 +16,13 @@ void MeshModelOpenGLScene::Setup()
 
     name_ = "Mesh Model OpenGL";
 
-    kipod::RenderCamera* cam = new kipod::RenderCamera({0.0f,0.0f,3.0f});
-    AddCamera(cam);
+    AddCamera(kipod::RenderCamera({0.0f,0.0f,3.0f}));
 
-    kipod::RenderLight* light = new kipod::RenderLight(kipod::LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0));
-    AddLight(light);
-    kipod::RenderLight* light1 = new kipod::RenderLight(kipod::LightSource::DIFFUSE, vec4(10.0f,5.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0));
-    AddLight(light1);
-    kipod::RenderLight* light2 = new kipod::RenderLight(kipod::LightSource::SPECULAR, vec4(5.0f,10.0f,0.0f,1.0f), vec4(1.0f));
-    AddLight(light2);
+
+    AddLight({kipod::LightSource::AMBIENT, vec4(0.0f), vec4(0.1, 0.1, 0.1, 1.0)});
+    AddLight({kipod::LightSource::DIFFUSE, vec4(10.0f,5.0f,0.0f,1.0f), vec4(0.2, 0.3, 0.6, 1.0)});
+    AddLight({kipod::LightSource::SPECULAR, vec4(5.0f,10.0f,0.0f,1.0f), vec4(1.0f)});
+    SetActiveCamera(0);
 
     SetupShaders();
 
@@ -77,23 +75,25 @@ void MeshModelOpenGLScene::Draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
-    DrawCoordinateAxis(cameras[activeCamera]);
-    DrawGrid(cameras[activeCamera]);
+    DrawCoordinateAxis(GetActiveCamera());
+    DrawGrid(GetActiveCamera());
     glDisable(GL_DEPTH_TEST);
 
-    for(auto model : models){
+    for(const auto& model : render_objects_){
         if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
         if( Toggle("Textures") && model->HasLayout("Textured Triangles") ){
            shaders_["Textured Triangles"].Use();
-           SetUniformTex(lights, cameras[activeCamera], model);
+           SetUniformTex(GetActiveCamera(), model.get());
            model->RenderObject::Draw("Textured Triangles");
+           BindLightUniforms(shaders_["Textured Triangles"]);
         }
         else if((Toggle("Colors") || Toggle("Emissive") )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"].Use();
-            SetUniform(lights, cameras[activeCamera], model);
+            SetUniform(GetActiveCamera(), model.get());
+            BindLightUniforms(shaders_["Colored Triangles"]);
             model->RenderObject::Draw("Colored Triangles");
         }
 
@@ -103,13 +103,13 @@ void MeshModelOpenGLScene::Draw()
 
         if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"].Use();
-            SetUniformNormal(model, cameras[activeCamera]);
+            SetUniformNormal(static_cast<MeshModel*>(model.get()), GetActiveCamera());
             model->RenderObject::Draw("Normals Triangles");
         }
 
         if(Toggle("Bounding Box")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            SetUniformBox(model,cameras[activeCamera]);
+            SetUniformBox(static_cast<MeshModel*>(model.get()),GetActiveCamera());
             boundingBox.RenderObject::Draw("Colored Triangles");
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
@@ -222,10 +222,9 @@ void MeshModelOpenGLScene::SetupShaderBasic()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void MeshModelOpenGLScene::SetUniform(vector<kipod::RenderLight*>& lights, kipod::RenderCamera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniform(kipod::RenderCamera* camera, kipod::RenderObject* model)
 {
     auto shader = shaders_["Colored Triangles"];
-    BindLightUniforms(shader, lights);
     BindMatrixUniforms(shader, *model, *camera);
     BindMaterialUniforms(shader, *(model->mat_));
 }
@@ -237,11 +236,10 @@ void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, kipod::RenderCamer
     BindNormalUniforms(*shader, model->normal_length);
 }
 
-void MeshModelOpenGLScene::SetUniformTex(vector<kipod::RenderLight*>& lights, kipod::RenderCamera* camera, MeshModel* model)
+void MeshModelOpenGLScene::SetUniformTex(kipod::RenderCamera* camera, kipod::RenderObject* model)
 {
    kipod::Shader* shader = &shaders_["Textured Triangles"];
    BindTextureUniforms(*shader, model->tex_);
-   BindLightUniforms(*shader, lights);
    BindMatrixUniforms(*shader, *model, *camera);
    BindMaterialUniforms(*shader, *(model->mat_));
 }
@@ -264,12 +262,11 @@ void MeshModelOpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* 
 
 
 
-void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader, vector<kipod::RenderLight *> &lights)
+void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader)
 {
     for(int i = 0; i<3; ++i){
-            SetLightToShader(shader, i, lights[i]);
+            SetLightToShader(shader, i, lights_[i].get());
     }
-
     shaders_["Colored Triangles"].SetUniform<int>("EmissiveOn", Toggle("Emissive") );
 }
 
@@ -321,12 +318,19 @@ void MeshModelOpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod
 
 
 void MeshModelOpenGLScene::SetActiveModel(int id){
-    if(id<numberOfModels()) activeModel = id;
+    SetActiveRenderObject(id);
 }
 
 MeshModel* MeshModelOpenGLScene::GetActiveModel(){
-    if(activeModel>=0) return models[activeModel];
+    if(HasModel()) return static_cast<MeshModel*>(GetActiveRenderObject());
     else return nullptr;
+}
+
+void MeshModelOpenGLScene::AddModel(MeshModel && model)
+{
+    render_objects_.push_back(
+                std::make_unique<MeshModel>(
+                    std::forward<MeshModel>(model)));
 }
 
 void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
@@ -354,17 +358,15 @@ void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
         model->AddLayout({"Normals Triangles", normal_layout});
     }
 
-    models.push_back(model);
-    AddModel(model);
+    AddModel(std::move(*model));
 }
 
 void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
     model->setUniformMaterial();
-    models.push_back(model);
 
-    AddModel(model);
+
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
     layout->sha_ = &shaders_["Colored Triangles"];
@@ -378,21 +380,16 @@ void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons
         normal_layout->sha_ = &shaders_["Normals Triangles"];
         model->AddLayout({"Normals Triangles", normal_layout});
     }
+
+    AddModel(std::move(*model));
 }
 
 
-
-void MeshModelOpenGLScene::moveModel(int model_id, const vec3& translate){
-    if(numberOfModels() <= model_id) return;
-    MeshModel* model = models[model_id];
-    model->move(translate);
-}
-
-void MeshModelOpenGLScene::lookAtModel(int camera_id, int model_id){
-    if(numberOfModels() <= model_id) return;
-    if(numberOfCameras() <= camera_id) return;
-    kipod::RenderCamera* cam =cameras[camera_id];
-    MeshModel* model = models[model_id];
+void MeshModelOpenGLScene::LookAtModel(int camera_id, int model_id){
+    if(NumberOfModels() <= model_id) return;
+    if(NumberOfCameras() <= camera_id) return;
+    kipod::RenderCamera* cam =GetActiveCamera();
+    MeshModel* model = GetActiveModel();
     cam->UpdateAt(model->getCenter());
 }
 
@@ -400,37 +397,6 @@ void MeshModelOpenGLScene::lookAtModel(int camera_id, int model_id){
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//LIGHT  CONTROL                              ///////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-void MeshModelOpenGLScene::AddLight(kipod::RenderLight *light)
-{
-    lights.push_back(light);
-}
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//CAMERA  CONTROL                              ///////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-void MeshModelOpenGLScene::AddCamera(kipod::RenderCamera *cam)
-{
-    cameras.push_back(cam);
-}
-kipod::RenderCamera* MeshModelOpenGLScene::GetActiveCamera()
-{
-    return cameras[activeCamera];
-}
-
-
-
-void MeshModelOpenGLScene::SetActiveCamera(int id){
-    if(id<numberOfCameras()) activeCamera = id;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

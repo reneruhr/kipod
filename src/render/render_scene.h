@@ -14,11 +14,14 @@ class RenderScene
 
 friend class Gui;
 
+    RenderCamera* active_camera_ = nullptr;
+    RenderObject* active_render_object_ = nullptr;
+
 
 protected:
-    std::vector<RenderObject*> render_objects_;
-    std::vector<RenderCamera*> cameras_;
-    std::vector<RenderLight*> lights_;
+    std::vector<std::unique_ptr<RenderObject> > render_objects_;
+    std::vector<std::unique_ptr<RenderCamera> > cameras_;
+    std::vector<std::unique_ptr<RenderLight> > lights_;
 
     std::string name_;
     unsigned int width_, height_;
@@ -33,7 +36,12 @@ public:
 
     RenderScene() = default;
     RenderScene(int w, int h);
+    RenderScene(RenderScene&) = default;
+    RenderScene& operator=(RenderScene&) = default;
+    RenderScene(RenderScene&&) = default;
+    RenderScene& operator=(RenderScene&&) = default;
     virtual ~RenderScene() = default;
+
 
     virtual void Setup() = 0;
     virtual void Draw() = 0;
@@ -43,9 +51,21 @@ public:
     virtual void Resize(int w, int h);
     virtual unsigned int SceneAsFramebuffer();
 
-    void AddLight(RenderLight* light);
-    void AddCamera(RenderCamera* camera);
-    void AddModel(RenderObject* model);
+    void AddLight(RenderLight&& light);
+    void AddCamera(RenderCamera&& camera);
+    void AddRenderObject(RenderObject&& model);
+
+
+    RenderCamera* GetActiveCamera();
+    RenderObject* GetActiveRenderObject();
+
+    int NumberOfCameras();
+    int NumberOfRenderObjects();
+    bool HasLight() { return !lights_.empty(); }
+    bool HasRenderObject() { return !render_objects_.empty(); }
+
+    void SetActiveCamera(int id);
+    void SetActiveRenderObject(int id);
 
     void SwapFrameBuffer();
 };

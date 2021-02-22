@@ -19,14 +19,53 @@ unsigned int kipod::RenderScene::SceneAsFramebuffer()
    return framebuffer_->FrameBufferAsTexture();
 }
 
-void kipod::RenderScene::AddLight(kipod::RenderLight *light){
-    lights_.emplace_back(light);
+void kipod::RenderScene::AddLight(kipod::RenderLight&& light)
+{
+    lights_.push_back(
+                std::make_unique<kipod::RenderLight>(
+                    std::forward<kipod::RenderLight>(light)));
 }
 
-void kipod::RenderScene::AddCamera(kipod::RenderCamera *camera){
-    cameras_.emplace_back(camera);
+void kipod::RenderScene::AddCamera(kipod::RenderCamera&& camera)
+{
+    cameras_.push_back(
+                std::make_unique<kipod::RenderCamera>(
+                    std::forward<kipod::RenderCamera>(camera)));
 }
 
-void kipod::RenderScene::AddModel(kipod::RenderObject *model){
-    render_objects_.emplace_back(model);
+void kipod::RenderScene::AddRenderObject(kipod::RenderObject&& object)
+{
+    render_objects_.push_back(
+                std::make_unique<kipod::RenderObject>(
+                    std::forward<kipod::RenderObject>(object)));
+}
+
+kipod::RenderCamera *kipod::RenderScene::GetActiveCamera()
+{
+    return active_camera_;
+}
+
+kipod::RenderObject *kipod::RenderScene::GetActiveRenderObject()
+{
+    return active_render_object_;
+}
+
+int kipod::RenderScene::NumberOfCameras()
+{
+    return cameras_.size();
+}
+
+int kipod::RenderScene::NumberOfRenderObjects()
+{
+    return render_objects_.size();
+}
+
+void kipod::RenderScene::SetActiveCamera(int id)
+{
+    if(id<NumberOfCameras()) active_camera_=cameras_[id].get();
+}
+
+void kipod::RenderScene::SetActiveRenderObject(int id)
+{
+    if(id<NumberOfRenderObjects()) active_render_object_=render_objects_[id].get();
 }

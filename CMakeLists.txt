@@ -92,6 +92,8 @@ add_executable(kipod
   src/modules/meshmodels/meshmodel_opengl_scene.cpp
   src/modules/meshmodels/meshmodel_sidebar.h
   src/modules/meshmodels/meshmodel_sidebar.cpp
+  src/modules/meshmodels/meshmodel_console.h
+  src/modules/meshmodels/meshmodel_console.cpp
 
 
   src/modules/softrenderer/softrenderscene.h

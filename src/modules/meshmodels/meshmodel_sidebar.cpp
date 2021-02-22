@@ -70,13 +70,13 @@ void MeshmodelSidebar::LightOptions()
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
     if(meshmodelscene->HasLight()){
         static unsigned int selectedLight = 0;
-        for (unsigned int n = 0; n <  meshmodelscene->lights.size(); n++)
+        for (unsigned int n = 0; n <  meshmodelscene->lights_.size(); n++)
         {
             char buf[32];
             sprintf(buf, "Light %d", n);
             if (ImGui::Selectable(buf, selectedLight == n)) selectedLight = n;
         }
-        kipod::RenderLight* light = meshmodelscene->lights[selectedLight];
+        kipod::RenderLight* light = meshmodelscene->lights_[selectedLight].get();
         if(light->Type() == kipod::LightSource::AMBIENT) ImGui::Text("Ambient");
         else if(light->Type() == kipod::LightSource::DIFFUSE) ImGui::Text("Diffuse");
         else if(light->Type() == kipod::LightSource::SPECULAR) ImGui::Text("Specular");
@@ -112,7 +112,7 @@ void MeshmodelSidebar::LightAdd()
             new kipod::RenderLight(source,
                       glm::vec4(lightSourceLocation),
                       glm::vec4(float(clight.x),float(clight.y),float(clight.z),float(clight.w)));
-            meshmodelscene->AddLight(light);
+            meshmodelscene->AddLight(std::move(*light));
     }
     ImGui::ColorEdit4("##LightAddColor", (float*)&clight, 0);
     if(lightChoice_current) {
@@ -140,7 +140,7 @@ void MeshmodelSidebar::LoadPrimitive(){
                             else if(primitiveChoice_current==1) meshmodelscene->LoadPrimitive(Tetrahedron);
                             else if(primitiveChoice_current==2) meshmodelscene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Primitive.");
-                            meshmodelscene->SetActiveModel(meshmodelscene->numberOfModels()-1);
+                            meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);
                         }
 
     if(primitiveChoice_current==2){
@@ -169,7 +169,7 @@ void MeshmodelSidebar::LoadOBJfile(){
         LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
         LOG_CONSOLE("Chosen file: \"%s\"",chosenPath);
         meshmodelscene->LoadOBJModel(chosenPath, texturedOption);
-        meshmodelscene->SetActiveModel(meshmodelscene->numberOfModels()-1);
+        meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);
     }
      ImGui::Separator();
 }
@@ -177,8 +177,8 @@ void MeshmodelSidebar::LoadOBJfile(){
 void MeshmodelSidebar::ModelList()
 {
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
-    static int selectedModel = meshmodelscene->activeModel;
-    for (int n = 0; n <  meshmodelscene->numberOfModels(); n++)
+    static int selectedModel = 0;
+    for (int n = 0; n <  meshmodelscene->NumberOfModels(); n++)
     {
         char buf[32];
         sprintf(buf, "Model %d", n);
@@ -239,8 +239,7 @@ void MeshmodelSidebar::CameraList()
     auto meshmodelscene = static_pointer_cast<MeshModelOpenGLScene>(scene_);
     ImGui::Text("Camera"); ImGui::SameLine();
     if (ImGui::Button("Add##Camera")){
-        kipod::RenderCamera* cam = new kipod::RenderCamera({0.0,0.0,3.0});
-            meshmodelscene->AddCamera(cam);
+        meshmodelscene->AddCamera({{0.0,0.0,3.0}});
     }
     ImGui::SameLine(); kipod::HelpMarker("Camera Movement:\n"
                                          "ASWDRF Keys for movement w.r.t. looking direction. Changes focus.\n"
@@ -248,7 +247,7 @@ void MeshmodelSidebar::CameraList()
                                          );
 
     static int selectedCamera = -1;
-    for (int n = 0; n <  meshmodelscene->numberOfCameras(); n++)
+    for (int n = 0; n <  meshmodelscene->NumberOfCameras(); n++)
     {
         char buf[32];
         sprintf(buf, "Camera %d", n);

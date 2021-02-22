@@ -9,15 +9,15 @@ class RenderScene;
 
 class Console
 {
+    friend class Module;
 protected:
     std::shared_ptr<RenderScene> scene_;
-
-
-public:
     Console(std::shared_ptr<RenderScene> scene) : scene_(scene){
     }
     virtual void Draw();
     virtual void ConsoleContent() {}
+public:
+
     static ExampleAppConsole& GetConsole();
 };
 

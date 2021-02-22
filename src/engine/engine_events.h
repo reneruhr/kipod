@@ -69,7 +69,8 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e)
 
 class Listener
 {
-public:
+    friend class Events;
+protected:
     virtual ~Listener() = default;
     virtual void Signup() = 0;
     virtual void Receive(std::shared_ptr<kipod::Event> event) = 0;

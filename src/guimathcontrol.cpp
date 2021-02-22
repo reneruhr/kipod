@@ -34,8 +34,6 @@ void embedding_rules(std::array<int, 16> &selected, sl2Embedding &currEmbedding)
                 currEmbedding = YW;
         else currEmbedding = NOT_DEFINED;
 
-        static int e = 0;
-        e = static_cast<int>(currEmbedding);
 }
 
 

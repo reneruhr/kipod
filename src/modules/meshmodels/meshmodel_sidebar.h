@@ -3,11 +3,7 @@
 
 class MeshmodelSidebar : public kipod::Sidebar
 {
-public:
-    MeshmodelSidebar(std::shared_ptr<kipod::RenderScene> scene) : kipod::Sidebar(scene) {}
-
-    virtual void SideBarContent() override;
-
+    friend class MeshModelModule;
 
     void Help();
     void ModelControl();
@@ -29,6 +25,10 @@ public:
     void LightOptions();
     void LightAdd();
     void LightViewOptions();
+protected:
+    MeshmodelSidebar(std::shared_ptr<kipod::RenderScene> scene) : kipod::Sidebar(scene) {}
+
+    virtual void SideBarContent() override;
 
 };
 

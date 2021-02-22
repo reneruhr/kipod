@@ -538,7 +538,7 @@ void Scene::LoadOBJModel(string fileName, bool textured)
     model->setUniformMaterial();
     models.push_back(model);
 
-    AddModel(model);
+     //AddModel(model); Broke when changing render_scene
     std::string name;
     bool foundTexture;
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
@@ -566,7 +566,7 @@ void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
     model->setUniformMaterial();
     models.push_back(model);
 
-    AddModel(model);
+    //AddModel(model); Broke when changing render_scene
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
     layout->sha_ = &shaders_["Colored Triangles"];
