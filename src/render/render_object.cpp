@@ -67,6 +67,11 @@ void kipod::RenderObject::AddLayout(std::pair<std::string, kipod::RenderLayout *
     if(lay_==nullptr) lay_ = named_layout.second;
 }
 
+void kipod::RenderObject::AddLayout_TEMP(std::pair<std::string, std::unique_ptr<kipod::RenderLayout> >&& named_layout)
+{
+    render_layouts_TEMP.insert(std::forward<decltype(named_layout)>(named_layout));
+}
+
 void kipod::RenderObject::AddLayout(std::string name, kipod::RenderLayout *layout)
 {
     render_layouts_.insert({name,layout});

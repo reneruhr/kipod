@@ -31,14 +31,10 @@ void MeshModelOpenGLScene::Setup()
     layout->sha_ = &shaders_["Colored Triangles"];
     boundingBox.AddLayout(name,layout);
     boundingBox.Init(false,false);
-    {
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        boundingBox.AddLayout({"Normals Triangles", normal_layout});
-    }
+
+//    boundingBox.AddLayout_TEMP(
+//                    {"Normals Triangles", std::make_unique<kipod::GLRenderLayout>(CreateLayoutNormals())}
+//                    );
 
     SetupCoordinateAxis();
     SetupGrid();
@@ -268,6 +264,16 @@ void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader)
             SetLightToShader(shader, i, lights_[i].get());
     }
     shaders_["Colored Triangles"].SetUniform<int>("EmissiveOn", Toggle("Emissive") );
+}
+
+kipod::GLRenderLayout&& MeshModelOpenGLScene::CreateLayoutNormals(kipod::GLRenderLayout& layout)
+{
+    auto normal_layout = new kipod::GLRenderLayout(layout);
+    auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+    ebo->primitive_ = GL_POINTS;
+    normal_layout->ebo_ = ebo;
+    normal_layout->sha_ = &shaders_["Normals Triangles"];
+    return std::move(*normal_layout);
 }
 
 void MeshModelOpenGLScene::BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material)

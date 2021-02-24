@@ -1,13 +1,5 @@
-#ifndef RENDER_BUFFER_H
-#define RENDER_BUFFER_H
-
-
-#include <GL/glew.h>
-#include <glm/matrix.hpp>
-#include <vector>
-#include <string>
-
-#include "../utils/log.h"
+#pragma once
+#include "../core.h"
 
 namespace kipod{
 
@@ -70,6 +62,7 @@ public:
     GLboolean normalized_ = GL_FALSE;
     GLsizei stride_ = 0;
     std::size_t offset_ = 0;
+
 public:
     //Attribute() = default;
     Attribute(unsigned int id = 0, unsigned int count = 0, GLsizei stride = 0, std::size_t offset = 0 ) :
@@ -91,6 +84,7 @@ class VertexAttributeObject : public IBuffer
 
 public:
 
+    unsigned short NumberOfAttributes() { return size(attributes_); }
 
     void Add(Attribute* attribute)
     {
@@ -119,6 +113,7 @@ public:
 
 class VertexBuffer : public Buffer
 {
+    unsigned long current_buffer_offset_ = 0;
 public:
     VertexBuffer() = default;
     VertexBuffer(void* data, unsigned int count, unsigned int size, GLenum  flag = GL_STATIC_DRAW) : Buffer(data, count, size) {
@@ -147,6 +142,11 @@ public:
         glNamedBufferSubData(this->id_, offset, size, data);
     }
 
+    void Add(unsigned long size, const void* data){
+        glNamedBufferSubData(this->id_, current_buffer_offset_, size, data);
+        current_buffer_offset_+=size;
+    }
+
     void Bind()
     {
         glBindBuffer(GL_ARRAY_BUFFER, this->id_);
@@ -157,4 +157,3 @@ public:
     }
 };
 }
-#endif // RENDER_BUFFER_H

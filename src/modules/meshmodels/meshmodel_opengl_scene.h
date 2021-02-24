@@ -11,6 +11,9 @@ friend class MeshModelModule;
 
         std::unordered_map<std::string, kipod::Shader> shaders_;
 
+
+        kipod::GLRenderLayout&& CreateLayoutNormals(kipod::GLRenderLayout&);
+
         void BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material);
         void BindLightUniforms(kipod::Shader& shader);
         void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const kipod::RenderCamera &camera);

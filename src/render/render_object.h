@@ -14,6 +14,8 @@ class FrameBuffer;
 
 
 class RenderObject{
+
+    std::unordered_map<std::string, std::unique_ptr<RenderLayout>> render_layouts_TEMP;
 public:
     std::unique_ptr<kipod::Transform> world_ = std::make_unique<kipod::Transform>();
     std::unique_ptr<kipod::Transform> local_ = std::make_unique<kipod::Transform>();
@@ -56,6 +58,7 @@ public:
     virtual RenderLayout* Layout(std::string layout);
     virtual RenderLayout* Layout();
     virtual void AddLayout(std::pair<std::string, RenderLayout*> named_layout);
+    virtual void AddLayout_TEMP(std::pair<std::string, std::unique_ptr<RenderLayout> >&& named_layout);
     virtual void AddLayout(std::string name, RenderLayout* layout);
     virtual bool HasLayout(std::string name);
 };

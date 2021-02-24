@@ -42,6 +42,7 @@ inline bool isRelLess(const float& a, const float& b){
 
 
 struct vec2 {
+    static unsigned short Length() { return 2;}
 
     GLfloat  x;
     GLfloat  y;
@@ -192,6 +193,8 @@ std::vector<glm::vec2> vec2vecToGLM(std::vector<vec2>& vecs){
 //////////////////////////////////////////////////////////////////////////////
 
 struct vec3 {
+
+    static unsigned short Length() { return 3;}
 
     GLfloat  x;
     GLfloat  y;
@@ -383,6 +386,8 @@ bool lessVector(const vec3& v, const vec3& w){
 //////////////////////////////////////////////////////////////////////////////
 
 struct vec4 {
+
+    static unsigned short Length() { return 4;}
 
     GLfloat  x;
     GLfloat  y;

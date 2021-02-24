@@ -5,6 +5,10 @@ namespace kipod{
 
 class GLRenderLayout : public RenderLayout{
 
+    template<typename Vector, typename... MoreVectors>
+    void AddBufferData(const std::vector<Vector>&, MoreVectors... more_vectors);
+    void AddBufferData(GLchar);
+
 public:
     ElementsBuffer* ebo_ = nullptr;
     VertexAttributeObject* vao_ = nullptr;
@@ -23,6 +27,12 @@ public:
     void SetupPointSet(const std::vector<vec4>* vertices);
     void SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors);
     void SetupGrid(const std::vector<vec3> *vertices);
+
+    template<typename Vector, typename... MoreVectors>
+    void SetupLayout(const std::vector<Vector>&, MoreVectors... more_vectors);
+
+
+
 };
 
 
