@@ -41,14 +41,14 @@ void Scene::Setup()
     layout->sha_ = &shaders_["Colored Triangles"];
     boundingBox.AddLayout(name,layout);
     boundingBox.Init(false,false);
-    {
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        boundingBox.AddLayout({"Normals Triangles", normal_layout});
-    }
+//    {
+//        auto normal_layout = new kipod::GLRenderLayout(*layout);
+//        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+//        ebo->primitive_ = GL_POINTS;
+//        normal_layout->ebo_ = ebo;
+//        normal_layout->sha_ = &shaders_["Normals Triangles"];
+//        boundingBox.AddLayout({"Normals Triangles", normal_layout});
+//    }
 
     SetupOptions();
     Signup();
@@ -429,7 +429,7 @@ void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
 void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
 {
    kipod::Shader* shader = &shaders_["Textured Triangles"];
-   BindTextureUniforms(*shader, model->tex_);
+   BindTextureUniforms(*shader, model->tex_.get());
    BindLightUniforms(*shader, lights);
    BindMatrixUniforms(*shader, *model, *camera);
    BindMaterialUniforms(*shader, *(model->mat_));
@@ -549,14 +549,14 @@ void Scene::LoadOBJModel(string fileName, bool textured)
     model->AddLayout({name, layout});
     model->Init(foundTexture);
 
-    if(!foundTexture){
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        model->AddLayout({"Normals Triangles", normal_layout});
-    }
+//    if(!foundTexture){
+//        auto normal_layout = new kipod::GLRenderLayout(*layout);
+//        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+//        ebo->primitive_ = GL_POINTS;
+//        normal_layout->ebo_ = ebo;
+//        normal_layout->sha_ = &shaders_["Normals Triangles"];
+//        model->AddLayout({"Normals Triangles", normal_layout});
+//    }
 
 }
 
@@ -572,14 +572,14 @@ void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
     layout->sha_ = &shaders_["Colored Triangles"];
     model->AddLayout({name, layout});
     model->Init(false);
-    {
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        model->AddLayout({"Normals Triangles", normal_layout});
-    }
+//    {
+//        auto normal_layout = new kipod::GLRenderLayout(*layout);
+//        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+//        ebo->primitive_ = GL_POINTS;
+//        normal_layout->ebo_ = ebo;
+//        normal_layout->sha_ = &shaders_["Normals Triangles"];
+//        model->AddLayout({"Normals Triangles", normal_layout});
+//    }
 }
 
 

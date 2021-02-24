@@ -235,7 +235,7 @@ void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, kipod::RenderCamer
 void MeshModelOpenGLScene::SetUniformTex(kipod::RenderCamera* camera, kipod::RenderObject* model)
 {
    kipod::Shader* shader = &shaders_["Textured Triangles"];
-   BindTextureUniforms(*shader, model->tex_);
+   BindTextureUniforms(*shader, model->tex_.get());
    BindMatrixUniforms(*shader, *model, *camera);
    BindMaterialUniforms(*shader, *(model->mat_));
 }
@@ -269,7 +269,7 @@ void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader)
 kipod::GLRenderLayout&& MeshModelOpenGLScene::CreateLayoutNormals(kipod::GLRenderLayout& layout)
 {
     auto normal_layout = new kipod::GLRenderLayout(layout);
-    auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+    auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
     ebo->primitive_ = GL_POINTS;
     normal_layout->ebo_ = ebo;
     normal_layout->sha_ = &shaders_["Normals Triangles"];
@@ -357,7 +357,7 @@ void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
 
     if(!foundTexture){
         auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+        auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
         ebo->primitive_ = GL_POINTS;
         normal_layout->ebo_ = ebo;
         normal_layout->sha_ = &shaders_["Normals Triangles"];
@@ -380,7 +380,7 @@ void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons
     model->Init(false);
     {
         auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
+        auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
         ebo->primitive_ = GL_POINTS;
         normal_layout->ebo_ = ebo;
         normal_layout->sha_ = &shaders_["Normals Triangles"];

@@ -10,9 +10,9 @@ class GLRenderLayout : public RenderLayout{
     void AddBufferData(GLchar);
 
 public:
-    ElementsBuffer* ebo_ = nullptr;
-    VertexAttributeObject* vao_ = nullptr;
-    VertexBuffer* vbo_ = nullptr;
+    std::shared_ptr<ElementsBuffer> ebo_ = nullptr;
+    std::shared_ptr<VertexAttributeObject> vao_ = nullptr;
+    std::shared_ptr<VertexBuffer> vbo_ = nullptr;
     Shader* sha_ = nullptr;
 
     virtual void Draw() override;
@@ -29,8 +29,7 @@ public:
     void SetupGrid(const std::vector<vec3> *vertices);
 
     template<typename Vector, typename... MoreVectors>
-    void SetupLayout(const std::vector<Vector>&, MoreVectors... more_vectors);
-
+    void SetupLayout(const std::vector<Vector>&, MoreVectors... );
 
 
 };

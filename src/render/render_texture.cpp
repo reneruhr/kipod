@@ -72,6 +72,7 @@ kipod::Texture::Texture(int w, int h){
     image_ = new Image(w,h);
 }
 
+
 kipod::Texture::~Texture(){
     glDeleteTextures(1, &depths_id_);
     glDeleteTextures(1, &id_);
@@ -119,7 +120,7 @@ void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)
 
 void kipod::Texture::SetupTextureToSquare()
 {
-    textured_square_ = std::unique_ptr<Shape>(new Shape(Square()));
+    textured_square_ = std::unique_ptr<TexturedSquare>(new TexturedSquare(Square()));
     float ratio = image_->width_/image_->height_;
     float height = 300;
     textured_square_->ScaleShape(ratio*height, height);

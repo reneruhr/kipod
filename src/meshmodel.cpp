@@ -43,7 +43,7 @@ MeshModel::MeshModel(string fileName, bool textured)
     CenterModel();
 
     if(textured){
-        tex_ = new kipod::Texture;
+        tex_ = std::make_shared<kipod::Texture>();
 
         auto end = std::end(fileName);
         *(end-3) = 'p'; *(end-2) = 'n'; *(end-1) = 'g';
@@ -62,7 +62,6 @@ MeshModel::MeshModel(string fileName, bool textured)
             return;
          }
         LOG_INFO("Tried but did not succeed to load texture.");
-        delete tex_;
         tex_ = nullptr;
     }
 }
@@ -316,5 +315,5 @@ void MeshModel::setUniformMaterial(){
     colors_vector = { material };
     cindices_vector = vector<unsigned int>((indices_vector).size(), 0);
 
-    mat_ =  new kipod::RenderMaterial;
+    mat_ =  std::make_shared<kipod::RenderMaterial>();
 }

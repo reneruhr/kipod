@@ -33,9 +33,9 @@ public:
 
     std::string name_;
 
-    RenderMaterial* mat_ = nullptr;
-    Texture* tex_ = nullptr;
-    FrameBuffer* fra_ = nullptr;
+    std::shared_ptr<RenderMaterial> mat_ = nullptr;
+    std::shared_ptr<Texture> tex_ = nullptr;
+    std::shared_ptr<FrameBuffer> fra_ = nullptr;
 
     std::unordered_map<std::string, RenderLayout*> render_layouts_;
     RenderLayout* lay_ = nullptr;

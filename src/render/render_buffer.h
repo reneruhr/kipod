@@ -80,15 +80,15 @@ public:
 
 class VertexAttributeObject : public IBuffer
 {
-    std::vector<Attribute*> attributes_;
+    std::vector<Attribute> attributes_;
 
 public:
 
     unsigned short NumberOfAttributes() { return size(attributes_); }
 
-    void Add(Attribute* attribute)
+    void Add(Attribute&& attribute)
     {
-        attributes_.push_back(attribute);
+        attributes_.emplace_back(std::forward<Attribute>(attribute));
     }
 
     void Set()
@@ -99,7 +99,7 @@ public:
 
     void SetAttributes()
     {
-        for(auto& a : attributes_)  a->Set();
+        for(auto& a : attributes_)  a.Set();
     }
 
     void Bind(){

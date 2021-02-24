@@ -5,10 +5,16 @@
 
 namespace kipod{
 
+class TexturedSquare : public Shape{
+public:
+    TexturedSquare(Polygon polygon) : Shape(polygon){}
+    Texture* tex_;
+};
+
 class Texture
 {
     Image* image_;
-    std::unique_ptr<Shape> textured_square_;
+    std::unique_ptr<TexturedSquare> textured_square_;
 
 public:
     Texture() = default;
