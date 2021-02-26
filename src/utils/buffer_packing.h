@@ -1,6 +1,4 @@
-#ifndef BUFFER_PACKING_H
-#define BUFFER_PACKING_H
-
+#pragma once
 #include <vector>
 #include "vec.h"
 #include <assert.h>
@@ -19,5 +17,3 @@ inline void pack_vectors(const std::vector<vec3>& a, const std::vector<vec3>& b,
     }
 }
 
-
-#endif // BUFFER_PACKING_H

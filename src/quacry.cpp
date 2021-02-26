@@ -1,6 +1,6 @@
 #include "quacry.h"
 
-#include "scene.h"
+//#include "scene.h"
 #include "utils/mat.h"
 #include "pointset.h"
 

@@ -1,6 +1,6 @@
 #include "meshmodel_opengl_scene.h"
 
-
+namespace kipod::MeshModels{
 
 
 
@@ -135,7 +135,7 @@ void MeshModelOpenGLScene::Draw()
 
     kipod::RenderManager::Bind(0);
 
-    framebuffer_->tex_->Draw();
+    //framebuffer_->tex_->Draw();
 }
 
 
@@ -341,11 +341,11 @@ void MeshModelOpenGLScene::AddModel(MeshModel && model)
                     std::forward<MeshModel>(model)));
 }
 
-void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
+void MeshModelOpenGLScene::LoadOBJModel(std::string fileName, bool textured)
 {
     MeshModel *model = new MeshModel(fileName, textured);
     if(!model->Valid()) return;
-    model->setUniformMaterial();
+    model->SetUniformMaterial();
 
     std::string name;
     bool foundTexture;
@@ -369,7 +369,7 @@ void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
 void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
-    model->setUniformMaterial();
+    model->SetUniformMaterial();
 
 
     std::string name = "Colored Triangles";
@@ -387,13 +387,13 @@ void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons
 }
 
 
-void MeshModelOpenGLScene::LookAtModel(int camera_id, int model_id){
-    if(NumberOfModels() <= model_id) return;
-    if(NumberOfCameras() <= camera_id) return;
-    kipod::RenderCamera* cam =GetActiveCamera();
-    MeshModel* model = GetActiveModel();
-    cam->UpdateAt(model->getCenter());
-}
+//void MeshModelOpenGLScene::LookAtModel(int camera_id, int model_id){
+//    if(NumberOfModels() <= model_id) return;
+//    if(NumberOfCameras() <= camera_id) return;
+//    kipod::RenderCamera* cam =GetActiveCamera();
+//    MeshModel* model = GetActiveModel();
+//    cam->UpdateAt(model->Center());
+//}
 
 
 
@@ -587,3 +587,4 @@ void MeshModelOpenGLScene::DrawGrid(kipod::RenderCamera* camera){
     layout->sha_->Unuse();
 }
 
+}

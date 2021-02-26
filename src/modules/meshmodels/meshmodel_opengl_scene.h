@@ -1,9 +1,11 @@
 #pragma once
 #include "../../kipod.h"
 
-#include "../../meshmodel.h"
-#include "../../primmeshmodel.h"
+#include "meshmodel.h"
+#include "meshmodel_primitive.h"
 
+
+namespace kipod::MeshModels{
 
 class MeshModelOpenGLScene :  public kipod::Listener, public kipod::Controls, public kipod::RenderScene{
 friend class MeshmodelSidebar;
@@ -56,7 +58,7 @@ friend class MeshModelModule;
 protected:
         virtual void Receive(std::shared_ptr<kipod::Event> event) override;
 
-        void LoadOBJModel(string fileName, bool textures = false);
+        void LoadOBJModel(std::string fileName, bool textures = false);
         void LoadPrimitive(Primitive primitive, int numberPolygons=0);
 
         MeshModel* GetActiveModel();
@@ -73,3 +75,4 @@ protected:
             : RenderScene(width, height), boundingBox(Cube){}
 };
 
+}

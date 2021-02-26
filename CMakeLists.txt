@@ -78,11 +78,7 @@ add_executable(kipod
   src/light.cpp
 
 
-  src/meshmodel.h
-  src/meshmodel.cpp
 
-  src/primmeshmodel.h
-  src/primmeshmodel.cpp
 
 
 
@@ -94,7 +90,14 @@ add_executable(kipod
   src/modules/meshmodels/meshmodel_sidebar.cpp
   src/modules/meshmodels/meshmodel_console.h
   src/modules/meshmodels/meshmodel_console.cpp
-
+  src/modules/meshmodels/meshmodel.h
+  src/modules/meshmodels/meshmodel.cpp
+  src/modules/meshmodels/meshmodel_primitive.h
+  src/modules/meshmodels/meshmodel_primitive.cpp
+  src/modules/meshmodels/meshmodel_boundingbox.h
+  src/modules/meshmodels/meshmodel_boundingbox.cpp
+  src/modules/meshmodels/meshmodel_parsing.h
+  src/modules/meshmodels/meshmodel_parsing.cpp
 
   src/modules/softrenderer/softrenderscene.h
   src/modules/softrenderer/softrenderscene.cpp

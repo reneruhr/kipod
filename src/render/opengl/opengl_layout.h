@@ -24,7 +24,7 @@ public:
     void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices);
     void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
                                const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
-    void SetupGLTriangles(const std::vector<GLTriangle> *triangles, const std::vector<unsigned int> *indices);
+    void SetupGLTriangles(const std::vector<GLTriangle> *triangles);
     void SetupShape(const std::vector<vec2>* vertices_);
     void SetupPointSet(const std::vector<vec4>* vertices);
     void SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors);

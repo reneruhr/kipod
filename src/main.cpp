@@ -3,7 +3,7 @@
 #include "modules/meshmodels/meshmodel_opengl_module.h"
 
 
-#include "scene.h"
+//#include "scene.h"
 #include "gui.h"
 #include "inputmanager.h"
 #include "eventmanager.h"
@@ -108,21 +108,21 @@ int my_main( int argc, char **argv )
 
     while (!window->windowShouldClose())
     {
-        kipod::Gui::Begin();
-        //kipod::Menu();
+//        kipod::Gui::Begin();
+//        //kipod::Menu();
 
-        display(scene);
+//        display(scene);
 
 
-        gui->Draw(scene, softrenderer, window.get());
-        scene->DrawGui();
-        kipod::Gui::CreateSceneWindow(scene);
-        kipod::Gui::End();
+//        gui->Draw(scene, softrenderer, window.get());
+//        scene->DrawGui();
+//        kipod::Gui::CreateSceneWindow(scene);
+//        kipod::Gui::End();
 
-        window->updateWindow();
-        eventmanager->process();
-        kipod::Events::Process();
-        clock.Synchronize();
+//        window->updateWindow();
+//        eventmanager->process();
+//        kipod::Events::Process();
+//        clock.Synchronize();
     }
 
 	delete scene;
@@ -145,7 +145,7 @@ int main( int argc, char **argv )
         int width = 1024, height = 768;
         kipod::Application kipod(width, height);
         kipod.Init();
-        kipod.Add("OpenGL Meshmodels", MeshModelModule(width,height));
+        kipod.Add("OpenGL Meshmodels", kipod::MeshModels::MeshModelModule(width,height));
         kipod.Run();
         kipod.ShutDown();
     }else    my_main(argc, argv );

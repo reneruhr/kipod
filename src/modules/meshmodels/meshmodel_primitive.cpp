@@ -1,8 +1,9 @@
-#include "primmeshmodel.h"
-#include <numeric>
+#include "meshmodel_primitive.h"
+#include "meshmodel_parsing.h"
+
+namespace kipod::MeshModels{
 
 PrimMeshModel::PrimMeshModel(Primitive primitive, int n){
-    _world_transform = mat4(1.0);
     LoadPrimitive(primitive, n);
 }
 
@@ -55,10 +56,11 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                     unsigned int *indices = new unsigned int[36];
                     for(unsigned int i = 0 ; i<36; i++) indices[i]=i;
 
-                    vertices_vector = vector<vec3>(vertices,vertices+36);
-                    indices_vector = vector<unsigned int>(indices, indices+36);
+                    vertices_vector = std::vector<vec3>(vertices,vertices+36);
+                    indices_vector = std::vector<unsigned int>(indices, indices+36);
 
-                    CalculateNormals();
+                    CalculateNormals(vertices_vector, indices_vector,
+                                            normals_vector, nindices_vector);
 
                 break;
         } // cube
@@ -87,16 +89,12 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                 4,9,6,
                 10,11,8
             };
-//            unsigned int indices[12] = {
-//                3,1,0,
-//                3,2,1,
-//                0,1,2,
-//                2,3,0
-//            };
-            vertices_vector = vector<vec3>(vertices,vertices+12);
-            indices_vector = vector<unsigned int>(indices, indices+12);
 
-            CalculateNormals();
+            vertices_vector = std::vector<vec3>(vertices,vertices+12);
+            indices_vector = std::vector<unsigned int>(indices, indices+12);
+
+            CalculateNormals(vertices_vector, indices_vector,
+                                    normals_vector, nindices_vector);
             break;
         } //tetrahedron
     case Sphere:{
@@ -104,7 +102,7 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
         LOG_ENGINE("Create a Sphere");
         LOG_CONSOLE("Create a Sphere");
         name_ = "Sphere";
-        vector<vec3> tetra = {{0.0, 0.0, 1.0},
+        std::vector<vec3> tetra = {{0.0, 0.0, 1.0},
                                {0.0, 0.942809, -0.333333},
                                {-0.816497, -0.471405, -0.333333},
                                {0.816497, -0.471405, -0.333333}
@@ -138,7 +136,7 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
         divide_triangle(tetra[0], tetra[1], tetra[2], k);
         divide_triangle(tetra[2], tetra[3], tetra[0], k);
 
-        indices_vector = vector<unsigned int>(vertices_vector.size());
+        indices_vector = std::vector<unsigned int>(vertices_vector.size());
         std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
 
 
@@ -151,4 +149,6 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
     }//switch
     CreateBoundingBox();
     CenterModel();
+}
+
 }

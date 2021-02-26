@@ -1,6 +1,8 @@
 #pragma once
 #include "../core.h"
 
+namespace kipod{
+
 struct GLVertex{
     vec3 position_;
     vec3 normal_;
@@ -21,3 +23,10 @@ struct GLTriangle{
         vertices_[2] = u;
     }
 };
+
+void CreateTriangleVector(std::vector<GLTriangle>& triangles,
+                         std::vector<vec3>& vertices_vector, std::vector<unsigned int>& indices_vector,
+                         std::vector<vec3>& normals_vector, std::vector<unsigned int>& nindices_vector,
+                         std::vector<vec2>& texture_vector, std::vector<unsigned int>& tindices_vector);
+
+}

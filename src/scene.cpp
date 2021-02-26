@@ -1,6 +1,6 @@
 #include "core.h"
 #include "scene.h"
-#include "meshmodel.h"
+#include "modules/meshmodels/meshmodel.h"
 
 #include "quacry.h"
 
@@ -67,17 +67,17 @@ void Scene::SetupOptions(){
 
 void Scene::DrawGui()
 {
-    using namespace kipod;
+//    using namespace kipod;
 
 
-    Gui::BeginWindow("MeshModels");
-    for(auto& [name,toggle] : mode_toggles_)
-        Gui::Checkbox(toggle);
+//    Gui::BeginWindow("MeshModels");
+//    for(auto& [name,toggle] : mode_toggles_)
+//        Gui::Checkbox(toggle);
 
-    for(auto model : models)
-        Gui::Transform(*model->world_);
+//    for(auto model : models)
+//        Gui::Transform(*model->world_);
 
-    Gui::EndWindow();
+//    Gui::EndWindow();
 
 }
 
@@ -141,26 +141,26 @@ void Scene::draw()
 
         glEnable(GL_DEPTH_TEST);
 
-        if( Toggle("Texture Mode") && model->HasLayout("Textured Triangles") ){
-           shaders_["Textured Triangles"].Use();
-           SetUniformTex(lights, cameras[activeCamera], model);
-           model->RenderObject::Draw("Textured Triangles");
-        }
-        else if((Toggle("Color Mode") || Toggle("Emissive Mode") )&& model->HasLayout("Colored Triangles")  ){
-            shaders_["Colored Triangles"].Use();
-            SetUniform(lights, cameras[activeCamera], model);
-            model->RenderObject::Draw("Colored Triangles");
-        }
+//        if( Toggle("Texture Mode") && model->HasLayout("Textured Triangles") ){
+//           shaders_["Textured Triangles"].Use();
+//           SetUniformTex(lights, cameras[activeCamera], model);
+//           model->RenderObject::Draw("Textured Triangles");
+//        }
+//        else if((Toggle("Color Mode") || Toggle("Emissive Mode") )&& model->HasLayout("Colored Triangles")  ){
+//            shaders_["Colored Triangles"].Use();
+//            SetUniform(lights, cameras[activeCamera], model);
+//            model->RenderObject::Draw("Colored Triangles");
+//        }
 
         glDisable(GL_DEPTH_TEST);
 
         if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
-            shaders_["Normals Triangles"].Use();
-            SetUniformNormal(model, cameras[activeCamera]);
-            model->RenderObject::Draw("Normals Triangles");
-        }
+//        if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
+//            shaders_["Normals Triangles"].Use();
+//            SetUniformNormal(model, cameras[activeCamera]);
+//            model->RenderObject::Draw("Normals Triangles");
+//        }
 
         if(Toggle("Bounding Box")){
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -407,38 +407,38 @@ void Scene::SetUniformPhysicalBox(Camera *camera, QuaCry *quacry)
 
 void Scene::SetUniform(vector<Light*>& lights, Camera* camera, MeshModel* model)
 {
-    auto shader = shaders_["Colored Triangles"];
-    BindLightUniforms(shader, lights);
-    BindMatrixUniforms(shader, *model, *camera);
-    BindMaterialUniforms(shader, *(model->mat_));
+//    auto shader = shaders_["Colored Triangles"];
+//    BindLightUniforms(shader, lights);
+//    BindMatrixUniforms(shader, *model, *camera);
+//    BindMaterialUniforms(shader, *(model->mat_));
 }
 
-void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
-{
-    kipod::Shader* shader = &shaders_["Normals Triangles"];
-    BindMatrixUniforms(*shader, *model, *camera);
-    BindNormalUniforms(*shader, model->normal_length);
-}
+//void Scene::SetUniformNormal(MeshModel* model, Camera* camera)
+//{
+//    kipod::Shader* shader = &shaders_["Normals Triangles"];
+//    BindMatrixUniforms(*shader, *model, *camera);
+//    BindNormalUniforms(*shader, model->normal_length);
+//}
 
 void Scene::SetUniformTex(vector<Light*>& lights, Camera* camera, MeshModel* model)
 {
-   kipod::Shader* shader = &shaders_["Textured Triangles"];
-   BindTextureUniforms(*shader, model->tex_.get());
-   BindLightUniforms(*shader, lights);
-   BindMatrixUniforms(*shader, *model, *camera);
-   BindMaterialUniforms(*shader, *(model->mat_));
+//   kipod::Shader* shader = &shaders_["Textured Triangles"];
+//   BindTextureUniforms(*shader, model->tex_.get());
+//   BindLightUniforms(*shader, lights);
+//   BindMatrixUniforms(*shader, *model, *camera);
+//   BindMaterialUniforms(*shader, *(model->mat_));
 }
 
 void Scene::SetUniformBox(MeshModel* model)
 {
-    glm::mat4 box = model->TansformBoundingBox();
-    mat4 camc = cameras[activeCamera]->getcTransform();
-    glm::mat4 mv = MakeGLM(camc) * box;
-    mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
-    glm::mat4 p = MakeGLM(camp);
+//    glm::mat4 box = model->TansformBoundingBox();
+//    mat4 camc = cameras[activeCamera]->getcTransform();
+//    glm::mat4 mv = MakeGLM(camc) * box;
+//    mat4 camp = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
+//    glm::mat4 p = MakeGLM(camp);
 
-    shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
-    shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
+//    shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
+//    shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
 }
 
 void Scene::SetShapeUniform(Shape* shape)
@@ -527,16 +527,16 @@ void Scene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject&
 
 void Scene::LoadOBJModel(string fileName, bool textured)
 {
-    MeshModel *model = new MeshModel(fileName, textured);
+//    MeshModel *model = new MeshModel(fileName, textured);
 
-    model->setUniformMaterial();
-    models.push_back(model);
+//    model->SetUniformMaterial();
+//    models.push_back(model);
 
-     //AddModel(model); Broke when changing render_scene
-    std::string name;
-    bool foundTexture;
-    name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
-                       : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
+//     //AddModel(model); Broke when changing render_scene
+//    std::string name;
+//    bool foundTexture;
+//    name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
+//                       : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
 //    auto layout = new kipod::GLRenderLayout;
 //    layout->sha_ = &shaders_[name];
 //    LOG_ENGINE("Add Layout name {}", name);
@@ -554,11 +554,11 @@ void Scene::LoadOBJModel(string fileName, bool textured)
 
 }
 
-void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
+void Scene::LoadPrimitive(kipod::MeshModels::Primitive primitive, int numberPolygons)
 {
-    PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
-    model->setUniformMaterial();
-    models.push_back(model);
+//    PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
+//    model->SetUniformMaterial();
+//    models.push_back(model);
 
 //    //AddModel(model); Broke when changing render_scene
 //    std::string name = "Colored Triangles";
@@ -578,20 +578,20 @@ void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
 
 
 
-void Scene::moveModel(int model_id, const vec3& translate){
-    if(numberOfModels() <= model_id) return;
-    MeshModel* model = models[model_id];
-    model->move(translate);
-    needs_update = true;
-}
+//void Scene::moveModel(int model_id, const vec3& translate){
+//    if(numberOfModels() <= model_id) return;
+//    MeshModel* model = models[model_id];
+//    model->move(translate);
+//    needs_update = true;
+//}
 
-void Scene::lookAtModel(int camera_id, int model_id){
-    if(numberOfModels() <= model_id) return;
-    if(numberOfCameras() <= camera_id) return;
-    Camera* cam =cameras[camera_id];
-    MeshModel* model = models[model_id];
-    cam->updateAt(model->getCenter());
-}
+//void Scene::lookAtModel(int camera_id, int model_id){
+//    if(numberOfModels() <= model_id) return;
+//    if(numberOfCameras() <= camera_id) return;
+//    Camera* cam =cameras[camera_id];
+//    MeshModel* model = models[model_id];
+//    cam->updateAt(model->getCenter());
+//}
 
 
 
@@ -679,27 +679,27 @@ void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& asp
 
 void Scene::drawSoft()
 {
-    mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
-    mat4 v = cameras[activeCamera]->getcTransform();
-    _softrenderer->SetCameraTransform(v);
-    _softrenderer->SetProjection(p);
-    for(auto model : models){
-        mat4 m = model->getmTransform();
-        mat3 n = mat3(vec3(&m[0][0]),vec3(&m[1][0]),vec3(&m[2][0]));
-        n = transpose(Inverse(n));
-        _softrenderer->SetObjectMatrices(m,n);
+//    mat4 p = cameras[activeCamera]->getProjection(camerasMode[activeCamera]);
+//    mat4 v = cameras[activeCamera]->getcTransform();
+//    _softrenderer->SetCameraTransform(v);
+//    _softrenderer->SetProjection(p);
+//    for(auto model : models){
+//        mat4 m = model->getmTransform();
+//        mat3 n = mat3(vec3(&m[0][0]),vec3(&m[1][0]),vec3(&m[2][0]));
+//        n = transpose(Inverse(n));
+//        _softrenderer->SetObjectMatrices(m,n);
 
-        if(color_mode || emissive_mode)
-            model->drawWithLight(_softrenderer,lights, color_mode, emissive_mode);
-        else
-            model->draw(_softrenderer, wireframemode, clipping_mode, normals_mode);
+//        if(color_mode || emissive_mode)
+//            model->drawWithLight(_softrenderer,lights, color_mode, emissive_mode);
+//        else
+//            model->draw(_softrenderer, wireframemode, clipping_mode, normals_mode);
 
-        if(box_mode){
-             mat4 m = mat4( &model->TansformBoundingBox()[0][0] ); //to be changed
-             _softrenderer->SetObjectMatrices(m, mat3(1.0));
-             boundingBox.draw(_softrenderer, true,false);
-        }
-    }
+//        if(box_mode){
+//             mat4 m = mat4( &model->TansformBoundingBox()[0][0] ); //to be changed
+//             _softrenderer->SetObjectMatrices(m, mat3(1.0));
+//             boundingBox.draw(_softrenderer, true,false);
+//        }
+//    }
 }
 
 void Scene::drawDemo()
@@ -754,21 +754,21 @@ void Scene::processEvent(Event& event){
     }
     if(event.getType() == EventType::TranslateModel){
         needs_update = true;
-        if(event.getData().direction == MoveDirection::RIGHT)  { moveModel(activeModel, vec3(1,0,0)); return; }
-        if(event.getData().direction == MoveDirection::LEFT) {  moveModel(activeModel, vec3(-1,0,0)); return; }
-        if(event.getData().direction == MoveDirection::UP)  { moveModel(activeModel, vec3(0,1,0)); return; }
-        if(event.getData().direction == MoveDirection::DOWN) {  moveModel(activeModel, vec3(0,-1,0)); return; }
-        if(event.getData().direction == MoveDirection::FORWARD)  { moveModel(activeModel, vec3(0,0,1)); return; }
-        if(event.getData().direction == MoveDirection::BACKWARD)  { moveModel(activeModel, vec3(0,0,-1)); return; }
+//        if(event.getData().direction == MoveDirection::RIGHT)  { moveModel(activeModel, vec3(1,0,0)); return; }
+//        if(event.getData().direction == MoveDirection::LEFT) {  moveModel(activeModel, vec3(-1,0,0)); return; }
+//        if(event.getData().direction == MoveDirection::UP)  { moveModel(activeModel, vec3(0,1,0)); return; }
+//        if(event.getData().direction == MoveDirection::DOWN) {  moveModel(activeModel, vec3(0,-1,0)); return; }
+//        if(event.getData().direction == MoveDirection::FORWARD)  { moveModel(activeModel, vec3(0,0,1)); return; }
+//        if(event.getData().direction == MoveDirection::BACKWARD)  { moveModel(activeModel, vec3(0,0,-1)); return; }
     }
 
-    if(event.getType() == EventType::RotateModel){
-        MeshModel* model = getActiveModel();
-        needs_update = true;
-        if(event.getData().rotateDiraction == RotateDirection::ROLL)  { model->moveLocal(RotateX(event.getData().amount)); return; }
-        if(event.getData().rotateDiraction == RotateDirection::YAW) { model->moveLocal(RotateY(event.getData().amount)); return; }
-        if(event.getData().rotateDiraction == RotateDirection::PITCH)  { model->moveLocal(RotateZ(event.getData().amount)); return; }
-    }
+//    if(event.getType() == EventType::RotateModel){
+//        MeshModel* model = getActiveModel();
+//        needs_update = true;
+//        if(event.getData().rotateDiraction == RotateDirection::ROLL)  { model->moveLocal(RotateX(event.getData().amount)); return; }
+//        if(event.getData().rotateDiraction == RotateDirection::YAW) { model->moveLocal(RotateY(event.getData().amount)); return; }
+//        if(event.getData().rotateDiraction == RotateDirection::PITCH)  { model->moveLocal(RotateZ(event.getData().amount)); return; }
+//    }
     if(event.getType() == EventType::SceneUpdate){
         needs_update = true;
         return;
@@ -832,30 +832,30 @@ void Scene::ProcessKeys(kipod::KeyPressedEvent &event)
         else if(key == Key::X)
             Toggle("Clipping Mode").Switch();
         //TRANSFORM CONTROL:
-        else if(key == Key::Left){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({-stepsize,0,0});
-                }
-        else if(key == Key::Right){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({+stepsize,0,0});
-                }
-        else if(key == Key::Up){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,stepsize,0});
-                }
-        else if(key == Key::Down){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,-stepsize,0});
-                }
-        else if(key == Key::PageUp){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,0, stepsize});
-                }
-        else if(key == Key::PageDown){
-                if(getActiveModel())
-                    getActiveModel()->world_->Translate({0,0,-stepsize});
-                }
+//        else if(key == Key::Left){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({-stepsize,0,0});
+//                }
+//        else if(key == Key::Right){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({+stepsize,0,0});
+//                }
+//        else if(key == Key::Up){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({0,stepsize,0});
+//                }
+//        else if(key == Key::Down){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({0,-stepsize,0});
+//                }
+//        else if(key == Key::PageUp){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({0,0, stepsize});
+//                }
+//        else if(key == Key::PageDown){
+//                if(getActiveModel())
+//                    getActiveModel()->world_->Translate({0,0,-stepsize});
+//                }
         //CAMERA CONTROL:
         else if(key == Key::A){
                     getActiveCamera()->Move({-stepsize,0,0});

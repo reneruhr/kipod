@@ -6,8 +6,8 @@
 #include <string>
 #include "glrenderer.h"
 #include "softrenderer.h"
-#include "meshmodel.h"
-#include "primmeshmodel.h"
+#include "modules/meshmodels/meshmodel.h"
+#include "modules/meshmodels/meshmodel_primitive.h"
 #include "camera.h"
 #include "light.h"
 #include "eventmanager.h"
@@ -53,7 +53,7 @@ class Scene : public Listener, public kipod::Listener,
 
     vector<bool> camerasMode;
 
-    PrimMeshModel boundingBox;
+    kipod::MeshModels::PrimMeshModel boundingBox;
 
     void drawBoundingBox();
 
@@ -65,13 +65,13 @@ public:
     Scene(GLRenderer *renderer=nullptr, SoftRenderer *softrenderer=nullptr,
           unsigned int width=800, unsigned int height=600)
         : RenderScene(width, height), _glrenderer(renderer), _softrenderer(softrenderer),
-          boundingBox(Cube)
+          boundingBox(kipod::MeshModels::Cube)
     {
 
     }
 
     void LoadOBJModel(string fileName, bool textures = false);
-    void LoadPrimitive(Primitive primitive, int numberPolygons=0);
+    void LoadPrimitive(kipod::MeshModels::Primitive primitive, int numberPolygons=0);
 
     virtual void Setup() override;
     virtual void Draw() override {} ;

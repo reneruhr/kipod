@@ -93,20 +93,19 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *verti
     Unbind();
 }
 
-void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* triangles, const std::vector<unsigned int>* indices)
+void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* triangles)
 {
     LOG_ENGINE("Call: Textured Triangles Setup");
+    unsigned long totalbuffersize = triangles->size()*sizeof(GLTriangle);
 
-    ebo_ = std::make_shared<kipod::ElementsBuffer>((void*)indices->data(), indices->size(), indices->size()*sizeof(unsigned int));
-    ebo_->Set();
+    AddBufferData(GL_TRIANGLES);
 
     vao_ = std::make_shared<kipod::VertexAttributeObject>();
     vao_->Set();
 
-    unsigned int buffersize = triangles->size()*sizeof(GLTriangle);
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, buffersize);
-    vbo_->Add(0, buffersize, (void*)triangles->data());
-
+    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, totalbuffersize);
+    vbo_->count_ = triangles->size()*3;
+    vbo_->Add(0, totalbuffersize, (void*)triangles->data());
     vbo_->Bind();
 
     vao_->Add({0,3,sizeof(GLVertex),0});

@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include "core.h"
-#include "scene.h"
-#include "meshmodel.h"
+//#include "scene.h"
+#include "modules/meshmodels/meshmodel.h"
 #include "glrenderer.h"
 #include "render/initshader.h"
 

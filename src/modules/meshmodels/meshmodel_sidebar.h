@@ -1,6 +1,8 @@
 #pragma once
 #include "../../kipod.h"
 
+
+namespace kipod::MeshModels{
 class MeshmodelSidebar : public kipod::Sidebar
 {
     friend class MeshModelModule;
@@ -32,3 +34,5 @@ protected:
 
 };
 
+
+}

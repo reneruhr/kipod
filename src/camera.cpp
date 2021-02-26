@@ -1,6 +1,6 @@
 #include "core.h"
 #include "camera.h"
-#include "meshmodel.h"
+#include "modules/meshmodels/meshmodel.h"
 
 using namespace std;
 

@@ -214,7 +214,7 @@ void GUI::drawYotamBirthday(Scene* scene){
         scene->LoadOBJModel(path);
 //        scene->initLastModel();
         scene->setActiveModel(scene->numberOfModels()-1);
-        scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
+        //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,1)  );
         scene->activeCamera =0;
         eventmanager->dispatch( Event(EventType::RotateModel, EventData(RotateDirection::YAW, 180.0)) );
     }
@@ -308,10 +308,10 @@ void GUI::drawModelControl(Scene* scene){
     }
     if(scene->numberOfModels() == 0) return;
     if(ImGui::TreeNode("Control Model")){
-        focusCamera(scene);
-        rotateModelLocalSpace();
-        translateModelWorldSpace(scene);
-        translateModelLocalSpace(scene);
+//        focusCamera(scene);
+//        rotateModelLocalSpace();
+//        translateModelWorldSpace(scene);
+//        translateModelLocalSpace(scene);
         ImGui::TreePop();
     }
 }
@@ -389,58 +389,58 @@ void GUI::softRenderScene(Scene* scene, kipod::Window* window){
 
 void GUI::addMaterials(Scene *scene)
 {
-    MeshModel* model = scene->getActiveModel();
-    static ImVec4 colorAmbient = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
-    static ImVec4 colorDiffuse = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
-    static ImVec4 colorSpecular = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
-    static ImVec4 colorEmission = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
-    static float slider_shininess = 1.0f;
-    ImGui::Text("Ambient Color");
-    ImGui::ColorEdit3("MyColor##1", (float*)&colorAmbient, 0);
-    ImGui::Text("Diffuse Color");
-    ImGui::ColorEdit3("MyColor##2", (float*)&colorDiffuse, 0);
-    ImGui::Text("Specular Color");
-    ImGui::ColorEdit3("MyColor##3", (float*)&colorSpecular, 0);
-    ImGui::Text("Emission Color");
-    ImGui::ColorEdit3("MyColor##4", (float*)&colorEmission, 0);
-    ImGui::SliderFloat("Shininess", &slider_shininess, 0.0f, 500.0f, "%.3f", ImGuiSliderFlags_None);
+//    MeshModel* model = scene->getActiveModel();
+//    static ImVec4 colorAmbient = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+//    static ImVec4 colorDiffuse = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+//    static ImVec4 colorSpecular = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+//    static ImVec4 colorEmission = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+//    static float slider_shininess = 1.0f;
+//    ImGui::Text("Ambient Color");
+//    ImGui::ColorEdit3("MyColor##1", (float*)&colorAmbient, 0);
+//    ImGui::Text("Diffuse Color");
+//    ImGui::ColorEdit3("MyColor##2", (float*)&colorDiffuse, 0);
+//    ImGui::Text("Specular Color");
+//    ImGui::ColorEdit3("MyColor##3", (float*)&colorSpecular, 0);
+//    ImGui::Text("Emission Color");
+//    ImGui::ColorEdit3("MyColor##4", (float*)&colorEmission, 0);
+//    ImGui::SliderFloat("Shininess", &slider_shininess, 0.0f, 500.0f, "%.3f", ImGuiSliderFlags_None);
 
-    if (ImGui::Button("Add Uniform Material")){
-        MaterialStruct material = {
-            vec4(colorAmbient.x,colorAmbient.y,colorAmbient.z,colorAmbient.w),
-            vec4(colorDiffuse.x,colorDiffuse.y,colorDiffuse.z,colorDiffuse.w),
-            vec4(colorSpecular.x,colorSpecular.y,colorSpecular.z,colorSpecular.w),
-            vec4(colorEmission.x,colorEmission.y,colorEmission.z,colorEmission.w),
-            float(slider_shininess)
-        };
-        model->setUniformMaterial(material);
-    }
+//    if (ImGui::Button("Add Uniform Material")){
+//        MaterialStruct material = {
+//            vec4(colorAmbient.x,colorAmbient.y,colorAmbient.z,colorAmbient.w),
+//            vec4(colorDiffuse.x,colorDiffuse.y,colorDiffuse.z,colorDiffuse.w),
+//            vec4(colorSpecular.x,colorSpecular.y,colorSpecular.z,colorSpecular.w),
+//            vec4(colorEmission.x,colorEmission.y,colorEmission.z,colorEmission.w),
+//            float(slider_shininess)
+//        };
+//        model->SetUniformMaterial(material);
+//    }
 }
 
 
 void GUI::showMaterials(Scene *scene)
 {
-    MeshModel* model = scene->getActiveModel();
-    if(!model->colors_vector.empty()){
-        static unsigned int selectedMaterial = 0;
-        for (unsigned int n = 0; n <  model->colors_vector.size(); n++)
-        {
-            char buf[32];
-            sprintf(buf, "Material %d", n);
-            if (ImGui::Selectable(buf, selectedMaterial == n)) selectedMaterial = n;
-        }
-        MaterialStruct material = model->colors_vector[selectedMaterial];
-        ImGui::Text("Ambient Color");
-        if(ImGui::ColorEdit3("MaterialControl##1", (float*)&material.ambient, 0)) scene->needs_update = true;
-        ImGui::Text("Diffuse Color");
-        if(ImGui::ColorEdit3("MaterialControl##2", (float*)&material.diffuse, 0)) scene->needs_update = true;
-        ImGui::Text("Specular Color");
-        if(ImGui::ColorEdit3("MaterialControl##3", (float*)&material.specular, 0)) scene->needs_update = true;
-        ImGui::Text("Emission Color");
-        if(ImGui::ColorEdit3("MaterialControl##4", (float*)&material.emission, 0)) scene->needs_update = true;
-        if(ImGui::SliderFloat("Shininess", &material.shininess, 0.0f, 500.0f, "%.3f", ImGuiSliderFlags_None)) scene->needs_update = true;
-        model->colors_vector[selectedMaterial] = material;
-    }
+//    MeshModel* model = scene->getActiveModel();
+//    if(!model->colors_vector.empty()){
+//        static unsigned int selectedMaterial = 0;
+//        for (unsigned int n = 0; n <  model->colors_vector.size(); n++)
+//        {
+//            char buf[32];
+//            sprintf(buf, "Material %d", n);
+//            if (ImGui::Selectable(buf, selectedMaterial == n)) selectedMaterial = n;
+//        }
+//        MaterialStruct material = model->colors_vector[selectedMaterial];
+//        ImGui::Text("Ambient Color");
+//        if(ImGui::ColorEdit3("MaterialControl##1", (float*)&material.ambient, 0)) scene->needs_update = true;
+//        ImGui::Text("Diffuse Color");
+//        if(ImGui::ColorEdit3("MaterialControl##2", (float*)&material.diffuse, 0)) scene->needs_update = true;
+//        ImGui::Text("Specular Color");
+//        if(ImGui::ColorEdit3("MaterialControl##3", (float*)&material.specular, 0)) scene->needs_update = true;
+//        ImGui::Text("Emission Color");
+//        if(ImGui::ColorEdit3("MaterialControl##4", (float*)&material.emission, 0)) scene->needs_update = true;
+//        if(ImGui::SliderFloat("Shininess", &material.shininess, 0.0f, 500.0f, "%.3f", ImGuiSliderFlags_None)) scene->needs_update = true;
+//        model->colors_vector[selectedMaterial] = material;
+//    }
 
 }
 
@@ -815,15 +815,15 @@ void GUI::LoadPrimitive(Scene* scene){
     if(primitiveChoice_current==2){
         ImGui::InputInt("input int", &numberPolygons);
     }
-    if(ImGui::Button("Add Primitive")){
-                            if(primitiveChoice_current==0)      scene->LoadPrimitive(Cube);
-                            else if(primitiveChoice_current==1) scene->LoadPrimitive(Tetrahedron);
-                            else if(primitiveChoice_current==2) scene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
-                            LOG_ENGINE("Loaded Primitive.");
-                            //scene->initLastModel();
-                            scene->setActiveModel(scene->numberOfModels()-1);
-                            //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
-                        }
+//    if(ImGui::Button("Add Primitive")){
+//                            if(primitiveChoice_current==0)      scene->LoadPrimitive(Cube);
+//                            else if(primitiveChoice_current==1) scene->LoadPrimitive(Tetrahedron);
+//                            else if(primitiveChoice_current==2) scene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
+//                            LOG_ENGINE("Loaded Primitive.");
+//                            //scene->initLastModel();
+//                            scene->setActiveModel(scene->numberOfModels()-1);
+//                            //scene->moveModel(scene->numberOfModels()-1, vec3(0,0,5)  );
+//                        }
 
 }
 
@@ -865,7 +865,7 @@ void GUI::loadOBJfile(Scene* scene){
 void GUI::focusCamera(Scene* scene){
     ImGui::Text("Focus Camera:");
     if(ImGui::Button("Focus Camera")){
-        scene->lookAtModel(scene->activeCamera, scene->activeModel);
+  //      scene->lookAtModel(scene->activeCamera, scene->activeModel);
     }
     scene->needs_update = true;
 }
@@ -895,112 +895,112 @@ void GUI::rotateModelLocalSpace(){
                                     Event(EventType::RotateModel, EventData(RotateDirection::YAW, 5.0)));
 }
 
-void GUI::translateModelWorldSpace(Scene* scene){
-    MeshModel* model = scene->getActiveModel();
-    static float stepsize = 1.0;
-    ImGui::Text("Translate in World Space");
-                        float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-                        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-                        static float slider_step_size = 1.0f;
-                        ImGui::SliderFloat("Step size", &slider_step_size, 0.1f, 100.0f, "%.3f", flags);
-                        stepsize = slider_step_size;
+//void GUI::translateModelWorldSpace(Scene* scene){
+//    MeshModel* model = scene->getActiveModel();
+//    static float stepsize = 1.0;
+//    ImGui::Text("Translate in World Space");
+//                        float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+//                        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+//                        static float slider_step_size = 1.0f;
+//                        ImGui::SliderFloat("Step size", &slider_step_size, 0.1f, 100.0f, "%.3f", flags);
+//                        stepsize = slider_step_size;
 
-                        ImGui::AlignTextToFramePadding();
-                         static int counter_x_translate,counter_y_translate,counter_z_translate = 0;
-                        ImGui::Text("X:");
-                        ImGui::SameLine();
-                        ImGui::PushButtonRepeat(true);
-                        if (ImGui::ArrowButton("##leftx_model_translate", ImGuiDir_Left)) {
-                            counter_x_translate--;
-                            model->moveWorld(Translate(-vec3(stepsize,0,0)));
-                        }
-                        ImGui::SameLine(0.0f, spacing);
-                        if (ImGui::ArrowButton("##rightx_model_translate", ImGuiDir_Right)) {
-                            counter_x_translate++;
-                            model->moveWorld(Translate(vec3(stepsize,0,0)));
-                        }
-                        ImGui::PopButtonRepeat();
-                        ImGui::SameLine();
-                        ImGui::Text("%d", counter_x_translate);
+//                        ImGui::AlignTextToFramePadding();
+//                         static int counter_x_translate,counter_y_translate,counter_z_translate = 0;
+//                        ImGui::Text("X:");
+//                        ImGui::SameLine();
+//                        ImGui::PushButtonRepeat(true);
+//                        if (ImGui::ArrowButton("##leftx_model_translate", ImGuiDir_Left)) {
+//                            counter_x_translate--;
+//                            model->moveWorld(Translate(-vec3(stepsize,0,0)));
+//                        }
+//                        ImGui::SameLine(0.0f, spacing);
+//                        if (ImGui::ArrowButton("##rightx_model_translate", ImGuiDir_Right)) {
+//                            counter_x_translate++;
+//                            model->moveWorld(Translate(vec3(stepsize,0,0)));
+//                        }
+//                        ImGui::PopButtonRepeat();
+//                        ImGui::SameLine();
+//                        ImGui::Text("%d", counter_x_translate);
 
-                        ImGui::SameLine();
-                        ImGui::Text("Y:");
-                        ImGui::SameLine();
-                        ImGui::PushButtonRepeat(true);
-                        if (ImGui::ArrowButton("##lefty_model_translate", ImGuiDir_Left)) {
-                            counter_y_translate--;
-                            model->moveWorld(Translate(vec3(0,-stepsize,0)));
-                        }
-                        ImGui::SameLine(0.0f, spacing);
-                        if (ImGui::ArrowButton("##righty_model_translate", ImGuiDir_Right)) {
-                            counter_y_translate++;
-                            model->moveWorld(Translate(vec3(0,stepsize,0)));
-                        }
-                        ImGui::PopButtonRepeat();
-                        ImGui::SameLine();
-                        ImGui::Text("%d", counter_y_translate);
+//                        ImGui::SameLine();
+//                        ImGui::Text("Y:");
+//                        ImGui::SameLine();
+//                        ImGui::PushButtonRepeat(true);
+//                        if (ImGui::ArrowButton("##lefty_model_translate", ImGuiDir_Left)) {
+//                            counter_y_translate--;
+//                            model->moveWorld(Translate(vec3(0,-stepsize,0)));
+//                        }
+//                        ImGui::SameLine(0.0f, spacing);
+//                        if (ImGui::ArrowButton("##righty_model_translate", ImGuiDir_Right)) {
+//                            counter_y_translate++;
+//                            model->moveWorld(Translate(vec3(0,stepsize,0)));
+//                        }
+//                        ImGui::PopButtonRepeat();
+//                        ImGui::SameLine();
+//                        ImGui::Text("%d", counter_y_translate);
 
-                        ImGui::SameLine();
-                        ImGui::Text("Z:");
-                        ImGui::SameLine();
-                        ImGui::PushButtonRepeat(true);
-                        if (ImGui::ArrowButton("##leftz_model_translate", ImGuiDir_Left)) {
-                            counter_z_translate--;
-                            model->moveWorld(Translate(vec3(0,0,-stepsize)));
-                        }
-                        ImGui::SameLine(0.0f, spacing);
-                        if (ImGui::ArrowButton("##rightz_model_translate", ImGuiDir_Right)) {
-                            counter_z_translate++;
-                            model->moveWorld(Translate(vec3(0,0,stepsize)));
-                        }
-                        ImGui::PopButtonRepeat();
-                        ImGui::SameLine();
-                        ImGui::Text("%d", counter_z_translate);
-}
+//                        ImGui::SameLine();
+//                        ImGui::Text("Z:");
+//                        ImGui::SameLine();
+//                        ImGui::PushButtonRepeat(true);
+//                        if (ImGui::ArrowButton("##leftz_model_translate", ImGuiDir_Left)) {
+//                            counter_z_translate--;
+//                            model->moveWorld(Translate(vec3(0,0,-stepsize)));
+//                        }
+//                        ImGui::SameLine(0.0f, spacing);
+//                        if (ImGui::ArrowButton("##rightz_model_translate", ImGuiDir_Right)) {
+//                            counter_z_translate++;
+//                            model->moveWorld(Translate(vec3(0,0,stepsize)));
+//                        }
+//                        ImGui::PopButtonRepeat();
+//                        ImGui::SameLine();
+//                        ImGui::Text("%d", counter_z_translate);
+//}
 
-void GUI::translateModelLocalSpace(Scene* scene){
-                         ImGui::Text("Scale in Local Space");
+//void GUI::translateModelLocalSpace(Scene* scene){
+//                         ImGui::Text("Scale in Local Space");
 
-                                            MeshModel* model = scene->getActiveModel();
+//                                            MeshModel* model = scene->getActiveModel();
 
-                                            float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+//                                            float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
-                                            const float f = 1.1;
+//                                            const float f = 1.1;
 
-                                            ImGui::Text("Uniform");
-                                            ImGui::SameLine();
-                                            static float counter_scale=1;
-                                            ImGui::PushButtonRepeat(true);
-                                            if (ImGui::ArrowButton("##left_model_scale", ImGuiDir_Left)) {
-                                                counter_scale*=1/f;
-                                                model->moveLocal(Scale(vec3(1/f)));
-                                            }
-                                            ImGui::SameLine(0.0f, spacing);
-                                            if (ImGui::ArrowButton("##right_model_scale", ImGuiDir_Right)) {
-                                                counter_scale*=f;
-                                                model->moveLocal(Scale(vec3(f)));
-                                            }
-                                            ImGui::PopButtonRepeat();
-                                            ImGui::SameLine();
-                                            ImGui::Text("%f", counter_scale);
+//                                            ImGui::Text("Uniform");
+//                                            ImGui::SameLine();
+//                                            static float counter_scale=1;
+//                                            ImGui::PushButtonRepeat(true);
+//                                            if (ImGui::ArrowButton("##left_model_scale", ImGuiDir_Left)) {
+//                                                counter_scale*=1/f;
+//                                                model->moveLocal(Scale(vec3(1/f)));
+//                                            }
+//                                            ImGui::SameLine(0.0f, spacing);
+//                                            if (ImGui::ArrowButton("##right_model_scale", ImGuiDir_Right)) {
+//                                                counter_scale*=f;
+//                                                model->moveLocal(Scale(vec3(f)));
+//                                            }
+//                                            ImGui::PopButtonRepeat();
+//                                            ImGui::SameLine();
+//                                            ImGui::Text("%f", counter_scale);
 
-                                            ImGui::Text("Z");
-                                            ImGui::SameLine();
-                                            static float counter_scale_z=1;
-                                            ImGui::PushButtonRepeat(true);
-                                            if (ImGui::ArrowButton("##left_model_scale_z", ImGuiDir_Left)) {
-                                                counter_scale_z*=1/f;
-                                                model->moveLocal(Scale(vec3(1,1,1/f)));
-                                            }
-                                            ImGui::SameLine(0.0f, spacing);
-                                            if (ImGui::ArrowButton("##right_model_scale_z", ImGuiDir_Right)) {
-                                                counter_scale_z*=f;
-                                                model->moveLocal(Scale(vec3(1,1,f)));
-                                            }
-                                            ImGui::PopButtonRepeat();
-                                            ImGui::SameLine();
-                                            ImGui::Text("%f", counter_scale_z);
-}
+//                                            ImGui::Text("Z");
+//                                            ImGui::SameLine();
+//                                            static float counter_scale_z=1;
+//                                            ImGui::PushButtonRepeat(true);
+//                                            if (ImGui::ArrowButton("##left_model_scale_z", ImGuiDir_Left)) {
+//                                                counter_scale_z*=1/f;
+//                                                model->moveLocal(Scale(vec3(1,1,1/f)));
+//                                            }
+//                                            ImGui::SameLine(0.0f, spacing);
+//                                            if (ImGui::ArrowButton("##right_model_scale_z", ImGuiDir_Right)) {
+//                                                counter_scale_z*=f;
+//                                                model->moveLocal(Scale(vec3(1,1,f)));
+//                                            }
+//                                            ImGui::PopButtonRepeat();
+//                                            ImGui::SameLine();
+//                                            ImGui::Text("%f", counter_scale_z);
+//}
 
 
 //void GUI::drawTextureControl(Scene *scene)
@@ -1044,22 +1044,22 @@ void GUI::drawNormals(Scene* scene){
                             }
                             ImGui::SameLine();
                             ImGui::Text("%i", scene->normals_mode);
-        ImGui::Text("Normal Length");
-                             static float normal_length=1;
-                            ImGui::PushButtonRepeat(true);
-                            if (ImGui::ArrowButton("##left_normal_length", ImGuiDir_Left)) {
-                                normal_length-=0.01;
-                                model->normal_length -=0.01;
-                            }
-                            ImGui::SameLine(0.0f, spacing);
-                            if (ImGui::ArrowButton("##right_normal_length", ImGuiDir_Right)) {
-                                normal_length+=0.01;
-                                model->normal_length +=0.01;
-                            }
-                            ImGui::PopButtonRepeat();
-                            ImGui::SameLine();
-                            ImGui::Text("%f", normal_length);
-    }
+//        ImGui::Text("Normal Length");
+//                             static float normal_length=1;
+//                            ImGui::PushButtonRepeat(true);
+//                            if (ImGui::ArrowButton("##left_normal_length", ImGuiDir_Left)) {
+//                                normal_length-=0.01;
+//                                model->normal_length -=0.01;
+//                            }
+//                            ImGui::SameLine(0.0f, spacing);
+//                            if (ImGui::ArrowButton("##right_normal_length", ImGuiDir_Right)) {
+//                                normal_length+=0.01;
+//                                model->normal_length +=0.01;
+//                            }
+//                            ImGui::PopButtonRepeat();
+//                            ImGui::SameLine();
+//                            ImGui::Text("%f", normal_length);
+  }
 }
 
 
@@ -1274,3 +1274,4 @@ void GUI::drawNormals(Scene* scene){
 //                        }
 //                        ImGui::TreePop();
 //                    }
+

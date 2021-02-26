@@ -1,7 +1,8 @@
-#ifndef PRIMMESHMODEL_H
-#define PRIMMESHMODEL_H
+#pragma once
 
 #include "meshmodel.h"
+
+namespace kipod::MeshModels{
 
 enum Primitive{
     Cube,
@@ -18,5 +19,4 @@ public:
     void LoadPrimitive(Primitive primitive, int n =0);
 };
 
-
-#endif // PRIMMESHMODEL_H
+}
