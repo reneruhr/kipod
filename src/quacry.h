@@ -8,7 +8,7 @@
 #include "guimathcontrol.h"
 
 #include "pointset.h"
-#include "render/render_shape.h"
+#include "modules/shapes/shape.h"
 
 class Scene;
 class PrimMeshModel;
@@ -57,7 +57,7 @@ class QuaCry : public PointSet,
                public WindowBox,
                public GUIModule,
                GUIMathControl,
-               public Shape
+               public kipod::Shapes::Shape
 {
     Scene* scene_;
     Camera* camera_;
@@ -68,7 +68,7 @@ class QuaCry : public PointSet,
 public:
     QuaCry(Scene* scene, mat4 basis,
            std::vector< float > window_size, std::vector< int > sample_size,
-           WindowType type = WindowType::Box, Shape shape = Shape(Square()));
+           WindowType type = WindowType::Box, kipod::Shapes::Shape shape = kipod::Shapes::Shape(kipod::Shapes::Square()));
     QuaCry(Scene* scene);
 
     virtual void Init() override;

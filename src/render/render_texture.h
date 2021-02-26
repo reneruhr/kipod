@@ -1,11 +1,11 @@
 #pragma once
 #include "../core.h"
 #include "render_object.h"
-#include "render_shape.h"
+#include "../modules/shapes/shape.h"
 
 namespace kipod{
 
-class TexturedSquare : public Shape{
+class TexturedSquare : public Shapes::Shape{
 public:
     TexturedSquare(Polygon polygon) : Shape(polygon){}
 };

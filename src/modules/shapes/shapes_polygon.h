@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../utils/mat.h"
-#include <vector>
+#include "../../core.h"
+
+namespace kipod::Shapes{
+
 
 class Polygon
 {
@@ -37,3 +39,5 @@ class Square : public Polygon
 public:
     Square(float s = 1);
 };
+
+}

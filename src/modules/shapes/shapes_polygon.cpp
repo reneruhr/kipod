@@ -1,4 +1,6 @@
-#include "polygon.h"
+#include "shapes_polygon.h"
+
+namespace kipod::Shapes{
 
 Octagon::Octagon(float s): Polygon(s)
 {
@@ -45,4 +47,6 @@ void Polygon::UpdatedTransformedVertices()
     transformed_vertices_ = {};
     for(auto& v : vertices_)
         transformed_vertices_.emplace_back(transform_*v);
+}
+
 }

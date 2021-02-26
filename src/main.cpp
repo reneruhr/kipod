@@ -13,8 +13,6 @@
 #include "quacry.h"
 #include "math/minkowski_embedding.h"
 
-#include "math/polygon.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -87,7 +85,7 @@ int my_main( int argc, char **argv )
                                 {-10,10,-10,10,-5,5,-5,5},
                                 {-20,20,-20,20,-10,10,-10,10},
                                 WindowType::Octagon,
-                                Shape( Octagon(sqrt(2)) ) );
+                                kipod::Shapes::Shape( kipod::Shapes::Octagon(sqrt(2)) ) );
     quacryOctagon->ScaleShape(1.0f/20.0f);
     quacryOctagon->Move({0.8f,0.8f});
    gui->AppendModule(quacryOctagon);

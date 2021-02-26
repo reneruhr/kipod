@@ -43,7 +43,7 @@ struct ModelData{
 
 struct QuasiCrystal{
     WindowType window;
-    Shape* shape;
+    kipod::Shapes::Shape* shape;
     QuasiCrystal(WindowType window = WindowType::Box): window(window){}
 };
 

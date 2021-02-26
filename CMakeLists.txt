@@ -62,10 +62,6 @@ add_executable(kipod
   src/math/minkowski_embedding.h
   src/math/minkowski_embedding.cpp
 
-
-  src/math/polygon.h
-  src/math/polygon.cpp
-
   src/pointset.h
   src/pointset.cpp
 
@@ -98,6 +94,20 @@ add_executable(kipod
   src/modules/meshmodels/meshmodel_boundingbox.cpp
   src/modules/meshmodels/meshmodel_parsing.h
   src/modules/meshmodels/meshmodel_parsing.cpp
+
+
+  src/modules/shapes/shapes_module.h
+  src/modules/shapes/shapes_module.cpp
+  src/modules/shapes/shape.h
+  src/modules/shapes/shape.cpp
+  src/modules/shapes/shapes_polygon.h
+  src/modules/shapes/shapes_polygon.cpp
+  src/modules/shapes/shapes_scene.h
+  src/modules/shapes/shapes_scene.cpp
+  src/modules/shapes/shapes_sidebar.h
+  src/modules/shapes/shapes_sidebar.cpp
+
+
 
   src/modules/softrenderer/softrenderscene.h
   src/modules/softrenderer/softrenderscene.cpp
@@ -189,8 +199,6 @@ add_executable(kipod
   src/render/render_window.h
   src/render/render_window.cpp
 
-  src/render/render_shape.h
-  src/render/render_shape.cpp
 
   src/render/render_framebuffer.h
   src/render/render_framebuffer.cpp

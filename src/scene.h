@@ -20,7 +20,7 @@
 #include "render/render_object.h"
 #include "render/render_scene.h"
 #include "render/render_material.h"
-#include "render/render_shape.h"
+#include "modules/shapes/shape.h"
 
 #include "engine/engine_gui.h"
 #include "engine/engine_events.h"
@@ -45,7 +45,7 @@ class Scene : public Listener, public kipod::Listener,
     vector<MeshModel*> models;
     vector<Light*> lights;
     vector<Camera*> cameras;
-    vector<Shape*> shapes_;
+    vector<kipod::Shapes::Shape*> shapes_;
     vector<PointSet*> point_sets_;
 
     GLRenderer *_glrenderer;
@@ -96,7 +96,7 @@ public:
 
     void AddPointSet(PointSet *point_set);
     bool HasPointSet(){ return !point_sets_.empty(); }
-    void AddShape(Shape *shape);
+    void AddShape(kipod::Shapes::Shape *shape);
 
 	void init();
 	void draw();
@@ -149,7 +149,7 @@ public:
     void SetUniformNormal(MeshModel *model, Camera *camera);
     void SetUniformTex(vector<Light *> &lights, Camera *camera, MeshModel *model);
     void SetUniformBox(MeshModel *model);
-    void SetShapeUniform(Shape *shape);
+    void SetShapeUniform(kipod::Shapes::Shape *shape);
 
     void SetUniformInternal(Camera *camera, QuaCry *quacry);
     void SetUniformPhysical(Camera *camera, QuaCry *quacry);

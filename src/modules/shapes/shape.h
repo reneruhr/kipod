@@ -1,10 +1,12 @@
 #pragma once
-#include "../core.h"
-#include "../math/polygon.h"
-#include "render_object.h"
+#include "../../core.h"
+#include "shapes_polygon.h"
+#include "../../render/render_object.h"
 
 class ShapeData;
 class MaterialStruct;
+
+namespace kipod::Shapes{
 
 class Shape : public Polygon, public kipod::RenderObject
 {
@@ -32,3 +34,5 @@ public:
     void SetUniformMaterial(MaterialStruct &material);
     void SetUniformMaterial();
 };
+
+}

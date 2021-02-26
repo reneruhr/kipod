@@ -5,20 +5,16 @@
 
 namespace kipod{
 
-ExampleAppConsole &Console::GetConsole()
+AppConsole &Console::GetConsole()
 {
-    static ExampleAppConsole console;
+    static AppConsole console;
     return console;
 }
 
-void Console::Draw()
+void Console::DrawAppConsole()
 {
-
-    //Gui::BeginWindow("Module Console");
-
     GetConsole().Draw("Module Console", (bool*)true);
-    //ConsoleContent();
-    //Gui::EndWindow();
 }
+
 
 }

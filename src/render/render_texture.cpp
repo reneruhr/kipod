@@ -120,7 +120,7 @@ void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)
 
 void kipod::Texture::SetupTextureToSquare()
 {
-    textured_square_ = std::unique_ptr<TexturedSquare>(new TexturedSquare(Square()));
+    textured_square_ = std::unique_ptr<TexturedSquare>(new TexturedSquare(Shapes::Square()));
     float ratio = image_->width_/image_->height_;
     float height = 300;
     textured_square_->ScaleShape(ratio*height, height);

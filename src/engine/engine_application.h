@@ -22,6 +22,7 @@ class Application
     std::shared_ptr<Window> window_;
     std::unique_ptr<Clock> clock_;
     std::unique_ptr<Menu> menu_;
+    std::unique_ptr<Console> console_ = std::make_unique<Console>();
 
     std::string active_module_;
 

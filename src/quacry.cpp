@@ -29,7 +29,7 @@ QuaCry::QuaCry(Scene* scene, mat4 basis,
 }
 
 
-QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathControl(), Shape(Square()), scene_(scene)
+QuaCry::QuaCry(Scene *scene) : PointSet(), WindowBox(), GUIModule(), GUIMathControl(), Shape(kipod::Shapes::Square()), scene_(scene)
 {
     Init();
 }

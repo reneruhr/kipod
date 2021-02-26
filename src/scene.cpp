@@ -120,10 +120,10 @@ void Scene::draw()
 
         glEnable(GL_DEPTH_TEST);
 
-        Shape* shape = (Shape*)(QuaCry*)point_set;
+        kipod::Shapes::Shape* shape = (kipod::Shapes::Shape*)(QuaCry*)point_set;
         shaders_["Shape"].Use();
         SetShapeUniform(shape);
-        shape->Shape::Draw();
+        shape->kipod::Shapes::Shape::Draw();
 
         shaders_["Quasi Internal"].Use();
         SetUniformInternal(cameras[activeCamera], (QuaCry*)point_set);
@@ -441,7 +441,7 @@ void Scene::SetUniformBox(MeshModel* model)
 //    shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
 }
 
-void Scene::SetShapeUniform(Shape* shape)
+void Scene::SetShapeUniform(kipod::Shapes::Shape* shape)
 {
     mat4 shape_matrix = shape->GetWorldTransform();
     auto transform = MakeGLM(shape_matrix);
@@ -601,7 +601,7 @@ void Scene::LoadPrimitive(kipod::MeshModels::Primitive primitive, int numberPoly
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void Scene::AddShape(Shape *shape)
+void Scene::AddShape(kipod::Shapes::Shape *shape)
 {
     shapes_.push_back(shape);
 }

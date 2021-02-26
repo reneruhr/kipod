@@ -1,5 +1,6 @@
-#include "render_shape.h"
-#include "opengl/opengl_layout.h"
+#include "shape.h"
+#include "../../render/opengl/opengl_layout.h"
+namespace kipod::Shapes{
 
 void Shape::MakeFan() // Makes a fan with origin vector for TRIANGLE_FAN at center_=0
 {
@@ -49,3 +50,4 @@ mat4 Shape::GetWorldTransform()
 
 
 
+}

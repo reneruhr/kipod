@@ -29,5 +29,8 @@ void kipod::Module::DrawSidebar()
 
 void kipod::Module::DrawConsole()
 {
-    console_->Draw();
+    if(console_)
+        console_->Draw();
+    else
+        Console::DrawAppConsole();
 }
