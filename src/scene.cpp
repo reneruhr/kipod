@@ -20,8 +20,6 @@ void Scene::Setup()
 
     name_ = "Quasicrystals";
 
-    _glrenderer->SetupCoordinateAxis();
-    _glrenderer->SetupGrid();
 
     Camera* cam = new Camera(45, float(width_)/height_, 0.1f, 200.0);
     cam->createFrustum(); // Needed for very first Camera
@@ -36,11 +34,11 @@ void Scene::Setup()
 
     SetupShaders();
 
-    std::string name = "Colored Triangles";
-    auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_["Colored Triangles"];
-    boundingBox.AddLayout(name,layout);
-    boundingBox.Init(false,false);
+//    std::string name = "Colored Triangles";
+//    auto layout = new kipod::GLRenderLayout;
+//    layout->sha_ = shaders_["Colored Triangles"];
+//    boundingBox.AddLayout(name,std::move(*layout));
+//    boundingBox.Init(false,false);
 //    {
 //        auto normal_layout = new kipod::GLRenderLayout(*layout);
 //        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);
@@ -189,10 +187,6 @@ void Scene::draw()
 		}
 	}
 
-    glEnable(GL_DEPTH_TEST);
-    _glrenderer->DrawCoordinateAxis(cameras[activeCamera]);
-    _glrenderer->DrawGrid(cameras[activeCamera]);
-    glDisable(GL_DEPTH_TEST);
 
 }
 
@@ -543,11 +537,11 @@ void Scene::LoadOBJModel(string fileName, bool textured)
     bool foundTexture;
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
                        : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
-    auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_[name];
-    LOG_ENGINE("Add Layout name {}", name);
-    model->AddLayout({name, layout});
-    model->Init(foundTexture);
+//    auto layout = new kipod::GLRenderLayout;
+//    layout->sha_ = &shaders_[name];
+//    LOG_ENGINE("Add Layout name {}", name);
+//    model->AddLayout(name, std::move(*layout));
+//    model->Init(foundTexture);
 
 //    if(!foundTexture){
 //        auto normal_layout = new kipod::GLRenderLayout(*layout);
@@ -566,12 +560,12 @@ void Scene::LoadPrimitive(Primitive primitive, int numberPolygons)
     model->setUniformMaterial();
     models.push_back(model);
 
-    //AddModel(model); Broke when changing render_scene
-    std::string name = "Colored Triangles";
-    auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_["Colored Triangles"];
-    model->AddLayout({name, layout});
-    model->Init(false);
+//    //AddModel(model); Broke when changing render_scene
+//    std::string name = "Colored Triangles";
+//    auto layout = new kipod::GLRenderLayout;
+//    layout->sha_ = &shaders_["Colored Triangles"];
+//    model->AddLayout(name, std::move(*layout));
+//    model->Init(false);
 //    {
 //        auto normal_layout = new kipod::GLRenderLayout(*layout);
 //        auto ebo = new kipod::ElementsBuffer(*normal_layout->ebo_);

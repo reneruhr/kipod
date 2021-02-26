@@ -9,10 +9,10 @@ class MeshModelOpenGLScene :  public kipod::Listener, public kipod::Controls, pu
 friend class MeshmodelSidebar;
 friend class MeshModelModule;
 
-        std::unordered_map<std::string, kipod::Shader> shaders_;
+        std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
 
 
-        kipod::GLRenderLayout&& CreateLayoutNormals(kipod::GLRenderLayout&);
+        kipod::GLRenderLayout&& CreateLayoutNormals(kipod::GLRenderLayout*);
 
         void BindMaterialUniforms(kipod::Shader& shader, const kipod::RenderMaterial &material);
         void BindLightUniforms(kipod::Shader& shader);

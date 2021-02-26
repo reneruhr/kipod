@@ -12,9 +12,9 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 
 void kipod::Input::MouseButton(int button, int action, int mods)
 {
-    if (action == GLFW_PRESS && !Events::BlockInput() )
+    if (action == GLFW_PRESS && !Events::BlockMouse() )
         Events::Add<MouseButtonPressEvent>({::MouseButton(button), Mod(mods)});
-    else if (action == GLFW_RELEASE && !Events::BlockInput() )
+    else if (action == GLFW_RELEASE && !Events::BlockMouse() )
         Events::Add<MouseButtonReleaseEvent>({::MouseButton(button), Mod(mods)});
 }
 

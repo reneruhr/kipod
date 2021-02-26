@@ -9,7 +9,7 @@ void PointSet::Init()
     std::string name = "PointSet";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupPointSet(&sample_);
-    AddLayout(name, layout);
+    AddLayout(name, std::move(*layout));
 
     lattice_data_ =  std::make_shared<LatticeData>();
     lattice_data_->size = size(sample_);

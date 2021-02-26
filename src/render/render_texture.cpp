@@ -4,7 +4,7 @@
 
 void kipod::Texture::LoadTexture(const char path[]){
 
-       image_= ImageLoader::LoadImage(path);
+       image_= std::make_unique<Image>(ImageLoader::LoadImage(path));
 
        glGenTextures(1, &id_);
        glBindTexture(GL_TEXTURE_2D, id_);
@@ -25,7 +25,7 @@ void kipod::Texture::LoadTexture(const char path[]){
            LOG("Failed to load texture");
        }
 
-       ImageLoader::FreeImage(image_);
+       ImageLoader::FreeImage(image_.get());
 }
 
 
@@ -69,7 +69,7 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
 }
 
 kipod::Texture::Texture(int w, int h){
-    image_ = new Image(w,h);
+    image_ = std::make_unique<Image>(Image(w,h));
 }
 
 
@@ -126,8 +126,7 @@ void kipod::Texture::SetupTextureToSquare()
     textured_square_->ScaleShape(ratio*height, height);
     textured_square_->UpdatedTransformedVertices();
     textured_square_->Init();
-    textured_square_->tex_ = this;
-    static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_ = new kipod::Shader("passthrough.vert.glsl", "passthrough.frag.glsl");
+    static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_ = std::make_shared<Shader>("passthrough.vert.glsl", "passthrough.frag.glsl");
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->AttachUniform<int>("tex");
 }
 

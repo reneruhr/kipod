@@ -72,17 +72,17 @@ void MeshModel::CreateTriangleVector()
         triangles_.emplace_back(
                     GLTriangle(GLVertex(
                                    vertices_vector[indices_vector[i]],
-                               normals_vector[nindices_vector[i]],
-                    texture_vector[tindices_vector[i]]),
-                GLVertex(
-                    vertices_vector[indices_vector[i+1]],
-                normals_vector[nindices_vector[i+1]],
-                texture_vector[tindices_vector[i+1]]),
-                GLVertex(
-                    vertices_vector[indices_vector[i+2]],
-                normals_vector[nindices_vector[i+2]],
-                texture_vector[tindices_vector[i+2]])
-                ));
+                                   normals_vector[nindices_vector[i]],
+                                   texture_vector[tindices_vector[i]]),
+                                GLVertex(
+                                    vertices_vector[indices_vector[i+1]],
+                                    normals_vector[nindices_vector[i+1]],
+                                    texture_vector[tindices_vector[i+1]]),
+                                GLVertex(
+                                    vertices_vector[indices_vector[i+2]],
+                                    normals_vector[nindices_vector[i+2]],
+                                    texture_vector[tindices_vector[i+2]])
+                                ));
     }
 }
 

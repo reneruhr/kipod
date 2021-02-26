@@ -28,8 +28,8 @@ void MeshModelOpenGLScene::Setup()
 
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_["Colored Triangles"];
-    boundingBox.AddLayout(name,layout);
+    layout->sha_ = shaders_["Colored Triangles"];
+    boundingBox.AddLayout(name,std::move(*layout));
     boundingBox.Init(false,false);
 
 //    boundingBox.AddLayout_TEMP(
@@ -81,15 +81,15 @@ void MeshModelOpenGLScene::Draw()
         glEnable(GL_DEPTH_TEST);
 
         if( Toggle("Textures") && model->HasLayout("Textured Triangles") ){
-           shaders_["Textured Triangles"].Use();
+           shaders_["Textured Triangles"]->Use();
            SetUniformTex(GetActiveCamera(), model.get());
            model->RenderObject::Draw("Textured Triangles");
-           BindLightUniforms(shaders_["Textured Triangles"]);
+           BindLightUniforms(*shaders_["Textured Triangles"]);
         }
         else if((Toggle("Colors") || Toggle("Emissive") )&& model->HasLayout("Colored Triangles")  ){
-            shaders_["Colored Triangles"].Use();
+            shaders_["Colored Triangles"]->Use();
             SetUniform(GetActiveCamera(), model.get());
-            BindLightUniforms(shaders_["Colored Triangles"]);
+            BindLightUniforms(*shaders_["Colored Triangles"]);
             model->RenderObject::Draw("Colored Triangles");
         }
 
@@ -98,7 +98,7 @@ void MeshModelOpenGLScene::Draw()
         if(Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         if(Toggle("Normals") && model->HasLayout("Normals Triangles") ){
-            shaders_["Normals Triangles"].Use();
+            shaders_["Normals Triangles"]->Use();
             SetUniformNormal(static_cast<MeshModel*>(model.get()), GetActiveCamera());
             model->RenderObject::Draw("Normals Triangles");
         }
@@ -113,27 +113,29 @@ void MeshModelOpenGLScene::Draw()
     }
 
 //    if(Toggle("Camera Mode")){
-//        shaders_["Basic"].Use();
+//        shaders_["Basic"]->Use();
 //        for(auto cam : cameras){
 //            glm::mat4 pv = cam->projection_view_matrix_;
 //            auto mvp = pv * glm::mat4(Translate(cam->getEye()));
-//            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
+//            shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
 //            cam->draw();
 //        }
 //    }
 //    if(Toggle("Camera Frustum Mode")){
-//        shaders_["Basic"].Use();
+//        shaders_["Basic"]->Use();
 //        for(auto cam : cameras){
 //            glm::mat4 pv = cam->projection_view_matrix_;
 //            glm::mat4 v = cam->view_matrix_;
 //            glm::mat4 p = cam->projection_matrix_;
 //            auto mvp = pv * glm::inverse(v) * glm::inverse(p);
-//            shaders_["Basic"].SetUniform<glm::mat4>("mvp", mvp);
+//            shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
 //            cam->drawFrustum();
 //        }
 //    }
 
     kipod::RenderManager::Bind(0);
+
+    framebuffer_->tex_->Draw();
 }
 
 
@@ -154,61 +156,61 @@ void MeshModelOpenGLScene::SetupShaders(){
 
 void MeshModelOpenGLScene::SetupShaderTexturedTriangles()
 {
-    shaders_.insert({"Textured Triangles", kipod::Shader("textures.vert.glsl", "textures.frag.glsl")});
+    shaders_.insert({"Textured Triangles", std::make_shared<kipod::Shader>("textures.vert.glsl", "textures.frag.glsl")});
 
-    shaders_["Textured Triangles"].AttachUniform<float>("tex");
+    shaders_["Textured Triangles"]->AttachUniform<float>("tex");
 
         LOG_ENGINE("Attaching Uniforms to Texture Shader");
-        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("v");
-        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("mv");
-        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("mv_normal");
-        shaders_["Textured Triangles"].AttachUniform<glm::mat4>("projection");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("v");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("mv");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("mv_normal");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("projection");
 
-        AttachMaterialToShader(shaders_["Textured Triangles"]);
+        AttachMaterialToShader(*shaders_["Textured Triangles"]);
 
-        shaders_["Textured Triangles"].AttachUniform<glm::vec4>("cameraLocation");
+        shaders_["Textured Triangles"]->AttachUniform<glm::vec4>("cameraLocation");
 
         for(int i = 0; i<3; ++i){
-            AttachLightToShader(shaders_["Textured Triangles"], i);
+            AttachLightToShader(*shaders_["Textured Triangles"], i);
         }
 }
 
 void MeshModelOpenGLScene::SetupShaderColoredTriangles()
 {
-    shaders_.insert({"Colored Triangles", kipod::Shader("lights.vert.glsl",   "lights.frag.glsl")});
+    shaders_.insert({"Colored Triangles", std::make_shared<kipod::Shader>("lights.vert.glsl",   "lights.frag.glsl")});
 
-    shaders_["Colored Triangles"].AttachUniform<float>("tex");
+    shaders_["Colored Triangles"]->AttachUniform<float>("tex");
 
         LOG_ENGINE("Attaching Uniforms to Shader Colored Triangles");
-        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("v");
-        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("mv");
-        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("mv_normal");
-        shaders_["Colored Triangles"].AttachUniform<glm::mat4>("projection");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("v");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv_normal");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("projection");
 
-        AttachMaterialToShader(shaders_["Colored Triangles"]);
+        AttachMaterialToShader(*shaders_["Colored Triangles"]);
 
-        shaders_["Colored Triangles"].AttachUniform<glm::vec4>("cameraLocation");
+        shaders_["Colored Triangles"]->AttachUniform<glm::vec4>("cameraLocation");
 
         for(int i = 0; i<3; ++i){
-            AttachLightToShader(shaders_["Colored Triangles"], i);
+            AttachLightToShader(*shaders_["Colored Triangles"], i);
         }
-        shaders_["Colored Triangles"].AttachUniform<int>("EmissiveOn");
+        shaders_["Colored Triangles"]->AttachUniform<int>("EmissiveOn");
 }
 
 void MeshModelOpenGLScene::SetupShaderNormals()
 {
-    shaders_.insert({"Normals Triangles", kipod::Shader("normals.vert.glsl", "normals.frag.glsl", "normals.geom.glsl")});
+    shaders_.insert({"Normals Triangles", std::make_shared<kipod::Shader>("normals.vert.glsl", "normals.frag.glsl", "normals.geom.glsl")});
     auto shader = shaders_["Normals Triangles"];
-    shader.AttachUniform<float>("normal_length");
-    shader.AttachUniform<glm::mat4>("mv");
-    shader.AttachUniform<glm::mat4>("mv_normal");
-    shader.AttachUniform<glm::mat4>("projection");
+    shader->AttachUniform<float>("normal_length");
+    shader->AttachUniform<glm::mat4>("mv");
+    shader->AttachUniform<glm::mat4>("mv_normal");
+    shader->AttachUniform<glm::mat4>("projection");
 }
 
 void MeshModelOpenGLScene::SetupShaderBasic()
 {
-    shaders_.insert({"Basic", kipod::Shader("basic.vert.glsl",   "basic.frag.glsl")});
-    shaders_["Basic"].AttachUniform<glm::mat4>("mvp");
+    shaders_.insert({"Basic", std::make_shared<kipod::Shader>("basic.vert.glsl",   "basic.frag.glsl")});
+    shaders_["Basic"]->AttachUniform<glm::mat4>("mvp");
 }
 
 
@@ -221,20 +223,20 @@ void MeshModelOpenGLScene::SetupShaderBasic()
 void MeshModelOpenGLScene::SetUniform(kipod::RenderCamera* camera, kipod::RenderObject* model)
 {
     auto shader = shaders_["Colored Triangles"];
-    BindMatrixUniforms(shader, *model, *camera);
-    BindMaterialUniforms(shader, *(model->mat_));
+    BindMatrixUniforms(*shader, *model, *camera);
+    BindMaterialUniforms(*shader, *(model->mat_));
 }
 
 void MeshModelOpenGLScene::SetUniformNormal(MeshModel* model, kipod::RenderCamera* camera)
 {
-    kipod::Shader* shader = &shaders_["Normals Triangles"];
+    auto shader = shaders_["Normals Triangles"];
     BindMatrixUniforms(*shader, *model, *camera);
     BindNormalUniforms(*shader, model->normal_length);
 }
 
 void MeshModelOpenGLScene::SetUniformTex(kipod::RenderCamera* camera, kipod::RenderObject* model)
 {
-   kipod::Shader* shader = &shaders_["Textured Triangles"];
+   auto shader = shaders_["Textured Triangles"];
    BindTextureUniforms(*shader, model->tex_.get());
    BindMatrixUniforms(*shader, *model, *camera);
    BindMaterialUniforms(*shader, *(model->mat_));
@@ -247,8 +249,8 @@ void MeshModelOpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* 
     glm::mat4 v = camera->view_matrix_;
     glm::mat4 mv = v * box;
 
-    shaders_["Colored Triangles"].SetUniform<glm::mat4>("mv", mv);
-    shaders_["Colored Triangles"].SetUniform<glm::mat4>("projection", p);
+    shaders_["Colored Triangles"]->SetUniform<glm::mat4>("mv", mv);
+    shaders_["Colored Triangles"]->SetUniform<glm::mat4>("projection", p);
 }
 
 
@@ -263,16 +265,16 @@ void MeshModelOpenGLScene::BindLightUniforms(kipod::Shader& shader)
     for(int i = 0; i<3; ++i){
             SetLightToShader(shader, i, lights_[i].get());
     }
-    shaders_["Colored Triangles"].SetUniform<int>("EmissiveOn", Toggle("Emissive") );
+    shaders_["Colored Triangles"]->SetUniform<int>("EmissiveOn", Toggle("Emissive") );
 }
 
-kipod::GLRenderLayout&& MeshModelOpenGLScene::CreateLayoutNormals(kipod::GLRenderLayout& layout)
+kipod::GLRenderLayout&& MeshModelOpenGLScene::CreateLayoutNormals(kipod::GLRenderLayout* layout)
 {
-    auto normal_layout = new kipod::GLRenderLayout(layout);
+    auto normal_layout = new kipod::GLRenderLayout(*layout);
     auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
     ebo->primitive_ = GL_POINTS;
     normal_layout->ebo_ = ebo;
-    normal_layout->sha_ = &shaders_["Normals Triangles"];
+    normal_layout->sha_ = shaders_["Normals Triangles"];
     return std::move(*normal_layout);
 }
 
@@ -350,18 +352,15 @@ void MeshModelOpenGLScene::LoadOBJModel(string fileName, bool textured)
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
                        : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
     auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_[name];
-    LOG_ENGINE("Add Layout name {}", name);
-    model->AddLayout({name, layout});
+    layout->sha_ = shaders_[name];
+    model->AddLayout(name, std::move(*layout));
     model->Init(foundTexture);
 
     if(!foundTexture){
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        model->AddLayout({"Normals Triangles", normal_layout});
+        model->AddLayout("Normals Triangles",
+                         CreateLayoutNormals(
+                             static_cast<kipod::GLRenderLayout*>(model->Layout(name))
+                             ));
     }
 
     AddModel(std::move(*model));
@@ -375,17 +374,14 @@ void MeshModelOpenGLScene::LoadPrimitive(Primitive primitive, int numberPolygons
 
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
-    layout->sha_ = &shaders_["Colored Triangles"];
-    model->AddLayout({name, layout});
+    layout->sha_ = shaders_["Colored Triangles"];
+    model->AddLayout(name, std::move(*layout));
+
     model->Init(false);
-    {
-        auto normal_layout = new kipod::GLRenderLayout(*layout);
-        auto ebo = std::make_shared<kipod::ElementsBuffer>(*normal_layout->ebo_);
-        ebo->primitive_ = GL_POINTS;
-        normal_layout->ebo_ = ebo;
-        normal_layout->sha_ = &shaders_["Normals Triangles"];
-        model->AddLayout({"Normals Triangles", normal_layout});
-    }
+    model->AddLayout("Normals Triangles",
+                     CreateLayoutNormals(
+                         static_cast<kipod::GLRenderLayout*>(model->Layout(name))
+                         ));
 
     AddModel(std::move(*model));
 }
@@ -549,9 +545,9 @@ void MeshModelOpenGLScene::SetupCoordinateAxis()
     std::string name = "Coordinate Axis";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupLines(&vertices, &colors);
-    layout->sha_ = new kipod::Shader("lines.vert.glsl", "lines.frag.glsl");
+    layout->sha_ = std::make_shared<kipod::Shader>("lines.vert.glsl", "lines.frag.glsl");
     layout->sha_->AttachUniform<glm::mat4>("mvp");
-    coordinate_axis_->AddLayout(name, layout);
+    coordinate_axis_->AddLayout(name, std::move(*layout));
 }
 
 void MeshModelOpenGLScene::DrawCoordinateAxis(kipod::RenderCamera* camera){
@@ -578,9 +574,9 @@ void MeshModelOpenGLScene::SetupGrid()
     std::string name = "Grid";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupGrid(&vertices);
-    layout->sha_ = new kipod::Shader("grid.vert.glsl", "grid.frag.glsl");
+    layout->sha_ = std::make_shared<kipod::Shader>("grid.vert.glsl", "grid.frag.glsl");
     layout->sha_->AttachUniform<glm::mat4>("mvp");
-    grid_->AddLayout(name, layout);
+    grid_->AddLayout(name, std::move(*layout));
 }
 
 void MeshModelOpenGLScene::DrawGrid(kipod::RenderCamera* camera){

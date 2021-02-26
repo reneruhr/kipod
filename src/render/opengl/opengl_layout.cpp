@@ -31,6 +31,11 @@ void kipod::GLRenderLayout::Setup()
     vao_->Unbind();
 }
 
+void kipod::GLRenderLayout::AddTo(const std::string& name, std::unordered_map<std::string, std::unique_ptr<kipod::RenderLayout> > &map)
+{
+    map.insert( { name, std::make_unique<kipod::GLRenderLayout>(std::move(*this)) } );
+}
+
 void kipod::GLRenderLayout::Unbind()
 {
     ebo_->Unbind();
@@ -115,33 +120,14 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
 void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
 {
     LOG_ENGINE("Call: Shape Setup");
+    SetupLayout(*vertices, GL_TRIANGLE_FAN);
 
-    auto indices_vector = std::vector<unsigned int>(std::size(*vertices));
-    std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
-
-    ebo_ = std::make_shared<kipod::ElementsBuffer>((void*)indices_vector.data(), indices_vector.size(), indices_vector.size()*sizeof(unsigned int));
-    ebo_->primitive_ = GL_TRIANGLE_FAN;
-    ebo_->Set();
-
-    vao_ = std::make_shared<kipod::VertexAttributeObject>();
-    vao_->Set();
-
-    unsigned int buffersize = vertices->size()*sizeof(vec2);
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, buffersize);
-    vbo_->Add(0, buffersize, (void*)vertices->data());
-    vbo_->Bind();
-
-    vao_->Add({0,2,sizeof(vec2),0});
-    vao_->SetAttributes();
-
-    Unbind();
 }
 
 void kipod::GLRenderLayout::SetupPointSet(const std::vector<vec4> *vertices)
 {
     LOG_ENGINE("Call: PointSet Setup");
     SetupLayout(*vertices, GL_POINTS);
-
 }
 
 void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors)

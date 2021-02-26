@@ -52,7 +52,7 @@ void kipod::RenderObject::Setup(std::string layout)
 
 kipod::RenderLayout *kipod::RenderObject::Layout(std::string layout)
 {
-    return render_layouts_[layout];
+    return render_layouts_[layout].get();
 }
 
 kipod::RenderLayout *kipod::RenderObject::Layout()
@@ -61,24 +61,14 @@ kipod::RenderLayout *kipod::RenderObject::Layout()
     else return nullptr;
 }
 
-void kipod::RenderObject::AddLayout(std::pair<std::string, kipod::RenderLayout *> named_layout)
+void kipod::RenderObject::AddLayout(const std::string& name, kipod::RenderLayout&& layout)
 {
-    render_layouts_.insert(named_layout);
-    if(lay_==nullptr) lay_ = named_layout.second;
+//    render_layouts_.insert( { name, std::make_unique<decltype(layout)>(std::move(layout)) } );
+    layout.AddTo(name, render_layouts_);
+    if(lay_==nullptr) lay_ = render_layouts_[name].get();
 }
 
-void kipod::RenderObject::AddLayout_TEMP(std::pair<std::string, std::unique_ptr<kipod::RenderLayout> >&& named_layout)
-{
-    render_layouts_TEMP.insert(std::forward<decltype(named_layout)>(named_layout));
-}
-
-void kipod::RenderObject::AddLayout(std::string name, kipod::RenderLayout *layout)
-{
-    render_layouts_.insert({name,layout});
-    if(lay_==nullptr) lay_ = layout;
-}
-
-bool kipod::RenderObject::HasLayout(std::string name)
+bool kipod::RenderObject::HasLayout(const std::string& name)
 {
     return render_layouts_.find(name)!=end(render_layouts_);
 }

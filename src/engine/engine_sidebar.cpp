@@ -13,8 +13,10 @@ void Sidebar::Draw()
 
     Gui::BeginWindow("Module Sidebar");
 
-    if(ImGui::IsWindowFocused() || ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup)) kipod::Events::BlockInput(true);
-    else kipod::Events::BlockInput(false);
+    if(ImGui::IsWindowFocused() ||
+       ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup))
+       kipod::Events::BlockMouse(true);
+    else kipod::Events::BlockMouse(false);
 
     SideBarContent();
 
