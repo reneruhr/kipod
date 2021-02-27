@@ -11,9 +11,8 @@ void kipod::Shapes::ShapesSidebar::SideBarContent()
 void kipod::Shapes::ShapesSidebar::AddShape()
 {
     auto scene = std::static_pointer_cast<ShapesScene>(scene_);
-    const char* primitiveChoice[] = { "Square", "Octagon"};
+    const char* primitiveChoice[] = { "Square", "Octagon"}; // , "Infinite Mirror"
     static int primitiveChoice_current = 0;
-    //static int numberPolygons = 3;
 
     ImGui::PushItemWidth(70);
     ImGui::Combo("##Type", &primitiveChoice_current, primitiveChoice, IM_ARRAYSIZE(primitiveChoice));
@@ -23,18 +22,11 @@ void kipod::Shapes::ShapesSidebar::AddShape()
     if(ImGui::Button("Add")){
                             if(primitiveChoice_current==0)      scene->AddShape(Shape(Square()));
                             else if(primitiveChoice_current==1) scene->AddShape(Shape(Octagon()));
-                            //else if(primitiveChoice_current==2) scene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
+                            //else if(primitiveChoice_current==2)  scene->mirror_ = scene->framebuffer_->tex_->Square();
                             LOG_ENGINE("Loaded Shape.");
                             LOG_CONSOLE("Loaded Shape.");
-                            scene->ActiveShape()->depth_ = UniformDistribution::Pick(-10.f,0.f);
-                            scene->ActiveShape()->mat_->emission_ = RandomColor::Pick();
                         }
 
-//    if(primitiveChoice_current==2){
-//        ImGui::PushItemWidth(70);
-//        ImGui::InputInt("# Subdivisions", &numberPolygons);
-//        ImGui::PopItemWidth();
-//    }
     ImGui::PopID();
     ImGui::Separator();
 }

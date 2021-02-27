@@ -32,13 +32,18 @@ void kipod::Shapes::ShapesScene::Draw()
         SetupUniforms(shape.get());
         shape->Draw();
     }
+
     glDisable(GL_DEPTH_TEST);
     kipod::RenderManager::Bind(0);
+    //if(mirror_) mirror_->Draw();
+
 }
 
 void kipod::Shapes::ShapesScene::AddShape(Shape&& shape)
 {
     shape.Init();
+    shape.depth_ = UniformDistribution::Pick(-10.f,0.f);
+    shape.mat_->emission_ = RandomColor::Pick();
     active_shape_ = shapes_.emplace_back(std::make_unique<Shape>(std::forward<Shape>(shape))).get();
     shapes_.sort(shape_less_const_);
 }

@@ -126,22 +126,28 @@ void kipod::Texture::SetupTextureToSquare()
     textured_square_->ScaleShape(ratio*height, height);
     textured_square_->UpdatedTransformedVertices();
     textured_square_->Init();
+    textured_square_->texture_ = this;
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_ = std::make_shared<Shader>("passthrough.vert.glsl", "passthrough.frag.glsl");
     static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->AttachUniform<int>("tex");
 }
 
 void kipod::Texture::Draw()
 {
-    static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->Use();
-    glActiveTexture(GL_TEXTURE0);
-    Bind();
-    static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->SetUniform<int>(name_.c_str(), 0);
     textured_square_->Draw();
-    static_cast<GLRenderLayout*>(textured_square_->Layout())->sha_->Unuse();
 }
 
 void kipod::Texture::Resize(int w,int h)
 {
     image_->width_ = w;
     image_->height_ = h;
+}
+
+void kipod::TexturedSquare::Draw()
+{
+    static_cast<GLRenderLayout*>(Layout())->sha_->Use();
+    glActiveTexture(GL_TEXTURE0);
+    texture_->Bind();
+    static_cast<GLRenderLayout*>(Layout())->sha_->SetUniform<int>(name_.c_str(), 0);
+    Shape::Draw();
+    static_cast<GLRenderLayout*>(Layout())->sha_->Unuse();
 }

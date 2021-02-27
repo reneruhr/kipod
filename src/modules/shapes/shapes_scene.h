@@ -44,6 +44,7 @@ protected:
 
 
         ShapesContainer shapes_;
+        TexturedSquare* mirror_=nullptr;
 
 
         void AddShape(Shape&&);

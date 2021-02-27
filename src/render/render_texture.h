@@ -8,6 +8,8 @@ namespace kipod{
 class TexturedSquare : public Shapes::Shape{
 public:
     TexturedSquare(Polygon polygon) : Shape(polygon){}
+    virtual void Draw() override;
+    Texture* texture_ = nullptr;
 };
 
 class Texture
@@ -26,10 +28,12 @@ public:
     unsigned int depths_id_ = 0;
     std::string name_ ="tex";
 
+
     void Bind() const;
     void LoadTexture(const char path[]);
     void RenderToTexture(GLuint& frame_buffer);
     void RenderToTexture2(GLuint &frame_buffer);
+    TexturedSquare* Square(){ return textured_square_.get(); }
 
     void SetupTextureToSquare();
     void Draw();
