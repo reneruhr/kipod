@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/key_table.h"
 #include "utils/image_loader.h"
+#include "utils/random.h"
 
 
 

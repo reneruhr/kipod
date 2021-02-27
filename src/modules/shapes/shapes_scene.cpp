@@ -16,6 +16,7 @@ void kipod::Shapes::ShapesScene::Setup()
         Signup();
 
         AddShape(Shape( kipod::Shapes::Octagon(sqrt(2)) ));
+        ActiveShape()->mat_->emission_ = RandomColor::Pick();
 }
 
 void kipod::Shapes::ShapesScene::Draw()
@@ -38,24 +39,25 @@ void kipod::Shapes::ShapesScene::Draw()
 void kipod::Shapes::ShapesScene::AddShape(Shape&& shape)
 {
     shape.Init();
-    active_shape_=shapes_.insert(std::make_unique<Shape>(std::forward<Shape>(shape)));
+    active_shape_ = shapes_.emplace_back(std::make_unique<Shape>(std::forward<Shape>(shape))).get();
+    shapes_.sort(shape_less_const_);
 }
 
 void kipod::Shapes::ShapesScene::ActiveShape(
-        std::multiset<std::unique_ptr<Shape>>::iterator active)
+        Shape* active)
 {
     active_shape_= active;
 }
 
 kipod::Shapes::Shape *kipod::Shapes::ShapesScene::ActiveShape()
 {
-    return active_shape_->get();
+    return active_shape_;
 }
 
 
 bool kipod::Shapes::ShapesScene::HasShape()
 {
-    return active_shape_!=std::end(shapes_);
+    return active_shape_!=nullptr;
 }
 
 void kipod::Shapes::ShapesScene::ProcessKeys(kipod::KeyPressedEvent &event)
@@ -95,12 +97,14 @@ void kipod::Shapes::ShapesScene::SetupShaders()
     shaders_.insert({"Shape", std::make_shared<kipod::Shader>("shape.vert.glsl",   "shape.frag.glsl")});
     shaders_["Shape"]->AttachUniform<float>("depth");
     shaders_["Shape"]->AttachUniform<glm::mat4>("transform");
+    shaders_["Shape"]->AttachUniform<glm::vec4>("color");
 }
 
 void kipod::Shapes::ShapesScene::SetupUniforms(Shape *shape)
 {
     shaders_["Shape"]->SetUniform<glm::mat4>("transform", (glm::mat4)*GetActiveCamera()*shape->TransformWorld());
     shaders_["Shape"]->SetUniform<float>("depth", shape->depth_);
+    shaders_["Shape"]->SetUniform<glm::vec4>("color", shape->mat_->emission_);
 }
 
 void kipod::Shapes::ShapesScene::SetupGrid2d()
@@ -114,11 +118,7 @@ void kipod::Shapes::ShapesScene::SetupOptions()
 }
 
 kipod::Shapes::ShapesScene::ShapesScene(int width, int height):
-    RenderScene(width, height),
-    shapes_([](const std::unique_ptr<Shape>& x, const std::unique_ptr<Shape>& y)
-{
-    return x->depth_ < y->depth_;
-}){}
+    RenderScene(width, height), shapes_(){}
 
 void kipod::Shapes::ShapesScene::Signup()
 {

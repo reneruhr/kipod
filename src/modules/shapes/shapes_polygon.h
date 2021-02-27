@@ -15,6 +15,7 @@ protected:
 public:
     Polygon(){}
     Polygon(float s) : side_length_(s) {}
+    virtual ~Polygon() = default;
 
     mat2 transform_;
 

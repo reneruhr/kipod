@@ -44,6 +44,8 @@ add_executable(kipod
   src/utils/log.h
   src/utils/log.cpp
 
+  src/utils/random.h
+
 
   src/utils/image_loader.h
   src/utils/image_loader.cpp

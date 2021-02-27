@@ -10,7 +10,15 @@ class ShapesScene :  public kipod::Listener,
                      friend class ShapesSidebar;
                      friend class ShapesModule;
 
+
         std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
+
+
+        using ShapesContainer = std::list<std::unique_ptr<Shape>>;
+        inline static auto shape_less_const_ = [](const std::unique_ptr<Shape>& x,
+                                            const std::unique_ptr<Shape>& y)
+                                        {   return x->depth_ < y->depth_;  };
+        Shape* active_shape_ = nullptr;
 
 
 
@@ -34,14 +42,13 @@ protected:
         virtual void Setup() override;
         virtual void Draw() override;
 
-        std::multiset<std::unique_ptr<Shape>,
-                      std::function<bool(const std::unique_ptr<Shape>&,
-                                         const std::unique_ptr<Shape>&)> > shapes_;
-        std::multiset<std::unique_ptr<Shape>>::iterator active_shape_ = std::end(shapes_);
+
+        ShapesContainer shapes_;
+
 
         void AddShape(Shape&&);
         Shape* ActiveShape();
-        void ActiveShape(std::multiset<std::unique_ptr<Shape>>::iterator);
+        void ActiveShape(Shape*);
         bool HasShape();
 
 };

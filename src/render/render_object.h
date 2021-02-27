@@ -31,6 +31,7 @@ public:
         local_.reset(new kipod::Transform( *other.local_ ) );
         return *this;
     }
+    virtual ~RenderObject() = default;
 
     std::string name_;
 

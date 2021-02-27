@@ -14,6 +14,7 @@ void Shape::Init()
     auto layout = new kipod::GLRenderLayout;
     layout->SetupShape(&transformed_vertices_);
     AddLayout(name, std::move(*layout) );
+    mat_ = std::make_shared<RenderMaterial>();
 }
 
 void Shape::ScaleShape(const float scale)

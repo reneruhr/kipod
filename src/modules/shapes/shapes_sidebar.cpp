@@ -26,6 +26,8 @@ void kipod::Shapes::ShapesSidebar::AddShape()
                             //else if(primitiveChoice_current==2) scene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Shape.");
                             LOG_CONSOLE("Loaded Shape.");
+                            scene->ActiveShape()->depth_ = UniformDistribution::Pick(-10.f,0.f);
+                            scene->ActiveShape()->mat_->emission_ = RandomColor::Pick();
                         }
 
 //    if(primitiveChoice_current==2){
@@ -50,8 +52,15 @@ void kipod::Shapes::ShapesSidebar::ShapeList()
             sprintf(buf, "Shape %d", n);
             if (ImGui::Selectable(buf, selected_shape == n)){
                 selected_shape = n;
-                scene->ActiveShape(current_shape);
+                scene->ActiveShape(current_shape->get());
                 }
+            ImGui::SameLine();
+            float* color = &current_shape->get()->mat_->emission_[0];
+            ImGui::PushID(n);
+            ImGui::ColorEdit4("ShapeColor#", color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+            ImGui::PopID();
+            ImGui::SameLine();
+            ImGui::Text("%.1f", current_shape->get()->depth_);
         }
         ImGui::Separator();
     }

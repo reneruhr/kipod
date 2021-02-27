@@ -19,6 +19,7 @@ public:
 
     Shape(){};
     Shape(Polygon polygon);
+    //~Shape() = default; // Bug
 
     void Init();
 
