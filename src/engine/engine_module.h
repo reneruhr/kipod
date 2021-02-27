@@ -26,6 +26,8 @@ public:
     virtual void DrawScene();
     virtual void DrawSidebar();
     virtual void DrawConsole();
+    virtual void Signup();
+    virtual void RemoveSubscription();
 };
 
 }

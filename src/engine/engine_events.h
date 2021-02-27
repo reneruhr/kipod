@@ -64,15 +64,16 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e)
 
 
 #define LOG_CATEGORY_NAME(category_in) LOG_ENGINE("Sign up for {}", #category_in)
-#define LISTENER_SIGNUP(category_in)  virtual void Signup() override { kipod::Events::Signup(*this, category_in); LOG_ENGINE("Sign up for {}", #category_in); }
+#define LISTENER_SIGNUP(category_in)  virtual void Signup() override { kipod::Events::Signup(this, category_in); LOG_ENGINE("Sign up for {}", #category_in); }
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 class Listener
 {
     friend class Events;
-protected:
+public:
     virtual ~Listener() = default;
     virtual void Signup() = 0;
+    virtual void Remove();
     virtual void Receive(std::shared_ptr<kipod::Event> event) = 0;
 
     template<typename T, typename F>
@@ -91,20 +92,24 @@ class Events
     inline static bool block_mouse_ = false;
     inline static bool block_input_ = false;
 
+    inline static std::vector< std::shared_ptr<Event> > events_ = {};
+    inline static std::unordered_map< EventCategory, std::list< Listener* > > listeners_ = {};
 public:
     Events(Events const&) = delete;
     void operator=(Events const&)  = delete;
 
-    inline static std::vector< std::shared_ptr<Event> > events_ = {};
-    inline static std::unordered_map< EventCategory, std::vector< std::reference_wrapper<Listener> > > listeners_ = {};
 
-    static Events& Get(){  static Events Events;   return Events;  }
+    static Events& Get();
 
-    static void Add(std::shared_ptr<Event> e) {  Events::Get().events_.push_back(e); }
+    static void Add(std::shared_ptr<Event> e);
+
     template <typename T>
-    static void Add(T&& e) {  Events::Get().events_.push_back(std::make_shared<T>(e)); }
+    static void Add(T&& e){
+        Events::Get().events_.push_back(std::make_shared<T>(e));
+    }
 
-    static void Signup(Listener& l, EventCategory category){ Events::listeners_[category].push_back(std::ref(l)); }
+    static void Signup(Listener* listener, EventCategory category);
+    static void Remove(Listener* listener);
 
     static void Process();
 

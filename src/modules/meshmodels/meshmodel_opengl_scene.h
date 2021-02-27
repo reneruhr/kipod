@@ -7,9 +7,12 @@
 
 namespace kipod::MeshModels{
 
-class MeshModelOpenGLScene :  public kipod::Listener, public kipod::Controls, public kipod::RenderScene{
-friend class MeshmodelSidebar;
-friend class MeshModelModule;
+class MeshModelOpenGLScene :
+        public kipod::Listener,
+        public kipod::Controls,
+        public kipod::RenderScene{
+        friend class MeshmodelSidebar;
+        friend class MeshModelModule;
 
         std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
 
@@ -51,7 +54,7 @@ friend class MeshModelModule;
 
 
         virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
-        virtual void Signup() override;
+
         void ProcessMouseButtons(kipod::MouseButtonEvent& event);
         void ProcessMouseMoves(kipod::MouseMoveEvent& event);
 
@@ -68,11 +71,12 @@ protected:
         void SetActiveModel(int id);
         void LookAtModel(int camera_id, int model_id);
 
+        virtual void Signup() override;
         virtual void Setup() override;
         virtual void Draw() override;
 
         MeshModelOpenGLScene(int width, int height)
-            : RenderScene(width, height), boundingBox(Cube){}
+            : RenderScene(width, height), boundingBox(Cube){ }
 };
 
 }

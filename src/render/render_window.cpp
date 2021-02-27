@@ -118,8 +118,8 @@ bool Window::CloseWindow(MenuEvent &e)
 
 void Window::Signup()
 {
-    kipod::Events::Signup(*this, EventCategoryKeyboard);
-    kipod::Events::Signup(*this, EventCategoryApplication);
+    kipod::Events::Signup(this, EventCategoryKeyboard);
+    kipod::Events::Signup(this, EventCategoryApplication);
 }
 
 void Window::Receive(std::shared_ptr<Event> event)

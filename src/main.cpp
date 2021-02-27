@@ -1,6 +1,7 @@
 #include "kipod.h"
 
 #include "modules/meshmodels/meshmodel_opengl_module.h"
+#include "modules/shapes/shapes_module.h"
 
 
 //#include "scene.h"
@@ -144,6 +145,7 @@ int main( int argc, char **argv )
         kipod::Application kipod(width, height);
         kipod.Init();
         kipod.Add("OpenGL Meshmodels", kipod::MeshModels::MeshModelModule(width,height));
+        kipod.Add("Shapes 2d", kipod::Shapes::ShapesModule(width,height));
         kipod.Run();
         kipod.ShutDown();
     }else    my_main(argc, argv );

@@ -27,7 +27,7 @@ struct AppConsole
         Commands.push_back("CLASSIFY");
         AutoScroll = true;
         ScrollToBottom = false;
-        AddLog("Welcome to Dear ImGui!");
+        AddLog("Welcome to Kipod!");
     }
     ~AppConsole()
     {
@@ -82,23 +82,14 @@ struct AppConsole
             ImGui::EndPopup();
         }
 
-        ImGui::TextWrapped(
-            "This example implements a console with basic coloring, completion (TAB key) and history (Up/Down keys). A more elaborate "
-            "implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
         ImGui::TextWrapped("Enter 'HELP' for help.");
-
-        // TODO: display items starting from the bottom
-
-        if (ImGui::SmallButton("Add Debug Text"))  { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("Add Debug Error")) { AddLog("[error] something went wrong"); }
         ImGui::SameLine();
         if (ImGui::SmallButton("Clear"))           { ClearLog(); }
         ImGui::SameLine();
         bool copy_to_clipboard = ImGui::SmallButton("Copy");
         //static float t = 0.0f; if (ImGui::GetTime() - t > 0.02f) { t = ImGui::GetTime(); AddLog("Spam %f", t); }
 
-        ImGui::Separator();
+        ImGui::SameLine();
 
         // Options menu
         if (ImGui::BeginPopup("Options"))
@@ -108,7 +99,7 @@ struct AppConsole
         }
 
         // Options, Filter
-        if (ImGui::Button("Options"))
+        if (ImGui::SmallButton("Options"))
             ImGui::OpenPopup("Options");
         ImGui::SameLine();
         Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);

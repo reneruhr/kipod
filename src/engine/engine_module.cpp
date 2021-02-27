@@ -34,3 +34,12 @@ void kipod::Module::DrawConsole()
     else
         Console::DrawAppConsole();
 }
+
+void kipod::Module::Signup()
+{
+    dynamic_cast<Listener*>(scene_.get())->Signup();
+}
+void kipod::Module::RemoveSubscription()
+{
+    dynamic_cast<Listener*>(scene_.get())->Remove();
+}

@@ -15,7 +15,7 @@ void kipod::Application::Init()
     kipod::Gui::Init(window_);
 
     clock_ = std::make_unique<Clock>(Clock());
-    menu_ = std::make_unique<Menu>(Menu());
+    menu_ = std::make_unique<Menu>(Menu(this));
 
 }
 
@@ -49,10 +49,12 @@ void kipod::Application::ShutDown()
 
 void kipod::Application::Add(kipod::Module&& module)
 {
-   active_module_ = module.Name();
    module.Init();
-   modules_.insert( {module.Name(), std::make_unique<Module>(std::move(module))} );
+   auto name = module.Name();
+   modules_.insert( {name, std::make_unique<Module>(std::move(module))} );
+   ActiveModule(name);
 }
+
 void kipod::Application::Add(std::string name, kipod::Module&& module)
 {
     module.Init();
@@ -60,7 +62,7 @@ void kipod::Application::Add(std::string name, kipod::Module&& module)
     auto pair = std::make_pair(name, std::move(ptr));
     modules_.insert(std::move(pair));
     modules_[name]->Name(name);
-    active_module_ = name;
+    ActiveModule(name);
 }
 
 kipod::Module& kipod::Application::ActiveModule()
@@ -70,8 +72,10 @@ kipod::Module& kipod::Application::ActiveModule()
 
 void kipod::Application::ActiveModule(std::string name)
 {
-    assert(modules_.find(name)!= end(modules_));
+    assert(modules_.find(name)!= end(modules_));    
+    if(active_module_!="") modules_[active_module_]->RemoveSubscription();
     active_module_ = name;
+    modules_[name]->Signup();
 }
 
 

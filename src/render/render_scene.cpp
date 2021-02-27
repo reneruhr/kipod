@@ -7,8 +7,11 @@ kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(fl
     framebuffer_ =  std::make_shared<kipod::FrameBuffer>(width_, height_);
 }
 
-void kipod::RenderScene::Resize(int w,int h) {
-    if(fixed_ratio_) h =reverse_ratio_* w; //h = 1/ratio_*w;
+void kipod::RenderScene::Resize(int w,int h)
+{
+    w = std::max(w, min_width_);
+    h = std::max(h, min_height_);
+    if(fixed_ratio_) h = std::floor(reverse_ratio_* w); //h = 1/ratio_*w;
     width_ = w; height_ = h;
     LOG_ENGINE("Resized Scene. Width {} and height {}", w, h);
     framebuffer_->Resize(width_,height_);

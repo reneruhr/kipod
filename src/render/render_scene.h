@@ -17,6 +17,8 @@ friend class Gui;
     RenderCamera* active_camera_ = nullptr;
     RenderObject* active_render_object_ = nullptr;
 
+    int min_width_ = 100;
+    int min_height_ = 100;
 
 protected:
     std::vector<std::unique_ptr<RenderObject> > render_objects_;
@@ -30,10 +32,7 @@ protected:
     float reverse_ratio_;
     std::shared_ptr<kipod::FrameBuffer> framebuffer_;
 
-
 public:
-
-
     RenderScene() = default;
     RenderScene(int w, int h);
     RenderScene(RenderScene&) = default;
@@ -41,7 +40,6 @@ public:
     RenderScene(RenderScene&&) = default;
     RenderScene& operator=(RenderScene&&) = default;
     virtual ~RenderScene() = default;
-
 
     virtual void Setup() = 0;
     virtual void Draw() = 0;
@@ -54,7 +52,6 @@ public:
     void AddLight(RenderLight&& light);
     void AddCamera(RenderCamera&& camera);
     void AddRenderObject(RenderObject&& model);
-
 
     RenderCamera* GetActiveCamera();
     RenderObject* GetActiveRenderObject();

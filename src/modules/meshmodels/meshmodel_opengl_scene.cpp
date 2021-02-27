@@ -1,5 +1,4 @@
 #include "meshmodel_opengl_scene.h"
-
 namespace kipod::MeshModels{
 
 
@@ -12,8 +11,6 @@ namespace kipod::MeshModels{
 
 void MeshModelOpenGLScene::Setup()
 {
-    LOG_ENGINE("Seting up MeshModel Scene.");
-
     name_ = "Mesh Model OpenGL";
 
     AddCamera(kipod::RenderCamera({0.0f,0.0f,3.0f}));
@@ -32,15 +29,12 @@ void MeshModelOpenGLScene::Setup()
     boundingBox.AddLayout(name,std::move(*layout));
     boundingBox.Init(false,false);
 
-//    boundingBox.AddLayout_TEMP(
-//                    {"Normals Triangles", std::make_unique<kipod::GLRenderLayout>(CreateLayoutNormals())}
-//                    );
-
     SetupCoordinateAxis();
     SetupGrid();
 
     SetupOptions();
-    Signup();
+    LOG_ENGINE("MeshModel Scene Initialized.");
+    LOG_CONSOLE("MeshModel Scene Initialized.");
 }
 
 void MeshModelOpenGLScene::SetupOptions(){
@@ -507,9 +501,9 @@ void MeshModelOpenGLScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
 }
 
 void MeshModelOpenGLScene::Signup() {
-    kipod::Events::Signup(*this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
-    kipod::Events::Signup(*this, kipod::EventCategoryMouseButton); LOG_CATEGORY_NAME(kipod::EventCategoryMouseButton);
-    kipod::Events::Signup(*this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouseB);
+    kipod::Events::Signup(this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
+    kipod::Events::Signup(this, kipod::EventCategoryMouseButton); LOG_CATEGORY_NAME(kipod::EventCategoryMouseButton);
+    kipod::Events::Signup(this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouseB);
 }
 
 void MeshModelOpenGLScene::Receive(std::shared_ptr<kipod::Event> event){
@@ -564,11 +558,12 @@ void MeshModelOpenGLScene::SetupGrid()
 
     std::vector<vec3> vertices;
 
-    for(int i=-10; i<=10; ++i){
-        vertices.push_back(vec3(-10,i,0));
-        vertices.push_back(vec3(10,i,0));
-        vertices.push_back(vec3(i,-10,0));
-        vertices.push_back(vec3(i,10,0));
+    int n=100;
+    for(int i=-n; i<=n; ++i){
+        vertices.push_back(vec3(-n,i,0));
+        vertices.push_back(vec3(n,i,0));
+        vertices.push_back(vec3(i,-n,0));
+        vertices.push_back(vec3(i,n,0));
     }
 
     std::string name = "Grid";

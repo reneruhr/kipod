@@ -24,7 +24,7 @@ class Application
     std::unique_ptr<Menu> menu_;
     std::unique_ptr<Console> console_ = std::make_unique<Console>();
 
-    std::string active_module_;
+    std::string active_module_ = "";
 
     int width_, height_;
     int sidebar_width_ = 200;

@@ -1,5 +1,6 @@
 #include "engine_menu.h"
 #include "engine_menu_events.h"
+#include "engine_application.h"
 
 
 namespace kipod{
@@ -26,7 +27,7 @@ void Menu::DrawModuleMenu(std::unordered_map<std::string, std::unique_ptr<Module
            if (ImGui::BeginMenu("Modules"))
            {
                for(auto& [name, module] : modules)
-                   if(ImGui::MenuItem(name.c_str(),  "", name == active_module))  active_module=name;
+                   if(ImGui::MenuItem(name.c_str(),  "", name == active_module))  app_->ActiveModule(name);
                ImGui::EndMenu();
            }
            ImGui::EndMenuBar();

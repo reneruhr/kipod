@@ -322,8 +322,8 @@ void Scene::SetUniformInternal(Camera* camera, QuaCry* quacry)
 {
     auto data = quacry->lattice_data_;
 
-    auto shape_transform = quacry->Shape::GetWorldTransform();
-    auto shape_transform_glm  = MakeGLM(shape_transform);
+    //auto shape_transform = quacry->Shape::GetWorldTransform();
+    auto shape_transform_glm  = quacry->Shape::TransformWorld();
 
     auto camp = camera->getProjection(camerasMode[activeCamera]);
     auto camc = camera->getcTransform();
@@ -443,11 +443,11 @@ void Scene::SetUniformBox(MeshModel* model)
 
 void Scene::SetShapeUniform(kipod::Shapes::Shape* shape)
 {
-    mat4 shape_matrix = shape->GetWorldTransform();
-    auto transform = MakeGLM(shape_matrix);
+//    mat4 shape_matrix = shape->GetWorldTransform();
+//    auto transform = MakeGLM(shape_matrix);
 
-    shaders_["Shape"].SetUniform<glm::mat4>("transform", transform);
-    shaders_["Shape"].SetUniform<float>("depth", shape->depth_);
+//    shaders_["Shape"].SetUniform<glm::mat4>("transform", transform);
+//    shaders_["Shape"].SetUniform<float>("depth", shape->depth_);
 }
 
 void Scene::SetupBlockUniform(QuaCry *quacry){
