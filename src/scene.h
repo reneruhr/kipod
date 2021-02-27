@@ -75,6 +75,7 @@ public:
 
     virtual void Setup() override;
     virtual void Draw() override {} ;
+    virtual void Signup() override {}
 
     void SetupUniforms();
 
@@ -167,7 +168,7 @@ public:
     void SetupBlockUniform(QuaCry *quacry);
 
     virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
-    LISTENER_SIGNUP(kipod::EventCategoryKeyboard)
+    //LISTENER_SIGNUP(kipod::EventCategoryKeyboard)
     virtual void Receive(std::shared_ptr<kipod::Event> event) override{
         Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(Scene::ProcessKeys));
     }

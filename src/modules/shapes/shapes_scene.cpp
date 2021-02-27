@@ -38,7 +38,51 @@ void kipod::Shapes::ShapesScene::Draw()
 void kipod::Shapes::ShapesScene::AddShape(Shape&& shape)
 {
     shape.Init();
-    shapes_.insert(std::make_unique<Shape>(std::forward<Shape>(shape)));
+    active_shape_=shapes_.insert(std::make_unique<Shape>(std::forward<Shape>(shape)));
+}
+
+void kipod::Shapes::ShapesScene::ActiveShape(
+        std::multiset<std::unique_ptr<Shape>>::iterator active)
+{
+    active_shape_= active;
+}
+
+kipod::Shapes::Shape *kipod::Shapes::ShapesScene::ActiveShape()
+{
+    return active_shape_->get();
+}
+
+
+bool kipod::Shapes::ShapesScene::HasShape()
+{
+    return active_shape_!=std::end(shapes_);
+}
+
+void kipod::Shapes::ShapesScene::ProcessKeys(kipod::KeyPressedEvent &event)
+{
+    float stepsize = 1.0f;
+    auto key = event.GetKeyCode();
+
+    if(HasShape()){
+        if(key == Key::Left){
+                    ActiveShape()->world_->Translate({-stepsize,0,0});
+                }
+        else if(key == Key::Right){
+                    ActiveShape()->world_->Translate({+stepsize,0,0});
+                }
+        else if(key == Key::Up){
+                    ActiveShape()->world_->Translate({0,stepsize,0});
+                }
+        else if(key == Key::Down){
+                    ActiveShape()->world_->Translate({0,-stepsize,0});
+                }
+        else if(key == Key::PageUp){
+                    ActiveShape()->world_->Translate({0,0, stepsize});
+                }
+        else if(key == Key::PageDown){
+                    ActiveShape()->world_->Translate({0,0,-stepsize});
+                }
+    }
 }
 
 void kipod::Shapes::ShapesScene::SetupLayout(Shape* shape)
@@ -55,7 +99,7 @@ void kipod::Shapes::ShapesScene::SetupShaders()
 
 void kipod::Shapes::ShapesScene::SetupUniforms(Shape *shape)
 {
-    shaders_["Shape"]->SetUniform<glm::mat4>("transform", shape->TransformWorld());
+    shaders_["Shape"]->SetUniform<glm::mat4>("transform", (glm::mat4)*GetActiveCamera()*shape->TransformWorld());
     shaders_["Shape"]->SetUniform<float>("depth", shape->depth_);
 }
 
@@ -67,4 +111,21 @@ void kipod::Shapes::ShapesScene::SetupGrid2d()
 void kipod::Shapes::ShapesScene::SetupOptions()
 {
 
+}
+
+kipod::Shapes::ShapesScene::ShapesScene(int width, int height):
+    RenderScene(width, height),
+    shapes_([](const std::unique_ptr<Shape>& x, const std::unique_ptr<Shape>& y)
+{
+    return x->depth_ < y->depth_;
+}){}
+
+void kipod::Shapes::ShapesScene::Signup()
+{
+    kipod::Events::Signup(this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
+}
+
+void kipod::Shapes::ShapesScene::Receive(std::shared_ptr<kipod::Event> event)
+{
+    Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(ShapesScene::ProcessKeys));
 }
