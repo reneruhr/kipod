@@ -114,8 +114,18 @@ add_executable(kipod
   src/modules/softrenderer/softrenderscene.h
   src/modules/softrenderer/softrenderscene.cpp
 
-  src/modules/quasicrystals/quasicrystalscene.h
-  src/modules/quasicrystals/quasicrystalscene.cpp
+  src/modules/quasicrystals/quasicrystals_pointset.h
+  src/modules/quasicrystals/quasicrystals_pointset.cpp
+  src/modules/quasicrystals/quasicrystal.h
+  src/modules/quasicrystals/quasicrystal.cpp
+  src/modules/quasicrystals/quasicrystals_scene.h
+  src/modules/quasicrystals/quasicrystals_scene.cpp
+  src/modules/quasicrystals/quasicrystals_sidebar.h
+  src/modules/quasicrystals/quasicrystals_sidebar.cpp
+  src/modules/quasicrystals/quasicrystals_console.h
+  src/modules/quasicrystals/quasicrystals_console.cpp
+  src/modules/quasicrystals/quasicrystals_module.h
+  src/modules/quasicrystals/quasicrystals_module.cpp
 
 
   src/engine/engine_module.h

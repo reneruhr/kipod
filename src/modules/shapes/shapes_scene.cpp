@@ -17,6 +17,9 @@ void kipod::Shapes::ShapesScene::Setup()
 
         AddShape(Shape( kipod::Shapes::Octagon(sqrt(2)) ));
         ActiveShape()->mat_->emission_ = RandomColor::Pick();
+
+        LOG_ENGINE("Shapes Scene Initialized.");
+        LOG_CONSOLE("Shapes Scene Initialized.");
 }
 
 void kipod::Shapes::ShapesScene::Draw()

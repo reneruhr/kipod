@@ -1,6 +1,4 @@
-#ifndef LATTICE_H
-#define LATTICE_H
-
+#pragma once
 #include "../core.h"
 
 class Lattice
@@ -44,4 +42,3 @@ public:
     }
 };
 
-#endif // LATTICE_H
