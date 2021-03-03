@@ -14,13 +14,13 @@ class RenderScene
 
 friend class Gui;
 
+protected:
     RenderCamera* active_camera_ = nullptr;
     RenderObject* active_render_object_ = nullptr;
 
     int min_width_ = 100;
     int min_height_ = 100;
 
-protected:
     std::vector<std::unique_ptr<RenderObject> > render_objects_;
     std::vector<std::unique_ptr<RenderCamera> > cameras_;
     std::vector<std::unique_ptr<RenderLight> > lights_;

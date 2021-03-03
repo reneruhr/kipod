@@ -1,5 +1,5 @@
-resources/
+resources/tilings
+resources/uv_examples
+resources/obj_examples
 logs/
 CMakeLists.txt.user
-shaders/nir_shaders.sublime-project
-shaders/nir_shaders.sublime-workspace

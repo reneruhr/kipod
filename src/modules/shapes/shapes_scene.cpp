@@ -2,7 +2,6 @@
 
 void kipod::Shapes::ShapesScene::Setup()
 {
-        LOG_ENGINE("Seting up Shapes Scene.");
         name_ = "Shapes 2d";
         AddCamera(kipod::RenderCamera({0.0f,0.0f,10.0f},
                                       {0.0f,0.0f,0.0f},
@@ -18,7 +17,7 @@ void kipod::Shapes::ShapesScene::Setup()
         AddShape(Shape( kipod::Shapes::Octagon(sqrt(2)) ));
         ActiveShape()->mat_->emission_ = RandomColor::Pick();
 
-        LOG_ENGINE("Shapes Scene Initialized.");
+        LOG_INFO("Shapes Scene Initialized.");
         LOG_CONSOLE("Shapes Scene Initialized.");
 }
 
@@ -37,7 +36,7 @@ void kipod::Shapes::ShapesScene::Draw()
     }
 
     glDisable(GL_DEPTH_TEST);
-    kipod::RenderManager::Bind(0);
+
     //if(mirror_) mirror_->Draw();
 
 }

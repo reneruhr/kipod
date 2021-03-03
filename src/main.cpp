@@ -80,17 +80,8 @@ int my_main( int argc, char **argv )
     //gui->init(window.get());
 
 
-    mat4 square_root = transpose(MinkowskiEmbedding(2).Embedding());
 
-    QuaCry* quacryOctagon = new QuaCry(scene,
-                                square_root,
-                                {-10,10,-10,10,-5,5,-5,5},
-                                {-20,20,-20,20,-10,10,-10,10},
-                                WindowType::Octagon,
-                                kipod::Shapes::Shape( kipod::Shapes::Octagon(sqrt(2)) ) );
-    quacryOctagon->ScaleShape(1.0f/20.0f);
-    quacryOctagon->Move({0.8f,0.8f});
-   gui->AppendModule(quacryOctagon);
+
 
 
    //????? Breaks Imgui Viewport

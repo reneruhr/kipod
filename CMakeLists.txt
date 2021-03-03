@@ -126,6 +126,10 @@ add_executable(kipod
   src/modules/quasicrystals/quasicrystals_console.cpp
   src/modules/quasicrystals/quasicrystals_module.h
   src/modules/quasicrystals/quasicrystals_module.cpp
+  src/modules/quasicrystals/quasicrystals_examples.h
+  src/modules/quasicrystals/quasicrystals_examples.cpp
+  src/modules/quasicrystals/quasicrystals_physical_window.h
+  src/modules/quasicrystals/quasicrystals_physical_window.cpp
 
 
   src/engine/engine_module.h

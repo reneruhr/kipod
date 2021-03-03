@@ -1,6 +1,4 @@
-#ifndef MINKOWSKIEMBEDDING_H
-#define MINKOWSKIEMBEDDING_H
-
+#pragma once
 #include <cmath>
 
 #include <valarray>
@@ -52,5 +50,3 @@ public:
         return transpose(mat4(R4(e1),R4(e2),R4(e3),R4(e4)));
     }
 };
-
-#endif // MINKOWSKIEMBEDDING_H
