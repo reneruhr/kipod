@@ -3,4 +3,6 @@ resources/uv_examples
 resources/obj_examples
 logs/
 out/
+.vs/
 CMakeLists.txt.user
+CMakeSettings.json

@@ -1,22 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(kipod LANGUAGES CXX)
-
+#project(kipod LANGUAGES CXX)
+project(kipod)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_definitions(-std=c++17
-                                -Wall
-                                -march=native)
+#add_definitions(-std=c++17
+#                               -Wall
+#                              -march=native)
 
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(glfw3 3.3 REQUIRED)
+
+include_directories(include)
 
 set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/external_libs/spdlog/include/)
+include_directories(${SPDLOG_DIR})
 
-include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS} ${glfw3_INCLUDE_DIR} ${SPDLOG_DIR})
-include_directories(include)
 
 file(GLOB imgui
     "external_libs/imgui/*.h"
@@ -267,10 +265,50 @@ add_executable(kipod
   ${imgui}
 )
 
-target_link_libraries(kipod ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-target_link_libraries(kipod GLEW::GLEW)
-target_link_libraries(kipod glfw)
+    find_package(OpenGL REQUIRED)
+    if(NOT OPENGL_FOUND)
+        message("No OpenGL found! There is no alternative at this point...")
+    endif()
+    include_directories(${OPENGL_INCLUDE_DIR})
+    target_link_libraries(kipod ${OPENGL_LIBRARIES})
 
+    find_package(GLEW)
+    find_package(glfw3 3.3)
+    find_package(glm)
+
+    if(GLEW_FOUND)
+        message("Glew found on machine.")
+        include_directories(${GLEW_INCLUDE_DIR})
+        target_link_libraries(kipod GLEW::GLEW)
+    else()
+        message("Adding glew as git submodule. For this to work, you have to clone recursively: git clone --recursive git@github.com:reneruhr/kipod.git ")
+        add_definitions(-DGLEW_STATIC)
+        add_subdirectory(external_libs/glew-cmake/ EXCLUDE_FROM_ALL)
+        target_link_libraries(kipod libglew_static)
+    endif()
+
+    if(glfw3_FOUND)
+        message("GLFW found on machine.")
+        include_directories(${glfw3_INCLUDE_DIR})
+        target_link_libraries(kipod glfw3)
+    else()
+        message("Adding glfw as git submodule. For this to work, you have to clone recursively: git clone --recursive git@github.com:reneruhr/kipod.git ")
+        add_subdirectory(external_libs/glfw/ EXCLUDE_FROM_ALL)
+        target_link_libraries(kipod glfw)
+    endif()
+
+    if(GLM_FOUND)
+        message("GLM found on machine.")
+        include_directories(${glm_INCLUDE_DIR})
+        target_link_libraries(kipod glm::glm)
+    else()
+        message("Adding glm as git submodule. For this to work, you have to clone recursively: git clone --recursive git@github.com:reneruhr/kipod.git ")
+        add_subdirectory(external_libs/glm/ EXCLUDE_FROM_ALL)
+        target_link_libraries(kipod glm::glm)
+    endif()
+
+
+ 
 
 file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 file( COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )

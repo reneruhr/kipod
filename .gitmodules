@@ -1,0 +1,9 @@
+[submodule "external_libs/glm"]
+	path = external_libs/glm
+	url = https://github.com/g-truc/glm
+[submodule "external_libs/glew-cmake"]
+	path = external_libs/glew-cmake
+	url = https://github.com/Perlmint/glew-cmake.git
+[submodule "external_libs/glfw"]
+	path = external_libs/glfw
+	url = https://github.com/glfw/glfw.git
