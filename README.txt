@@ -39,4 +39,13 @@ See Step 3 for Mac.
 
 Windows
 
+Get git e.g. via https://gitforwindows.org/.
+The required libraries are included as git submodules. Use the tag --recursively to add these:
+
+$ git clone --recursive https://github.com/reneruhr/kipod.git
+
+Get Visual Studio 2019 and its "C++ CMake tools for Windows" component. It is already installed with the 
+"Desktop development with C++" and "Linux Development with C++" workload.
+Opening the folder will detect the cmake file automatically and you can compile after selecting the "Startup Item" kipod.exe.
+
 

@@ -4,5 +4,6 @@ resources/obj_examples
 logs/
 out/
 .vs/
+build/
 CMakeLists.txt.user
 CMakeSettings.json
