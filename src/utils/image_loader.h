@@ -1,10 +1,11 @@
 #pragma once
+#include <type_traits>
 
 struct Image{
-    int width_;
-    int height_;
-    int n_channels_;
-    unsigned char* data_;
+    int width_ = 0;
+    int height_ = 0;
+    int n_channels_ = 0;
+    unsigned char* data_ = nullptr;
 
     Image() = default;
     Image(int w, int h) : width_(w), height_(h){}
@@ -16,7 +17,7 @@ struct Image{
 class ImageLoader{
 public:
 
-static Image&& LoadImage(const char path[]);
+static Image&& Kipod_LoadImage(const char path[]);
 
 static void FreeImage(Image* old_image);
 };

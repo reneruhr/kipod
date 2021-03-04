@@ -10,7 +10,7 @@ void kipod::Application::Init()
     Log::Init();
     LOG_ENGINE("Logger Started.");
 
-    window_ = std::shared_ptr<kipod::Window>(new kipod::Window(width_+sidebar_width_, height_+console_height_, "קיפוד(renderer)"));
+    window_ = std::shared_ptr<kipod::Window>(new kipod::Window(width_+sidebar_width_, height_+console_height_, "kipod(renderer)"));
     window_->init();
     kipod::Gui::Init(window_);
 

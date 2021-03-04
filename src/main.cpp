@@ -15,9 +15,6 @@
 #include "quacry.h"
 #include "math/minkowski_embedding.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 

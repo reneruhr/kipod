@@ -2,7 +2,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../external_libs/stb/stb_image.h"
 
-Image&& ImageLoader::LoadImage(const char path[])
+
+Image&& ImageLoader::Kipod_LoadImage(const char path[])
 {
         Image* new_image = new Image();
         stbi_set_flip_vertically_on_load(1);

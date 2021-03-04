@@ -351,10 +351,10 @@ void drawTriangleWithColor(int a[2], int b[2], int c[2], float color_a[3], float
 
 
 enum{
-    TOP = 0x1,
-    BOTTOM = 0x2,
-    RIGHT = 0x4,
-    LEFT = 0x8
+    TOP = 0x0001,
+    BOTTOM = 0x0002,
+    RIGHT = 0x0004,
+    LEFT = 0x0008
 };
 
 outcode produceOutcode(int p[2], int rect[4]){

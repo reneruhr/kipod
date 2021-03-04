@@ -4,7 +4,7 @@
 
 void kipod::Texture::LoadTexture(const char path[]){
 
-       image_= std::make_unique<Image>(ImageLoader::LoadImage(path));
+       image_= std::make_unique<Image>(ImageLoader::Kipod_LoadImage(path));
 
        glGenTextures(1, &id_);
        glBindTexture(GL_TEXTURE_2D, id_);

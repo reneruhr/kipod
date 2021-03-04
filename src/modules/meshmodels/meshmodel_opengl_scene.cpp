@@ -444,22 +444,22 @@ void MeshModelOpenGLScene::ProcessKeys(kipod::KeyPressedEvent &event)
                     GetActiveModel()->world_->Translate({0,0,-stepsize});
                 }
         //CAMERA CONTROL:
-        else if(key == Key::A && mod == Mod::MOD_CONTROL){
+        else if(key == Key::A && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({-stepsize,0,0});
                 }
-        else if(key == Key::D && mod == Mod::MOD_CONTROL){
+        else if(key == Key::D && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({+stepsize,0,0});
                 }
-        else if(key == Key::W && mod == Mod::MOD_CONTROL){
+        else if(key == Key::W && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({0,stepsize,0});
                 }
-        else if(key == Key::S && mod == Mod::MOD_CONTROL){
+        else if(key == Key::S && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({0,-stepsize,0});
                 }
-        else if(key == Key::R && mod == Mod::MOD_CONTROL){
+        else if(key == Key::R && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({0,0, stepsize});
                 }
-        else if(key == Key::F && mod == Mod::MOD_CONTROL){
+        else if(key == Key::F && mod == Mod::KIPOD_MOD_CONTROL){
                     GetActiveCamera()->Move({0,0,-stepsize});
                 }
 

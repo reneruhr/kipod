@@ -123,11 +123,11 @@ void Camera::updateLookAt(){
 	LookAt(_eye, _at, _up);
 }
 
-void Camera::updatePerspective(const float& fovy, const float& aspect, const float& near, const float& far){
+void Camera::updatePerspective(const float& fovy, const float& aspect, const float& near_new, const float& far_new){
 	_fovy=fovy;
 	_aspect=aspect;
-	_near=near;
-	_far=far;
+	_near=near_new;
+	_far=far_new;
 	Perspective(_fovy,_aspect,_near,_far);
 }
 

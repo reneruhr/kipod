@@ -21,6 +21,7 @@
 #include <sstream>
 
 #include <filesystem>
+#include <type_traits>
 
 
 #include "utils/vec.h"

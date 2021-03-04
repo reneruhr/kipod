@@ -664,11 +664,11 @@ void Scene::moveEyeOfCamera(int camera_id, const vec3& eye)
     cam->moveEye(eye);
 }
 
-void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near, const float& far)
+void Scene::perspectiveCamera(int camera_id, const float& fovy, const float& aspect, const float& near_new, const float& far_new)
 {
     if(numberOfCameras() <= camera_id) return;
     Camera* cam =cameras[camera_id];
-    cam->Perspective(fovy, aspect, near, far);
+    cam->Perspective(fovy, aspect, near_new, far_new);
     needs_update = true;
 }
 
