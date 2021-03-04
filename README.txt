@@ -1,32 +1,42 @@
+Building from Source Instructions:
 
-MacOS Building from Source:
+MacOS (Intel CPU)
 
-Step 1: Copy the folder shaders into your home folder.
+Step 1
+Install homebrew if needed (which may result automatically installing the xcode command line developer tools):
 
-Step 2: Install homebrew if needed (which may result automatically installing the xcode command line developer tools):
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-rene$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+Step 2
+Then install cmake and git and necessary libraries glew, glfw3, glm:
 
-Then install cmake (if needed) and the three libraries needed for the application:
+$ brew install git cmake glew glfw3 glm
 
-rene$ brew install cmake glew glfw3 glm
+Step 3: 
+Clone and Building Instruction:
 
-Step 3: Building Instruction:
+$ git clone https://github.com/reneruhr/kipod.git
+$ cd kipod
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+& ./kipod
 
-Open Terminal in the nir folder. 
-Create a the build folder.
-Move into the build folder.
-Run cmake and make.
-Run the application.
 
-These commands look like that in the terminal:
+Ubuntu
 
-rene$ cd kipod
-rene$ mkdir build
-rene$ cd build
-rene$ cmake ..
-rene$ make
-rene& ./kipod
+Step 1
 
+Then install necessary packages:
+
+$ sudo apt install build-essential libgl1-mesa-dev cmake git 
+$ sudo apt install libglfw3-dev glew-utils libglm-dev
+
+Step 2: 
+See Step 3 for Mac.
+
+
+Windows
 
 
