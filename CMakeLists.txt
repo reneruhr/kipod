@@ -31,23 +31,19 @@ file(GLOB IconsFontAwesome
 
 add_executable(kipod
 
-  src/kipod.h
+  src/main.cpp
 
+  src/kipod.h
   src/core.h
+
   src/utils/mat.h
   src/utils/vec.h
-  
   src/utils/buffer_packing.h
-
   src/utils/log.h
   src/utils/log.cpp
-
   src/utils/random.h
-
-
   src/utils/image_loader.h
   src/utils/image_loader.cpp
-
   src/utils/obj_parsing.h
   src/utils/key_table.h
   src/utils/imgui_utils.h
@@ -55,27 +51,10 @@ add_executable(kipod
 
   src/math/lattice.h
   src/math/lattice.cpp
-
   src/math/sl.h
   src/math/sl.cpp
-
   src/math/minkowski_embedding.h
   src/math/minkowski_embedding.cpp
-
-  src/pointset.h
-  src/pointset.cpp
-
-  src/main.cpp
-
-  src/camera.h
-  src/camera.cpp
-
-  src/light.h
-  src/light.cpp
-
-
-
-
 
 
   src/modules/meshmodels/meshmodel_opengl_module.h
@@ -108,7 +87,6 @@ add_executable(kipod
   src/modules/shapes/shapes_sidebar.cpp
 
 
-
   src/modules/softrenderer/softrenderscene.h
   src/modules/softrenderer/softrenderscene.cpp
 
@@ -132,90 +110,63 @@ add_executable(kipod
 
   src/engine/engine_module.h
   src/engine/engine_module.cpp
-
   src/engine/engine_application.h
   src/engine/engine_application.cpp
-
   src/engine/engine_input.h
   src/engine/engine_input.cpp
-
   src/engine/engine_events.h
   src/engine/engine_events.cpp
-
   src/engine/engine_controls.h
   src/engine/engine_controls.cpp
-
   src/engine/engine_gui.h
   src/engine/engine_gui.cpp
-
   src/engine/engine_transform.h
   src/engine/engine_transform.cpp
-
   src/engine/engine_clock.h
   src/engine/engine_clock.cpp
-
   src/engine/engine_menu.h
   src/engine/engine_menu.cpp
-
   src/engine/engine_menu_events.h
   src/engine/engine_menu_events.cpp
-
   src/engine/engine_sidebar.h
   src/engine/engine_sidebar.cpp
-
   src/engine/engine_console.h
   src/engine/engine_console.cpp
 
 
-
   src/render/initshader.h
   src/render/initshader.cpp
-
   src/render/render_engine.h
   src/render/render_engine.cpp
-
   src/render/render_shader.h
   src/render/render_shader.cpp
-
   src/render/render_manager.h
   src/render/render_manager.cpp
-
   src/render/render_object.h
   src/render/render_object.cpp
-
   src/render/render_layout.h
   src/render/render_layout.cpp
-
   src/render/render_buffer.h
   src/render/render_buffer.cpp
-
   src/render/render_uniform.h
   src/render/render_uniform.cpp
-
   src/render/render_primitive.h
   src/render/render_primitive.cpp
-
   src/render/render_scene.h
   src/render/render_scene.cpp
-
   src/render/render_material.h
   src/render/render_material.cpp
-
   src/render/render_light.h
   src/render/render_light.cpp
-
   src/render/render_camera.h
   src/render/render_camera.cpp
-
   src/render/render_texture.h
   src/render/render_texture.cpp
-
   src/render/render_window.h
   src/render/render_window.cpp
-
-
   src/render/render_framebuffer.h
   src/render/render_framebuffer.cpp
+
 
   src/render/opengl/opengl_engine.h
   src/render/opengl/opengl_engine.cpp
@@ -230,6 +181,16 @@ add_executable(kipod
   src/render/opengl/opengl_buffer_410.h
   src/render/opengl/opengl_buffer_410.cpp
 
+
+  src/pointset.h
+  src/pointset.cpp
+
+
+  src/camera.h
+  src/camera.cpp
+
+  src/light.h
+  src/light.cpp
 
 
   src/renderer.h

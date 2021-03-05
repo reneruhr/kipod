@@ -45,6 +45,7 @@ int Window::init()
         glsl_version = "#version 450";
         opengl_version_ = 450;
     #endif
+    LOG_ENGINE("Using OpenGL Version {}", opengl_version_);
 
     OpenGLEngine::SetWindow(this);
     _window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);

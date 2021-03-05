@@ -38,7 +38,8 @@ void kipod::Shapes::ShapesScene::Draw()
     glDisable(GL_DEPTH_TEST);
 
     //if(mirror_) mirror_->Draw();
-
+    kipod::RenderManager::Bind(0);
+    if(mirror_) mirror_->Draw();
 }
 
 void kipod::Shapes::ShapesScene::AddShape(Shape&& shape)
