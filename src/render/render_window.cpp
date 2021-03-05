@@ -1,5 +1,6 @@
 #include "render_window.h"
 #include "render_manager.h"
+#include "opengl/opengl_engine.h"
 
 unsigned int GLOBAL_SCR_WIDTH = 1024;
 unsigned int GLOBAL_SCR_HEIGHT = 800;
@@ -22,8 +23,6 @@ Window::Window(unsigned int width, unsigned int height, std::string title)
 Window::~Window()
 {
     glfwDestroyWindow(_window);
-
-    LOG_ENGINE("Window deconstructor");
 }
 
 int Window::init()
@@ -32,13 +31,22 @@ int Window::init()
         LOG_ENGINE("GLFW not initialized.");
         return -1;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glsl_version = "#version 410";
+        opengl_version_ = 410;
+    #else
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glsl_version = "#version 450";
+        opengl_version_ = 450;
     #endif
 
+    OpenGLEngine::SetWindow(this);
     _window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
 
     if (_window == NULL)

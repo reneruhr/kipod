@@ -31,7 +31,7 @@ void GUI::init(kipod::Window *window)
     io.WantCaptureKeyboard=1;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window->_window, true);
-    ImGui_ImplOpenGL3_Init(window->glsl_version);
+    ImGui_ImplOpenGL3_Init(window->glsl_version.c_str());
 
 
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "../render_layout.h"
+#include "opengl_buffer.h"
+
 
 namespace kipod{
 
@@ -8,6 +10,7 @@ class GLRenderLayout : public RenderLayout{
     template<typename Vector, typename... MoreVectors>
     void AddBufferData(const std::vector<Vector>&, MoreVectors... more_vectors);
     void AddBufferData(GLchar);
+
 
 public:
     ~GLRenderLayout() = default;

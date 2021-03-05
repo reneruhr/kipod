@@ -21,7 +21,8 @@ public:
     ~Window();
     int init();
     GLFWwindow* _window;
-    const char* glsl_version = "#version 450";
+    std::string glsl_version;
+    int opengl_version_;
     bool windowShouldClose();
     void updateWindow();
 

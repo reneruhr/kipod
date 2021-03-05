@@ -217,10 +217,18 @@ add_executable(kipod
   src/render/render_framebuffer.h
   src/render/render_framebuffer.cpp
 
-
+  src/render/opengl/opengl_engine.h
+  src/render/opengl/opengl_engine.cpp
+  src/render/opengl/opengl_window.h
+  src/render/opengl/opengl_window.cpp
   src/render/opengl/opengl_layout.h
   src/render/opengl/opengl_layout.cpp
-
+  src/render/opengl/opengl_buffer.h
+  src/render/opengl/opengl_buffer.cpp
+  src/render/opengl/opengl_buffer_450.h
+  src/render/opengl/opengl_buffer_450.cpp
+  src/render/opengl/opengl_buffer_410.h
+  src/render/opengl/opengl_buffer_410.cpp
 
 
 

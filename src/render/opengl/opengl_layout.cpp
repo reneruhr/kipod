@@ -1,8 +1,9 @@
 #include "opengl_layout.h"
 #include "../render_manager.h"
 #include "../../utils/buffer_packing.h"
-
-
+#include "opengl_engine.h"
+#include "opengl_buffer_410.h"
+#include "opengl_buffer_450.h"
 
 void kipod::GLRenderLayout::Draw()
 {
@@ -60,9 +61,12 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* verti
     vao_->Set();
 
     unsigned int buffersize = vnVector.size()*sizeof(vec3);
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, buffersize);
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, buffersize);
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, vnVector.size(), buffersize);
+    }
     vbo_->Add(0, buffersize, (void*)vnVector.data());
-
     vbo_->Bind();
 
     vao_->Add({0,3,2*sizeof(vec3),0});
@@ -82,9 +86,13 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *verti
     vao_->Set();
 
     unsigned int buffersize = vertices->size()*sizeof(vec3);
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, buffersize);
-    vbo_->Add(0, buffersize, (void*)vertices->data());
 
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, buffersize);
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, vertices->size(), buffersize);
+    }
+    vbo_->Add(0, buffersize, (void*)vertices->data());
     vbo_->Bind();
 
     vao_->Add({0,3,sizeof(vec3),0});
@@ -103,8 +111,12 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
     vao_ = std::make_shared<kipod::VertexAttributeObject>();
     vao_->Set();
 
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, totalbuffersize);
-    vbo_->count_ = triangles->size()*3;
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, totalbuffersize);
+        vbo_->count_ = triangles->size()*3;
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, triangles->size()*3, totalbuffersize);
+    }
     vbo_->Add(0, totalbuffersize, (void*)triangles->data());
     vbo_->Bind();
 
@@ -163,6 +175,7 @@ void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, Mo
 {
     unsigned long buffersize = vectors.size()*sizeof(Vector);
     vbo_->count_ = vectors.size();
+
     vbo_->Add(buffersize, (void*)vectors.data());
     vao_->Add({vao_->NumberOfAttributes(), Vector::Length(), sizeof(Vector),0});
 
@@ -181,8 +194,14 @@ void  kipod::GLRenderLayout::SetupLayout(const std::vector<Vector>& vectors, Mor
     vao_ = std::make_shared<kipod::VertexAttributeObject>();
     vao_->Set();
     unsigned long totalbuffersize = CalculateBufferSize(vectors, more_vectors...);
-    vbo_ = std::make_shared<kipod::VertexBuffer>(nullptr, totalbuffersize);
+
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, totalbuffersize);
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, 0, totalbuffersize);
+    }
     AddBufferData(vectors,  more_vectors...);
+
     vbo_->Bind();
     vao_->SetAttributes();
     Unbind();

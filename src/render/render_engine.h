@@ -21,9 +21,6 @@ class RenderEngine
 public:
     RenderEngine() {}
 
-    void Setup(RenderObject* object);
-    void Draw(RenderObject* object);
-
 };
 
 
