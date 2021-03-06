@@ -27,19 +27,25 @@ Building uses cmake and git to receive the source.
 #### Step 1:
 Install necessary packages:
 
-$ sudo apt install build-essential libgl1-mesa-dev cmake git 
-$ sudo apt install libglfw3-dev glew-utils libglm-dev
+```console
+~$ sudo apt install build-essential libgl1-mesa-dev cmake git 
+~$ sudo apt install libglfw3-dev glew-utils libglm-dev
+```
+
+
 
 #### Step 2: 
 Clone and Building Instruction:
 
-$ git clone https://github.com/reneruhr/kipod.git
-$ cd kipod
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-& ./kipod
+```console
+~$ git clone https://github.com/reneruhr/kipod.git
+~$ cd kipod
+~$ mkdir build
+~$ cd build
+~$ cmake ..
+~$ make
+~$ ./kipod
+```
 
 
 ### MacOS (Intel CPU)
@@ -47,12 +53,16 @@ $ make
 #### Step 1
 Install homebrew if needed (which may result in automatically installing the xcode command line developer tools):
 
-$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```console
+~$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
 #### Step 2
 Then install cmake and git and necessary libraries glew, glfw3, glm:
 
-$ brew install git cmake glew glfw3 glm
+```console
+~$ brew install git cmake glew glfw3 glm
+```
 
 #### Step 3: 
 See Step 2 Ubuntu.
@@ -64,7 +74,9 @@ See Step 2 Ubuntu.
 Get git e.g. via https://gitforwindows.org/.
 The required libraries are included as git submodules. Use the tag --recursive to add these:
 
-$ git clone --recursive https://github.com/reneruhr/kipod.git
+```console
+~$ git clone --recursive https://github.com/reneruhr/kipod.git
+```
 
 #### Step 2
 Get Visual Studio 2019 and its "C++ CMake tools for Windows" component. It is already installed with the 
