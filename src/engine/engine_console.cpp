@@ -13,7 +13,17 @@ AppConsole &Console::GetConsole()
 
 void Console::DrawAppConsole()
 {
-    GetConsole().Draw("Module Console", (bool*)true);
+    GetConsole().Draw("Kipod Console", (bool*)true);
+}
+
+void Console::DrawModuleConsole()
+{
+    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+    Gui::BeginWindow("Module Console");
+    ConsoleContent();
+    if(ImGui::IsWindowFocused()) kipod::Events::BlockKeyboard(true);
+    else kipod::Events::BlockKeyboard(false);
+    Gui::EndWindow();
 }
 
 

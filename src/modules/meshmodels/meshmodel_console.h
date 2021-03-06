@@ -9,7 +9,10 @@ friend class MeshModelModule;
 protected:
     MeshModelConsole(std::shared_ptr<kipod::RenderScene> scene) : kipod::Console(scene) {}
 
-    virtual void Draw() override { DrawAppConsole(); }
+    virtual void Draw() override {
+        DrawModuleConsole();
+    }
+
 };
 
 }

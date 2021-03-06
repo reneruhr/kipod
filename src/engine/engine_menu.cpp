@@ -34,4 +34,22 @@ void Menu::DrawModuleMenu(std::unordered_map<std::string, std::unique_ptr<Module
     }
 }
 
+void Menu::DrawTools()
+{
+    static bool show_demo_ = false;
+    if(show_demo_) ImGui::ShowDemoWindow();
+
+    if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Tools"))
+            {
+                if (ImGui::MenuItem("ImGui Demo", NULL, show_demo_, true))
+                    show_demo_ = !show_demo_;
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+    }
+
+}
+
 }

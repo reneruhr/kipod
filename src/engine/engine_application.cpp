@@ -30,6 +30,8 @@ void kipod::Application::Run()
         kipod::Gui::Begin();
         menu_->DrawFiles();
         menu_->DrawModuleMenu(modules_, active_module_);
+        menu_->DrawTools();
+        Console::DrawAppConsole();
         ActiveModule().DrawSidebar();
         ActiveModule().DrawConsole();
         ActiveModule().DrawScene();

@@ -503,7 +503,7 @@ void MeshModelOpenGLScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
 void MeshModelOpenGLScene::Signup() {
     kipod::Events::Signup(this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
     kipod::Events::Signup(this, kipod::EventCategoryMouseButton); LOG_CATEGORY_NAME(kipod::EventCategoryMouseButton);
-    kipod::Events::Signup(this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouseB);
+    kipod::Events::Signup(this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouse);
 }
 
 void MeshModelOpenGLScene::Receive(std::shared_ptr<kipod::Event> event){

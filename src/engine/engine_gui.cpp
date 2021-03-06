@@ -219,13 +219,6 @@ void kipod::Gui::Begin()
 
 void kipod::Gui::End()
 {
-        ImGui::Begin("ImGUI Demo");
-        static bool show_demo_ = false;
-        if(ImGui::Button("ShowDemoWindow"))    show_demo_ = !show_demo_;
-        if(show_demo_) ImGui::ShowDemoWindow();
-        ImGui::End();
-
-
         ImGui::End();
 
 
@@ -262,15 +255,24 @@ void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
     ImVec2 viewport_size = ImGui::GetContentRegionAvail();
     unsigned int x = static_cast<unsigned int>(viewport_size.x);
     unsigned int y = static_cast<unsigned int>(viewport_size.y);
-    if(scene->width_ != x)   {
-        LOG_ENGINE("Viewport Resized w={} h={}",x,y);
-        scene->Resize(x, y);
-    }
+    static unsigned int old_x = x; static unsigned int ancient_x = x; static bool old_or_ancient = false;
+
+    if( x!= old_x && x!= ancient_x ) // Fixes some resizing bug from Imgui
+        if(scene->width_ != x)   {
+            LOG_ENGINE("Viewport Resized w={} h={}",x,y);
+            scene->Resize(x, y);
+            { // Fixes some resizing bug from Imgui
+                if(old_or_ancient) old_x = x;
+                else ancient_x = x;
+                old_or_ancient=!old_or_ancient;
+            }
+        }
     unsigned int scene_texture = scene->SceneAsFramebuffer();
     ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_ ,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::End();
     ImGui::PopStyleVar();
 }
+
 
 
 

@@ -31,8 +31,7 @@ void kipod::Module::DrawConsole()
 {
     if(console_)
         console_->Draw();
-    else
-        Console::DrawAppConsole();
+
 }
 
 void kipod::Module::Signup()

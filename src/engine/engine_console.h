@@ -19,6 +19,7 @@ public:
     virtual ~Console() = default;
     static AppConsole& GetConsole();
     static void DrawAppConsole();
+    void DrawModuleConsole();
 };
 
 }

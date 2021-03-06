@@ -13,6 +13,7 @@ public:
     void DrawFiles();
     void DrawModuleMenu(std::unordered_map< std::string, std::unique_ptr<Module> >& modules,
                         std::string& active_module);
+    void DrawTools();
 
 };
 

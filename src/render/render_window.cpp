@@ -81,6 +81,8 @@ int Window::init()
     LOG_ENGINE("Status: Using GLEW {}", glewGetString(GLEW_VERSION));
 
 
+    glfwSetWindowSizeLimits(_window, 400, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
     Signup();
 
     kipod::RenderManager::addFrameBuffer();
