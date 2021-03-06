@@ -48,8 +48,8 @@ public:
     VertexBuffer(void *data, unsigned int count, unsigned int size) :  Buffer(data, count, size) {}
     virtual void Bind();
     virtual void Unbind();
-    virtual void Add(unsigned int , unsigned long , const void*){}
-    virtual void Add(unsigned long, const void*){}
+    virtual void Add(unsigned int offset, unsigned long size, const void* data){}
+    virtual void Add(unsigned long size, const void* data){}
     virtual ~VertexBuffer() = default;
 };
 }

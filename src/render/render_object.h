@@ -24,7 +24,7 @@ public:
     RenderObject() = default;
     RenderObject(RenderObject&&) = default;
     RenderObject& operator=(RenderObject&&) = default;
-    RenderObject(RenderObject& other) : world_(new kipod::Transform(*other.world_)),
+    RenderObject(const RenderObject& other) : world_(new kipod::Transform(*other.world_)),
                                         local_(new kipod::Transform(*other.local_)){}
     RenderObject& operator=(const RenderObject& other) {
         world_.reset(new kipod::Transform( *other.world_ ) );

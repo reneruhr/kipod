@@ -32,6 +32,12 @@ void Shape::Move(const vec2 &translate)
     world_->Translate({translate.x,translate.y,0});
 }
 
+void Shape::UpdateShape()
+{
+    unsigned long buffersize = transformed_vertices_.size()*sizeof(vec2);
+    static_cast<GLRenderLayout*>(Layout())->vbo_->Add(0, buffersize, (void*)&transformed_vertices_);
+}
+
 
 
 std::vector<vec2> Shape::MakeFan() // Makes a fan with origin vector for TRIANGLE_FAN at center_=0

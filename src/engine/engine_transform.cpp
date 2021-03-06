@@ -14,3 +14,8 @@ const glm::mat4 &kipod::Transform::Scale(glm::vec3 v)
     *matrix_ = glm::scale(*matrix_, v);
     return *matrix_;
 }
+
+void kipod::Transform::Replace(const glm::mat4& new_transform)
+{
+    *matrix_ = new_transform;
+}

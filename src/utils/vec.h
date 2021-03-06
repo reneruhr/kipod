@@ -415,6 +415,8 @@ struct vec4 {
         return *this;
     }
 
+    vec4(vec4&&) = default;
+    vec4& operator=(vec4&&) = default;
 
 
 

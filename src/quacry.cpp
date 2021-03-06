@@ -1,13 +1,9 @@
 #include "quacry.h"
-
 //#include "scene.h"
 #include "utils/mat.h"
 #include "pointset.h"
 
-
 #include "math/minkowski_embedding.h"
-
-
 #include "gui.h"
 
 

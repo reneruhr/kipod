@@ -1,23 +1,34 @@
 #pragma once
 #include "../core.h"
 
+using Vector = vec4;
+using Basis = mat4;
+using Sample = std::vector< int >;
+
 class Lattice
 {
 public:
-    Lattice(std::vector< int > sample_size = {-10,10,-10,10,-10,10,0,0}, mat4 basis = mat4())
+    Basis basis_;
+    std::vector<Vector> sample_;
+    Sample sample_size_;
+
+    Lattice(Sample sample_size = {-10,10,-10,10,-10,10,0,0}, Basis basis = Basis())
         :  basis_(basis), sample_size_(sample_size)
     {
         assert(size(sample_size) == 8);
     }
 
-    mat4 GetBasisMatrix()
+    Lattice& operator=(const Lattice&) = default;
+    Lattice& operator=(Lattice&&) = default;
+    Lattice(const Lattice&) = default;
+    Lattice(Lattice&&) = default;
+
+    Basis GetBasisMatrix()
     {
         return basis_;
     }
 
-    mat4 basis_;
-    std::vector<vec4> sample_;
-    std::vector< int > sample_size_;
+
 
 
     vec4 operator()(int x, int y, int z, int w=0)
@@ -37,7 +48,7 @@ public:
                     for(int z=Z0; z<=Z; z++)
                         for(int w=W0; w<=W; w++)
                             sample_.emplace_back((*this)(x,y,z,w));
-            LOG("Created Sample of size {}", size(sample_));
+            LOG_INFO("Created Sample of size {}", size(sample_));
             return &sample_;
     }
 };

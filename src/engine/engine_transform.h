@@ -29,6 +29,7 @@ public:
 
     const glm::mat4& Translate(glm::vec3 v);
     const glm::mat4& Scale(glm::vec3 v);
+    void  Replace(const glm::mat4&);
 
 
 };

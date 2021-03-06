@@ -429,6 +429,9 @@ class mat4 {
     //  --- Constructors and Destructors ---
     //
 
+    mat4(mat4&&) = default;
+    mat4& operator=(mat4&&) = default;
+
     mat4( const GLfloat d = GLfloat(1.0) )  // Create a diagional matrix
     {
         _m[0].x = d;  _m[1].y = d;  _m[2].z = d;  _m[3].w = d;
@@ -464,6 +467,16 @@ class mat4 {
         _m[2] = m._m[2];
         _m[3] = m._m[3];
         }
+    }
+    mat4& operator=( const mat4& m )
+    {
+        if ( *this != m ) {
+        _m[0] = m._m[0];
+        _m[1] = m._m[1];
+        _m[2] = m._m[2];
+        _m[3] = m._m[3];
+        }
+        return *this;
     }
 
     mat4( const float* f){
