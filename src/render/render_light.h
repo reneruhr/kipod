@@ -66,4 +66,4 @@ inline void SetLightToShader(Shader& shader, int id, RenderLight *light)
     shader.SetUniform<int>(on, light->TurnedOn());
 }
 
-} // kipod
+}

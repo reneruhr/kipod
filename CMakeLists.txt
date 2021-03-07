@@ -87,8 +87,22 @@ add_executable(kipod
   src/modules/shapes/shapes_sidebar.cpp
 
 
-  src/modules/softrenderer/softrenderscene.h
-  src/modules/softrenderer/softrenderscene.cpp
+  src/modules/softrenderer/softrenderer_scene.h
+  src/modules/softrenderer/softrenderer_scene.cpp
+  src/modules/softrenderer/softrenderer_module.h
+  src/modules/softrenderer/softrenderer_module.cpp
+  src/modules/softrenderer/softrenderer_sidebar.h
+  src/modules/softrenderer/softrenderer_sidebar.cpp
+  src/modules/softrenderer/softrenderer.h
+  src/modules/softrenderer/softrenderer.cpp
+  src/modules/softrenderer/softrenderer_console.h
+  src/modules/softrenderer/softrenderer_console.cpp
+  src/modules/softrenderer/softrenderer_graphicsalgorithms.h
+  src/modules/softrenderer/softrenderer_graphicsalgorithms.cpp
+  src/modules/softrenderer/softrenderer_camera.h
+  src/modules/softrenderer/softrenderer_camera.cpp
+  src/modules/softrenderer/softrenderer_light.h
+  src/modules/softrenderer/softrenderer_light.cpp
 
   src/modules/quasicrystals/quasicrystals_pointset.h
   src/modules/quasicrystals/quasicrystals_pointset.cpp
@@ -186,13 +200,6 @@ add_executable(kipod
   src/pointset.cpp
 
 
-  src/camera.h
-  src/camera.cpp
-
-  src/light.h
-  src/light.cpp
-
-
   src/renderer.h
   src/renderer.cpp
 
@@ -217,10 +224,6 @@ add_executable(kipod
   src/guimathcontrol.h
   src/guimathcontrol.cpp
 
-
-
-  src/graphicsalgorithms.h
-  src/graphicsalgorithms.cpp
 
   src/inputmanager.h
   src/inputmanager.cpp
