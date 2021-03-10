@@ -2,7 +2,7 @@
 #include "opengl/opengl_layout.h"
 #include "opengl/opengl_engine.h"
 
-void kipod::Texture::LoadTexture(const char path[]){
+void kipod::Texture::LoadTexture(std::filesystem::path path){
 
        image_= std::make_unique<Image>(ImageLoader::Kipod_LoadImage(path));
 

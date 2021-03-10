@@ -7,10 +7,10 @@
 
 namespace kipod::MeshModels{
 
-MeshModel::MeshModel(std::string fileName, bool textured)
+MeshModel::MeshModel(std::filesystem::path path, bool textured)
 {
-    name_ = fileName;
-    LoadFile(fileName,
+    name_ = path.stem();
+    LoadFile(path,
                     vertices_vector, indices_vector,
                     normals_vector, nindices_vector,
                     texture_vector, tindices_vector);
@@ -22,23 +22,24 @@ MeshModel::MeshModel(std::string fileName, bool textured)
     CreateBoundingBox();
     CenterModel();
 
+
     if(textured){
         tex_ = std::make_shared<kipod::Texture>();
 
-        auto end = std::end(fileName);
-        *(end-3) = 'p'; *(end-2) = 'n'; *(end-1) = 'g';
-        if(std::filesystem::exists(fileName)){
-            tex_->LoadTexture(fileName.c_str());
+        auto path_png = path.replace_extension(".png");
+        std::cout << path_png;
+        if(std::filesystem::exists(path_png)){
+            tex_->LoadTexture(path_png);
+            return;
+        }
+        auto path_svg = path.replace_extension(".svg");
+        if(std::filesystem::exists(path_svg)){
+            tex_->LoadTexture(path_svg);
             return;
          }
-        *(end-3) = 'j'; *(end-2) = 'p'; *(end-1) = 'g';
-        if(std::filesystem::exists(fileName)){
-            tex_->LoadTexture(fileName.c_str());
-            return;
-         }
-        *(end-3) = 's'; *(end-2) = 'v'; *(end-1) = 'g';
-        if(std::filesystem::exists(fileName)){
-            tex_->LoadTexture(fileName.c_str());
+        auto path_jpg = path.replace_extension(".jpg");
+        if(std::filesystem::exists(path_jpg)){
+            tex_->LoadTexture(path_jpg);
             return;
          }
         LOG_INFO("Tried but did not succeed to load texture.");

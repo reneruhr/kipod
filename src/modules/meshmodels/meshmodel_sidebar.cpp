@@ -168,7 +168,14 @@ void MeshmodelSidebar::LoadOBJfile(){
     ImGui::PopID();
     const char* chosenPath = dlg.chooseFileDialog(browseButtonPressed);
     if (strlen(chosenPath)>0) {
-        LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
+
+        auto path = std::filesystem::path(chosenPath);
+        if(path.extension() != ".obj") {
+            LOG_ENGINE("Not an OBJ file.");
+            LOG_CONSOLE("Not an OBJ file.");
+            return;
+        }
+        LOG_INFO("Loaded obj model from path {}.",chosenPath);
         LOG_CONSOLE("Chosen file: \"%s\"",chosenPath);
         meshmodelscene->LoadOBJModel(chosenPath, texturedOption);
         meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);

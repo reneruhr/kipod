@@ -30,7 +30,7 @@ public:
 
 
     void Bind() const;
-    void LoadTexture(const char path[]);
+    void LoadTexture(std::filesystem::path path);
     void RenderToTexture(GLuint& frame_buffer);
     void RenderToTexture2(GLuint &frame_buffer);
     TexturedSquare* Square(){ return textured_square_.get(); }

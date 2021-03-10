@@ -61,7 +61,7 @@ class MeshModelOpenGLScene :
 protected:
         virtual void Receive(std::shared_ptr<kipod::Event> event) override;
 
-        void LoadOBJModel(std::string fileName, bool textures = false);
+        void LoadOBJModel(std::filesystem::path path, bool textures = false);
         void LoadPrimitive(Primitive primitive, int numberPolygons=0);
 
         MeshModel* GetActiveModel();

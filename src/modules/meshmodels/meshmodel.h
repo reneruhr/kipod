@@ -24,7 +24,7 @@ protected :
     std::unique_ptr<BoundingBoxData> boundingBoxData_;
 public:
     MeshModel() = default;
-    MeshModel(std::string fileName, bool textured = false);
+    MeshModel(std::filesystem::path path, bool textured = false);
     virtual ~MeshModel(void);
     MeshModel(MeshModel&&) = default;
     MeshModel& operator=(MeshModel&&) = default;

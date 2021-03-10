@@ -335,9 +335,9 @@ void MeshModelOpenGLScene::AddModel(MeshModel && model)
                     std::forward<MeshModel>(model)));
 }
 
-void MeshModelOpenGLScene::LoadOBJModel(std::string fileName, bool textured)
+void MeshModelOpenGLScene::LoadOBJModel(std::filesystem::path path, bool textured)
 {
-    MeshModel *model = new MeshModel(fileName, textured);
+    MeshModel *model = new MeshModel(path, textured);
     if(!model->Valid()) return;
     model->SetUniformMaterial();
 

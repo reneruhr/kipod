@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include <filesystem>
 
 struct Image{
     int width_ = 0;
@@ -17,7 +18,7 @@ struct Image{
 class ImageLoader{
 public:
 
-static Image&& Kipod_LoadImage(const char path[]);
+static Image&& Kipod_LoadImage(std::filesystem::path path);
 
 static void FreeImage(Image* old_image);
 };
