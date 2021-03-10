@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
-#include "initshader.h"
+#include "opengl/opengl_shader.h"
 #include <string>
 #include <unordered_map>
 #include "render_uniform.h"

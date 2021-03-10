@@ -1,6 +1,6 @@
 #include "core.h"
 #include "softrenderer.h"
-#include "render/initshader.h"
+#include "render/opengl/opengl_shader.h"
 #include "graphicsalgorithms.h"
 #include <cmath>
 

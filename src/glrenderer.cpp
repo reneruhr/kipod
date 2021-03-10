@@ -2,7 +2,7 @@
 //#include "scene.h"
 #include "modules/meshmodels/meshmodel.h"
 #include "glrenderer.h"
-#include "render/initshader.h"
+#include "render/opengl/opengl_shader.h"
 #include "pointset.h"
 
 #include <numeric>

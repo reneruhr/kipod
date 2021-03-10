@@ -3,7 +3,7 @@
 //#include "scene.h"
 #include "modules/meshmodels/meshmodel.h"
 #include "glrenderer.h"
-#include "render/initshader.h"
+#include "render/opengl/opengl_shader.h"
 
 
 void Renderer::SetCameraTransform(const mat4& cTransform){

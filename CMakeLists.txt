@@ -148,8 +148,7 @@ add_executable(kipod
   src/engine/engine_console.cpp
 
 
-  src/render/initshader.h
-  src/render/initshader.cpp
+
   src/render/render_engine.h
   src/render/render_engine.cpp
   src/render/render_shader.h
@@ -194,6 +193,8 @@ add_executable(kipod
   src/render/opengl/opengl_buffer_450.cpp
   src/render/opengl/opengl_buffer_410.h
   src/render/opengl/opengl_buffer_410.cpp
+  src/render/opengl/opengl_shader.h
+  src/render/opengl/opengl_shader.cpp
 
 
   src/pointset.h
