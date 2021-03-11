@@ -17,14 +17,13 @@ class Shader
 
 public:
     Shader() = default;
-
-    Shader(std::string vert, std::string frag)
+    Shader(std::string vert, std::string frag, std::string geom = {})
     {
-        program_ = Program(vert,frag);
-    }
-    Shader(std::string vert, std::string frag, std::string geom)
-    {
-        program_ = Program(vert, frag, geom);
+        try {
+            program_ = Program(vert, frag, geom);
+        }  catch (ShaderException& e) {
+           exit(EXIT_FAILURE);
+        }
     }
 
     operator GLuint()  const {
@@ -36,17 +35,19 @@ public:
         Shader::Use(program_);
     }
 
-    static GLuint Program(std::string vert, std::string frag)
+    static GLuint Program(std::string vert, std::string frag, std::string geom={})
     {
-        GLuint program = InitShader((path+vert).c_str(), (path+frag).c_str() );
+        GLuint program;
+        try {
+            program = InitShader((path+vert).c_str(),
+                                        (path+frag).c_str(),
+                                        geom.empty() ? nullptr : (path+geom).c_str()
+                                        );
+        }  catch (ShaderException& e) {
+            std::cout << e.what();
+            throw(e);
+        }
         LOG_ENGINE("Created Shader program {}.", program);
-        return program;
-    }
-
-    static GLuint Program(std::string vert, std::string frag, std::string geom)
-    {
-        GLuint program = InitShader((path+vert).c_str(), (path+geom).c_str(), (path+frag).c_str() );
-        LOG_ENGINE("Created Shader program with Geometry Shader {}.", program);
         return program;
     }
 

@@ -22,6 +22,7 @@
 
 #include <filesystem>
 #include <type_traits>
+#include <exception>
 
 
 #include "utils/vec.h"
