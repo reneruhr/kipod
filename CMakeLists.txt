@@ -29,6 +29,9 @@ file(GLOB IconsFontAwesome
     "external_libs/IconsFontAwesome/*.h"
 )
 
+set(SIEGEL2021 ${CMAKE_SOURCE_DIR}/src/math/siegel2021/)
+include_directories(${SIEGEL2021_DIR})
+
 add_executable(kipod
 
   src/main.cpp

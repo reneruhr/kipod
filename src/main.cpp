@@ -4,6 +4,8 @@
 #include "modules/shapes/shapes_module.h"
 #include "modules/quasicrystals/quasicrystals_module.h"
 
+#include "math/siegel2021/siegel2021.h"
+#include "math/siegel2021/MatrixTest.h"
 
 //#include "scene.h"
 //#include "gui.h"
@@ -128,6 +130,8 @@ using namespace std;
 int main( int argc, char **argv )
 {
     bool appmode = true;
+
+    siegel2021::RunMatrixTest();
 
     if(appmode){
         int width = 1024, height = 768;
