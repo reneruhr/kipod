@@ -9,7 +9,7 @@ namespace kipod::MeshModels{
 
 MeshModel::MeshModel(std::filesystem::path path, bool textured)
 {
-    name_ = path.stem();
+    name_ = path.stem().string();
     LoadFile(path,
                     vertices_vector, indices_vector,
                     normals_vector, nindices_vector,
