@@ -156,7 +156,7 @@ private:
     const Scalar& B_;
     void check_index(int i, int j) const { assert(0 <= i && i < A_.Rows() && 0 <= j && j < A_.Columns()); }
 public:
-    using value_type = std::common_type_t<typename Mat::value_type, typename Scalar>;
+    using value_type = std::common_type_t<typename Mat::value_type, typename get_value_type<Scalar>::type>;
 
     MatrixScalarProduct(const Mat& A, const Scalar& B) : A_(A), B_(B){}
 
@@ -178,7 +178,7 @@ private:
     const Mat& B_;
     void check_index(int i, int j) const { assert(0 <= i && i < B_.Rows() && 0 <= j && j < B_.Columns()); }
 public:
-    using value_type = std::common_type_t<typename Mat::value_type, typename Scalar>;
+    using value_type = std::common_type_t<typename Mat::value_type, typename get_value_type<Scalar>::type>;
 
     ScalarMatrixProduct(const Scalar& A, const Mat& B) : A_(A), B_(B) {}
 
@@ -200,7 +200,7 @@ private:
     const Scalar& B_;
     void check_index(int i, int j) const { assert(0 <= i && i < A_.Rows() && 0 <= j && j < A_.Columns()); }
 public:
-    using value_type = std::common_type_t<typename Mat::value_type, typename Scalar>;
+    using value_type = std::common_type_t<typename Mat::value_type, typename get_value_type<Scalar>::type>;
 
     MatrixScalarDivision(const Mat& A, const Scalar& B) : A_(A), B_(B) {}
 
@@ -222,7 +222,7 @@ private:
     const Mat& B_;
     void check_index(int i, int j) const { assert(0 <= i && i < B_.Rows() && 0 <= j && j < B_.Columns()); }
 public:
-    using value_type = std::common_type_t<typename Mat::value_type, typename Scalar>;
+    using value_type = std::common_type_t<typename Mat::value_type, typename get_value_type<Scalar>::type>;
 
     ScalarMatrixDivision(const Scalar& A, const Mat& B) : A_(A), B_(B) {}
 

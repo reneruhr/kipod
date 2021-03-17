@@ -1,8 +1,20 @@
 #pragma once
+#include <type_traits>
 
 namespace siegel2021{
 template <typename Scalar, int Rows, int Column>
 class Matrix;
+
+ template <typename T, typename = void>
+ struct get_value_type {
+     using type = T;
+ };
+
+ template <typename T>
+ struct get_value_type<T, std::void_t<typename T::value_type>> {
+     using type = typename T::value_type;
+ };
+
 
 template <typename MatrixClass>
 class TransposedView;

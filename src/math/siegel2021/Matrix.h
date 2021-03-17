@@ -60,8 +60,8 @@ public:
 				data_[MatrixIndex(i, j)] = source(i, j);
 	}
 
-	template <typename Scalar>
-	Matrix& operator/=(const Scalar& scalar)
+    template <typename T>
+    Matrix& operator/=(const T& scalar)
 	{
 		for (int i = 0; i < Rows(); ++i)
 			for (int j = 0; j < Columns(); ++j)
@@ -69,8 +69,8 @@ public:
 		return *this;
 	}
 
-	template <typename Scalar>
-	Matrix& operator*=(const Scalar& scalar)
+    template <typename T>
+    Matrix& operator*=(const T& scalar)
 	{
 		for (int i = 0; i < Rows(); ++i)
 			for (int j = 0; j < Columns(); ++j)

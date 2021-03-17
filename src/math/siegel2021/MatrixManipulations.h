@@ -17,7 +17,8 @@ inline
 decltype(auto) SubMatrix(const Mat& A, int p, int q)
     {
         assert(Rows(A) > 1 && Columns(A) > 1);
-        Matrix< Mat::value_type, Mat::rows_-1, Mat::columns_-1> submatrix;
+        using value_type = typename Mat::value_type;
+        Matrix< value_type, Mat::rows_-1, Mat::columns_-1> submatrix;
         
         int row_cofac = 0, col_cofac = 0;
         for (int row = 0; row < Rows(A); row++){
@@ -33,13 +34,7 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
         return submatrix;
     }
 
-    template <typename Mat, typename std::enable_if_t < std::is_base_of_v<MatrixExpression<Mat>, Mat>, void* > = nullptr >
-    inline
-    decltype(auto) Determinant(const Mat& A)
-    {
-        assert(Rows(A) == Columns(A));
-        return DeterminantFunctor<Mat, Mat::rows_>()(A);
-    }
+
 
 
     template <typename Mat, int Dim>
@@ -47,7 +42,8 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     {
         decltype(auto) operator()(const Mat& A)
         {
-            Mat::value_type det = 0;
+            using value_type = typename Mat::value_type;
+            value_type det = 0;
             int sign = 1;
             for (int i = 0; i < Columns(A); i++) {
                 auto submatrix = SubMatrix(A, 0, i);
@@ -59,7 +55,7 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     };
 
     template <typename Mat>
-    struct DeterminantFunctor<typename Mat, 1>
+    struct DeterminantFunctor< Mat, 1>
     {
         decltype(auto) operator()(const Mat& A)
         {
@@ -68,7 +64,7 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     };
 
     template <typename Mat>
-    struct DeterminantFunctor<typename Mat, 2>
+    struct DeterminantFunctor<Mat, 2>
     {
         decltype(auto) operator()(const Mat& A)
         {
@@ -77,7 +73,7 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     };
 
     template <typename Mat>
-    struct DeterminantFunctor<typename Mat, 3>
+    struct DeterminantFunctor<Mat, 3>
     {
         decltype(auto) operator()(const Mat& A)
         {
@@ -90,7 +86,7 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
 
 
     template <typename Mat>
-    struct DeterminantFunctor<typename Mat, 4>
+    struct DeterminantFunctor<Mat, 4>
     {
         decltype(auto) operator()(const Mat& A)
         {
@@ -110,15 +106,23 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
         }
     };
 
- 
+    template <typename Mat, typename std::enable_if_t < std::is_base_of_v<MatrixExpression<Mat>, Mat>, void* > = nullptr >
+    inline
+    decltype(auto) Determinant(const Mat& A)
+        {
+            assert(Rows(A) == Columns(A));
+            return DeterminantFunctor<Mat, Mat::rows_>()(A);
+        }
+
     template <typename Mat, int Dim>
     struct InverseFunctor
     {
         decltype(auto) operator()(const Mat& A)
         {
-            auto det = Determinant(A);
+            using value_type = typename Mat::value_type;
+            value_type det = Determinant(A);
             assert(det != 0);
-            Matrix< Mat::value_type, Mat::rows_, Mat::columns_> inverse;
+            Matrix< value_type, Mat::rows_, Mat::columns_> inverse;
 
             for (int row = 0; row < Rows(A); row++) {
                 for (int col = 0; col < Columns(A); col++) {
@@ -131,26 +135,28 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     };
 
     template <typename Mat>
-    struct InverseFunctor<typename Mat, 2>
+    struct InverseFunctor<Mat, 2>
     {
         decltype(auto) operator()(const Mat& A)
         {
-            auto det = Determinant(A);
+            using value_type = typename Mat::value_type;
+            value_type det = Determinant(A);
             assert(det != 0);
-            Matrix< Mat::value_type, Mat::rows_, Mat::columns_> inverse = { A(1,1) / det, -A(0,1) / det,
+            Matrix< value_type, Mat::rows_, Mat::columns_> inverse = { A(1,1) / det, -A(0,1) / det,
                                                                            -A(1,0) / det, A(0,0) / det };
             return inverse;
         }
     };
 
     template <typename Mat>
-    struct InverseFunctor<typename Mat, 3>
+    struct InverseFunctor<Mat, 3>
     {
         decltype(auto) operator()(const Mat& A)
         {
-            auto det = Determinant(A);
+            using value_type = typename Mat::value_type;
+            value_type det = Determinant(A);
             assert(det != 0);
-            Matrix< Mat::value_type, Mat::rows_, Mat::columns_> inverse;
+            Matrix< value_type, Mat::rows_, Mat::columns_> inverse;
             inverse(0,0) = +(A(1,1) * A(2,2) - A(2,1) * A(1,2));
             inverse(1,0) = -(A(1,0) * A(2,2) - A(2,0) * A(1,2));
             inverse(2,0) = +(A(1,0) * A(2,1) - A(2,0) * A(1,1));
@@ -167,11 +173,12 @@ decltype(auto) SubMatrix(const Mat& A, int p, int q)
     };
 
     template <typename Mat>
-    struct InverseFunctor<typename Mat, 4>
+    struct InverseFunctor<Mat, 4>
     {
         decltype(auto) operator()(const Mat& A)
         {
-            Matrix< Mat::value_type, Mat::rows_, Mat::columns_> inverse;
+            using value_type = typename Mat::value_type;
+            Matrix< value_type, Mat::rows_, Mat::columns_> inverse;
 
             auto subfactor00 = A(2,2) * A(3,3) - A(3,2) * A(2,3);
             auto subfactor01 = A(2,1) * A(3,3) - A(3,1) * A(2,3);
