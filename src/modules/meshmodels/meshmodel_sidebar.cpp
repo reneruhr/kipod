@@ -1,5 +1,5 @@
 #include "meshmodel_sidebar.h"
-#include "meshmodel_opengl_scene.h"
+#include "meshmodel_scene.h"
 #include "../../engine/engine_gui.h"
 
 namespace kipod::MeshModels{
@@ -29,7 +29,7 @@ void MeshmodelSidebar::Help()
 }
 
 void MeshmodelSidebar::ModelControl(){
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     LoadPrimitive();
     LoadOBJfile();
@@ -58,7 +58,7 @@ void MeshmodelSidebar::LightControl()
 
 void MeshmodelSidebar::LightViewOptions()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Colors"]);
     kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Textures"]);
@@ -69,7 +69,7 @@ void MeshmodelSidebar::LightViewOptions()
 
 void MeshmodelSidebar::LightOptions()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     if(meshmodelscene->HasLight()){
         static unsigned int selectedLight = 0;
         for (unsigned int n = 0; n <  meshmodelscene->lights_.size(); n++)
@@ -95,7 +95,7 @@ void MeshmodelSidebar::LightOptions()
 
 void MeshmodelSidebar::LightAdd()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     static ImVec4 clight = ImVec4(50.0f / 255.0f, 50.0f / 255.0f, 50.0f / 255.0f, 1.0f);
     const char* lightChoices[] = { "Ambient", "Diffuse", "Specular"};
@@ -126,7 +126,7 @@ void MeshmodelSidebar::LightAdd()
 
 
 void MeshmodelSidebar::LoadPrimitive(){
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     const char* primitiveChoice[] = { "Cube", "Tetrahedron", "Sphere"};
     static int primitiveChoice_current = 0;
@@ -155,7 +155,7 @@ void MeshmodelSidebar::LoadPrimitive(){
 }
 
 void MeshmodelSidebar::LoadOBJfile(){
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     static bool texturedOption = true;
     static ImGuiFs::Dialog dlg;
@@ -185,7 +185,7 @@ void MeshmodelSidebar::LoadOBJfile(){
 
 void MeshmodelSidebar::ModelList()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     static int selectedModel = 0;
     for (int n = 0; n <  meshmodelscene->NumberOfModels(); n++)
     {
@@ -201,7 +201,7 @@ void MeshmodelSidebar::ModelList()
 
 void MeshmodelSidebar::ModelViewOptions()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Normals"]);
     ImGui::SameLine(); kipod::HelpMarker("N Key");
@@ -214,7 +214,7 @@ void MeshmodelSidebar::ModelViewOptions()
 }
 
 void MeshmodelSidebar::ModelMoveOptions(){
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
         ImGui::Text("Move Model");  ImGui::SameLine(); kipod::HelpMarker("Arrow & Page Keys");
@@ -225,7 +225,7 @@ void MeshmodelSidebar::ModelMoveOptions(){
 
 void MeshmodelSidebar::ModelScaleOptions()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
         kipod::Gui::Scale(*model->local_);
@@ -235,7 +235,7 @@ void MeshmodelSidebar::ModelScaleOptions()
 
 void MeshmodelSidebar::ModelMaterialOptions()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
         kipod::Gui::Color(*model->mat_);
@@ -245,7 +245,7 @@ void MeshmodelSidebar::ModelMaterialOptions()
 
 void MeshmodelSidebar::CameraList()
 {
-    auto meshmodelscene = std::static_pointer_cast<MeshModelOpenGLScene>(scene_);
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     ImGui::Text("Camera"); ImGui::SameLine();
     if (ImGui::Button("Add##Camera")){
         meshmodelscene->AddCamera({{0.0,0.0,3.0}});
@@ -285,7 +285,7 @@ void MeshmodelSidebar::CameraViewOption()
 {
     static bool setup = true;
     static kipod::MultipleModeToggle camera_projection_toggle({"Orthographic", "Projective"});
-    auto cam = std::static_pointer_cast<MeshModelOpenGLScene>(scene_)->GetActiveCamera();
+    auto cam = std::static_pointer_cast<MeshModelScene>(scene_)->GetActiveCamera();
     camera_projection_toggle.state_ = cam->projection_type_==kipod::RenderCamera::ProjectionType::ORTHOGONAL ? 0 : 1;
     if(setup){
         camera_projection_toggle.delegate_  = {};

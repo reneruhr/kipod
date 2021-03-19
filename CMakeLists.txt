@@ -5,6 +5,7 @@ project(kipod)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
 #add_definitions(-std=c++17
 #                               -Wall
 #                              -march=native)
@@ -31,6 +32,7 @@ file(GLOB IconsFontAwesome
 
 set(SIEGEL2021 ${CMAKE_SOURCE_DIR}/src/math/siegel2021/)
 include_directories(${SIEGEL2021_DIR})
+
 
 add_executable(kipod
 
@@ -60,10 +62,13 @@ add_executable(kipod
   src/math/minkowski_embedding.cpp
 
 
-  src/modules/meshmodels/meshmodel_opengl_module.h
-  src/modules/meshmodels/meshmodel_opengl_module.cpp
-  src/modules/meshmodels/meshmodel_opengl_scene.h
-  src/modules/meshmodels/meshmodel_opengl_scene.cpp
+  src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
+  src/modules/meshmodels/opengl/meshmodel_opengl_scene.cpp
+
+  src/modules/meshmodels/meshmodel_module.h
+  src/modules/meshmodels/meshmodel_module.cpp
+  src/modules/meshmodels/meshmodel_scene.h
+  src/modules/meshmodels/meshmodel_scene.cpp
   src/modules/meshmodels/meshmodel_sidebar.h
   src/modules/meshmodels/meshmodel_sidebar.cpp
   src/modules/meshmodels/meshmodel_console.h
@@ -200,44 +205,6 @@ add_executable(kipod
   src/render/opengl/opengl_shader.cpp
 
 
-  src/pointset.h
-  src/pointset.cpp
-
-
-  src/renderer.h
-  src/renderer.cpp
-
-  src/glrenderer.h
-  src/glrenderer.cpp
-
-  src/softrenderer.h
-  src/softrenderer.cpp
-
-  src/scene.h
-  src/scene.cpp
-
-  src/gui.h
-  src/gui.cpp
-
-  src/guielement.h
-  src/guielement.cpp
-
-  src/guimodule.h
-  src/guimodule.cpp
-
-  src/guimathcontrol.h
-  src/guimathcontrol.cpp
-
-
-  src/inputmanager.h
-  src/inputmanager.cpp
-
-  src/eventmanager.h
-  src/eventmanager.cpp
-
-  src/quacry.h
-  src/quacry.cpp
-
   ${imgui}
 )
 
@@ -249,7 +216,7 @@ add_executable(kipod
     target_link_libraries(kipod ${OPENGL_LIBRARIES})
 
     find_package(GLEW)
-    find_package(glfw3 3.3)
+    find_package(glfw3)
     find_package(glm)
 
     if(GLEW_FOUND)
