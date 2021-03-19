@@ -14,13 +14,13 @@ It is departmentalized in the following modules:
 * Quasicrystals as cut and project sets from lattices in 4D and 2D internal/external projections.
   
 #### Architecture
-Kipod is written in C++17. Rendering happens with OpenGL via GLEW. The UI is handled by GLFW and Dear ImGUI.
+Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by GLFW and Dear ImGUI.
 
 
 
 ## Instructions for building from Source for Linux, Mac, Windows:
 
-Building uses cmake and git to receive the source.
+Building uses cmake and git to receive the source. Dependencies (GLM, GLFW and GLEW) are installed via a package manager (Unix) or can be cloned as submodules.
 
 ### Ubuntu
 
@@ -31,8 +31,6 @@ Install necessary packages:
 ~$ sudo apt install build-essential libgl1-mesa-dev cmake git 
 ~$ sudo apt install libglfw3-dev glew-utils libglm-dev
 ```
-
-
 
 #### Step 2: 
 Clone and Building Instruction:
@@ -48,17 +46,17 @@ Clone and Building Instruction:
 ```
 
 
-### MacOS (Intel CPU)
+### MacOS (Intel/ARM)
 
 #### Step 1
-Install homebrew if needed (which may result in automatically installing the xcode command line developer tools):
+Install homebrew (https://brew.sh/) and xcode command line developer tools:
 
 ```console
+~$ xcode-select --install
 ~$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-
 #### Step 2
-Then install cmake and git and necessary libraries glew, glfw3, glm:
+Then install cmake, git and the necessary libraries glew, glfw3, glm:
 
 ```console
 ~$ brew install git cmake glew glfw3 glm
@@ -68,18 +66,18 @@ Then install cmake and git and necessary libraries glew, glfw3, glm:
 See Step 2 Ubuntu.
 
 
-### Windows
+### Windows (Visual Studio 2019)
 
 #### Step 1
 Get git e.g. via https://gitforwindows.org/.
-The required libraries are included as git submodules. Use the tag --recursive to add these:
+The required libraries are included as git submodules. Use the tag --recursive to add these when cloning:
 
 ```console
 ~$ git clone --recursive https://github.com/reneruhr/kipod.git
 ```
 
 #### Step 2
-Get Visual Studio 2019 and its "C++ CMake tools for Windows" component. It is already installed with the 
+It is convenient to use the Visual Studio 2019 "C++ CMake tools for Windows" component. It is already installed with the 
 "Desktop development with C++" and "Linux Development with C++" workload.
 Opening the folder will detect the cmake file automatically and you can compile after selecting the "Startup Item" kipod.exe.
 
