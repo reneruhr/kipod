@@ -11,8 +11,11 @@ protected:
     int width_;
     std::shared_ptr<RenderScene> scene_;
     Sidebar(std::shared_ptr<RenderScene> scene) : scene_(scene) {}
+
     virtual void Draw();
     virtual void SideBarContent() = 0;
+public:
+    virtual ~Sidebar() {}
 };
 
 }
