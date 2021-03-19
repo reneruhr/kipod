@@ -1,9 +1,9 @@
 #pragma once
-#include "../../core.h"
-#include "../../kipod.h"
+#include "../../../core.h"
+#include "../../../kipod.h"
 
 
-namespace kipod::SoftRenderer{
+namespace kipod::MeshModels{
 class Light;
 class MaterialStruct;
 

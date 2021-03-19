@@ -4,9 +4,11 @@
 #include "meshmodel.h"
 #include "meshmodel_primitive.h"
 #include "opengl/meshmodel_opengl_scene.h"
+#include "softrenderer/softrenderer_scene.h"
 
 namespace kipod::MeshModels{
-class MeshModelOpenGLScene;
+class OpenGLScene;
+class SoftRendererScene;
 
 class MeshModelScene :
         public kipod::Listener,
@@ -14,10 +16,13 @@ class MeshModelScene :
         public kipod::RenderScene {
         friend class MeshmodelSidebar;
         friend class MeshModelModule;
-        friend class MeshModelOpenGLScene;
+        friend class OpenGLScene;
+        friend class SoftRendererScene;
 
 protected:
-        std::unique_ptr<MeshModelOpenGLScene> opengl_impl_;
+        std::unique_ptr<OpenGLScene> opengl_impl_;
+        std::unique_ptr<SoftRendererScene> softrenderer_impl_;
+
 
         std::unique_ptr<kipod::RenderObject> coordinate_axis_;
         std::unique_ptr<kipod::RenderObject> grid_;

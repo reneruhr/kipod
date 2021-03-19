@@ -1,7 +1,8 @@
 #pragma once
-#include "../../render/render_light.h"
+#include "../../../render/render_light.h"
 
-namespace kipod::SoftRenderer{
+
+namespace kipod::MeshModels{
 
 typedef struct MaterialStruct {
     vec4 ambient;

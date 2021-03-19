@@ -18,8 +18,22 @@ namespace kipod{
 
 class RenderEngine
 {
+    RenderEngine(){}
+
+    const static inline std::vector<std::string> APIs_ = {"OpenGL", "SoftRenderer"};
+    static inline int active_API_ = 0;
+
 public:
-    RenderEngine() {}
+    RenderEngine(RenderEngine&) = delete;
+    void operator=(RenderEngine&)  = delete;
+    ~RenderEngine();
+
+    static RenderEngine& Get(){  static RenderEngine RenderEngine;   return RenderEngine;  }
+    static std::string ActiveAPI(){  return Get().APIs_[active_API_];  }
+
+    static void Draw(RenderObject& object){
+
+    }
 
 };
 

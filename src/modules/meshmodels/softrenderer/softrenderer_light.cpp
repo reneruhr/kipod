@@ -1,6 +1,6 @@
 #include "softrenderer_light.h"
 
-namespace kipod::SoftRenderer{
+namespace kipod::MeshModels{
 
 float Light::attenuation(vec3 target)
 {

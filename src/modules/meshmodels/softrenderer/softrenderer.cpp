@@ -2,7 +2,7 @@
 #include "softrenderer_light.h"
 #include "softrenderer_graphicsalgorithms.h"
 
-namespace kipod::SoftRenderer{
+namespace kipod::MeshModels{
 
 using namespace std::placeholders;
 #define INDEX(width,x,y,c) (x+y*width)*3+c

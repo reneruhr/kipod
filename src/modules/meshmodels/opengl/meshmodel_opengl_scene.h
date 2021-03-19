@@ -3,20 +3,15 @@
 
 #include "../meshmodel.h"
 #include "../meshmodel_primitive.h"
-
+#include "../meshmodel_API_scene.h"
 
 namespace kipod::MeshModels{
 
 class MeshModelScene;
-class MeshModelOpenGLScene {
+class OpenGLScene : public MeshModelAPIScene{
         friend class MeshmodelSidebar;
         friend class MeshModelModule;
         friend class MeshModelScene;
-
-        MeshModelScene* scene_;
-        std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
-
-        void CreateMeshModelLayout();
 
         kipod::GLRenderLayout&& CreateLayoutNormals(kipod::GLRenderLayout*);
 
@@ -24,6 +19,7 @@ class MeshModelOpenGLScene {
         void BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject &model, const kipod::RenderCamera &camera);
         void BindTextureUniforms(kipod::Shader& shader, const kipod::Texture *texture);
         void BindNormalUniforms(kipod::Shader& shader, const float length);
+        void BindLightUniforms(kipod::Shader& shader);
 
         void SetUniform(kipod::RenderCamera *camera, kipod::RenderObject *model);
         void SetUniformNormal(MeshModel *model, kipod::RenderCamera *camera);
@@ -36,24 +32,29 @@ class MeshModelOpenGLScene {
         void SetupShaderColoredTriangles();
         void SetupShaderTexturedTriangles();
 
-        void DrawBoundingBox();
-        void SetupOptions();
-
 protected:
-        void Setup() ;
-        void Draw();
 
-        void CreateMeshModelLayout(MeshModel *model);
-        void CreatePrimitiveModelLayout(PrimMeshModel *model);
-        void DrawGrid(RenderObject *grid, kipod::RenderCamera *camera);
-        void CreateGridLayout(RenderObject *grid, std::vector<vec3> &vertices);
-        void DrawCoordinateAxis(RenderObject *coordinate_axis, kipod::RenderCamera *camera);
-        void CreateCoordinateAxisLayout(RenderObject *coordinate_axis, std::vector<vec3> &vertices, std::vector<vec3> &colors);
-        void CreateBoundingBoxLayout(PrimMeshModel *bounding_box);
-        void BindLightUniforms(kipod::Shader &shader);
+
+
+
+
+        void Setup() override;
+        void Draw() override;
+
+        void CreateMeshModelLayout(MeshModel *model) override;
+        void CreatePrimitiveModelLayout(PrimMeshModel *model) override;
+        void CreateBoundingBoxLayout() override;
+
+        void CreateGridLayout(std::vector<vec3> &vertices) override;
+        void CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors) override;
+
+
+        void DrawBoundingBox(MeshModel *model, RenderCamera *camera)  override;
+        void DrawGrid(RenderCamera *camera) override;
+        void DrawCoordinateAxis(RenderCamera *camera) override;
 
 public:
-       MeshModelOpenGLScene(MeshModelScene* scene): scene_(scene) {};
+        OpenGLScene(MeshModelScene* scene): MeshModelAPIScene(scene) {};
 };
 
 }

@@ -65,6 +65,21 @@ add_executable(kipod
   src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
   src/modules/meshmodels/opengl/meshmodel_opengl_scene.cpp
 
+  src/modules/meshmodels/softrenderer/softrenderer_scene.h
+  src/modules/meshmodels//softrenderer/softrenderer_scene.cpp
+  src/modules/meshmodels/softrenderer/softrenderer.h
+  src/modules/meshmodels/softrenderer/softrenderer.cpp
+  src/modules/meshmodels/softrenderer/softrenderer_graphicsalgorithms.h
+  src/modules/meshmodels/softrenderer/softrenderer_graphicsalgorithms.cpp
+  src/modules/meshmodels/softrenderer/softrenderer_camera.h
+  src/modules/meshmodels/softrenderer/softrenderer_camera.cpp
+  src/modules/meshmodels/softrenderer/softrenderer_light.h
+  src/modules/meshmodels/softrenderer/softrenderer_light.cpp
+
+
+  src/modules/meshmodels/meshmodel_api_scene.h
+
+
   src/modules/meshmodels/meshmodel_module.h
   src/modules/meshmodels/meshmodel_module.cpp
   src/modules/meshmodels/meshmodel_scene.h
@@ -95,22 +110,7 @@ add_executable(kipod
   src/modules/shapes/shapes_sidebar.cpp
 
 
-  src/modules/softrenderer/softrenderer_scene.h
-  src/modules/softrenderer/softrenderer_scene.cpp
-  src/modules/softrenderer/softrenderer_module.h
-  src/modules/softrenderer/softrenderer_module.cpp
-  src/modules/softrenderer/softrenderer_sidebar.h
-  src/modules/softrenderer/softrenderer_sidebar.cpp
-  src/modules/softrenderer/softrenderer.h
-  src/modules/softrenderer/softrenderer.cpp
-  src/modules/softrenderer/softrenderer_console.h
-  src/modules/softrenderer/softrenderer_console.cpp
-  src/modules/softrenderer/softrenderer_graphicsalgorithms.h
-  src/modules/softrenderer/softrenderer_graphicsalgorithms.cpp
-  src/modules/softrenderer/softrenderer_camera.h
-  src/modules/softrenderer/softrenderer_camera.cpp
-  src/modules/softrenderer/softrenderer_light.h
-  src/modules/softrenderer/softrenderer_light.cpp
+
 
   src/modules/quasicrystals/quasicrystals_pointset.h
   src/modules/quasicrystals/quasicrystals_pointset.cpp

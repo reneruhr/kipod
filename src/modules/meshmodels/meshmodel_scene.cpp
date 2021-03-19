@@ -21,7 +21,7 @@ void MeshModelScene::Setup()
     AddLight({kipod::LightSource::SPECULAR, vec4(5.0f,10.0f,0.0f,1.0f), vec4(1.0f)});
     SetActiveCamera(0);
 
-    opengl_impl_ = std::make_unique<MeshModelOpenGLScene>(this);
+    opengl_impl_ = std::make_unique<OpenGLScene>(this);
 
     opengl_impl_->Setup();
 
@@ -258,7 +258,7 @@ void MeshModelScene::SetupCoordinateAxis()
                                   vec3(0.5,0.5,1.0),vec3(0,0,1),
                                   };
 
-    opengl_impl_->CreateCoordinateAxisLayout(coordinate_axis_.get(), vertices, colors);
+    opengl_impl_->CreateCoordinateAxisLayout(vertices, colors);
 }
 
 void MeshModelScene::SetupGrid()
@@ -275,7 +275,7 @@ void MeshModelScene::SetupGrid()
         vertices.push_back(vec3(i,n,0));
     }
 
-    opengl_impl_->CreateGridLayout(grid_.get(), vertices);
+    opengl_impl_->CreateGridLayout(vertices);
 }
 
 
