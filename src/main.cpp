@@ -1,6 +1,6 @@
 #include "kipod.h"
 
-#include "modules/meshmodels/meshmodel_opengl_module.h"
+#include "modules/meshmodels/meshmodel_module.h"
 #include "modules/shapes/shapes_module.h"
 #include "modules/quasicrystals/quasicrystals_module.h"
 
