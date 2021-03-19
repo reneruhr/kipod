@@ -2,6 +2,7 @@ resources/tilings
 resources/uv_examples
 resources/obj_examples
 logs/
+old/
 out/
 .vs/
 build/
