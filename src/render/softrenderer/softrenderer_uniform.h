@@ -3,12 +3,11 @@
 
 namespace kipod{
 
-class SoftRendererUniform
+struct SoftRendererUniform
 {
 public:
     RenderCamera* camera_;
     mat4 object_transform_;
-    SoftRendererUniform();
 };
 
 }

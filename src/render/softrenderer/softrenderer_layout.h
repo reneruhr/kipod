@@ -11,7 +11,7 @@ class SoftRenderLayout : public RenderLayout
     std::shared_ptr<SoftrendererBuffer> buffer_;
 
 public:
-    SoftRenderLayout();
+    SoftRenderLayout()=default;
     ~SoftRenderLayout() = default;
     virtual void Draw() override;
     virtual void Setup() override {}

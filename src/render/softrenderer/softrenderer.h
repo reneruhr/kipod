@@ -3,6 +3,7 @@
 #include "../../kipod.h"
 #include "softrenderer_uniform.h"
 #include "softrenderer_layout.h"
+#include "softrenderer_framebuffer.h"
 
 
 namespace kipod{
@@ -16,6 +17,9 @@ enum LineAlgo {
 
 class SoftRenderer
 {
+    std::unique_ptr<SoftRendererFramebuffer> framebuffer_;
+    std::unique_ptr<SoftRendererUniform> uniform_;
+
     float *m_outBuffer; // 3*width*height
     int *m_zbuffer; // width*height
 
@@ -38,11 +42,11 @@ class SoftRenderer
     std::function<void(int*, int*)> drawStraightLineFunction;
     std::function<void(int, int, float*)> drawPointWithColorFunction;
 
-    SoftRendererUniform* uniform_;
+
 
 public:
     SoftRenderer(int width, int height);
-    ~SoftRenderer() { delete uniform_; };
+    ~SoftRenderer() {};
 
     void Init();
 
@@ -50,6 +54,7 @@ public:
 
     void DrawTriangles(RenderObject* model,
                        bool wireframeMode = true, bool clippingMode=true);
+
     void DrawColoredTriangles(RenderObject* model,
                               const std::vector<RenderMaterial> *colors, const std::vector<unsigned int> *cindices,
                               const std::vector<RenderLight*> &lights,

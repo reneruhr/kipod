@@ -1,5 +1,6 @@
 #include "softrenderer_graphicsalgorithms.h"
 
+namespace kipod{
 graphicsalgorithms::graphicsalgorithms()
 {
 
@@ -846,3 +847,4 @@ void zBufferAlgorithm(int *zBuffer, float *frameBuffer, Triangle triangle, int w
 }
 
 
+}

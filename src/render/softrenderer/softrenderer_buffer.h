@@ -22,12 +22,12 @@ public:
 
     vec4&& Vertex(int triangle, int vertex)
     {
-        return vec4((*vertices_)[(*indices_)[triangle+vertex]],1);
+        return std::move(vec4((*vertices_)[(*indices_)[triangle+vertex]],1));
     }
 
     vec4&& Normal(int triangle, int vertex)
     {
-        return vec4((*normals_)[(*nindices_)[triangle+vertex]],0);
+        return std::move(vec4((*normals_)[(*nindices_)[triangle+vertex]],0));
     }
 
     bool HasNormals(){

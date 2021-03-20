@@ -1,6 +1,8 @@
 #pragma once
 #include "../../core.h"
 
+
+namespace kipod{
 class graphicsalgorithms
 {
 public:
@@ -255,3 +257,4 @@ float edgeFunction(const vec2& edgeP, const vec2& edgeQ, const vec2& point);
 bool inTriangle(const vec2 triangle[3], const vec2& point, vec3& coords);
 void bbox2d(const vec2 triangle[3], vec4& bbox);
 
+}
