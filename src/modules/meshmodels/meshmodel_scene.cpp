@@ -22,6 +22,7 @@ void MeshModelScene::Setup()
     SetActiveCamera(0);
 
     opengl_impl_ = std::make_unique<OpenGLScene>(this);
+    softrenderer_impl_ = std::make_unique<SoftRendererScene>(this);
 
     opengl_impl_->Setup();
 
@@ -95,13 +96,16 @@ void MeshModelScene::LoadOBJModel(std::filesystem::path path, bool textured)
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
                        : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
 
+    model->SetUniformMaterial();
     opengl_impl_->CreateMeshModelLayout(model);
+    softrenderer_impl_->CreateMeshModelLayout(model);
     AddModel(std::move(*model));
 }
 
 void MeshModelScene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
+    model->SetUniformMaterial();
     opengl_impl_->CreatePrimitiveModelLayout(model);
     AddModel(std::move(*model));
 }

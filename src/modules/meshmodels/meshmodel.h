@@ -8,9 +8,10 @@
 #include "meshmodel_boundingbox.h"
 
 namespace kipod::MeshModels{
-
+class MeshModelScene;
 class MeshModel : public kipod::RenderObject
 {
+    friend class SoftRendererScene;
 protected :
     std::vector<vec3> vertices_vector;
     std::vector<vec3> normals_vector;
@@ -30,7 +31,6 @@ public:
     MeshModel(MeshModel&&) = default;
     MeshModel& operator=(MeshModel&&) = default;
 
-
     void Init(bool textured, bool normals=true);
 
     bool Valid();
@@ -43,10 +43,7 @@ public:
     glm::mat4 TansformBoundingBox();
     glm::vec3 Center();
 
-
 //    void draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals=false);
 //    void drawWithLight(SoftRenderer *softrenderer, const std::vector<Light*> &lights, bool lightMode=true, bool emissiveMode=false);
-
-
 };
 }

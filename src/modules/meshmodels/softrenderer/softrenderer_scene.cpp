@@ -1,5 +1,6 @@
 #include "softrenderer_scene.h"
 #include "../meshmodel_scene.h"
+#include "../../../render/softrenderer/softrenderer_layout.h"
 
 namespace kipod::MeshModels{
 
@@ -15,27 +16,19 @@ void SoftRendererScene::Draw()
     glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//        mat4 p = scene_->GetActiveCamera()->getProjection(camerasMode[activeCamera]);
-//        mat4 v = scene_->GetActiveCamera()->getcTransform();
-//        _softrenderer->SetCameraTransform(v);
-//        _softrenderer->SetProjection(p);
-//        for(auto model : models){
-//            mat4 m = model->getmTransform();
-//            mat3 n = mat3(vec3(&m[0][0]),vec3(&m[1][0]),vec3(&m[2][0]));
-//            n = transpose(Inverse(n));
-//            _softrenderer->SetObjectMatrices(m,n);
-
-//            if(color_mode || emissive_mode)
-//                model->drawWithLight(_softrenderer,lights, color_mode, emissive_mode);
+        for(const auto& model : scene_->render_objects_){
+            softrenderer_->SetUniforms(scene_->GetActiveCamera(), mat4( model->Transform() ));
+//            if(scene_->Toggle("Colors") || scene_->Toggle("Emissive"))
+//                softrenderer_->DrawColoredTriangles(model.get(), scene_->lights_, scene_->Toggle("Colors") , scene_->Toggle("Emissive") );
 //            else
-//                model->draw(_softrenderer, wireframemode, clipping_mode, normals_mode);
+                softrenderer_->DrawTriangles(model.get(), scene_->Toggle("Wireframe"), scene_->Toggle("Normals") );
 
 //            if(box_mode){
 //                 mat4 m = mat4( &model->TansformBoundingBox()[0][0] ); //to be changed
-//                 _softrenderer->SetObjectMatrices(m, mat3(1.0));
-//                 boundingBox.draw(_softrenderer, true,false);
+//                 softrenderer_->SetObjectMatrices(m, mat3(1.0));
+//                 boundingBox.draw(softrenderer_, true,false);
 //            }
-//        }
+        }
 
     kipod::RenderManager::Bind(0);
 
@@ -63,6 +56,15 @@ void SoftRendererScene::DrawCoordinateAxis(RenderCamera *camera)
 
 void SoftRendererScene::CreateMeshModelLayout(MeshModel *model)
 {
+    model->SetUniformMaterial();
+    std::string name = "SoftLayout";
+    auto layout = new kipod::SoftRenderLayout();
+    layout->SetSoftRenderer(softrenderer_.get());
+    layout->SetBuffer(&model->vertices_vector,
+              &model->indices_vector,
+              &model->normals_vector,
+              &model->indices_vector);
+    model->AddLayout(name, std::move(*layout));
 
 }
 void SoftRendererScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
@@ -78,6 +80,13 @@ void SoftRendererScene::CreateBoundingBoxLayout()
 
 }
 void SoftRendererScene::CreateGridLayout(std::vector<vec3> &vertices)
+{
+
+}
+
+SoftRendererScene::SoftRendererScene(MeshModelScene *scene) :
+    MeshModelAPIScene(scene),
+    softrenderer_(std::make_unique<SoftRenderer>(scene->width_, scene->height_))
 {
 
 }

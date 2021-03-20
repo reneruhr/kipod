@@ -33,11 +33,6 @@ class OpenGLScene : public MeshModelAPIScene{
         void SetupShaderTexturedTriangles();
 
 protected:
-
-
-
-
-
         void Setup() override;
         void Draw() override;
 

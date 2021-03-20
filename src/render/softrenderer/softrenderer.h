@@ -1,11 +1,14 @@
 #pragma once
-#include "../../../core.h"
-#include "../../../kipod.h"
+#include "../../core.h"
+#include "../../kipod.h"
+#include "softrenderer_uniform.h"
+#include "softrenderer_layout.h"
 
 
-namespace kipod::MeshModels{
+namespace kipod{
 class Light;
 class MaterialStruct;
+class SoftrendererBuffer;
 
 enum LineAlgo {
     DDA, MIDPOINT_SLOW, BREZENHAM, BREZENHAM_WIKI
@@ -35,28 +38,22 @@ class SoftRenderer
     std::function<void(int*, int*)> drawStraightLineFunction;
     std::function<void(int, int, float*)> drawPointWithColorFunction;
 
-protected:
-    mat4 _cTransform;
-    mat4 _projection;
-    mat4 _oTransform;
-    mat3 _nTransform;
-    mat4 _mTransform;
-    mat4 mvp;
+    SoftRendererUniform* uniform_;
 
 public:
     SoftRenderer(int width, int height);
-    virtual ~SoftRenderer() = default;
+    ~SoftRenderer() { delete uniform_; };
 
     void Init();
-    void DrawTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                       bool wireframeMode = true, bool clippingMode=true,
-                       const std::vector<vec3>* normals=nullptr, const std::vector<unsigned int>* nindices=nullptr);
 
-    void DrawColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                       const std::vector<vec3>* normals, const std::vector<unsigned int>* nindices,
-                       const std::vector<MaterialStruct> *colors, const std::vector<unsigned int> *cindices,
-                       const std::vector<Light*> &lights,
-                       bool lightMode=true, bool emissiveMode=false);
+    void SetUniforms(RenderCamera* camera, mat4 transform);
+
+    void DrawTriangles(RenderObject* model,
+                       bool wireframeMode = true, bool clippingMode=true);
+    void DrawColoredTriangles(RenderObject* model,
+                              const std::vector<RenderMaterial> *colors, const std::vector<unsigned int> *cindices,
+                              const std::vector<RenderLight*> &lights,
+                              bool lightMode=true, bool emissiveMode=false);
 
     void SwapBuffers();
     void ClearColorBuffer();
@@ -74,6 +71,7 @@ public:
 
     void drawLineCall(int* p, int* q);
     void drawTriangleCall(int triangle[3][2]);
+
 
 };
 

@@ -35,11 +35,6 @@ public:
 
     template<typename Vector, typename... MoreVectors>
     void SetupLayout(const std::vector<Vector>&, MoreVectors... );
-
-
-
 };
-
-
 
 }

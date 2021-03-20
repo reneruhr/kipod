@@ -57,6 +57,7 @@ public:
     void UpdateAt(glm::vec3 at);
 
     operator glm::mat4 () const {   return projection_view_matrix_; }
+    const glm::mat4& operator()() const {   return projection_view_matrix_; }
 
 };
 

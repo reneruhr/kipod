@@ -1,12 +1,12 @@
 #include "softrenderer.h"
 #include "softrenderer_light.h"
 #include "softrenderer_graphicsalgorithms.h"
-
-namespace kipod::MeshModels{
+#include "softrenderer_buffer.h"
+#include "softrenderer_layout.h"
+namespace kipod{
 
 using namespace std::placeholders;
 #define INDEX(width,x,y,c) (x+y*width)*3+c
-
 
 SoftRenderer::SoftRenderer(int width, int height) :
     width_(width),height_(height)
@@ -14,12 +14,20 @@ SoftRenderer::SoftRenderer(int width, int height) :
     LOG_INFO("Called SoftRender Constructor");
     InitOpenGLRendering();
     CreateBuffers();
+
+    //uniform_ = std::make_unique<SoftRendererUniform>();
+    uniform_ = new SoftRendererUniform();
+
     drawPointFunction = std::bind(&SoftRenderer::drawPoint, *this, _1, _2);
     drawStraightLineFunction = std::bind(&SoftRenderer::drawStraightLine, *this, _1, _2);
     drawPointWithColorFunction = std::bind(&SoftRenderer::drawPointWithColor, *this, _1, _2, _3);
 }
 
-
+void SoftRenderer::SetUniforms(RenderCamera *camera, mat4 transform)
+{
+    uniform_->camera_ = camera;
+    uniform_->object_transform_ = transform;
+}
 
 void SoftRenderer::CreateBuffers()
 {
@@ -41,27 +49,24 @@ void SoftRenderer::ClearBuffer()
     initialize_zBuffer();
 }
 
-void SoftRenderer::DrawTriangles(const std::vector<vec3>* vertices,
-                                 const std::vector<unsigned int>* indices,
-                                 bool wireframeMode, bool clippingMode,
-                                 const std::vector<vec3>* normals,
-                                 const std::vector<unsigned int>* nindices)
+void SoftRenderer::DrawTriangles(RenderObject* object,
+                                 bool wireframeMode, bool clippingMode)
 {
-   //LOG_INFO("Call DrawTriangles");
-   mat4 pc = _projection*_cTransform;
-   mat4 transform = pc*_oTransform;
-   //mat4 npc = _projection*transpose(Inverse(_cTransform));
-   //LOG_INFO("Transform matrix: {}", transform);
+   auto buffer = static_cast<SoftRenderLayout*>(object->Layout("SoftLayout"))->Buffer();
+   RenderCamera& camera = *uniform_->camera_;
+   mat4 model = uniform_->object_transform_;
+   mat4 transform = mat4(camera) * model;
+   mat4 normal_transform = transpose(Inverse(model));
    vec4 triangle[3];
    vec4 triangle_normal_ends[3];
    int rasterized_triangle[3][2];
    int rasterized_normal_ends[3][2];
 
-   for(unsigned int j = 0; j<indices->size(); j+=3)
+   for(unsigned int j = 0; j<buffer.Count(); j+=3)
    {
-       if(normals==nullptr){
+       if(buffer.HasNormals()){
            for(int i = 0; i<3 ; i++)
-                    triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
+                    triangle[i]=transform * buffer.Vertex(j,i);
 
            auto ts = clipTriangle(std::make_unique<Triangle>( Triangle(triangle) ));
            for(auto& t : *ts)       {
@@ -75,9 +80,8 @@ void SoftRenderer::DrawTriangles(const std::vector<vec3>* vertices,
        }else
        {
           for(int i = 0; i<3 ; i++){
-                   triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
-                   triangle_normal_ends[i] = pc*vec4(_nTransform*1.0f*(*normals)[(*nindices)[j+i]],0) + triangle[i];
-                   //LOG_INFO("Normal Ends P{}", triangle_normal_ends[i]);
+                   triangle[i]=transform * buffer.Vertex(j,i);
+                   triangle_normal_ends[i] = mat4(camera)* normal_transform * buffer.Normal(j,i) + triangle[i];
           }
 
           Triangles ts;
@@ -91,7 +95,6 @@ void SoftRenderer::DrawTriangles(const std::vector<vec3>* vertices,
           for(auto& t : *ts)       {
               for(int i = 0; i<3 ; i++){
                    clipToScreen((*t)[i], rasterized_triangle[i], width_, height_);
-                   //LOG_INFO("normal->data {}", t->normal_data[i]);
                    clipToScreen((t->normal_data)[i], rasterized_normal_ends[i], width_, height_);
               }
               if(wireframeMode)
@@ -105,48 +108,54 @@ void SoftRenderer::DrawTriangles(const std::vector<vec3>* vertices,
    }
 }
 
-void SoftRenderer::DrawColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
-                                        const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices,
-                                        const std::vector<MaterialStruct> *colors, const std::vector<unsigned int> *cindices,
-                                        const std::vector<Light*> &lights,
+
+
+
+
+void SoftRenderer::DrawColoredTriangles(RenderObject* object,
+                                        const std::vector<RenderMaterial> *colors, const std::vector<unsigned int> *cindices,
+                                        const std::vector<RenderLight*> &lights,
                                         bool lightMode, bool emissiveMode)
 {
+    auto buffer = static_cast<SoftRenderLayout*>(object->Layout("SoftLayout"))->Buffer();
+    RenderCamera& camera = *uniform_->camera_;
+    mat4 model = uniform_->object_transform_;
+    mat4 transform = mat4(camera) * model;
+    mat4 normal_transform = transpose(Inverse(model));
+    mat4 camera_transform = mat4(camera.view_matrix_);
 
-    mat4 pc = _projection*_cTransform;
-    mat4 transform = pc*_oTransform;
-
-    for(unsigned int j = 0; j<indices->size(); j+=3){
+    for(unsigned int j = 0; j<buffer.Count(); j+=3){
         vec4 triangle[3];
         vec4 triangle_normals[3];
         vec4 triangleColors[3];
 
         for(int i = 0; i<3 ; i++){
-                 triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
-                 triangle_normals[i] = vec4(_nTransform*1.0f*(*normals)[(*nindices)[j+i]],0);
+                 triangle[i]=transform * buffer.Vertex(j,i);
+                 triangle_normals[i] = normal_transform * buffer.Normal(j,i);
 
                  if(lightMode){
                      for(const auto light : lights){
-                         if(light->getType()==kipod::LightSource::AMBIENT)
-                            triangleColors[i]+=colorAmbient( (*colors)[(*cindices)[j+i]].ambient,
-                                                             light->getColor());
-                         if(light->getType()==kipod::LightSource::DIFFUSE)
-                             triangleColors[i]+=colorDiffuse((*colors)[(*cindices)[j+i]].diffuse,
+                         if(light->Type()==kipod::LightSource::AMBIENT)
+                            triangleColors[i]+=colorAmbient( (*colors)[(*cindices)[j+i]].ambient_,
+                                                             light->Color());
+                         if(light->Type()==kipod::LightSource::DIFFUSE)
+                             triangleColors[i]+=colorDiffuse((*colors)[(*cindices)[j+i]].diffuse_,
                                                              triangle,
                                                              triangle_normals,
-                                                             _cTransform,
+                                                             camera_transform,
                                                              light);
-                         if(light->getType()==kipod::LightSource::SPECULAR)
-                             triangleColors[i]+=colorSpecular((*colors)[(*cindices)[j+i]].specular,
-                                                 (*colors)[(*cindices)[j+i]].shininess,
+                         if(light->Type()==kipod::LightSource::SPECULAR)
+                             triangleColors[i]+=colorSpecular((*colors)[(*cindices)[j+i]].specular_,
+                                                 (*colors)[(*cindices)[j+i]].shininess_,
                                                  vec4(0,0,0,1), // CHANGED TO CAM
                                                  triangle,
                                                  triangle_normals,
-                                                 _cTransform,
+                                                 camera_transform,
                                                  light);
                      }
                  }
                  if(emissiveMode)
-                     triangleColors[i]+= (*colors)[(*cindices)[j+i]].emission;
+                     triangleColors[i]+= (*colors)[(*cindices)[j+i]].emission_;
         }
         auto ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle, triangle_normals, triangleColors)), true);
         for(auto& t : *ts)       {
@@ -154,6 +163,128 @@ void SoftRenderer::DrawColoredTriangles(const std::vector<vec3> *vertices, const
         }
     }
 }
+
+
+
+
+
+
+
+
+
+//void SoftRenderer::DrawTriangles(const std::vector<vec3>* vertices,
+//                                 const std::vector<unsigned int>* indices,
+//                                 bool wireframeMode, bool clippingMode,
+//                                 const std::vector<vec3>* normals,
+//                                 const std::vector<unsigned int>* nindices)
+//{
+//   //LOG_INFO("Call DrawTriangles");
+//   mat4 pc = _projection*_cTransform;
+//   mat4 transform = pc*_oTransform;
+//   //mat4 npc = _projection*transpose(Inverse(_cTransform));
+//   //LOG_INFO("Transform matrix: {}", transform);
+//   vec4 triangle[3];
+//   vec4 triangle_normal_ends[3];
+//   int rasterized_triangle[3][2];
+//   int rasterized_normal_ends[3][2];
+
+//   for(unsigned int j = 0; j<indices->size(); j+=3)
+//   {
+//       if(normals==nullptr){
+//           for(int i = 0; i<3 ; i++)
+//                    triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
+
+//           auto ts = clipTriangle(std::make_unique<Triangle>( Triangle(triangle) ));
+//           for(auto& t : *ts)       {
+//               if(wireframeMode){
+//                   for(int i = 0; i<3 ; i++)
+//                        clipToScreen((*t)[i], rasterized_triangle[i], width_, height_);
+//                   drawTriangleCall(rasterized_triangle);
+//               } else
+//                    zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_);
+//           }
+//       }else
+//       {
+//          for(int i = 0; i<3 ; i++){
+//                   triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
+//                   triangle_normal_ends[i] = pc*vec4(_nTransform*1.0f*(*normals)[(*nindices)[j+i]],0) + triangle[i];
+//                   //LOG_INFO("Normal Ends P{}", triangle_normal_ends[i]);
+//          }
+
+//          Triangles ts;
+//          if(clippingMode)
+//                ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle,triangle_normal_ends)), true);
+//          else{
+//              ts = std::make_unique<std::vector<TrianglePtr>>(std::vector<TrianglePtr>());
+//              ts->emplace_back(std::make_unique<Triangle>(Triangle(triangle,triangle_normal_ends)));
+//          }
+
+//          for(auto& t : *ts)       {
+//              for(int i = 0; i<3 ; i++){
+//                   clipToScreen((*t)[i], rasterized_triangle[i], width_, height_);
+//                   //LOG_INFO("normal->data {}", t->normal_data[i]);
+//                   clipToScreen((t->normal_data)[i], rasterized_normal_ends[i], width_, height_);
+//              }
+//              if(wireframeMode)
+//                    drawTriangleCall(rasterized_triangle);
+//              else
+//                   zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_);
+
+//              for(int i = 0; i<3 ; i++) drawLineCall(rasterized_triangle[i], rasterized_normal_ends[i]);
+//          }
+//        }
+//   }
+//}
+
+//void SoftRenderer::DrawColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
+//                                        const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices,
+//                                        const std::vector<MaterialStruct> *colors, const std::vector<unsigned int> *cindices,
+//                                        const std::vector<Light*> &lights,
+//                                        bool lightMode, bool emissiveMode)
+//{
+
+//    mat4 pc = _projection*_cTransform;
+//    mat4 transform = pc*_oTransform;
+
+//    for(unsigned int j = 0; j<indices->size(); j+=3){
+//        vec4 triangle[3];
+//        vec4 triangle_normals[3];
+//        vec4 triangleColors[3];
+
+//        for(int i = 0; i<3 ; i++){
+//                 triangle[i]=transform * vec4((*vertices)[(*indices)[j+i]],1);
+//                 triangle_normals[i] = vec4(_nTransform*1.0f*(*normals)[(*nindices)[j+i]],0);
+
+//                 if(lightMode){
+//                     for(const auto light : lights){
+//                         if(light->getType()==kipod::LightSource::AMBIENT)
+//                            triangleColors[i]+=colorAmbient( (*colors)[(*cindices)[j+i]].ambient,
+//                                                             light->getColor());
+//                         if(light->getType()==kipod::LightSource::DIFFUSE)
+//                             triangleColors[i]+=colorDiffuse((*colors)[(*cindices)[j+i]].diffuse,
+//                                                             triangle,
+//                                                             triangle_normals,
+//                                                             _cTransform,
+//                                                             light);
+//                         if(light->getType()==kipod::LightSource::SPECULAR)
+//                             triangleColors[i]+=colorSpecular((*colors)[(*cindices)[j+i]].specular,
+//                                                 (*colors)[(*cindices)[j+i]].shininess,
+//                                                 vec4(0,0,0,1), // CHANGED TO CAM
+//                                                 triangle,
+//                                                 triangle_normals,
+//                                                 _cTransform,
+//                                                 light);
+//                     }
+//                 }
+//                 if(emissiveMode)
+//                     triangleColors[i]+= (*colors)[(*cindices)[j+i]].emission;
+//        }
+//        auto ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle, triangle_normals, triangleColors)), true);
+//        for(auto& t : *ts)       {
+//            zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_, 65535);
+//        }
+//    }
+//}
 
 
 

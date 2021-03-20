@@ -285,8 +285,6 @@ void OpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderO
 
 void OpenGLScene::CreateMeshModelLayout(MeshModel *model)
 {
-    model->SetUniformMaterial();
-
     std::string name;
     bool foundTexture;
     name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
@@ -306,9 +304,6 @@ void OpenGLScene::CreateMeshModelLayout(MeshModel *model)
 
 void OpenGLScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
 {
-    model->SetUniformMaterial();
-
-
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
     layout->sha_ = shaders_["Colored Triangles"];

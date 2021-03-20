@@ -1,9 +1,9 @@
 #pragma once
 #include "../../../kipod.h"
-#include "softrenderer.h"
 #include "../meshmodel.h"
 #include "../meshmodel_primitive.h"
 #include "../meshmodel_API_scene.h"
+#include "../../../render/softrenderer/softrenderer.h"
 
 namespace kipod::MeshModels{
 
@@ -17,6 +17,10 @@ class SoftRendererScene  : public MeshModelAPIScene{
 
         std::shared_ptr<kipod::Shader> shader_;
         void SetupShader();
+
+
+        std::unique_ptr<SoftRenderer> softrenderer_;
+
 protected:
         void Setup() override;
         void Draw() override;
@@ -31,7 +35,7 @@ protected:
         void CreateBoundingBoxLayout() override;
         void CreateGridLayout(std::vector<vec3> &vertices) override;
 public:
-        SoftRendererScene(MeshModelScene* scene): MeshModelAPIScene(scene) {};
+        SoftRendererScene(MeshModelScene* scene);
 };
 
 }

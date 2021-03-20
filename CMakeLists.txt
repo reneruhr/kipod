@@ -67,15 +67,6 @@ add_executable(kipod
 
   src/modules/meshmodels/softrenderer/softrenderer_scene.h
   src/modules/meshmodels//softrenderer/softrenderer_scene.cpp
-  src/modules/meshmodels/softrenderer/softrenderer.h
-  src/modules/meshmodels/softrenderer/softrenderer.cpp
-  src/modules/meshmodels/softrenderer/softrenderer_graphicsalgorithms.h
-  src/modules/meshmodels/softrenderer/softrenderer_graphicsalgorithms.cpp
-  src/modules/meshmodels/softrenderer/softrenderer_camera.h
-  src/modules/meshmodels/softrenderer/softrenderer_camera.cpp
-  src/modules/meshmodels/softrenderer/softrenderer_light.h
-  src/modules/meshmodels/softrenderer/softrenderer_light.cpp
-
 
   src/modules/meshmodels/meshmodel_api_scene.h
 
@@ -203,6 +194,22 @@ add_executable(kipod
   src/render/opengl/opengl_buffer_410.cpp
   src/render/opengl/opengl_shader.h
   src/render/opengl/opengl_shader.cpp
+
+
+  src/render/softrenderer/softrenderer.h
+  src/render/softrenderer/softrenderer.cpp
+  src/render/softrenderer/softrenderer_layout.h
+  src/render/softrenderer/softrenderer_layout.cpp
+  src/render/softrenderer/softrenderer_buffer.h
+  src/render/softrenderer/softrenderer_buffer.cpp
+  src/render/softrenderer/softrenderer_uniform.h
+  src/render/softrenderer/softrenderer_uniform.cpp
+  src/render/softrenderer/softrenderer_graphicsalgorithms.h
+  src/render/softrenderer/softrenderer_graphicsalgorithms.cpp
+  src/render/softrenderer/softrenderer_camera.h
+  src/render/softrenderer/softrenderer_camera.cpp
+  src/render/softrenderer/softrenderer_light.h
+  src/render/softrenderer/softrenderer_light.cpp
 
 
   ${imgui}
