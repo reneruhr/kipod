@@ -18,7 +18,6 @@ class SoftRendererScene  : public MeshModelAPIScene{
         std::shared_ptr<kipod::Shader> shader_;
         void SetupShader();
 
-
         std::unique_ptr<SoftRenderer> softrenderer_;
 
 protected:
@@ -31,7 +30,8 @@ protected:
 
         void CreateMeshModelLayout(MeshModel *model) override;
         void CreatePrimitiveModelLayout(PrimMeshModel *model) override;
-        void CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors) override;
+        void CreateCoordinateAxisLayout(std::vector<vec3> &vertices,
+                                        std::vector<vec3> &colors) override;
         void CreateBoundingBoxLayout() override;
         void CreateGridLayout(std::vector<vec3> &vertices) override;
 public:

@@ -1,5 +1,5 @@
 #include "meshmodel_scene.h"
-
+#include "../../render/render_engine.h"
 namespace kipod::MeshModels{
 
 
@@ -55,7 +55,10 @@ void MeshModelScene::SetupOptions(){
 
 void MeshModelScene::Draw()
 {
-    opengl_impl_->Draw();
+    if(RenderEngine::ActiveAPI()=="OpenGL")
+        opengl_impl_->Draw();
+    else if(RenderEngine::ActiveAPI()=="SoftRenderer")
+        softrenderer_impl_->Draw();
 }
 
 

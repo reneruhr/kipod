@@ -26,15 +26,14 @@ class RenderEngine
 public:
     RenderEngine(RenderEngine&) = delete;
     void operator=(RenderEngine&)  = delete;
-    ~RenderEngine();
+    ~RenderEngine() = default;
 
     static RenderEngine& Get(){  static RenderEngine RenderEngine;   return RenderEngine;  }
     static std::string ActiveAPI(){  return Get().APIs_[active_API_];  }
-
-    static void Draw(RenderObject& object){
-
+    static void SetAPI(std::string api){
+        if(api=="OpenGL") Get().active_API_ = 0;
+        else if (api=="SoftRenderer") Get().active_API_ = 1;
     }
-
 };
 
 
