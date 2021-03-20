@@ -395,6 +395,7 @@ struct vec4 {
 	x(x), y(y), z(z), w(w) {}
 
     vec4( const vec4& v ) { x = v.x;  y = v.y;  z = v.z;  w = v.w; }
+    vec4( const glm::vec4& v ) { x = v.x;  y = v.y;  z = v.z;  w = v.w; }
 
     vec4( const vec3& v, const float w = 1.0 ) : w(w)
 	{ x = v.x;  y = v.y;  z = v.z; }
@@ -408,6 +409,8 @@ struct vec4 {
     vec4( const float* f){
         x = *f;  y = *(f+1);  z = *(f+2);  w = *(f+3);
     }
+
+
 
 
     vec4& operator=(const vec4& v){

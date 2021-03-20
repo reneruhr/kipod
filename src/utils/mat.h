@@ -207,6 +207,8 @@ mat2 transpose( const mat2& A ) {
 //
 
 class mat3 {
+    friend class mat4;
+protected:
 
     vec3  _m[3];
 
@@ -485,6 +487,31 @@ class mat4 {
         _m[2] = vec4(f+8);  
         _m[3] = vec4(f+12);
     };
+
+
+    mat4( const mat3& m )
+    {
+        _m[0] = vec4(m._m[0],0);
+        _m[1] = vec4(m._m[1],0);
+        _m[2] = vec4(m._m[2],0);
+        _m[3] = vec4(0,0,0,1);
+    }
+
+    mat4( const glm::mat4& m )
+    {
+        _m[0] = vec4(m[0][0],m[1][0],m[2][0],m[3][0]);
+        _m[1] = vec4(m[0][1],m[1][1],m[2][1],m[3][1]);
+        _m[2] = vec4(m[0][2],m[1][2],m[2][2],m[3][2]);
+        _m[3] = vec4(m[0][3],m[1][3],m[2][3],m[3][3]);
+    }
+    mat4(glm::mat4&& m )
+    {
+        _m[0] = vec4(m[0][0],m[1][0],m[2][0],m[3][0]);
+        _m[1] = vec4(m[0][1],m[1][1],m[2][1],m[3][1]);
+        _m[2] = vec4(m[0][2],m[1][2],m[2][2],m[3][2]);
+        _m[3] = vec4(m[0][3],m[1][3],m[2][3],m[3][3]);
+    }
+
 
     //
     //  --- Indexing Operator ---
