@@ -30,7 +30,6 @@ class Application
     int sidebar_width_ = 200;
     int console_height_ = 200;
 
-
 public:
     Application(int width = 1024, int height = 768);
 

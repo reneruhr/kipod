@@ -210,6 +210,8 @@ add_executable(kipod
   src/render/softrenderer/softrenderer_camera.cpp
   src/render/softrenderer/softrenderer_light.h
   src/render/softrenderer/softrenderer_light.cpp
+  src/render/softrenderer/softrenderer_framebuffer.h
+  src/render/softrenderer/softrenderer_framebuffer.cpp
 
 
   ${imgui}

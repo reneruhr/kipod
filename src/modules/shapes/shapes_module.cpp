@@ -3,7 +3,7 @@
 #include "shapes_scene.h"
 namespace kipod::Shapes{
 
-ShapesModule::ShapesModule(int width, int height)
+ShapesModule::ShapesModule(std::string name, int width, int height) : Module(name)
 {
     LOG_INFO("Meshmodel OpenGL Render Module constructed");
     scene_ = std::make_shared<ShapesScene>(ShapesScene(width, height));

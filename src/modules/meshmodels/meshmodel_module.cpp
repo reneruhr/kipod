@@ -5,24 +5,21 @@
 #include "../../render/render_engine.h"
 
 namespace kipod::MeshModels{
-MeshModelModule::MeshModelModule(int width, int height)
+MeshModelModule::MeshModelModule(std::string name, int width, int height) : Module(name)
 {
     LOG_INFO("Meshmodel Module constructed");
     scene_ = std::make_shared<MeshModelScene>(MeshModelScene(width, height));
     sidebar_ = std::make_unique<MeshmodelSidebar>(MeshmodelSidebar(scene_));
     console_ = nullptr;
-    //std::make_unique<MeshModelConsole>(MeshModelConsole(scene_));
+    menu_= std::make_unique<MeshModelModuleMenu>();
 }
 
-void MeshModelModule::DrawMenu()
-{
-    if (ImGui::BeginMenu(name_.c_str()))
-    {
-        if(ImGui::MenuItem("OpenGL" ,  "", RenderEngine::ActiveAPI() == "OpenGL"))
-            RenderEngine::SetAPI("OpenGL");
-        if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer"))
-            RenderEngine::SetAPI("SoftRenderer");
-    ImGui::EndMenu();
-    }
+void MeshModelModuleMenu::Draw(){
+    if(ImGui::MenuItem("OpenGL" ,  "", RenderEngine::ActiveAPI() == "OpenGL"))
+        RenderEngine::SetAPI("OpenGL");
+    if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer"))
+        RenderEngine::SetAPI("SoftRenderer");
 }
+
+
 }

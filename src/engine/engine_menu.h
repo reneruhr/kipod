@@ -16,8 +16,5 @@ public:
     void DrawTools();
 
 };
-
 }
-
-
 

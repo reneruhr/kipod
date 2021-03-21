@@ -17,7 +17,6 @@ void Menu::DrawFiles()
             }
             ImGui::EndMenuBar();
     }
-
 }
 
 void Menu::DrawModuleMenu(std::unordered_map<std::string, std::unique_ptr<Module> > &modules, std::string& active_module)
@@ -29,7 +28,7 @@ void Menu::DrawModuleMenu(std::unordered_map<std::string, std::unique_ptr<Module
                for(auto& [name, module] : modules)
                    if(ImGui::MenuItem(name.c_str(),  "", name == active_module))  app_->ActiveModule(name);
                ImGui::EndMenu();
-           }
+           }           
            ImGui::EndMenuBar();
     }
 }
@@ -49,7 +48,6 @@ void Menu::DrawTools()
             }
             ImGui::EndMenuBar();
     }
-
 }
 
 }

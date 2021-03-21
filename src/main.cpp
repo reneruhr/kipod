@@ -137,9 +137,9 @@ int main( int argc, char **argv )
         int width = 1024, height = 768;
         kipod::Application kipod(width, height);
         kipod.Init();
-        kipod.Add("OpenGL Meshmodels", kipod::MeshModels::MeshModelModule(width,height));
-        kipod.Add("Shapes 2d", kipod::Shapes::ShapesModule(width,height));
-        kipod.Add("Quasi-Crystals", kipod::QuasiCrystals::QuasiCrystalsModule(width,height));
+        kipod.Add(kipod::MeshModels::MeshModelModule("Meshmodels", width,height));
+        kipod.Add(kipod::Shapes::ShapesModule("2D Shapes", width,height));
+        kipod.Add(kipod::QuasiCrystals::QuasiCrystalsModule("Quasi-Crystals", width,height));
         kipod.Run();
         kipod.ShutDown();
     }else    ;//my_main(argc, argv );
