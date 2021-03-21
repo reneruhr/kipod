@@ -9,3 +9,4 @@ build/
 xcode/
 CMakeLists.txt.user
 CMakeSettings.json
+.DS_Store
