@@ -13,13 +13,13 @@ class MeshModel : public kipod::RenderObject
 {
     friend class SoftRendererScene;
 protected :
-    std::vector<vec3> vertices_vector;
-    std::vector<vec3> normals_vector;
-    std::vector<vec2> texture_vector;
+    std::shared_ptr< std::vector<vec3> > vertices_vector;
+    std::shared_ptr< std::vector<vec3> > normals_vector;
+    std::shared_ptr< std::vector<vec2> > texture_vector;
 
-    std::vector<unsigned int> indices_vector;
-    std::vector<unsigned int> nindices_vector;
-    std::vector<unsigned int> tindices_vector;
+    std::shared_ptr< std::vector<unsigned int> > indices_vector;
+    std::shared_ptr< std::vector<unsigned int> > nindices_vector;
+    std::shared_ptr< std::vector<unsigned int> > tindices_vector;
 
     std::vector<kipod::GLTriangle> triangles_;
 

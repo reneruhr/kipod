@@ -72,7 +72,7 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
                         clipToScreen((*t)[i], rasterized_triangle[i], width_, height_);
                    drawTriangleCall(rasterized_triangle);
                } else
-                    zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_);
+                    zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_);
            }
        }else
        {
@@ -97,7 +97,7 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
               if(wireframeMode)
                     drawTriangleCall(rasterized_triangle);
               else
-                   zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_);
+                   zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_);
 
               for(int i = 0; i<3 ; i++) drawLineCall(rasterized_triangle[i], rasterized_normal_ends[i]);
           }
@@ -156,7 +156,7 @@ void SoftRenderer::DrawColoredTriangles(RenderObject* object,
         }
         auto ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle, triangle_normals, triangleColors)), true);
         for(auto& t : *ts)       {
-            zBufferAlgorithm(m_zbuffer, m_outBuffer, *t, width_, height_, 65535);
+            zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_, 65535);
         }
     }
 }

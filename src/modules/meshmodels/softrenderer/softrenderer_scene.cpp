@@ -56,19 +56,26 @@ void SoftRendererScene::DrawCoordinateAxis(RenderCamera *camera)
 
 void SoftRendererScene::CreateMeshModelLayout(MeshModel *model)
 {
-    model->SetUniformMaterial();
     std::string name = "SoftLayout";
     auto layout = new kipod::SoftRenderLayout();
     layout->SetSoftRenderer(softrenderer_.get());
-    layout->SetBuffer(&model->vertices_vector,
-              &model->indices_vector,
-              &model->normals_vector,
-              &model->indices_vector);
+    layout->SetBuffer(model->vertices_vector,
+              model->indices_vector,
+              model->normals_vector,
+              model->nindices_vector);
     model->AddLayout(name, std::move(*layout));
 
 }
 void SoftRendererScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
 {
+    std::string name = "SoftLayout";
+    auto layout = new kipod::SoftRenderLayout();
+    layout->SetSoftRenderer(softrenderer_.get());
+    layout->SetBuffer(model->vertices_vector,
+              model->indices_vector,
+              model->normals_vector,
+              model->nindices_vector);
+    model->AddLayout(name, std::move(*layout));
 
 }
 void SoftRendererScene::CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors)

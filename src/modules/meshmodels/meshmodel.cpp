@@ -10,10 +10,18 @@ namespace kipod::MeshModels{
 MeshModel::MeshModel(std::filesystem::path path, bool textured)
 {
     name_ = path.stem().string();
+    vertices_vector = std::make_shared<std::vector<vec3> >();
+    normals_vector = std::make_shared<std::vector<vec3> >();
+    texture_vector = std::make_shared<std::vector<vec2> >();
+    indices_vector = std::make_shared<std::vector<unsigned int> >();
+    nindices_vector = std::make_shared<std::vector<unsigned int> >();
+    tindices_vector = std::make_shared<std::vector<unsigned int> >();
     LoadFile(path,
                     vertices_vector, indices_vector,
                     normals_vector, nindices_vector,
                     texture_vector, tindices_vector);
+    if(normals_vector->empty()) CalculateNormals(vertices_vector, indices_vector,
+                                             normals_vector, nindices_vector);
     if(Valid()==false) {
         LOG_CONSOLE("[error] Could not load Object Model");
         LOG_ENGINE("Could not load Object Model");
@@ -57,7 +65,7 @@ MeshModel::~MeshModel(void)
 
 bool MeshModel::Valid()
 {
-    return !vertices_vector.empty();
+    return !vertices_vector->empty();
 }
 
 
@@ -66,18 +74,18 @@ void MeshModel::Init(bool textured, bool normals)
 {
     if(textured){
         kipod::CreateTriangleVector(triangles_,
-                                    vertices_vector, indices_vector,
-                                    normals_vector, nindices_vector,
-                                    texture_vector, tindices_vector);
+                                    *vertices_vector, *indices_vector,
+                                    *normals_vector, *nindices_vector,
+                                    *texture_vector, *tindices_vector);
         auto layout = Layout("Textured Triangles");
         static_cast<kipod::GLRenderLayout*>(layout)->SetupGLTriangles(&triangles_);
     }else if(normals){
         auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
-        layout->SetupColoredTriangles(&vertices_vector,&indices_vector,
-                                               &normals_vector, &nindices_vector);
+        layout->SetupColoredTriangles(vertices_vector.get(), indices_vector.get(),
+                                               normals_vector.get(), nindices_vector.get());
     }else{
         auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
-        layout->SetupColoredTriangles(&vertices_vector,&indices_vector);
+        layout->SetupColoredTriangles(vertices_vector.get(),indices_vector.get());
     }
 
 }
@@ -102,7 +110,7 @@ void MeshModel::Init(bool textured, bool normals)
 
 
 void MeshModel::CreateBoundingBox(){
-    boundingBoxData_ = std::make_unique<BoundingBoxData>(vertices_vector);
+    boundingBoxData_ = std::make_unique<BoundingBoxData>(*vertices_vector);
 }
 
 

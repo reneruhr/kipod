@@ -56,9 +56,10 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                     unsigned int *indices = new unsigned int[36];
                     for(unsigned int i = 0 ; i<36; i++) indices[i]=i;
 
-                    vertices_vector = std::vector<vec3>(vertices,vertices+36);
-                    indices_vector = std::vector<unsigned int>(indices, indices+36);
-
+                    vertices_vector = std::make_shared< std::vector<vec3> >(vertices,vertices+36);
+                    indices_vector = std::make_shared< std::vector<unsigned int> >(indices, indices+36);
+                    nindices_vector = std::make_shared<std::vector<unsigned int>>(indices_vector->size());
+                    normals_vector = std::make_shared<std::vector<vec3>>();
                     CalculateNormals(vertices_vector, indices_vector,
                                             normals_vector, nindices_vector);
 
@@ -90,9 +91,10 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                 10,11,8
             };
 
-            vertices_vector = std::vector<vec3>(vertices,vertices+12);
-            indices_vector = std::vector<unsigned int>(indices, indices+12);
-
+            vertices_vector = std::make_shared< std::vector<vec3> >(vertices,vertices+12);
+            indices_vector = std::make_shared< std::vector<unsigned int> >(indices, indices+12);
+            nindices_vector = std::make_shared<std::vector<unsigned int>>(indices_vector->size());
+            normals_vector = std::make_shared<std::vector<vec3>>();
             CalculateNormals(vertices_vector, indices_vector,
                                     normals_vector, nindices_vector);
             break;
@@ -109,9 +111,9 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                                };
 
         auto triangle = [this](const vec3& a, const vec3& b, const vec3& c){
-                                    vertices_vector.push_back(a);
-                                    vertices_vector.push_back(b);
-                                    vertices_vector.push_back(c);
+                                    vertices_vector->push_back(a);
+                                    vertices_vector->push_back(b);
+                                    vertices_vector->push_back(c);
                                 };
 
         std::function<void(const vec3&,const vec3&,const vec3&,const int)> divide_triangle = [&divide_triangle,&triangle](const vec3& a, const vec3& b, const vec3& c, const int n){
@@ -136,8 +138,8 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
         divide_triangle(tetra[0], tetra[1], tetra[2], k);
         divide_triangle(tetra[2], tetra[3], tetra[0], k);
 
-        indices_vector = std::vector<unsigned int>(vertices_vector.size());
-        std::iota(std::begin(indices_vector), std::end(indices_vector), 0);
+        indices_vector = std::make_shared< std::vector<unsigned int> >(vertices_vector->size());
+        std::iota(std::begin(*indices_vector), std::end(*indices_vector), 0);
 
 
         //ReduceVertices();

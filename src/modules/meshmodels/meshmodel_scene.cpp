@@ -85,7 +85,7 @@ void MeshModelScene::AddModel(MeshModel && model)
 {
     render_objects_.push_back(
                 std::make_unique<MeshModel>(
-                    std::forward<MeshModel>(model)));
+                    std::forward<MeshModel>(model)));    
 }
 
 void MeshModelScene::LoadOBJModel(std::filesystem::path path, bool textured)
@@ -110,6 +110,7 @@ void MeshModelScene::LoadPrimitive(Primitive primitive, int numberPolygons)
     PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
     model->SetUniformMaterial();
     opengl_impl_->CreatePrimitiveModelLayout(model);
+    softrenderer_impl_->CreateMeshModelLayout(model);
     AddModel(std::move(*model));
 }
 
