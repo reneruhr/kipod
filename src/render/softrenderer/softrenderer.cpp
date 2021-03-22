@@ -13,7 +13,6 @@ SoftRenderer::SoftRenderer(int width, int height) :
     uniform_(std::make_unique<SoftRendererUniform>()),
     width_(width),height_(height)
 {
-    LOG_INFO("Called SoftRender Constructor");
     InitOpenGLRendering();
     CreateBuffers();
 
@@ -229,7 +228,7 @@ void SoftRenderer::InitOpenGLRendering()
     glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(vtc), vtc);
     glBufferSubData( GL_ARRAY_BUFFER, sizeof(vtc), sizeof(tex), tex);
 
-    program = InitShader( "shaders/softrenderer_vshader.glsl", "shaders/softrenderer_fshader.glsl" );
+    program = InitShader( "shaders/softrenderer.vert.glsl", "shaders/softrenderer.frag.glsl" );
     glUseProgram( program );
     GLint  vPosition = glGetAttribLocation( program, "vPosition" );
 
@@ -250,7 +249,7 @@ void SoftRenderer::CreateOpenGLBuffer()
     glViewport(0, 0, width_, height_);
 }
 
-void SoftRenderer::SwapBuffers()
+void SoftRenderer::DrawToOpenGL()
 {
     glUseProgram( program );
 
@@ -266,21 +265,6 @@ void SoftRenderer::SwapBuffers()
 }
 
 
-void SoftRenderer::SetDemoBuffer()
-{
-//    //LOG_INFO("Call SetDemoBuffer");
-//    //vertical line
-//    for(int i=0; i<height_; i++)
-//    {
-//        m_outBuffer[INDEX(width_,width_/2,i,0)]=1;	m_outBuffer[INDEX(width_,width_/2,i,1)]=0;	m_outBuffer[INDEX(width_,width_/2,i,2)]=0;
-//    }
-//    //horizontal line
-//    for(int i=0; i<width_; i++)
-//    {
-//        m_outBuffer[INDEX(width_,i,height_/2,0)]=1;	m_outBuffer[INDEX(width_,i,height_/2,1)]=0;	m_outBuffer[INDEX(width_,i,height_/2,2)]=1;
-
-//    }
-}
 
 
 

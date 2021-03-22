@@ -25,6 +25,7 @@ void MeshModelScene::Setup()
     softrenderer_impl_ = std::make_unique<SoftRendererScene>(this);
 
     opengl_impl_->Setup();
+    softrenderer_impl_->Setup();
 
     SetupCoordinateAxis();
     SetupGrid();

@@ -20,7 +20,6 @@ class SoftRenderer
     std::unique_ptr<SoftRendererFramebuffer> framebuffer_;
     std::unique_ptr<SoftRendererUniform> uniform_;
 
-    float *m_outBuffer; // 3*width*height
     int *m_zbuffer; // width*height
 
     int width_, height_;
@@ -48,8 +47,6 @@ public:
     SoftRenderer(int width, int height);
     ~SoftRenderer() {};
 
-    void Init();
-
     void SetUniforms(RenderCamera* camera, mat4 transform);
 
     void DrawTriangles(RenderObject* model,
@@ -60,10 +57,9 @@ public:
                               const std::vector<RenderLight*> &lights,
                               bool lightMode=true, bool emissiveMode=false);
 
-    void SwapBuffers();
+    void DrawToOpenGL();
     void ClearColorBuffer();
     void ClearDepthBuffer();
-    void SetDemoBuffer();
     void initialize_zBuffer(int zPrec=65535);
     void ClearBuffer();
 

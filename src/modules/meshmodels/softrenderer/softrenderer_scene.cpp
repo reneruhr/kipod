@@ -6,16 +6,12 @@ namespace kipod::MeshModels{
 
 void SoftRendererScene::Setup()
 {
-
+    //SetupShader();
 }
 
 void SoftRendererScene::Draw()
 {
-    scene_->framebuffer_->Bind();
-    glViewport(0, 0, scene_->width_, scene_->height_);
-    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    softrenderer_->ClearBuffer();
         for(const auto& model : scene_->render_objects_){
             softrenderer_->SetUniforms(scene_->GetActiveCamera(), mat4( model->Transform() ));
 //            if(scene_->Toggle("Colors") || scene_->Toggle("Emissive"))
@@ -29,17 +25,20 @@ void SoftRendererScene::Draw()
 //                 boundingBox.draw(softrenderer_, true,false);
 //            }
         }
-
+    scene_->framebuffer_->Bind();    
+    glViewport(0, 0, scene_->width_, scene_->height_);
+    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    softrenderer_->DrawToOpenGL();
     kipod::RenderManager::Bind(0);
 
 }
 
 
-void SoftRendererScene::SetupShader()
-{
-    shader_= std::make_shared<kipod::Shader>("softrenderer.vert.glsl",   "softrenderer.frag.glsl");
-    shader_->AttachUniform<glm::mat4>("transform");
-}
+//void SoftRendererScene::SetupShader()
+//{
+//    shader_= std::make_shared<kipod::Shader>("softrenderer.vert.glsl",   "softrenderer.frag.glsl");
+//}
 
 void SoftRendererScene::DrawBoundingBox(MeshModel *model, RenderCamera *camera)
 {

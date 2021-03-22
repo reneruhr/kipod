@@ -15,8 +15,8 @@ class SoftRendererScene  : public MeshModelAPIScene{
     friend class MeshModelModule;
     friend class MeshModelScene;
 
-        std::shared_ptr<kipod::Shader> shader_;
-        void SetupShader();
+        //std::shared_ptr<kipod::Shader> shader_;
+        //void SetupShader();
 
         std::unique_ptr<SoftRenderer> softrenderer_;
 

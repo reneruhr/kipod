@@ -109,7 +109,7 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                                {-0.816497, -0.471405, -0.333333},
                                {0.816497, -0.471405, -0.333333}
                                };
-
+        vertices_vector = std::make_shared< std::vector<vec3> >();
         auto triangle = [this](const vec3& a, const vec3& b, const vec3& c){
                                     vertices_vector->push_back(a);
                                     vertices_vector->push_back(b);
