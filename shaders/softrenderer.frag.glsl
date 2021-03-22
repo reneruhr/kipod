@@ -1,16 +1,14 @@
 #version 330 core
 
+in  vec2 texCoord;
 
-in  vec2 vTexCoord;
-in  vec2 vPosition;
+out vec4 fColor;
 
+uniform sampler2D texture;
 
-out vec2 texCoord;
+void main() 
+{ 
+   fColor = textureLod( texture, texCoord, 0 );
+   //fColor = vec4(0,1,1,1);
+} 
 
-void main()
-{
-    gl_Position.xy = vPosition;
-    gl_Position.z=0;
-    gl_Position.w=1;
-    texCoord = vTexCoord;
-}
