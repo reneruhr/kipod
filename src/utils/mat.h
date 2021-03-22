@@ -1,6 +1,9 @@
 #pragma once
 #include "vec.h"
 
+// From Technion Course on Computer Graphics Fall 2020
+
+
 // ROW MAJOR MATRIX LIBRARY
 
 // #include <glm/glm.hpp> // vec2, vec3, mat4, radians

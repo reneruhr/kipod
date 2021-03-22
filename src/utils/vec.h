@@ -1,4 +1,6 @@
 #pragma once
+// From Technion Course on Computer Graphics Fall 2020
+
 #include <iostream>
 #include <cmath>
 #include "GL/glew.h"
