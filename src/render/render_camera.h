@@ -5,6 +5,7 @@ namespace kipod
 {
 class RenderCamera
 {
+
 public:
     enum ProjectionType{
         ORTHOGONAL,
@@ -59,6 +60,8 @@ public:
     operator glm::mat4 () const {   return projection_view_matrix_; }
     const glm::mat4& operator()() const {   return projection_view_matrix_; }
 
+
+    glm::vec3 Eye(){ return eye_; }
 };
 
 } // kipod

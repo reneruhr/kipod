@@ -74,15 +74,15 @@ void OpenGLScene::Draw()
         }
     }
 
-//    if(scene_->Toggle("Camera Mode")){
-//        shaders_["Basic"]->Use();
-//        for(auto cam : scene_->cameras){
-//            glm::mat4 pv = cam->projection_view_matrix_;
-//            auto mvp = pv * glm::mat4(Translate(cam->getEye()));
+    if(scene_->Toggle("Camera Mode")){
+        shaders_["Basic"]->Use();
+        for(const auto& cam : scene_->cameras_){
+//            glm::mat4 pv = scene_->GetActiveCamera()->projection_view_matrix_;
+//            auto mvp = pv * glm::mat4(Translate(cam->Eye()));
 //            shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
-//            cam->draw();
-//        }
-//    }
+            DrawCamera(cam.get(), scene_->GetActiveCamera());
+        }
+    }
 //    if(Toggle("Camera Frustum Mode")){
 //        shaders_["Basic"]->Use();
 //        for(auto cam : cameras){
@@ -109,7 +109,7 @@ void OpenGLScene::SetupShaders(){
     SetupShaderTexturedTriangles();
     SetupShaderColoredTriangles();
     SetupShaderNormals();
-    void SetupShaderBasic();
+    SetupShaderBasic();
 
 }
 
@@ -213,6 +213,13 @@ void OpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* camera)
     shaders_["Colored Triangles"]->SetUniform<glm::mat4>("projection", p);
 }
 
+void OpenGLScene::SetUniformCamera(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera)
+{
+    glm::mat4 cam = glm::transpose(cameraModel->view_matrix_);
+    glm::mat4 pv = camera->projection_view_matrix_;
+    glm::mat4 mvp = pv * cam;
+    shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //BINDING UNIFORMS                          ///////////////////////////////////////////////////////
@@ -303,7 +310,7 @@ void OpenGLScene::CreateMeshModelLayout(MeshModel *model)
     }
 }
 
-void OpenGLScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
+void OpenGLScene::CreatePrimitiveModelLayout(PrimMeshModel* model)
 {
     std::string name = "Colored Triangles";
     auto layout = new kipod::GLRenderLayout;
@@ -335,10 +342,46 @@ void OpenGLScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-//COORDINATE AXIS AND GRID                              ///////////////////////////////////////////////////////
+//COORDINATE AXIS, GRID, BOUNDING BOX, CAMERA                              ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+
+void OpenGLScene::DrawBoundingBox(MeshModel* model, RenderCamera* camera)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    SetUniformBox(model,camera);
+    scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLScene::DrawCamera(RenderCamera* camera_model, RenderCamera* camera)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    SetUniformCamera(camera_model, camera);
+    scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLScene::DrawCoordinateAxis(kipod::RenderCamera* camera)
+{
+    auto layout = static_cast<kipod::GLRenderLayout*>(scene_->coordinate_axis_->Layout("Coordinate Axis"));
+    layout->sha_->Use();
+    layout->sha_->SetUniform<glm::mat4>("mvp", *camera);
+    layout->Draw();
+    layout->sha_->Unuse();
+}
+
+void OpenGLScene::DrawGrid(kipod::RenderCamera* camera)
+{
+    auto layout =
+    static_cast<kipod::GLRenderLayout*>(scene_->grid_->Layout("Grid")); layout->sha_->Use();
+    layout->sha_->SetUniform<glm::mat4>("mvp", *camera); layout->Draw();
+    layout->sha_->Unuse();
+}
 
 
 void OpenGLScene::CreateCoordinateAxisLayout(std::vector<vec3>& vertices,
@@ -352,22 +395,6 @@ void OpenGLScene::CreateCoordinateAxisLayout(std::vector<vec3>& vertices,
     scene_->coordinate_axis_->AddLayout(name, std::move(*layout));
 }
 
-void OpenGLScene::DrawBoundingBox(MeshModel* model, RenderCamera *camera)
-{
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    SetUniformBox(model,camera);
-    scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-void OpenGLScene::DrawCoordinateAxis(kipod::RenderCamera* camera){
-    auto layout = static_cast<kipod::GLRenderLayout*>(scene_->coordinate_axis_->Layout("Coordinate Axis"));
-    layout->sha_->Use();
-    layout->sha_->SetUniform<glm::mat4>("mvp", *camera);
-    layout->Draw();
-    layout->sha_->Unuse();
-}
-
 void OpenGLScene::CreateGridLayout(std::vector<vec3>& vertices)
 {
     std::string name = "Grid";
@@ -378,11 +405,5 @@ void OpenGLScene::CreateGridLayout(std::vector<vec3>& vertices)
     scene_->grid_->AddLayout(name, std::move(*layout));
 }
 
-void OpenGLScene::DrawGrid(kipod::RenderCamera* camera){
-    auto layout =
-    static_cast<kipod::GLRenderLayout*>(scene_->grid_->Layout("Grid")); layout->sha_->Use();
-    layout->sha_->SetUniform<glm::mat4>("mvp", *camera); layout->Draw();
-    layout->sha_->Unuse();
-}
 
 }
