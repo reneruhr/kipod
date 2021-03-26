@@ -27,11 +27,11 @@ public:
     static void BeginWindow(const char*);
     static void EndWindow();
 
-    static void Checkbox(ModeToggle&);
-    static void RadioButtons(MultipleModeToggle&, void* ptr);
-    static void Transform(Transform&);
-    static void Scale(kipod::Transform&);
-    static void Color(RenderMaterial&);
+    static bool Checkbox(ModeToggle&);
+    static bool RadioButtons(MultipleModeToggle&, void* ptr);
+    static bool Transform(Transform&);
+    static bool Scale(kipod::Transform&);
+    static bool Color(RenderMaterial&);
 
     static bool CollapsingHeader(const char*);
 

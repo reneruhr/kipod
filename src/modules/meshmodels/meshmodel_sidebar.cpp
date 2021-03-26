@@ -85,8 +85,10 @@ void MeshmodelSidebar::LightOptions()
 
         glm::vec4 lightSourceLocationLocal = light->Source();
         glm::vec4 lightColor = light->Color();
-        ImGui::ColorEdit4("##LightColorChoice2", (float*)&lightColor, 0);
-        ImGui::SliderFloat3("##Source Location2", &lightSourceLocationLocal[0], -10.0f, 10.0f);
+        if(ImGui::ColorEdit4("##LightColorChoice2", (float*)&lightColor, 0))
+            meshmodelscene->NeedsUpdate();
+        if(ImGui::SliderFloat3("##Source Location2", &lightSourceLocationLocal[0], -10.0f, 10.0f))
+            meshmodelscene->NeedsUpdate();
         light->Color() = lightColor;
         light->Source() = lightSourceLocationLocal;
     }
@@ -203,11 +205,14 @@ void MeshmodelSidebar::ModelViewOptions()
 {
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
-    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Normals"]);
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Normals"]))
+        meshmodelscene->NeedsUpdate();
     ImGui::SameLine(); kipod::HelpMarker("N Key");
-    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Wireframe"]);
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Wireframe"]))
+        meshmodelscene->NeedsUpdate();
     ImGui::SameLine(); kipod::HelpMarker("Space Key");
-    kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Bounding Box"]);
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Bounding Box"]))
+        meshmodelscene->NeedsUpdate();
     ImGui::SameLine(); kipod::HelpMarker("B Key");
 
     ImGui::Separator();
@@ -218,7 +223,8 @@ void MeshmodelSidebar::ModelMoveOptions(){
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
         ImGui::Text("Move Model");  ImGui::SameLine(); kipod::HelpMarker("Arrow & Page Keys");
-        kipod::Gui::Transform(*model->world_);
+        if(kipod::Gui::Transform(*model->world_))
+            meshmodelscene->NeedsUpdate();
         ImGui::Separator();
     }
 }
@@ -228,7 +234,8 @@ void MeshmodelSidebar::ModelScaleOptions()
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
-        kipod::Gui::Scale(*model->local_);
+        if(kipod::Gui::Scale(*model->local_))
+            meshmodelscene->NeedsUpdate();
         ImGui::Separator();
     }
 }
@@ -238,7 +245,8 @@ void MeshmodelSidebar::ModelMaterialOptions()
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
-        kipod::Gui::Color(*model->mat_);
+        if(kipod::Gui::Color(*model->mat_))
+            meshmodelscene->NeedsUpdate();
         ImGui::Separator();
     }
 }
@@ -263,6 +271,7 @@ void MeshmodelSidebar::CameraList()
         if (ImGui::Selectable(buf, selectedCamera == n)){
             selectedCamera = n;
             meshmodelscene->SetActiveCamera(selectedCamera);
+            meshmodelscene->NeedsUpdate();
         }
     }
 
@@ -283,6 +292,7 @@ void CameraViewToggle(void* ptr, int i){
 
 void MeshmodelSidebar::CameraViewOption()
 {
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     static bool setup = true;
     static kipod::MultipleModeToggle camera_projection_toggle({"Orthographic", "Projective"});
     auto cam = std::static_pointer_cast<MeshModelScene>(scene_)->GetActiveCamera();
@@ -293,7 +303,9 @@ void MeshmodelSidebar::CameraViewOption()
         setup=false;
     }
 
-    kipod::Gui::RadioButtons(camera_projection_toggle, (void*) cam);
+    if(kipod::Gui::RadioButtons(camera_projection_toggle, (void*) cam))
+        meshmodelscene->NeedsUpdate();
+
     ImGui::Separator();
 }
 

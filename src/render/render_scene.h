@@ -8,6 +8,7 @@
 
 namespace kipod
 {
+using LightContainer = std::vector<std::unique_ptr<RenderLight> >;
 
 class RenderScene
 {
@@ -23,7 +24,7 @@ protected:
 
     std::vector<std::unique_ptr<RenderObject> > render_objects_;
     std::vector<std::unique_ptr<RenderCamera> > cameras_;
-    std::vector<std::unique_ptr<RenderLight> > lights_;
+    LightContainer lights_;
 
     std::string name_;
     unsigned int width_, height_;

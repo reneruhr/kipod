@@ -22,7 +22,8 @@ class MeshModelScene :
 protected:
         std::unique_ptr<OpenGLScene> opengl_impl_;
         std::unique_ptr<SoftRendererScene> softrenderer_impl_;
-
+        bool needs_update_ = false;
+        void NeedsUpdate() { needs_update_ = true;}
 
         std::unique_ptr<kipod::RenderObject> coordinate_axis_;
         std::unique_ptr<kipod::RenderObject> grid_;

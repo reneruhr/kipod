@@ -11,7 +11,7 @@ MeshModelModule::MeshModelModule(std::string name, int width, int height) : Modu
     scene_ = std::make_shared<MeshModelScene>(MeshModelScene(width, height));
     sidebar_ = std::make_unique<MeshmodelSidebar>(MeshmodelSidebar(scene_));
     console_ = nullptr;
-    menu_= std::make_unique<MeshModelModuleMenu>();
+    menu_= std::make_unique<MeshModelModuleMenu>(static_cast<MeshModelScene*>(scene_.get()));
 }
 
 void MeshModelModuleMenu::Draw(){
@@ -19,6 +19,8 @@ void MeshModelModuleMenu::Draw(){
         RenderEngine::SetAPI("OpenGL");
     if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer"))
         RenderEngine::SetAPI("SoftRenderer");
+    if(ImGui::MenuItem("Lazy Updates", "only updates on change", scene_->Toggle("Lazy Mode")))
+        scene_->Toggle("Lazy Mode").Switch();
 }
 
 

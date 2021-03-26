@@ -33,22 +33,29 @@ void kipod::Gui::EndWindow()
     ImGui::End();
 }
 
-void kipod::Gui::Checkbox(ModeToggle& toggle)
+bool kipod::Gui::Checkbox(ModeToggle& toggle)
 {
-    if(ImGui::Checkbox(toggle.name_.c_str(), &toggle.state_))
+    if(ImGui::Checkbox(toggle.name_.c_str(), &toggle.state_)){
         toggle.Apply();
+        return true;
+    }
+    return false;
 }
 
-void Gui::RadioButtons(MultipleModeToggle& toggle, void* ptr)
+bool Gui::RadioButtons(MultipleModeToggle& toggle, void* ptr)
 {
     int size = toggle.toggle_names_.size();
     for(int i = 0; i<size; ++i){
         if(ImGui::RadioButton(toggle.toggle_names_[i].c_str(), &toggle.state_, i))
+        {
             toggle.Apply(ptr);
+            return true;
+        }
     }
+    return false;
 }
 
-void kipod::Gui::Transform(kipod::Transform& transform)
+bool kipod::Gui::Transform(kipod::Transform& transform)
 {
 
     float x = 0, y = 0, z = 0;
@@ -75,25 +82,36 @@ void kipod::Gui::Transform(kipod::Transform& transform)
 
 
     if(pressed) { LOG_ENGINE("Pressed Transform Arrow Button"); transform.Translate({x,y,z}); }
+    return pressed;
 }
 
-void Gui::Scale(kipod::Transform& transform)
+bool Gui::Scale(kipod::Transform& transform)
 {
     float stepsize = 0.05;;
     float s = 1.0;
     ImGui::Text("Scale:");
     ImGui::SameLine();
-    if(ArrowButtons(&s, s, stepsize))
+    if(ArrowButtons(&s, s, stepsize)){
         transform.Scale({s,s,s});
+        return true;
+    }
+    return false;
 }
 
-void Gui::Color(RenderMaterial &material)
+bool Gui::Color(RenderMaterial &material)
 {
-        ImGui::ColorEdit4("Ambient##1", (float*)&material.ambient_);
-        ImGui::ColorEdit4("Diffuse##2", (float*)&material.diffuse_);
-        ImGui::ColorEdit4("Specular##3", (float*)&material.specular_);
-        ImGui::ColorEdit4("Emission##4", (float*)&material.emission_);
-        ImGui::SliderFloat("Shininess", &material.shininess_, 0.0f, 500.0f, "%.1f");
+        if(ImGui::ColorEdit4("Ambient##1", (float*)&material.ambient_))
+            return true;
+        if(ImGui::ColorEdit4("Diffuse##2", (float*)&material.diffuse_))
+            return true;
+        if(ImGui::ColorEdit4("Specular##3", (float*)&material.specular_))
+            return true;
+        if(ImGui::ColorEdit4("Emission##4", (float*)&material.emission_))
+            return true;
+        if(ImGui::SliderFloat("Shininess", &material.shininess_, 0.0f, 500.0f, "%.1f"))
+            return true;
+
+        return false;
 }
 
 bool kipod::Gui::CollapsingHeader(const char* name)

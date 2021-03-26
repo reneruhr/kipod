@@ -45,6 +45,7 @@ void MeshModelScene::SetupOptions(){
     Add(kipod::ModeToggle("Wireframe", false));
     Add(kipod::ModeToggle("Emissive",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
+    Add(kipod::ModeToggle("Lazy Mode", false));
 }
 
 
@@ -56,10 +57,12 @@ void MeshModelScene::SetupOptions(){
 
 void MeshModelScene::Draw()
 {
+    if(Toggle("Lazy Mode") && !needs_update_) return;
     if(RenderEngine::ActiveAPI()=="OpenGL")
         opengl_impl_->Draw();
     else if(RenderEngine::ActiveAPI()=="SoftRenderer")
         softrenderer_impl_->Draw();
+    needs_update_= false;
 }
 
 
@@ -86,7 +89,8 @@ void MeshModelScene::AddModel(MeshModel && model)
 {
     render_objects_.push_back(
                 std::make_unique<MeshModel>(
-                    std::forward<MeshModel>(model)));    
+                    std::forward<MeshModel>(model)));
+    NeedsUpdate();
 }
 
 void MeshModelScene::LoadOBJModel(std::filesystem::path path, bool textured)
@@ -213,6 +217,7 @@ void MeshModelScene::ProcessKeys(kipod::KeyPressedEvent &event)
                     GetActiveCamera()->Move(kipod::RenderCamera::Movement::DOWN, stepsize);
                 }
 
+        NeedsUpdate();
 }
 
 void MeshModelScene::ProcessMouseButtons(kipod::MouseButtonEvent &event)
@@ -223,12 +228,16 @@ void MeshModelScene::ProcessMouseButtons(kipod::MouseButtonEvent &event)
         mouse_rotation_active_ = true;
     else if(button == MouseButton::Button0 && event.GetEventType() == kipod::EventType::MouseButtonReleased)
         mouse_rotation_active_ = false;
+
+    NeedsUpdate();
 }
 
 void MeshModelScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
 {
-    if(mouse_rotation_active_)
+    if(mouse_rotation_active_){
         GetActiveCamera()->Rotate(event.x(),event.y());
+        NeedsUpdate();
+    }
 }
 
 void MeshModelScene::Signup() {

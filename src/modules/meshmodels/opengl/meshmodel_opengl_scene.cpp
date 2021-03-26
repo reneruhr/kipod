@@ -11,6 +11,7 @@ namespace kipod::MeshModels{
 void OpenGLScene::Setup()
 {
     SetupShaders();
+    CreateBoundingBoxLayout();
 }
 
 void OpenGLScene::CreateBoundingBoxLayout(){
