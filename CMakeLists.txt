@@ -30,11 +30,18 @@ file(GLOB IconsFontAwesome
     "external_libs/IconsFontAwesome/*.h"
 )
 
-set(SIEGEL2021 ${CMAKE_SOURCE_DIR}/src/math/siegel2021/)
-include_directories(${SIEGEL2021_DIR})
-
+file(GLOB siegel
+    "siegel2021.h"
+    "siegel2021/*.h"
+    "siegel2021/linear_algebra/*.h"
+    "siegel2021/matrix/*.h"
+    "siegel2021/vector/*.h"
+    "siegel2021/utils/*.h"
+)
 
 add_executable(kipod
+${siegel}
+${imgui}
 
   src/main.cpp
 
@@ -212,9 +219,6 @@ add_executable(kipod
   src/render/softrenderer/softrenderer_light.cpp
   src/render/softrenderer/softrenderer_framebuffer.h
   src/render/softrenderer/softrenderer_framebuffer.cpp
-
-
-  ${imgui}
 )
 
     find_package(OpenGL REQUIRED)

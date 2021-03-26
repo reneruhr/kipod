@@ -4,9 +4,11 @@
 #include <initializer_list>
 #include <array>
 
-#include "MatrixProxy.h"
-#include "MatrixTransposeView.h"
-#include "MatrixExpressionTemplate.h"
+#include "matrix_proxy.h"
+#include "matrix_expression_template.h"
+#include "matrixmatrix_operators.h"
+#include "matrixscalar_operators.h"
+#include "matrix_comparison.h"
 
 namespace siegel2021{
 

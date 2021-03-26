@@ -25,6 +25,10 @@ public:
 		return scalar;
 	}
 
+    operator Scalar() const {
+        assert(Columns(mat_) == 1);
+        return mat_(r_, 0);
+    }
 
 	RowProxy& operator=(const RowProxy& vector) {
 		assert(Columns(vector) == Columns(mat_));

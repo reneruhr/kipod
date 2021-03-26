@@ -4,7 +4,7 @@
 #include "modules/shapes/shapes_module.h"
 #include "modules/quasicrystals/quasicrystals_module.h"
 
-#include "math/siegel2021/siegel2021.h"
+#include "siegel2021.h"
 
 
 extern unsigned int GLOBAL_SCR_WIDTH;

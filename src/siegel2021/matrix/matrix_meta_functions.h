@@ -49,7 +49,7 @@ struct is_square_matrix<TransposedView<MatrixClass> > : is_square_matrix<MatrixC
 
 
 template <typename MatrixClass>
-inline bool  IsSquare(const MatrixClass& A) {
+inline bool  IsSquare(const MatrixClass&) {
 	return is_square_matrix<MatrixClass>::value;
 }
 
@@ -62,7 +62,7 @@ struct same_size_matrices<Matrix<Scalar, Rows, Columns>,
 						  Matrix<Scalar2, Rows, Columns> > : std::true_type {};
 
 template <typename Mat, typename Rix>
-inline bool  AreSameSize(const Mat& A, const Rix& B) {
+inline bool  AreSameSize(const Mat&, const Rix&) {
 	return same_size_matrices<Mat,Rix>::value;
 }
 
