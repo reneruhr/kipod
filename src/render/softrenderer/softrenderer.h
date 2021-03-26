@@ -53,9 +53,8 @@ public:
                        bool wireframeMode = true, bool clippingMode=true);
 
     void DrawColoredTriangles(RenderObject* model,
-                              const std::vector<RenderMaterial> *colors, const std::vector<unsigned int> *cindices,
-                              const std::vector<RenderLight*> &lights,
-                              bool lightMode=true, bool emissiveMode=false);
+                              const LightContainer &lights,
+                              bool emissiveMode=false);
 
     void DrawToOpenGL();
     void ClearColorBuffer();

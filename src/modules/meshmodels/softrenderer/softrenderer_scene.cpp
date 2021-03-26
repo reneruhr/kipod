@@ -6,7 +6,7 @@ namespace kipod::MeshModels{
 
 void SoftRendererScene::Setup()
 {
-    //SetupShader();
+
 }
 
 void SoftRendererScene::Draw()
@@ -14,9 +14,9 @@ void SoftRendererScene::Draw()
     softrenderer_->ClearBuffer();
         for(const auto& model : scene_->render_objects_){
             softrenderer_->SetUniforms(scene_->GetActiveCamera(), mat4( model->Transform() ));
-//            if(scene_->Toggle("Colors") || scene_->Toggle("Emissive"))
-//                softrenderer_->DrawColoredTriangles(model.get(), scene_->lights_, scene_->Toggle("Colors") , scene_->Toggle("Emissive") );
-//            else
+            if(scene_->Toggle("Colors") || scene_->Toggle("Emissive"))
+                softrenderer_->DrawColoredTriangles(model.get(), scene_->lights_, scene_->Toggle("Emissive") );
+            else
                 softrenderer_->DrawTriangles(model.get(), scene_->Toggle("Wireframe"), scene_->Toggle("Normals") );
 
 //            if(box_mode){
@@ -34,11 +34,6 @@ void SoftRendererScene::Draw()
 
 }
 
-
-//void SoftRendererScene::SetupShader()
-//{
-//    shader_= std::make_shared<kipod::Shader>("softrenderer.vert.glsl",   "softrenderer.frag.glsl");
-//}
 
 void SoftRendererScene::DrawBoundingBox(MeshModel *model, RenderCamera *camera)
 {

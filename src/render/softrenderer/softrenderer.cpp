@@ -108,10 +108,9 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
 
 
 
-void SoftRenderer::DrawColoredTriangles(RenderObject* object,
-                                        const std::vector<RenderMaterial> *colors, const std::vector<unsigned int> *cindices,
-                                        const std::vector<RenderLight*> &lights,
-                                        bool lightMode, bool emissiveMode)
+void SoftRenderer::DrawColoredTriangles(RenderObject* object, 
+                                        const LightContainer& lights,
+                                        bool emissiveMode)
 {
     auto buffer = static_cast<SoftRenderLayout*>(object->Layout("SoftLayout"))->Buffer();
     RenderCamera& camera = *uniform_->camera_;
@@ -119,6 +118,8 @@ void SoftRenderer::DrawColoredTriangles(RenderObject* object,
     mat4 transform = mat4(camera) * model;
     mat4 normal_transform = transpose(Inverse(model));
     mat4 camera_transform = mat4(camera.view_matrix_);
+
+    auto material = object->mat_;
 
     for(unsigned int j = 0; j<buffer.Count(); j+=3){
         vec4 triangle[3];
@@ -129,29 +130,27 @@ void SoftRenderer::DrawColoredTriangles(RenderObject* object,
                  triangle[i]=transform * buffer.Vertex(j,i);
                  triangle_normals[i] = normal_transform * buffer.Normal(j,i);
 
-                 if(lightMode){
-                     for(const auto light : lights){
+                     for(const auto& light : lights){
                          if(light->Type()==kipod::LightSource::AMBIENT)
-                            triangleColors[i]+=colorAmbient( (*colors)[(*cindices)[j+i]].ambient_,
+                            triangleColors[i]+=colorAmbient( material->ambient_,
                                                              light->Color());
                          if(light->Type()==kipod::LightSource::DIFFUSE)
-                             triangleColors[i]+=colorDiffuse((*colors)[(*cindices)[j+i]].diffuse_,
+                             triangleColors[i]+=colorDiffuse(material->diffuse_,
                                                              triangle,
                                                              triangle_normals,
                                                              camera_transform,
-                                                             light);
+                                                             light.get());
                          if(light->Type()==kipod::LightSource::SPECULAR)
-                             triangleColors[i]+=colorSpecular((*colors)[(*cindices)[j+i]].specular_,
-                                                 (*colors)[(*cindices)[j+i]].shininess_,
-                                                 vec4(0,0,0,1), // CHANGED TO CAM
+                             triangleColors[i]+=colorSpecular(material->specular_,
+                                                 material->shininess_,
+                                                 vec4(camera.eye_,0),
                                                  triangle,
                                                  triangle_normals,
                                                  camera_transform,
-                                                 light);
+                                                 light.get());
                      }
-                 }
                  if(emissiveMode)
-                     triangleColors[i]+= (*colors)[(*cindices)[j+i]].emission_;
+                     triangleColors[i]+= material->emission_;
         }
         auto ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle, triangle_normals, triangleColors)), true);
         for(auto& t : *ts)       {

@@ -1,5 +1,5 @@
 #pragma once
-// From Technion Course on Computer Graphics Fall 2020
+// Originates from Technion Course on Computer Graphics Fall 2020
 
 #include <iostream>
 #include <cmath>
@@ -401,6 +401,8 @@ struct vec4 {
 
     vec4( const vec3& v, const float w = 1.0 ) : w(w)
 	{ x = v.x;  y = v.y;  z = v.z; }
+    vec4( const glm::vec3& v, const float w = 1.0 ) : w(w)
+    { x = v.x;  y = v.y;  z = v.z; }
 
     vec4( const vec2& v, const float z, const float w ) : z(z), w(w)
 	{ x = v.x;  y = v.y; }
