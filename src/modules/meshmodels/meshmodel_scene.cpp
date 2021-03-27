@@ -46,6 +46,7 @@ void MeshModelScene::SetupOptions(){
     Add(kipod::ModeToggle("Emissive",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
     Add(kipod::ModeToggle("Lazy Mode", false));
+    Add(kipod::ModeToggle("Lights", false));
 }
 
 

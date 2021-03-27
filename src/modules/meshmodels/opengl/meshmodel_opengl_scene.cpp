@@ -12,6 +12,7 @@ void OpenGLScene::Setup()
 {
     SetupShaders();
     CreateBoundingBoxLayout();
+    CreateBoundingSphereLayout();
 }
 
 void OpenGLScene::CreateBoundingBoxLayout(){
@@ -20,6 +21,14 @@ void OpenGLScene::CreateBoundingBoxLayout(){
     layout->sha_ = shaders_["Colored Triangles"];
     scene_->bounding_box_.AddLayout(name,std::move(*layout));
     scene_->bounding_box_.Init(false,false);
+}
+
+void OpenGLScene::CreateBoundingSphereLayout(){
+    std::string name = "Colored Triangles";
+    auto layout = new kipod::GLRenderLayout;
+    layout->sha_ = shaders_["Colored Triangles"];
+    scene_->bounding_sphere_.AddLayout(name,std::move(*layout));
+    scene_->bounding_sphere_.Init(false,false);
 }
 
 
@@ -91,8 +100,18 @@ void OpenGLScene::Draw()
         }
         shaders_["Basic"]->Unuse();
     }
-    kipod::RenderManager::Bind(0);
 
+    if(scene_->Toggle("Lights")){
+        shaders_["Basic"]->Use();
+        for(const auto& light : scene_->lights_){
+            if(light->Type()!=LightSource::AMBIENT)
+                DrawLight(light.get(), scene_->GetActiveCamera());;
+        }
+        shaders_["Basic"]->Unuse();
+    }
+
+
+    kipod::RenderManager::Bind(0);
     //framebuffer_->tex_->Draw();
 }
 
@@ -213,7 +232,7 @@ void OpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* camera)
 
 void OpenGLScene::SetUniformCamera(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera)
 {
-    glm::mat4 cam = glm::inverse(cameraModel->view_matrix_);
+    glm::mat4 cam = glm::inverse(cameraModel->view_matrix_) * glm::scale(glm::mat4(1.0f),glm::vec3(0.2f));
     glm::mat4 pv = camera->projection_view_matrix_;
     glm::mat4 mvp = pv * cam;
     shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
@@ -225,6 +244,15 @@ void OpenGLScene::SetUniformFrustum(kipod::RenderCamera *cameraModel, kipod::Ren
     glm::mat4 pv = camera->projection_view_matrix_;
     glm::mat4 vp = glm::inverse(cameraModel->projection_view_matrix_);
     auto mvp = pv * vp;
+    shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
+}
+
+void OpenGLScene::SetUniformLight(kipod::RenderLight *light, kipod::RenderCamera *camera)
+{
+    auto source = glm::vec3(light->Source().x, light->Source().y,light->Source().z);
+    glm::mat4 cam = glm::translate(glm::scale(glm::mat4(1.0f),glm::vec3(0.2f)), source);
+    glm::mat4 pv = camera->projection_view_matrix_;
+    glm::mat4 mvp = pv * cam;
     shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
 }
 
@@ -367,10 +395,8 @@ void OpenGLScene::DrawBoundingBox(MeshModel* model, RenderCamera* camera)
 
 void OpenGLScene::DrawCamera(RenderCamera* camera_model, RenderCamera* camera)
 {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     SetUniformCamera(camera_model, camera);
     scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void OpenGLScene::DrawFrustum(RenderCamera* camera_model, RenderCamera* camera)
@@ -379,6 +405,12 @@ void OpenGLScene::DrawFrustum(RenderCamera* camera_model, RenderCamera* camera)
     SetUniformFrustum(camera_model, camera);
     scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLScene::DrawLight(RenderLight* light, RenderCamera* camera)
+{
+    SetUniformLight(light, camera);
+    scene_->bounding_sphere_.RenderObject::Draw("Colored Triangles");
 }
 
 void OpenGLScene::DrawCoordinateAxis(kipod::RenderCamera* camera)

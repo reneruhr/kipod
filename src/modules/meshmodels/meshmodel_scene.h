@@ -28,6 +28,7 @@ protected:
         std::unique_ptr<kipod::RenderObject> coordinate_axis_;
         std::unique_ptr<kipod::RenderObject> grid_;
         PrimMeshModel bounding_box_;
+        PrimMeshModel bounding_sphere_;
 
         bool mouse_rotation_active_ = false;
 
@@ -59,7 +60,7 @@ protected:
         virtual void Draw() override;
 
         MeshModelScene(int width, int height)
-            : RenderScene(width, height), bounding_box_(Cube){ }
+            : RenderScene(width, height), bounding_box_(Cube), bounding_sphere_(Sphere, 5){ }
 };
 
 }

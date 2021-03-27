@@ -91,6 +91,9 @@ void MeshmodelSidebar::LightOptions()
             meshmodelscene->NeedsUpdate();
         light->Color() = lightColor;
         light->Source() = lightSourceLocationLocal;
+
+        if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Lights"]))
+                meshmodelscene->NeedsUpdate();
     }
     ImGui::Separator();
 }
@@ -177,7 +180,7 @@ void MeshmodelSidebar::LoadOBJfile(){
             LOG_CONSOLE("Not an OBJ file.");
             return;
         }
-        LOG_INFO("Loaded obj model from path {}.",chosenPath);
+        LOG_ENGINE("Loaded obj model from path {}.",chosenPath);
         LOG_CONSOLE("Chosen file: \"%s\"",chosenPath);
         meshmodelscene->LoadOBJModel(chosenPath, texturedOption);
         meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);
