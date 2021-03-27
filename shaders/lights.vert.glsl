@@ -29,35 +29,41 @@ vec4 Times(vec4 m, vec4 l){
 	return vec4(m.x*l.x, m.y*l.y, m.z*l.z, 1.0f);
 }
 
-vec4 ColorAmbient(vec4 matColor, vec4 lightColor){
+vec4 ColorAmbient(vec4 matColor, vec4 lightColor)
+{
     return Times(matColor, lightColor);
 }
 
 
-vec4 ColorDiffuse(in vec4 matColor,
-                  in vec4 location, 
+vec4 ColorDiffuse(in vec4 mat_color,
+                  in vec4 world_location, 
                   in vec3 normal,
-                  in vec4 lightColor,
-                  in vec4 lightSource){
-    vec3 lightDirection = normalize(vec3(lightSource - location));
+                  in vec4 light_color,
+                  in vec4 light_source,
+                  in mat4 view_matrix)
+{
+    vec4 light_vector = (view_matrix*light_source - world_location); //view_matrix*
+    vec3 light_direction = normalize(light_vector.xyz);
 
-    return Times(matColor, lightColor)*max( dot(lightDirection, normal), 0.0f );
+    return Times(mat_color, light_color)*max( dot(light_direction, normal), 0.0f );
 }
 
-vec4 ColorSpecular(in vec4 matColor, 
+vec4 ColorSpecular(in vec4 mat_color, 
 				   in float shininess, 
-				   in vec4 camLocation,
-                   in vec4 location, 
+				   in vec4 cam_location,
+                   in vec4 world_location, 
                    in vec3 normal,
-                   in vec4 lightColor,
-                   in vec4 lightSource){
-    vec4 lightDirection =  lightSource - location;
-    lightDirection.w=0;
-    lightDirection = normalize(lightDirection);
-    vec4 v = normalize(camLocation-location);
-    vec3 halfVector = vec3(lightDirection+v);
-    halfVector = normalize(halfVector);
-    return Times(matColor, lightColor) * pow( max(dot(halfVector, normal), 0.0f) , shininess);
+                   in vec4 light_color,
+                   in vec4 light_source,
+                   in mat4 view_matrix)
+{
+    vec4 light_vector = (view_matrix*light_source - world_location);  //view_matrix*
+    vec3 light_direction = normalize(light_vector.xyz);
+    // view_matrix*cam_location = 0
+    vec3 camera_direction = normalize( (view_matrix*cam_location).xyz-world_location.xyz);
+    vec3 half_vector = vec3(light_direction+camera_direction);
+    half_vector = normalize(half_vector);
+    return Times(mat_color, light_color) * pow( max(dot(half_vector, normal), 0.0f) , shininess);
 }
 
 
@@ -65,14 +71,15 @@ vec4 ColorSpecular(in vec4 matColor,
 layout (location = 0) in  vec3 vPosition;
 layout (location = 1) in  vec3 vNormal;
 uniform mat4 projection;
-uniform mat4 v;
-uniform mat4 mv;
+uniform mat4 view_matrix;
+uniform mat4 model_matrix;
+uniform mat4 mvp;
 uniform mat4 mv_normal;
 uniform bool EmissiveOn;
 
 uniform Material material;
 uniform Light Lights[3];
-uniform vec4 cameraLocation;
+uniform vec4 camera_location;
 
 
 out vec4 vColor;
@@ -80,8 +87,11 @@ out vec3 normal;
 
 void main()
 {
+    mat4 mv = view_matrix * model_matrix;
 
-    vec4 location = mv * vec4(vPosition,1.0f);
+    vec4 world_position = mv*vec4(vPosition,1.0f);
+    world_position /= world_position.w;
+    gl_Position = mvp * vec4(vPosition,1.0f);
 
     normal = normalize(vec3(mv_normal*vec4(vNormal,0.0f)));
 	//normal = normalize(vec3(vNormal));
@@ -98,23 +108,24 @@ void main()
     	case 1: break;// Point
     	case 2: // Diffuse
     		vColor+=ColorDiffuse(material.diffuse, 
-    							 location,
+    							 world_position,
     							 normal,
     							 Lights[light].color,
-    							 Lights[light].source); break;
+    							 Lights[light].source,
+                                 view_matrix); break;
     	case 3: // Specular
 			vColor+=ColorSpecular(material.specular, 
 							      material.shininess, 
-							      cameraLocation,
-					              location, 
+							      camera_location,
+					              world_position, 
 					              normal,
 					              Lights[light].color,
-					              Lights[light].source); break;
+					              Lights[light].source,
+                                  view_matrix); break;
     	case 4: break;// Spotlight
     	case 5: break;// Distant
     	}
 
     }
     vColor = min(vColor,vec4(1.0f));
-    gl_Position = projection*location;
 }

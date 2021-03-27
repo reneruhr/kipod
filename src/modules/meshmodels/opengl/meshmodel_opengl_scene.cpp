@@ -169,14 +169,15 @@ void OpenGLScene::SetupShaderColoredTriangles()
     shaders_["Colored Triangles"]->AttachUniform<float>("tex");
 
         LOG_ENGINE("Attaching Uniforms to Shader Colored Triangles");
-        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("v");
-        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("view_matrix");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mvp");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("model_matrix");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv_normal");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("projection");
 
         AttachMaterialToShader(*shaders_["Colored Triangles"]);
 
-        shaders_["Colored Triangles"]->AttachUniform<glm::vec4>("cameraLocation");
+        shaders_["Colored Triangles"]->AttachUniform<glm::vec4>("camera_location");
 
         for(int i = 0; i<3; ++i){
             AttachLightToShader(*shaders_["Colored Triangles"], i);
@@ -313,20 +314,21 @@ void OpenGLScene::BindNormalUniforms(kipod::Shader& shader, const float length)
 
 void OpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderObject& model, const kipod::RenderCamera& camera)
 {
-    glm::vec4  camLocation = glm::vec4(camera.eye_,1);
+    glm::vec4 camLocation = glm::vec4(camera.eye_,1);
     glm::mat4 p = camera.projection_matrix_;
     glm::mat4 v = camera.view_matrix_;
 
-    shader.SetUniform<glm::vec4>("cameraLocation", camLocation);
-    shader.SetUniform<glm::mat4>("v", v);
+    shader.SetUniform<glm::vec4>("camera_location", camLocation);
+    shader.SetUniform<glm::mat4>("view_matrix", v);
     shader.SetUniform<glm::mat4>("projection", p);
 
-    auto m = model.Transform();
+    glm::mat4 m = model.Transform();
 
-    glm::mat4  mv = v*m;
-    glm::mat4 mv_normal = glm::transpose(glm::inverse(mv));
+    glm::mat4 mvp = camera.projection_view_matrix_ * m;
+    glm::mat4 mv_normal = glm::transpose(glm::inverse(v*m));
 
-    shader.SetUniform<glm::mat4>("mv", mv);
+    shader.SetUniform<glm::mat4>("model_matrix", m);
+    shader.SetUniform<glm::mat4>("mvp", mvp);
     shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
 
 }
