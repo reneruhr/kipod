@@ -26,6 +26,7 @@ class OpenGLScene : public MeshModelAPIScene{
         void SetUniformTex(kipod::RenderCamera *camera, kipod::RenderObject *model);
         void SetUniformBox(MeshModel *model, kipod::RenderCamera* camera);
         void SetUniformCamera(kipod::RenderCamera* cameraModel, kipod::RenderCamera* camera);
+        void SetUniformFrustum(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera);
 
         void SetupShaders();
         void SetupShaderBasic();
@@ -45,12 +46,14 @@ protected:
         void CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors) override;
 
         void DrawCamera(RenderCamera *camera_model, RenderCamera *camera);
+        void DrawFrustum(RenderCamera *camera_model, RenderCamera *camera);
         void DrawBoundingBox(MeshModel *model, RenderCamera *camera)  override;
         void DrawGrid(RenderCamera *camera) override;
         void DrawCoordinateAxis(RenderCamera *camera) override;
 
 public:
         OpenGLScene(MeshModelScene* scene): MeshModelAPIScene(scene) {};
+
 
 };
 }

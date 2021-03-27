@@ -74,25 +74,23 @@ void OpenGLScene::Draw()
         }
     }
 
-    if(scene_->Toggle("Camera Mode")){
+    if(scene_->Toggle("Cameras")){
         shaders_["Basic"]->Use();
         for(const auto& cam : scene_->cameras_){
-//            glm::mat4 pv = scene_->GetActiveCamera()->projection_view_matrix_;
-//            auto mvp = pv * glm::mat4(Translate(cam->Eye()));
-//            shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
-            DrawCamera(cam.get(), scene_->GetActiveCamera());
+            if(cam.get()!=scene_->GetActiveCamera())
+                DrawCamera(cam.get(), scene_->GetActiveCamera());
         }
+        shaders_["Basic"]->Unuse();
     }
-//    if(Toggle("Camera Frustum Mode")){
-//        shaders_["Basic"]->Use();
-//        for(auto cam : cameras){
-//            glm::mat4 pv = cam->projection_view_matrix_;
-//            glm::mat4 v = cam->view_matrix_;
-//            glm::mat4 p = cam->projection_matrix_;
-//            auto mvp = pv * glm::inverse(v) * glm::inverse(p);
-//            shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
-//            cam->drawFrustum();
-//        }
+
+    if(scene_->Toggle("Frustum")){
+        shaders_["Basic"]->Use();
+        for(const auto& cam : scene_->cameras_){
+            if(cam.get()!=scene_->GetActiveCamera())
+                DrawFrustum(cam.get(), scene_->GetActiveCamera());;
+        }
+        shaders_["Basic"]->Unuse();
+    }
     kipod::RenderManager::Bind(0);
 
     //framebuffer_->tex_->Draw();
@@ -215,9 +213,18 @@ void OpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* camera)
 
 void OpenGLScene::SetUniformCamera(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera)
 {
-    glm::mat4 cam = glm::transpose(cameraModel->view_matrix_);
+    glm::mat4 cam = glm::inverse(cameraModel->view_matrix_);
     glm::mat4 pv = camera->projection_view_matrix_;
     glm::mat4 mvp = pv * cam;
+    shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
+}
+
+void OpenGLScene::SetUniformFrustum(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera)
+{
+
+    glm::mat4 pv = camera->projection_view_matrix_;
+    glm::mat4 vp = glm::inverse(cameraModel->projection_view_matrix_);
+    auto mvp = pv * vp;
     shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
 }
 
@@ -362,6 +369,14 @@ void OpenGLScene::DrawCamera(RenderCamera* camera_model, RenderCamera* camera)
 {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     SetUniformCamera(camera_model, camera);
+    scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLScene::DrawFrustum(RenderCamera* camera_model, RenderCamera* camera)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    SetUniformFrustum(camera_model, camera);
     scene_->bounding_box_.RenderObject::Draw("Colored Triangles");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

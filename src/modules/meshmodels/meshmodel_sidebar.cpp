@@ -306,6 +306,12 @@ void MeshmodelSidebar::CameraViewOption()
     if(kipod::Gui::RadioButtons(camera_projection_toggle, (void*) cam))
         meshmodelscene->NeedsUpdate();
 
+    ImGui::InputFloat3("##camerapos", &cam->Eye()[0], "%.1f");
+    ImGui::SameLine(); ImGui::Text("Eye");
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Cameras"]))
+            meshmodelscene->NeedsUpdate();
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Frustum"]))
+            meshmodelscene->NeedsUpdate();
     ImGui::Separator();
 }
 
