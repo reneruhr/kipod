@@ -75,10 +75,13 @@ void MeshmodelSidebar::LightOptions()
         for (unsigned int n = 0; n <  meshmodelscene->lights_.size(); n++)
         {
             char buf[32];
-            sprintf(buf, "Light %d", n);
+            if(meshmodelscene->lights_[n]->Type() == kipod::LightSource::AMBIENT) sprintf(buf, "Light %d %s", n, "Ambient");
+            else if(meshmodelscene->lights_[n]->Type() == kipod::LightSource::DIFFUSE) sprintf(buf, "Light %d %s", n, "Diffuse");
+            else if(meshmodelscene->lights_[n]->Type() == kipod::LightSource::SPECULAR) sprintf(buf, "Light %d %s", n, "Specular");
             if (ImGui::Selectable(buf, selectedLight == n)) selectedLight = n;
         }
         kipod::RenderLight* light = meshmodelscene->lights_[selectedLight].get();
+        ImGui::Text("Modify: "); ImGui::SameLine();
         if(light->Type() == kipod::LightSource::AMBIENT) ImGui::Text("Ambient");
         else if(light->Type() == kipod::LightSource::DIFFUSE) ImGui::Text("Diffuse");
         else if(light->Type() == kipod::LightSource::SPECULAR) ImGui::Text("Specular");
@@ -87,12 +90,12 @@ void MeshmodelSidebar::LightOptions()
         glm::vec4 lightColor = light->Color();
         if(ImGui::ColorEdit4("##LightColorChoice2", (float*)&lightColor, 0))
             meshmodelscene->NeedsUpdate();
-        if(ImGui::SliderFloat3("##Source Location2", &lightSourceLocationLocal[0], -10.0f, 10.0f))
+        if(ImGui::SliderFloat3("##Source Location2", &lightSourceLocationLocal[0], -100.0f, 100.0f))
             meshmodelscene->NeedsUpdate();
         light->Color() = lightColor;
         light->Source() = lightSourceLocationLocal;
 
-        if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Lights"]))
+        if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Show Lights"]))
                 meshmodelscene->NeedsUpdate();
     }
     ImGui::Separator();
@@ -311,9 +314,9 @@ void MeshmodelSidebar::CameraViewOption()
 
     ImGui::InputFloat3("##camerapos", &cam->Eye()[0], "%.1f");
     ImGui::SameLine(); ImGui::Text("Eye");
-    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Cameras"]))
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Show Cameras"]))
             meshmodelscene->NeedsUpdate();
-    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Frustum"]))
+    if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Show Frustum"]))
             meshmodelscene->NeedsUpdate();
     ImGui::Separator();
 }

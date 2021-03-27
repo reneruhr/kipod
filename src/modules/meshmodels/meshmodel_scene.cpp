@@ -37,8 +37,8 @@ void MeshModelScene::Setup()
 
 void MeshModelScene::SetupOptions(){
     Add(kipod::ModeToggle("Normals", false));
-    Add(kipod::ModeToggle("Cameras", false));
-    Add(kipod::ModeToggle("Frustum", false));
+    Add(kipod::ModeToggle("Show Cameras", false));
+    Add(kipod::ModeToggle("Show Frustum", false));
     Add(kipod::ModeToggle("Colors", true));
     Add(kipod::ModeToggle("Textures", true));
     Add(kipod::ModeToggle("Bounding Box", false));
@@ -46,7 +46,7 @@ void MeshModelScene::SetupOptions(){
     Add(kipod::ModeToggle("Emissive",false));
     Add(kipod::ModeToggle("Clipping Mode", true));
     Add(kipod::ModeToggle("Lazy Mode", false));
-    Add(kipod::ModeToggle("Lights", false));
+    Add(kipod::ModeToggle("Show Lights", false));
 }
 
 
@@ -151,7 +151,7 @@ void MeshModelScene::ProcessKeys(kipod::KeyPressedEvent &event)
         else if(key == Key::B)
             Toggle("Bounding Box").Switch();
         else if(key == Key::C)
-            Toggle("Cameras").Switch();
+            Toggle("Show Cameras").Switch();
         else if(key == Key::X)
             Toggle("Clipping Mode").Switch();
         //TRANSFORM CONTROL:

@@ -70,7 +70,7 @@ bool MeshModel::Valid()
 
 
 
-void MeshModel::Init(bool textured, bool normals)
+void MeshModel::Init(bool textured, bool normals, bool basic)
 {
     if(textured){
         kipod::CreateTriangleVector(triangles_,
@@ -83,11 +83,15 @@ void MeshModel::Init(bool textured, bool normals)
         auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
         layout->SetupColoredTriangles(vertices_vector.get(), indices_vector.get(),
                                                normals_vector.get(), nindices_vector.get());
-    }else{
+    }else if(HasLayout("Colored Triangles")){
         auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Colored Triangles"));
         layout->SetupColoredTriangles(vertices_vector.get(),indices_vector.get());
     }
 
+    if(basic){
+        auto layout = static_cast<kipod::GLRenderLayout*>(Layout("Basic"));
+        layout->SetupColoredTriangles(vertices_vector.get(),indices_vector.get());
+    }
 }
 
 

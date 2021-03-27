@@ -31,7 +31,7 @@ public:
     MeshModel(MeshModel&&) = default;
     MeshModel& operator=(MeshModel&&) = default;
 
-    void Init(bool textured, bool normals=true);
+    void Init(bool textured, bool normals=true, bool basic=false);
 
     bool Valid();
     float normal_length=1;
