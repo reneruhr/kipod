@@ -214,6 +214,11 @@ void MeshmodelSidebar::ModelViewOptions()
     if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Normals"]))
         meshmodelscene->NeedsUpdate();
     ImGui::SameLine(); kipod::HelpMarker("N Key");
+    if(auto model = meshmodelscene->GetActiveModel()){
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(70.0f);
+        ImGui::InputFloat("##normal_length", &model->normal_length, 0.01f,10.0f, "%.1f");
+    }
     if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Wireframe"]))
         meshmodelscene->NeedsUpdate();
     ImGui::SameLine(); kipod::HelpMarker("Space Key");
