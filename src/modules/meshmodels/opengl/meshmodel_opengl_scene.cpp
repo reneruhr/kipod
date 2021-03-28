@@ -148,14 +148,17 @@ void OpenGLScene::SetupShaderTexturedTriangles()
     shaders_["Textured Triangles"]->AttachUniform<float>("tex");
 
         LOG_ENGINE("Attaching Uniforms to Texture Shader");
-        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("v");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("view_matrix");
         shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("mv");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("mvp");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("model_matrix");
+        shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("model_matrix_normal");
         shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("mv_normal");
         shaders_["Textured Triangles"]->AttachUniform<glm::mat4>("projection");
 
         AttachMaterialToShader(*shaders_["Textured Triangles"]);
 
-        shaders_["Textured Triangles"]->AttachUniform<glm::vec4>("cameraLocation");
+        shaders_["Textured Triangles"]->AttachUniform<glm::vec4>("camera_location");
 
         for(int i = 0; i<3; ++i){
             AttachLightToShader(*shaders_["Textured Triangles"], i);
@@ -170,8 +173,10 @@ void OpenGLScene::SetupShaderColoredTriangles()
 
         LOG_ENGINE("Attaching Uniforms to Shader Colored Triangles");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("view_matrix");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mvp");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("model_matrix");
+        shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("model_matrix_normal");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("mv_normal");
         shaders_["Colored Triangles"]->AttachUniform<glm::mat4>("projection");
 
@@ -264,9 +269,9 @@ void OpenGLScene::SetUniformFrustum(kipod::RenderCamera *cameraModel, kipod::Ren
 void OpenGLScene::SetUniformLight(kipod::RenderLight *light, kipod::RenderCamera *camera)
 {
     auto source = glm::vec3(light->Source().x, light->Source().y,light->Source().z);
-    glm::mat4 cam = glm::translate(glm::scale(glm::mat4(1.0f),glm::vec3(0.2f)), source);
+    glm::mat4 position = glm::scale(glm::translate(glm::mat4(1.0f),source), glm::vec3(0.2f));
     glm::mat4 pv = camera->projection_view_matrix_;
-    glm::mat4 mvp = pv * cam;
+    glm::mat4 mvp = pv * position;
     shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);
     shaders_["Basic"]->SetUniform<glm::vec4>("color", light->Color());
 }
@@ -323,11 +328,16 @@ void OpenGLScene::BindMatrixUniforms(kipod::Shader& shader, const kipod::RenderO
     shader.SetUniform<glm::mat4>("projection", p);
 
     glm::mat4 m = model.Transform();
-
+    glm::mat4 mv = v*model.Transform();
     glm::mat4 mvp = camera.projection_view_matrix_ * m;
+
+    glm::mat4 m_normal = glm::transpose(glm::inverse(m));
     glm::mat4 mv_normal = glm::transpose(glm::inverse(v*m));
 
+
     shader.SetUniform<glm::mat4>("model_matrix", m);
+    shader.SetUniform<glm::mat4>("model_matrix_normal", m_normal);
+    shader.SetUniform<glm::mat4>("mv", mv);
     shader.SetUniform<glm::mat4>("mvp", mvp);
     shader.SetUniform<glm::mat4>("mv_normal", mv_normal);
 
