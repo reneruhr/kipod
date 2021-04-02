@@ -4,7 +4,6 @@
 #include "../../render/render_object.h"
 
 class ShapeData;
-class MaterialStruct;
 
 namespace kipod::Shapes{
 
