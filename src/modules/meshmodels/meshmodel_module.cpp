@@ -15,10 +15,18 @@ MeshModelModule::MeshModelModule(std::string name, int width, int height) : Modu
 }
 
 void MeshModelModuleMenu::Draw(){
-    if(ImGui::MenuItem("OpenGL" ,  "", RenderEngine::ActiveAPI() == "OpenGL"))
+    if(ImGui::MenuItem("OpenGL" ,  "", RenderEngine::ActiveAPI() == "OpenGL")){
         RenderEngine::SetAPI("OpenGL");
-    if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer"))
+        scene_->NeedsUpdate();
+    }
+    if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer")){
         RenderEngine::SetAPI("SoftRenderer");
+        scene_->NeedsUpdate();
+    }
+    if(ImGui::MenuItem("Raytracer",  "", RenderEngine::ActiveAPI() == "Raytracer")){
+        RenderEngine::SetAPI("Raytracer");
+        scene_->NeedsUpdate();
+    }
     if(ImGui::MenuItem("Lazy Updates", "only updates on change", scene_->Toggle("Lazy Mode")))
         scene_->Toggle("Lazy Mode").Switch();
 }

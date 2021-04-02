@@ -17,6 +17,7 @@ class MeshModelScene :
         public kipod::RenderScene {
         friend class MeshmodelSidebar;
         friend class MeshModelModule;
+        friend class MeshModelModuleMenu;
         friend class OpenGLScene;
         friend class SoftRendererScene;
         friend class RaytracerScene;

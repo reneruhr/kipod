@@ -23,9 +23,11 @@ void MeshModelScene::Setup()
 
     opengl_impl_ = std::make_unique<OpenGLScene>(this);
     softrenderer_impl_ = std::make_unique<SoftRendererScene>(this);
+    raytracer_impl_ = std::make_unique<RaytracerScene>(this);
 
     opengl_impl_->Setup();
     softrenderer_impl_->Setup();
+    raytracer_impl_->Setup();
 
     SetupCoordinateAxis();
     SetupGrid();
@@ -63,6 +65,8 @@ void MeshModelScene::Draw()
         opengl_impl_->Draw();
     else if(RenderEngine::ActiveAPI()=="SoftRenderer")
         softrenderer_impl_->Draw();
+    else if(RenderEngine::ActiveAPI()=="Raytracer")
+        raytracer_impl_->Draw();
     needs_update_= false;
 }
 
