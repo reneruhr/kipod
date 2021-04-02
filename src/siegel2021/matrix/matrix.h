@@ -80,6 +80,16 @@ public:
 		return *this;
 	}
 
+	
+    Matrix operator-()
+	{
+        Matrix minus;
+		for (int i = 0; i < Rows(); ++i)
+			for (int j = 0; j < Columns(); ++j)
+				minus(i,j) = -data_[MatrixIndex(i, j)];
+		return minus;
+	}
+
 
 
 	Scalar& operator()(int i, int j) {

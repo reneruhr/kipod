@@ -21,7 +21,6 @@ template <class MatrixClass> struct MatrixExpression {
     operator const MatrixClass& () const {
         return static_cast<const MatrixClass&>(*this);
     }
-    
 
     int Rows()
     {

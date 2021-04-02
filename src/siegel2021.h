@@ -1,8 +1,12 @@
 #pragma once
 #include "siegel2021/matrix/matrix.h"
-#include "siegel2021/vector/vector.h"
 #include "siegel2021/linear_algebra/transpose.h"
 #include "siegel2021/linear_algebra/inverse.h"
+
+#include "siegel2021/vector/vector.h"
+#include "siegel2021/vector/cross.h"
+
+
 namespace siegel2021{
 
     using Mat4 = Matrix<float,4>;
