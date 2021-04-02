@@ -5,6 +5,7 @@
 #include "meshmodel_primitive.h"
 #include "opengl/meshmodel_opengl_scene.h"
 #include "softrenderer/softrenderer_scene.h"
+#include "raytracer/raytracer_scene.h"
 
 namespace kipod::MeshModels{
 class OpenGLScene;
@@ -18,10 +19,12 @@ class MeshModelScene :
         friend class MeshModelModule;
         friend class OpenGLScene;
         friend class SoftRendererScene;
+        friend class RaytracerScene;
 
 protected:
         std::unique_ptr<OpenGLScene> opengl_impl_;
         std::unique_ptr<SoftRendererScene> softrenderer_impl_;
+        std::unique_ptr<RaytracerScene> raytracer_impl_;
         bool needs_update_ = false;
         void NeedsUpdate() { needs_update_ = true;}
 
