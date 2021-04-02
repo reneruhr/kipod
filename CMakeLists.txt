@@ -75,6 +75,9 @@ ${imgui}
   src/modules/meshmodels/softrenderer/softrenderer_scene.h
   src/modules/meshmodels//softrenderer/softrenderer_scene.cpp
 
+  src/modules/meshmodels/raytracer/raytracer_scene.h
+  src/modules/meshmodels//raytracer/raytracer_scene.cpp
+
   src/modules/meshmodels/meshmodel_api_scene.h
 
 
@@ -219,6 +222,17 @@ ${imgui}
   src/render/softrenderer/softrenderer_light.cpp
   src/render/softrenderer/softrenderer_framebuffer.h
   src/render/softrenderer/softrenderer_framebuffer.cpp
+
+
+  src/render/raytracer/raytracer.h
+  src/render/raytracer/raytracer.cpp
+  src/render/raytracer/raytracer_framebuffer.h
+  src/render/raytracer/raytracer_framebuffer.cpp
+  src/render/raytracer/raytracer_layout.h
+  src/render/raytracer/raytracer_layout.cpp
+  src/render/raytracer/raytracer_uniform.h
+  src/render/raytracer/raytracer_uniform.cpp
+
 )
 
     find_package(OpenGL REQUIRED)
