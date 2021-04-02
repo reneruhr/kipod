@@ -3,6 +3,25 @@
 #include "template.h"
 namespace kipod::Template{
 
+class TemplateObject : public kipod::RenderObject 
+{
+
+class TemplateData;
+
+public:
+    std::shared_ptr<TemplateData> template_data_ = nullptr;
+    void Init();
+
+    TemplateObject() = default;
+    TemplateObject(std::filesystem::path path);
+    virtual ~TemplateObject(void);
+    TemplateObject(TemplateObject&&) = default;
+    TemplateObject& operator=(TemplateObject&&) = default;
+
+};
+
+}
+
 
 class TemplateScene :public kipod::Listener,
                      public kipod::Controls,
@@ -10,14 +29,14 @@ class TemplateScene :public kipod::Listener,
                      friend class TemplateSidebar;
                      friend class TemplateModule;
 
-        using TemplateContainer = std::vector<std::unique_ptr<Template>>;
+        using TemplateObjectsContainer = std::vector<std::unique_ptr<TemplateObject>>;
         TemplateContainer templates_;
-        Template* active_template_ = nullptr;
+        TemplateObject* active_template_object_ = nullptr;
         
         std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
-        void SetupLayout(Template* template);
+        void SetupLayout(TemplateObject*);
         void SetupShaders();
-        void SetupUniforms(Template* template);
+        void SetupUniforms(TemplateObject*);
 
         virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
         void ProcessMouseButtons(kipod::MouseButtonEvent& event);
@@ -34,10 +53,10 @@ protected:
 
         TemplateContainer& Templates();
 
-        void AddTemplate(Template&&);
-        Template* ActiveTemplate();
-        void ActiveTemplate(Template*);
-        bool HasTemplate();
+        void AddTemplateObject(TemplateObject&&);
+        Template* ActiveTemplateObject();
+        void ActiveTemplateObject(Template*);
+        bool HasTemplateObject();
 
 };
 

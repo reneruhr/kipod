@@ -20,9 +20,9 @@ void kipod::Templates::TemplateScene::Draw()
 
     glEnable(GL_DEPTH_TEST);
     shaders_["Template"]->Use();
-    for(auto& template : templates_){
-        SetupUniforms(template.get());
-        template->Draw();
+    for(auto& template_object : templates_){
+        SetupUniforms(template_object.get());
+        template_object->Draw();
     }
 
     glDisable(GL_DEPTH_TEST);
@@ -31,26 +31,28 @@ void kipod::Templates::TemplateScene::Draw()
 
 }
 
-void kipod::Templates::TemplateScene::AddTemplate(Template&& template)
+void kipod::Templates::TemplateScene::AddTemplateObject(TemplateObject&& template_object)
 {
-
+    templates_.push_back(
+                std::make_unique<TemplateObject>(
+                    std::forward<TemplateObject>(template_object)));
 }
 
-void kipod::Templates::TemplateScene::ActiveTemplate(
-        Template* active)
+void kipod::Templates::TemplateScene::ActiveTemplateObject(
+        TemplateObject* active)
 {
-    active_template_= active;
+    active_template_object_= active;
 }
 
-kipod::Templates::Template *kipod::Templates::TemplateScene::ActiveTemplate()
+kipod::Templates::TemplateObject* kipod::Templates::TemplateScene::ActiveTemplateObject()
 {
-    return active_template_;
+    return active_template_object_;
 }
 
 
-bool kipod::Templates::TemplateScene::HasTemplate()
+bool kipod::Templates::TemplateScene::HasTemplateObject()
 {
-    return active_template_!=nullptr;
+    return active_template_object_!=nullptr;
 }
 
 void kipod::Templates::TemplateScene::ProcessKeys(kipod::KeyPressedEvent &event)
@@ -80,9 +82,9 @@ void kipod::Templates::TemplateScene::ProcessKeys(kipod::KeyPressedEvent &event)
     }
 }
 
-void kipod::Templates::TemplateScene::SetupLayout(Template* template)
+void kipod::Templates::TemplateScene::SetupLayout(TemplateObject* template_object)
 {
-    template->Init();
+    template_object->Init();
 }
 
 void kipod::Templates::TemplateScene::SetupShaders()
@@ -91,9 +93,9 @@ void kipod::Templates::TemplateScene::SetupShaders()
     shaders_["Template"]->AttachUniform<glm::mat4>("transform");
 }
 
-void kipod::Templates::TemplateScene::SetupUniforms(Template *template)
+void kipod::Templates::TemplateScene::SetupUniforms(TemplateObject *template_object)
 {
-    shaders_["Template"]->SetUniform<glm::mat4>("transform", (glm::mat4)*GetActiveCamera()*template->TransformWorld());
+    shaders_["Template"]->SetUniform<glm::mat4>("transform", (glm::mat4)*GetActiveCamera()*template_object->TransformWorld());
 }
 
 
