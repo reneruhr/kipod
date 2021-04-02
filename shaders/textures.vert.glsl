@@ -70,13 +70,16 @@ layout (location = 2) in  vec2 texCoords;
 
 
 uniform mat4 projection;
-uniform mat4 v;
+uniform mat4 model_matrix;
+uniform mat4 model_matrix_normal;
+uniform mat4 view_matrix;
 uniform mat4 mv;
+uniform mat4 mvp;
 uniform mat4 mv_normal;
 
 uniform Material material;
 uniform Light Lights[3];
-uniform vec4 cameraLocation;
+uniform vec4 camera_location;
 
 out vec2 tCoord;
 out vec4 vColor;
@@ -110,7 +113,7 @@ void main()
     	case 3: // Specular
 			vColor+=ColorSpecular(material.specular, 
 							      material.shininess, 
-							      cameraLocation,
+							      camera_location,
 					              location, 
 					              normal,
 					              Lights[light].color,
