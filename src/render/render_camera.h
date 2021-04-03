@@ -3,6 +3,14 @@
 
 namespace kipod
 {
+
+struct Screen{
+    glm::vec3 left_bottom_;
+    glm::vec3 right_bottom_;
+    glm::vec3 right_top_;
+    glm::vec3 left_top_;
+};
+
 class RenderCamera
 {
 
@@ -36,7 +44,7 @@ public:
     glm::vec3 frontCam_, rightCam_, upCam_;
     float fovy_ = 45.0f;
     float aspect_ = 4.f/3.f;
-    float near_=0.1, far_=1000.0f;
+    float near_=1.f, far_=100.f;
     float left_ = -10.0f, right_ = 10.0f, bottom_ = -10.0f, top_ = 10.0f;
 
 
@@ -57,9 +65,13 @@ public:
 
     void UpdateAt(glm::vec3 at);
 
+    void ChangePerspective(const float fovy, const float aspect, const float zNear, const float zFar);
+
     operator glm::mat4 () const {   return projection_view_matrix_; }
     const glm::mat4& operator()() const {   return projection_view_matrix_; }
 
+
+    Screen GetFrontScreen();
 
     glm::vec3 Eye(){ return eye_; }
 };

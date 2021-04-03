@@ -2,9 +2,14 @@
 namespace kipod
 {
 
-RenderCamera::RenderCamera(const float fovy, const float aspect, const float zNear, const float zFar)
+float radians(float degree){
+    return degree/ M_PI / 2.0f;
+}
+
+RenderCamera::RenderCamera(const float fovy, const float aspect, const float zNear, const float zFar) :
+    projection_type_(PROJECTIVE), fovy_(fovy), aspect_(aspect), near_(zNear), far_(zFar)
 {
-    projection_matrix_ = glm::perspective(fovy, aspect, zNear, zFar );
+    projection_matrix_ = glm::perspective(radians(fovy), aspect, zNear, zFar );
     LookAt({0,0,3}, {0,0,0}, {0,1,0});
 }
 
@@ -92,7 +97,7 @@ void RenderCamera::Rotate(float x_offset, float y_offset_)
 void RenderCamera::MakeProjection(RenderCamera::ProjectionType type)
 {
     if(type == ORTHOGONAL) projection_matrix_ = glm::ortho(left_, right_, bottom_, top_, near_, far_);
-    else projection_matrix_ = glm::perspective(fovy_, aspect_, near_, far_ );
+    else projection_matrix_ = glm::perspective(radians(fovy_), aspect_, near_, far_ );
 }
 
 void RenderCamera::UpdateInternalCoordinatesAfterTranslation()
@@ -119,6 +124,33 @@ void RenderCamera::UpdateAt(glm::vec3 at)
 {
     at_ = at;
     LookAt(eye_, at_, up_);
+}
+
+void RenderCamera::ChangePerspective(const float fovy, const float aspect, const float zNear, const float zFar)
+{
+    projection_matrix_ = glm::perspective(radians(fovy), aspect, zNear, zFar );
+    UpdatepojectionView();
+    fovy_ = fovy;
+    aspect_ = aspect;
+    near_= zNear;
+    far_= zFar;
+}
+
+Screen RenderCamera::GetFrontScreen(){
+    Screen screen;
+    auto inverse_view = glm::inverse(projection_view_matrix_);
+    auto bl = inverse_view*glm::vec4(-1,-1,-1,1);
+    auto br = inverse_view*glm::vec4(1,-1,-1,1);
+    auto tr = inverse_view*glm::vec4(1,1,-1,1);
+    auto tl = inverse_view*glm::vec4(-1,1,-1,1);
+
+    screen.left_bottom_ = bl/bl.w;
+    screen.right_bottom_ = br/br.w;
+    screen.right_top_ = tr/tr.w;
+    screen.left_top_ = tl/tl.w;
+
+    return screen;
+
 }
 
 

@@ -23,6 +23,7 @@ class MeshmodelSidebar : public kipod::Sidebar
 
     void CameraList();
     void CameraViewOption();
+    void CameraProjectiveOption();
 
     void LightOptions();
     void LightAdd();

@@ -44,6 +44,7 @@ void MeshmodelSidebar::CameraControl()
 {
     CameraList();
     CameraViewOption();
+    CameraProjectiveOption();
 }
 
 
@@ -324,6 +325,45 @@ void MeshmodelSidebar::CameraViewOption()
     if(kipod::Gui::Checkbox(meshmodelscene->mode_toggles_["Show Frustum"]))
             meshmodelscene->NeedsUpdate();
     ImGui::Separator();
+}
+
+void MeshmodelSidebar::CameraProjectiveOption()
+{
+    static RenderCamera* cam = std::static_pointer_cast<MeshModelScene>(scene_)->GetActiveCamera();
+
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
+    static int selectedCamera = -1;
+    for (int n = 0; n <  meshmodelscene->NumberOfCameras(); n++)
+    {
+        char buf[32];
+        sprintf(buf, "Camera %d ##Modify", n);
+        if (ImGui::Selectable(buf, selectedCamera == n)){
+            selectedCamera = n;
+            cam = meshmodelscene->GetCamera(selectedCamera);
+        }
+    }
+    ImGui::Separator();
+
+    if(cam->projection_type_==kipod::RenderCamera::ProjectionType::PROJECTIVE)
+    {
+        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+        static float slider_fovy = cam->fovy_;
+        static float slider_aspect_ratio = cam->aspect_;
+        static float slider_near = cam->near_;
+        static float slider_far = cam->far_;
+        static bool changed_perspective = false;
+
+        if(ImGui::SliderFloat("FOVY (35 -> 55)", &slider_fovy, 35.0f, 55.0f, "%.0f", flags)) changed_perspective = true;
+        if(ImGui::SliderFloat("Aspect ratio (0.1 -> 10)", &slider_aspect_ratio, 0.1f, 10.0f, "%.1f", flags)) changed_perspective = true;
+        if(ImGui::SliderFloat("Near (0.1 -> 10.0)", &slider_near, 0.1f, 10.0f, "%.1f", flags)) changed_perspective = true;
+        if(ImGui::SliderFloat("Far (10 -> 1000)", &slider_far, 10.0f, 1000.0f, "%.0f", flags)) changed_perspective = true;
+
+        if(changed_perspective){
+            cam->ChangePerspective(slider_fovy, slider_aspect_ratio, slider_near, slider_far);
+            changed_perspective = false;
+            meshmodelscene->NeedsUpdate();
+        }
+    }
 }
 
 
