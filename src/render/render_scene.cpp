@@ -68,6 +68,12 @@ void kipod::RenderScene::SetActiveCamera(int id)
     if(id<NumberOfCameras()) active_camera_=cameras_[id].get();
 }
 
+kipod::RenderCamera* kipod::RenderScene::GetCamera(int id)
+{
+    if(id<NumberOfCameras()) return cameras_[id].get();
+    else return nullptr;
+}
+
 void kipod::RenderScene::SetActiveRenderObject(int id)
 {
     if(id<NumberOfRenderObjects()) active_render_object_=render_objects_[id].get();

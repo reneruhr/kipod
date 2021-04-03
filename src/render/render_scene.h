@@ -33,6 +33,7 @@ protected:
     float reverse_ratio_;
     std::shared_ptr<kipod::FrameBuffer> framebuffer_;
 
+
 public:
     RenderScene() = default;
     RenderScene(int w, int h);
@@ -56,6 +57,8 @@ public:
 
     RenderCamera* GetActiveCamera();
     RenderObject* GetActiveRenderObject();
+
+    RenderCamera* GetCamera(int id);
 
     int NumberOfCameras();
     int NumberOfRenderObjects();
