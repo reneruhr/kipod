@@ -2,6 +2,13 @@
 #include "engine_menu.h"
 
 
+namespace kipod{
+
+void Module::SynchronizeLinks(){
+    if(menu_)
+        menu_->module_ = this;
+}
+
 std::string kipod::Module::Name()
 {
     return name_;
@@ -19,7 +26,7 @@ void kipod::Module::Init()
 
 void kipod::Module::DrawScene()
 {
-    scene_->Draw();
+    if(not pause_)  scene_->Draw();
     Gui::CreateSceneWindow(scene_.get());
 }
 
@@ -52,7 +59,22 @@ void kipod::Module::DrawMenu()
         {
         if (ImGui::BeginMenu(Name().c_str()))
         {
-            menu_->Draw();
+            menu_->Draw();           
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Controls"))
+        {
+            if(not pause_){
+                if(ImGui::MenuItem("Pause", "Stops Draw call"))
+                    pause_ = !pause_;
+            }
+            else{
+                if(ImGui::MenuItem("Continue", "Runs Draw calls"))
+                    pause_ = !pause_;
+                if(ImGui::MenuItem("Step Forward", "Runs Draw call once"))
+                    scene_->Draw();
+            }
+
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -60,3 +82,4 @@ void kipod::Module::DrawMenu()
    }
 }
 
+}

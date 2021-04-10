@@ -8,16 +8,20 @@
 
 
 namespace kipod{
+class Module;
 class MenuModule{
     friend class Module;
 protected:
-
+    Module* module_ = nullptr;
     virtual void Draw()=0;
 public:
     virtual ~MenuModule() = default;
 };
 
 class Module{
+
+    bool pause_ = false;
+
 protected:
     std::shared_ptr<RenderScene> scene_;
     std::unique_ptr<Sidebar> sidebar_;
@@ -32,6 +36,8 @@ public:
     Module(std::string name) : name_(name){}
     std::string Name();
     void Name(std::string name);
+    void Pause() { pause_ = true; }
+    void SynchronizeLinks();
 
     virtual void Init();
     virtual void DrawScene();

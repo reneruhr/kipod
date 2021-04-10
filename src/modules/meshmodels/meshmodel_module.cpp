@@ -19,15 +19,17 @@ void MeshModelModuleMenu::Draw(){
         RenderEngine::SetAPI("OpenGL");
         scene_->NeedsUpdate();
     }
-    if(ImGui::MenuItem("SoftRenderer",  "", RenderEngine::ActiveAPI() == "SoftRenderer")){
+    if(ImGui::MenuItem("SoftRenderer",  "Activates Lazy Updates", RenderEngine::ActiveAPI() == "SoftRenderer")){
         RenderEngine::SetAPI("SoftRenderer");
+        scene_->Toggle("Lazy Mode").On();
         scene_->NeedsUpdate();
     }
-    if(ImGui::MenuItem("Raytracer",  "", RenderEngine::ActiveAPI() == "Raytracer")){
+    if(ImGui::MenuItem("Raytracer",  "Pause Draw calls", RenderEngine::ActiveAPI() == "Raytracer")){
         RenderEngine::SetAPI("Raytracer");
+        module_->Pause();
         scene_->NeedsUpdate();
     }
-    if(ImGui::MenuItem("Lazy Updates", "only updates on change", scene_->Toggle("Lazy Mode")))
+    if(ImGui::MenuItem("Lazy Updates", "Only updates on change", scene_->Toggle("Lazy Mode")))
         scene_->Toggle("Lazy Mode").Switch();
 }
 

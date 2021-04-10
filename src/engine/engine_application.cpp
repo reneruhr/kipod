@@ -79,6 +79,7 @@ void kipod::Application::ActiveModule(std::string name)
     if(active_module_!="") modules_[active_module_]->RemoveSubscription();
     active_module_ = name;
     modules_[name]->Signup();
+    modules_[name]->SynchronizeLinks();
 }
 
 
