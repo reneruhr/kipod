@@ -43,6 +43,10 @@ public:
         data_ = data;
         if constexpr (std::is_same_v<T, glm::mat4>)
             glUniformMatrix4fv(location_, size, GL_FALSE, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, glm::mat3>)
+            glUniformMatrix3fv(location_, size, GL_FALSE, glm::value_ptr(data_));
+        else if constexpr (std::is_same_v<T, glm::mat2>)
+            glUniformMatrix2fv(location_, size, GL_FALSE, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec4>)
             glUniform4fv(location_, size, glm::value_ptr(data_));
         else if constexpr (std::is_same_v<T, glm::vec3>)
