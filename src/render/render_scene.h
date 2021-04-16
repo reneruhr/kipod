@@ -9,6 +9,8 @@
 namespace kipod
 {
 using LightContainer = std::vector<std::unique_ptr<RenderLight> >;
+using ObjectContainer = std::vector<std::unique_ptr<RenderObject>>;
+using CameraContainer = std::vector<std::unique_ptr<RenderCamera> >;
 
 class RenderScene
 {
@@ -22,12 +24,12 @@ protected:
     int min_width_ = 100;
     int min_height_ = 100;
 
-    std::vector<std::unique_ptr<RenderObject> > render_objects_;
-    std::vector<std::unique_ptr<RenderCamera> > cameras_;
+    ObjectContainer render_objects_;
+    CameraContainer cameras_;
     LightContainer lights_;
 
     std::string name_;
-    unsigned int width_, height_;
+    int width_, height_;
     bool fixed_ratio_ = true;
     float ratio_;
     float reverse_ratio_;
