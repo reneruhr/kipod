@@ -2,23 +2,23 @@
 #include "opengl/opengl_layout.h"
 #include "opengl/opengl_engine.h"
 
-void kipod::Texture::LoadTexture(std::filesystem::path path){
+void kipod::Texture::LoadTexture(std::filesystem::path path, int texture_option_filter, int texture_option_wrap){
 
        image_= std::make_unique<Image>(ImageLoader::Kipod_LoadImage(path));
 
        glGenTextures(1, &id_);
        glBindTexture(GL_TEXTURE_2D, id_);
 
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_option_wrap);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_option_wrap);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_option_filter);
+       //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_option_filter);
 
        if (image_->data_)
        {
            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_->width_, image_->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, image_->data_);
-           glGenerateMipmap(GL_TEXTURE_2D);
+           //glGenerateMipmap(GL_TEXTURE_2D);
        }
        else
        {
@@ -125,11 +125,10 @@ void kipod::Texture::RenderToTexture2(GLuint& frame_buffer)
             LOG_ENGINE("Created Texture {} and Framebuffer {}", id_, frame_buffer);
 }
 
-void kipod::Texture::SetupTextureToSquare()
+void kipod::Texture::SetupTextureToSquare(float height)
 {
-    textured_square_ = std::unique_ptr<TexturedSquare>(new TexturedSquare(Shapes::Square()));
+    textured_square_ = std::unique_ptr<TexturedShape>(new TexturedShape(Shapes::Square()));
     float ratio = image_->width_/image_->height_;
-    float height = 300;
     textured_square_->ScaleShape(ratio*height, height);
     textured_square_->UpdatedTransformedVertices();
     textured_square_->Init();
@@ -149,12 +148,13 @@ void kipod::Texture::Resize(int w,int h)
     image_->height_ = h;
 }
 
-void kipod::TexturedSquare::Draw()
+void kipod::TexturedShape::Draw()
 {
-    static_cast<GLRenderLayout*>(Layout())->sha_->Use();
+    auto shader = static_cast<GLRenderLayout*>(Layout())->sha_;
+    if(shader) shader->Use();
     glActiveTexture(GL_TEXTURE0);
     texture_->Bind();
-    static_cast<GLRenderLayout*>(Layout())->sha_->SetUniform<int>(name_.c_str(), 0);
+    if(shader) shader->SetUniform<int>(name_.c_str(), 0);
     Shape::Draw();
-    static_cast<GLRenderLayout*>(Layout())->sha_->Unuse();
+    if(shader) shader->Unuse();
 }

@@ -5,17 +5,18 @@
 
 namespace kipod{
 
-class TexturedSquare : public Shapes::Shape{
+class TexturedShape : public Shapes::Shape{
 public:
-    TexturedSquare(Polygon polygon) : Shape(polygon){}
+    TexturedShape(Polygon polygon) : Shape(polygon){}
     virtual void Draw() override;
     Texture* texture_ = nullptr;
 };
 
+
 class Texture
 {
     std::unique_ptr<Image> image_;
-    std::unique_ptr<TexturedSquare> textured_square_;
+    std::unique_ptr<TexturedShape> textured_square_;
 
 public:
     Texture() = default;
@@ -30,14 +31,15 @@ public:
 
 
     void Bind() const;
-    void LoadTexture(std::filesystem::path path);
+    void LoadTexture(std::filesystem::path path, int texture_option_filter = GL_LINEAR, int texture_option_wrap = GL_REPEAT);
     void RenderToTexture(GLuint& frame_buffer);
     void RenderToTexture2(GLuint &frame_buffer);
-    TexturedSquare* Square(){ return textured_square_.get(); }
+    TexturedShape* Square(){ return textured_square_.get(); }
 
-    void SetupTextureToSquare();
+    void SetupTextureToSquare(float height = 300);
     void Draw();
     void Resize(int w,int h);
+    Image* GetImage() { return image_.get(); }
 };
 
 
