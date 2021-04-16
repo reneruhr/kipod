@@ -41,4 +41,10 @@ public:
     Square(float s = 1);
 };
 
+class Rectangle : public Polygon
+{
+public:
+    Rectangle(float w = 1, float h = 2);
+};
+
 }
