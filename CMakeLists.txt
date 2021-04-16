@@ -67,6 +67,14 @@ ${imgui}
   src/math/sl.cpp
   src/math/minkowski_embedding.h
   src/math/minkowski_embedding.cpp
+  src/math/glmtosiegel.h
+
+  src/math/raytracing/ray.h
+  src/math/raytracing/ray.cpp
+  src/math/raytracing/raytracing_primitives.h
+  src/math/raytracing/raytracing_primitives.cpp
+  src/math/raytracing/intersections.h
+  src/math/raytracing/intersections.cpp
 
 
   src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
@@ -110,6 +118,17 @@ ${imgui}
   src/modules/shapes/shapes_sidebar.h
   src/modules/shapes/shapes_sidebar.cpp
 
+
+  src/modules/image_processing/image_processing_module.h
+  src/modules/image_processing/image_processing_module.cpp
+  src/modules/image_processing/image_processing_scene.h
+  src/modules/image_processing/image_processing_scene.cpp
+  src/modules/image_processing/image_processing_sidebar.h
+  src/modules/image_processing/image_processing_sidebar.cpp
+  src/modules/image_processing/image.h
+  src/modules/image_processing/image.cpp
+  src/modules/image_processing/kernel.h
+  src/modules/image_processing/kernel.cpp
 
 
 
