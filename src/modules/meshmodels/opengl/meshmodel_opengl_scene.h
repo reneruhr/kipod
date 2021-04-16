@@ -39,6 +39,7 @@ class OpenGLScene : public MeshModelAPIScene{
 protected:
         void Setup() override;
         void Draw() override;
+        void Resize(int, int) override{};
 
         void CreateMeshModelLayout(MeshModel *model) override;
         void CreatePrimitiveModelLayout(PrimMeshModel *model) override;

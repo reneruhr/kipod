@@ -25,8 +25,8 @@ void MeshModelModuleMenu::Draw(){
         scene_->NeedsUpdate();
     }
     if(ImGui::MenuItem("Raytracer",  "Pause Draw calls", RenderEngine::ActiveAPI() == "Raytracer")){
-        RenderEngine::SetAPI("Raytracer");
         module_->Pause();
+        RenderEngine::SetAPI("Raytracer");
         scene_->NeedsUpdate();
     }
     if(ImGui::MenuItem("Lazy Updates", "Only updates on change", scene_->Toggle("Lazy Mode")))

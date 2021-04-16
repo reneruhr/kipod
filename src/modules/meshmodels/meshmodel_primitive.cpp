@@ -3,7 +3,7 @@
 
 namespace kipod::MeshModels{
 
-PrimMeshModel::PrimMeshModel(Primitive primitive, int n){
+PrimMeshModel::PrimMeshModel(Primitive primitive, int n) : type_(primitive){
     LoadPrimitive(primitive, n);
 }
 

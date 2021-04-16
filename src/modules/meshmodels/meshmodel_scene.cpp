@@ -70,6 +70,12 @@ void MeshModelScene::Draw()
     needs_update_= false;
 }
 
+void MeshModelScene::Resize(int w, int h)
+{
+    RenderScene::Resize(w, h);
+    raytracer_impl_->Resize(width_,height_);
+}
+
 
 
 
@@ -98,17 +104,18 @@ void MeshModelScene::AddModel(MeshModel && model)
     NeedsUpdate();
 }
 
+void MeshModelScene::AddModel(PrimMeshModel && model)
+{
+    render_objects_.push_back(
+                std::make_unique<PrimMeshModel>(
+                    std::forward<PrimMeshModel>(model)));
+    NeedsUpdate();
+}
+
 void MeshModelScene::LoadOBJModel(std::filesystem::path path, bool textured)
 {
     MeshModel *model = new MeshModel(path, textured);
     if(!model->Valid()) return;
-    model->SetUniformMaterial();
-
-    std::string name;
-    bool foundTexture;
-    name = model->tex_ ? (LOG_ENGINE("A Texture was set. Use Tex Shader"), foundTexture=true,  "Textured Triangles")
-                       : (LOG_ENGINE("No Texture set. Use Light Shader."), foundTexture=false, "Colored Triangles" );
-
     model->SetUniformMaterial();
     opengl_impl_->CreateMeshModelLayout(model);
     softrenderer_impl_->CreateMeshModelLayout(model);
@@ -121,6 +128,7 @@ void MeshModelScene::LoadPrimitive(Primitive primitive, int numberPolygons)
     model->SetUniformMaterial();
     opengl_impl_->CreatePrimitiveModelLayout(model);
     softrenderer_impl_->CreateMeshModelLayout(model);
+    raytracer_impl_->CreateMeshModelLayout(model);
     AddModel(std::move(*model));
 }
 

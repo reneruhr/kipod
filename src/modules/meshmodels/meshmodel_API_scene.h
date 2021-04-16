@@ -18,6 +18,7 @@ protected:
 
         virtual void Setup() = 0;
         virtual void Draw() = 0;
+        virtual void Resize(int w, int h) = 0;
 
         virtual void CreateMeshModelLayout(MeshModel *model) = 0;
         virtual void CreatePrimitiveModelLayout(PrimMeshModel *model) = 0;

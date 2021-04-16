@@ -54,6 +54,7 @@ protected:
 
         MeshModel* GetActiveModel();
         void AddModel(MeshModel&&);
+        void AddModel(PrimMeshModel&&);
         bool HasModel() { return HasRenderObject(); }
         int NumberOfModels(){ return NumberOfRenderObjects();}
         void SetActiveModel(int id);
@@ -62,6 +63,7 @@ protected:
         virtual void Signup() override;
         virtual void Setup() override;
         virtual void Draw() override;
+        virtual void Resize(int w, int h) override;
 
         MeshModelScene(int width, int height)
             : RenderScene(width, height), bounding_box_(Cube), bounding_sphere_(Sphere, 5){ }
