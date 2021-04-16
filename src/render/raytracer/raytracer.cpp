@@ -18,6 +18,7 @@ void Raytracer::SetUniforms(RenderCamera *camera, mat4 transform)
     uniform_->object_transform_ = transform;
 }
 
+
 void Raytracer::CreateBuffers()
 {
     CreateOpenGLBuffer();
@@ -27,6 +28,11 @@ void Raytracer::CreateBuffers()
 void Raytracer::ClearBuffer()
 {
     framebuffer_->Clear();
+}
+
+void Raytracer::DrawPoint(int x, int y, Vec3f *color)
+{
+    framebuffer_->DrawPoint(x,y,color);
 }
 
 

@@ -8,6 +8,7 @@
 namespace kipod::MeshModels{
 
 using MeshModel = kipod::MeshModels::MeshModel;
+using Vec3d = siegel2021::Vector<double,3>;
 
 class MeshModelScene;
 class RaytracerScene  : public MeshModelAPIScene{
@@ -17,10 +18,13 @@ class RaytracerScene  : public MeshModelAPIScene{
 
 
         std::unique_ptr<Raytracer> raytracer_;
+        Vec3d Screen(int i,int j);
+
 
 protected:
         void Setup() override;
         void Draw() override;
+        void Resize(int, int) override;
 
         void DrawBoundingBox(MeshModel *model, RenderCamera *camera) override {}
         void DrawGrid(RenderCamera *camera) override{}

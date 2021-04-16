@@ -1,23 +1,13 @@
 #pragma once
 #include "../render_layout.h"
-
+#include "../../math/raytracing/raytracing_primitives.h"
 namespace kipod{
 
 
-enum class RaytracerPrimitive{
-    Sphere
-};
-
-
-struct RaytracerSphere{
-    float radius;
-    float center[3];
-};
-
 
 struct RaytracerBuffer{
-    RaytracerBuffer(RaytracerPrimitive type, void* data) : type_(type), data_(data){}
-    RaytracerPrimitive type_;
+    RaytracerBuffer(RaytracingPrimitive type, void* data) : type_(type), data_(data){}
+    RaytracingPrimitive type_;
     void* data_;
 };
 
@@ -46,7 +36,7 @@ public:
         raytracer_ = raytracer;
     }
 
-    void SetBuffer(RaytracerPrimitive type, void* data)
+    void SetBuffer(RaytracingPrimitive type, void* data)
     {
         buffer_ = std::make_unique<RaytracerBuffer>(type, data);
     }

@@ -15,14 +15,12 @@ class SoftRendererScene  : public MeshModelAPIScene{
     friend class MeshModelModule;
     friend class MeshModelScene;
 
-        //std::shared_ptr<kipod::Shader> shader_;
-        //void SetupShader();
-
         std::unique_ptr<SoftRenderer> softrenderer_;
 
 protected:
         void Setup() override;
         void Draw() override;
+        void Resize(int, int) override{};
 
         void DrawBoundingBox(MeshModel *model, RenderCamera *camera) override;
         void DrawGrid(RenderCamera *camera) override;

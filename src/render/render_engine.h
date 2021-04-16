@@ -20,7 +20,7 @@ class RenderEngine
 {
     RenderEngine(){}
 
-    const static inline std::vector<std::string> APIs_ = {"OpenGL", "SoftRenderer"};
+    const static inline std::vector<std::string> APIs_ = {"OpenGL", "SoftRenderer", "Raytracer"};
     static inline int active_API_ = 0;
 
 public:
@@ -33,6 +33,7 @@ public:
     static void SetAPI(std::string api){
         if(api=="OpenGL") Get().active_API_ = 0;
         else if (api=="SoftRenderer") Get().active_API_ = 1;
+        else if (api=="Raytracer") Get().active_API_ = 2;
     }
 };
 

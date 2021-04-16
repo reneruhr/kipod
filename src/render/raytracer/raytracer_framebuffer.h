@@ -1,9 +1,10 @@
 #pragma once
 #include <memory>
 #include <algorithm>
+#include "../../siegel2021.h"
 
 namespace kipod{
-
+using Vec3f = siegel2021::Vector<float,3>;
 class RaytracerFramebuffer
 {
     std::unique_ptr<float[]> buffer_;
@@ -25,11 +26,11 @@ public:
         return buffer_.get();
     }
 
-    void DrawPoint(int x, int y, float* c)
+    void DrawPoint(int x, int y, Vec3f* color)
     {
-        buffer_[INDEX(width_,x,y,0)]=*c;
-        buffer_[INDEX(width_,x,y,1)]=*(c+1);
-        buffer_[INDEX(width_,x,y,2)]=*(c+2);
+        buffer_[INDEX(width_,x,y,0)]=(*color)[0];
+        buffer_[INDEX(width_,x,y,1)]=(*color)[1];
+        buffer_[INDEX(width_,x,y,2)]=(*color)[2];
     }
 };
 

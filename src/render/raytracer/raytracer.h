@@ -4,7 +4,7 @@
 #include "raytracer_uniform.h"
 #include "raytracer_layout.h"
 #include "raytracer_framebuffer.h"
-
+#include "../../math/raytracing/intersections.h"
 
 namespace kipod{
 class Light;
@@ -43,7 +43,8 @@ public:
     void DrawToOpenGL();
     void ClearColorBuffer();
     void ClearBuffer();
-    void drawPoint(int x, int y, float* c);
+
+    void DrawPoint(int x, int y, Vec3f* color);
 };
 
 }
