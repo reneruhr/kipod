@@ -17,6 +17,9 @@ protected:
     void Filter();
     void FilterList();
 
+    void AlgorithmList();
+
+    void Canny();
 };
 
 }

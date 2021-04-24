@@ -1,10 +1,12 @@
 #include "image_processing_scene.h"
+#include "algorithms/canny_edge_detection.h"
 
 void kipod::ImageProcessing::ImageProcessingScene::Setup()
 {
         name_ = "ImageProcessing Scene";
 
         SetupKernels();
+        SetupAlgorithms();
         SetupShaders();
         Signup();
 
@@ -24,7 +26,7 @@ void kipod::ImageProcessing::ImageProcessingScene::Draw()
     auto shader = shaders_["ImageProcessing"];
     shader->Use();
     for(auto& image : images_){
-        SetupUniforms(image.get(), ActiveKernel());
+        SetupUniforms(image.get(), ActiveKernel(), ActiveAlgorithm());
         image->Draw();
     }
     shader->Unuse();
@@ -112,7 +114,29 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupKernels()
     AddKernel(IdentityKernel());
     active_kernel_ = kernels_[0].get();
     AddKernel(LaplaceKernel());
+    AddKernel(EdgeDetection());
+    AddKernel(Blur());
+    AddKernel(Sobelx());
+    AddKernel(Sobely());
 }
+
+void kipod::ImageProcessing::ImageProcessingScene::SetupAlgorithms(){
+
+    algorithms_.push_back(Algorithm{"None"});
+    algorithms_.push_back(Algorithm{"Canny"});
+    algorithms_.back().data_ = new CannyData();
+    active_algorithm_ = &algorithms_[0];
+}
+
+
+// LEAK since not called.
+void kipod::ImageProcessing::ImageProcessingScene::ClearAlgorithms(){
+
+    delete static_cast<CannyData*>(algorithms_[1].data_);
+}
+
+
+
 
 void kipod::ImageProcessing::ImageProcessingScene::SetupLayout(Image* image)
 {
@@ -128,9 +152,15 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupShaders()
     shader->AttachUniform<int>("width");
     shader->AttachUniform<int>("height");
     shader->AttachUniform<glm::mat3>("kernel_matrix");
+    shader->AttachUniform<int>("algorithm");
+
+    shader->AttachUniform<float>("low_treshhold");
+    shader->AttachUniform<float>("high_treshhold");
+    shader->AttachUniform<float>("gaussian_sigma");
+
 }
 
-void kipod::ImageProcessing::ImageProcessingScene::SetupUniforms(Image *image, Kernel* kernel)
+void kipod::ImageProcessing::ImageProcessingScene::SetupUniforms(Image *image, Kernel* kernel, Algorithm* algorithm)
 {
     auto shader = shaders_["ImageProcessing"];
     shader->SetUniform<int>(image->tex_->name_.c_str(), 0);
@@ -138,6 +168,49 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupUniforms(Image *image, K
     shader->SetUniform<int>("height", image->Height());
     shader->SetUniform<glm::mat3>("kernel_matrix", glm::mat3(*kernel));
     //LOG_DEBUG("Kernel used: {}", *kernel );
+
+    int algo = 0;
+    if(algorithm && algorithm->name_ == "Canny")
+    {
+        algo=1;
+        CannyData* data = static_cast<CannyData*>(algorithm->data_);
+        shader->SetUniform<float>("low_treshhold", data->low_);
+        shader->SetUniform<float>("high_treshhold", data->high_);
+        shader->SetUniform<float>("gaussian_sigma", data->sigma_);
+    }
+    shader->SetUniform<int>("algorithm", algo);
+
+    //subroutine
+//    GLint  program = *shader;
+//    glUseProgram(program);
+//    GLint location = glGetSubroutineUniformLocation(program, GL_FRAGMENT_SHADER, "algorithm");
+
+//    if (location < 0)   LOG_ENGINE("Error: Not an Active Subroutine!");
+
+//    GLuint none = glGetSubroutineIndex(program, GL_FRAGMENT_SHADER, "None");
+//    GLuint canny = glGetSubroutineIndex(program, GL_FRAGMENT_SHADER, "Canny");
+
+//    if (none == GL_INVALID_INDEX || canny == GL_INVALID_INDEX)
+//        LOG_ENGINE("Error: the specified subroutines are not active in "
+//                    "the currently bound program for the GL_VERTEX_SHADER "
+//                    "stage.");
+//    else {
+//          GLsizei n;
+//          glGetIntegerv(GL_MAX_SUBROUTINE_UNIFORM_LOCATIONS, &n);
+//          GLuint *indices = new GLuint[n];
+//          if(algorithm && algorithm->name_ == "Canny")   {
+//              indices[location] = canny;
+//              LOG_DEBUG("Algorithm: {}", algorithm->name_);
+//          }
+//          else{
+//              if(algorithm) LOG_DEBUG("Algorithm: {}", algorithm->name_);
+//              indices[location] = none;
+//          }
+//          glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, n, indices);
+//          delete [] indices;
+//    }
+
+
 }
 
 

@@ -2,11 +2,15 @@
 #include "../../kipod.h"
 #include "image.h"
 #include "kernel.h"
+#include "algorithms/image_algorithms.h"
+
 namespace kipod::ImageProcessing{
+
 
 using Image = kipod::ImageProcessing::Image;
 using Images = std::vector<std::unique_ptr<Image>>;
 using Kernels = std::vector<std::unique_ptr<Kernel>>;
+using Algorithms = std::vector<Algorithm>;
 
 using Shaders = std::unordered_map<std::string, std::shared_ptr<kipod::Shader> >;
 
@@ -20,13 +24,19 @@ class ImageProcessingScene :public kipod::Listener,
         Image* active_image_ = nullptr;
         Kernels kernels_;
         Kernel* active_kernel_ = nullptr;
+
+        Algorithms algorithms_;
+        Algorithm* active_algorithm_ = nullptr;
         
         Shaders shaders_;
 
+        void SetupAlgorithms();
         void SetupKernels();
         void SetupLayout(Image*);
         void SetupShaders();
-        void SetupUniforms(Image*,  Kernel* kernel);
+        void SetupUniforms(Image*,  Kernel* kernel, Algorithm* algorithm=nullptr);
+
+        void ClearAlgorithms();
 
         virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
         void ProcessMouseButtons(kipod::MouseButtonEvent& event);
@@ -52,6 +62,9 @@ protected:
 
         void AddKernel(Kernel&&);
         Kernel* ActiveKernel();
+
+        Algorithm* ActiveAlgorithm() { return active_algorithm_;}
+public:
 };
 
 }

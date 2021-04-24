@@ -130,6 +130,9 @@ ${imgui}
   src/modules/image_processing/kernel.h
   src/modules/image_processing/kernel.cpp
 
+  src/modules/image_processing/algorithms/image_algorithms.h
+  src/modules/image_processing/algorithms/canny_edge_detection.h
+  src/modules/image_processing/algorithms/canny_edge_detection.cpp
 
 
   src/modules/quasicrystals/quasicrystals_pointset.h
