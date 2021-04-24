@@ -19,6 +19,7 @@ InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShader
         const char*  filename;
         GLenum       type;
         const GLchar*      source;
+        std::string* source_copy;
     } shaders[3] = {
         { vShaderFile, GL_VERTEX_SHADER, nullptr },
         { gShaderFile, GL_GEOMETRY_SHADER, nullptr },
@@ -32,7 +33,8 @@ InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShader
         Shader& s = shaders[i];
         try {
             if(s.type==GL_GEOMETRY_SHADER && !s.filename) continue;
-            s.source = ReadShaderSource( s.filename )->c_str();
+            s.source_copy = ReadShaderSource(s.filename);;
+            s.source = s.source_copy->c_str();
         }  catch (ShaderException& e) {
             throw(e);
         }
@@ -42,7 +44,7 @@ InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShader
         }
 
         GLuint shader = glCreateShader( s.type );
-        glShaderSource( shader, 1, (const GLchar**) &s.source, NULL );
+        glShaderSource( shader, 1, &s.source, NULL );
         glCompileShader( shader );
 
         GLint  compiled;
@@ -55,10 +57,10 @@ InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShader
             glGetShaderInfoLog( shader, logSize, NULL, logMsg );
             LOG_ENGINE(logMsg);
             delete [] logMsg;
-            delete [] s.source;
+            delete s.source_copy;
             throw CompileShaderException();
         }
-        delete [] s.source;
+        delete s.source_copy;
         glAttachShader( program, shader );
     }
     glLinkProgram(program);

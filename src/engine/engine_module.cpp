@@ -26,7 +26,7 @@ void kipod::Module::Init()
 
 void kipod::Module::DrawScene()
 {
-    if(not pause_)  scene_->Draw();
+    if(!pause_)  scene_->Draw();
     Gui::CreateSceneWindow(scene_.get());
 }
 
@@ -64,7 +64,7 @@ void kipod::Module::DrawMenu()
         }
         if (ImGui::BeginMenu("Controls"))
         {
-            if(not pause_){
+            if(!pause_){
                 if(ImGui::MenuItem("Pause", "Stops Draw call"))
                     pause_ = !pause_;
             }
