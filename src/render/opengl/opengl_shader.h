@@ -34,7 +34,7 @@ struct  LinkingShaderException : public ShaderException
 };
 
 std::string* ReadShaderSource(std::filesystem::path path);
-GLuint InitShader(const char* vShaderFile, const char* gShaderFile, const char* fShaderFile=nullptr);
+GLuint InitShader(const char* vShaderFile, const char* gShaderFile, const char* fShaderFile=nullptr, const char* cShaderFile = nullptr);
 
 
 class OpenGLShader

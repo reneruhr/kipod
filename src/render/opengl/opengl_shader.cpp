@@ -13,35 +13,40 @@ std::string* ReadShaderSource(std::filesystem::path path)
 }
 
 GLuint
-InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile)
+InitShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, const char* cShaderFile)
 {
     struct Shader {
         const char*  filename;
         GLenum       type;
         const GLchar*      source;
         std::string* source_copy;
-    } shaders[3] = {
+    } shaders[4] = {
         { vShaderFile, GL_VERTEX_SHADER, nullptr },
         { gShaderFile, GL_GEOMETRY_SHADER, nullptr },
-        { fShaderFile, GL_FRAGMENT_SHADER, nullptr }
+        { fShaderFile, GL_FRAGMENT_SHADER, nullptr },
+        { cShaderFile, GL_COMPUTE_SHADER, nullptr }
     };
 
 
     GLuint program = glCreateProgram();
 
-    for ( int i = 0; i < 3; ++i ) {
+
+    for ( int i = 0; i < 4; ++i ) {
         Shader& s = shaders[i];
         try {
-            if(s.type==GL_GEOMETRY_SHADER && !s.filename) continue;
+            if(s.type == GL_VERTEX_SHADER && !s.filename) { i = 2; continue; }
+            if(s.type == GL_COMPUTE_SHADER && !s.filename) continue;
+            if(s.type == GL_GEOMETRY_SHADER && !s.filename) continue;
             s.source_copy = ReadShaderSource(s.filename);;
             s.source = s.source_copy->c_str();
-        }  catch (ShaderException& e) {
+            }  
+        catch (ShaderException& e) {
             throw(e);
-        }
+            }
         if (!shaders[i].source) {
             LOG_ENGINE("Failed to read shader {}", s.filename);
             throw EmptyShaderException();
-        }
+            }
 
         GLuint shader = glCreateShader( s.type );
         glShaderSource( shader, 1, &s.source, NULL );
