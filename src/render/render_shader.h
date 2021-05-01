@@ -17,10 +17,10 @@ class Shader
 
 public:
     Shader() = default;
-    Shader(std::string vert, std::string frag, std::string geom = {})
+    Shader(std::string vert, std::string frag, std::string geom = {}, std::string comp = {})
     {
         try {
-            program_ = Program(vert, frag, geom);
+            program_ = Program(vert, frag, geom, comp);
         }  catch (ShaderException& e) {
            exit(EXIT_FAILURE);
         }
@@ -35,14 +35,17 @@ public:
         Shader::Use(program_);
     }
 
-    static GLuint Program(std::string vert, std::string frag, std::string geom={})
+    static GLuint Program(std::string vert, std::string frag, std::string geom={}, std::string comp = {})
     {
         GLuint program;
         try {
-            program = InitShader((path+vert).c_str(),
-                                        (path+frag).c_str(),
-                                        geom.empty() ? nullptr : (path+geom).c_str()
-                                        );
+            if (comp.empty())
+                program = InitShader((path + vert).c_str(),
+                    (path + frag).c_str(),
+                    geom.empty() ? nullptr : (path + geom).c_str()
+                );
+            else 
+                program = InitShader(nullptr, nullptr, nullptr, (path + comp).c_str());
         }  catch (ShaderException& e) {
             std::cout << e.what();
             throw(e);

@@ -307,7 +307,7 @@ void OpenGLScene::BindMaterialUniforms(kipod::Shader& shader, const kipod::Rende
 
 void OpenGLScene::BindTextureUniforms(kipod::Shader& shader, const kipod::Texture* texture)
 {
-    shader.SetUniform<float>(texture->name_.c_str(), 0.0f);
+    shader.SetUniform<float>(texture->Name().c_str(), 0.0f);
     glActiveTexture(GL_TEXTURE0);
     texture->Bind();
 }

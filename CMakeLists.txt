@@ -226,7 +226,12 @@ ${imgui}
   src/render/opengl/opengl_buffer_410.cpp
   src/render/opengl/opengl_shader.h
   src/render/opengl/opengl_shader.cpp
-
+  src/render/opengl/opengl_texture.h
+  src/render/opengl/opengl_texture.cpp
+  src/render/opengl/opengl_texture_410.h
+  src/render/opengl/opengl_texture_410.cpp
+  src/render/opengl/opengl_texture_450.h
+  src/render/opengl/opengl_texture_450.cpp
 
   src/render/softrenderer/softrenderer.h
   src/render/softrenderer/softrenderer.cpp
@@ -254,6 +259,9 @@ ${imgui}
   src/render/raytracer/raytracer_layout.cpp
   src/render/raytracer/raytracer_uniform.h
   src/render/raytracer/raytracer_uniform.cpp
+
+  src/compute/opengl/compute_shader.h
+  src/compute/opengl/compute_shader.cpp
 
 )
 
