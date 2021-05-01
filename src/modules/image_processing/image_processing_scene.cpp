@@ -22,14 +22,16 @@ void kipod::ImageProcessing::ImageProcessingScene::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glEnable(GL_DEPTH_TEST);
-
-    auto shader = shaders_["ImageProcessing"];
-    shader->Use();
-    for(auto& image : images_){
-        SetupUniforms(image.get(), ActiveKernel(), ActiveAlgorithm());
+    
+    auto image = ActiveImage();
+    if (image) {
+        auto shader = shaders_["ImageProcessing"];
+        shader->Use();
+        SetupUniforms(image, ActiveKernel(), ActiveAlgorithm());
         image->Draw();
+        shader->Unuse();
     }
-    shader->Unuse();
+    
     glDisable(GL_DEPTH_TEST);
 
     kipod::RenderManager::Bind(0);
@@ -43,7 +45,7 @@ void kipod::ImageProcessing::ImageProcessingScene::LoadImage(std::filesystem::pa
         Resize(image->Width(), image->Height());
         SetupLayout(image);
         AddImage(std::move(*image));
-        active_image_ = images_.back().get();
+        ActiveImage(images_.back().get());
 }
 
 void kipod::ImageProcessing::ImageProcessingScene::AddImage(Image&& image)
@@ -125,6 +127,7 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupAlgorithms(){
     algorithms_.push_back(Algorithm{"None"});
     algorithms_.push_back(Algorithm{"Canny"});
     algorithms_.back().data_ = new CannyData();
+    //algorithms_.push_back(Algorithm{ "Inversion", "image_inversion.comp.glsl" });
     active_algorithm_ = &algorithms_[0];
 }
 
@@ -163,11 +166,13 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupShaders()
 void kipod::ImageProcessing::ImageProcessingScene::SetupUniforms(Image *image, Kernel* kernel, Algorithm* algorithm)
 {
     auto shader = shaders_["ImageProcessing"];
-    shader->SetUniform<int>(image->tex_->name_.c_str(), 0);
-    shader->SetUniform<int>("width", image->Width());
-    shader->SetUniform<int>("height", image->Height());
-    shader->SetUniform<glm::mat3>("kernel_matrix", glm::mat3(*kernel));
-    //LOG_DEBUG("Kernel used: {}", *kernel );
+    {
+        shader->SetUniform<int>(image->tex_->Name().c_str(), 0);
+        shader->SetUniform<int>("width", image->Width());
+        shader->SetUniform<int>("height", image->Height());
+        shader->SetUniform<glm::mat3>("kernel_matrix", glm::mat3(*kernel));
+        //LOG_DEBUG("Kernel used: {}", *kernel );
+    }
 
     int algo = 0;
     if(algorithm && algorithm->name_ == "Canny")
@@ -215,7 +220,8 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupUniforms(Image *image, K
 
 
 kipod::ImageProcessing::ImageProcessingScene::ImageProcessingScene(int width, int height):
-    RenderScene(width, height), images_(){}
+    RenderScene(width, height), images_(){
+}
 
 void kipod::ImageProcessing::ImageProcessingScene::Signup()
 {
