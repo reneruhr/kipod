@@ -3,6 +3,9 @@
 kipod::VertexBuffer450::VertexBuffer450(void *data, unsigned int size) : VertexBuffer(data, 0, size) {
     Set();
 }
+kipod::VertexBuffer450::VertexBuffer450(void* data, unsigned int size, GLenum flag) : VertexBuffer(data, 0, size) {
+    Set(flag);
+}
 
 void kipod::VertexBuffer450::Set(GLenum flag)
 {
