@@ -4,9 +4,13 @@
 namespace kipod
 {
 
-
-    void LoadTextureIP450(TextureIPOpenGL* texture_implementation)
+    
+    void LoadBufferedTexture450(TextureIPOpenGL* texture_implementation)
     {
+        //Not working////
+        assert(true);
+        /////////////////
+    	
         auto& id = texture_implementation->id_;
         auto tex = texture_implementation->Tex();
         auto image = tex->GetImage();
@@ -19,16 +23,20 @@ namespace kipod
 							0,
 							0,0,
 							image->width_, image->height_,
-							GL_RGB, GL_UNSIGNED_BYTE, NULL);
+							GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
-        
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        //glTextureBarrier();
+        //glGenerateMipmap(GL_TEXTURE_2D);
+
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
     }
  
     void LoadTexture450(TextureOpenGL* texture_implementation, int texture_option_filter, int texture_option_wrap)
@@ -47,9 +55,11 @@ namespace kipod
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_option_wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_option_wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_option_filter);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_option_filter);
-        //glGenerateMipmap(GL_TEXTURE_2D);
+
+    	//No Mipmaps:
+			//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    		//glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     void RenderToTexture450(GLuint& frame_buffer, TextureOpenGL* texture_implementation)

@@ -5,8 +5,7 @@ in vec2 texture_coords;
 out vec4 frag_color;
 
 uniform sampler2D tex;
-
-in mat3 kernel;
+uniform mat3 kernel_matrix;
 in vec2 offsets[9];
 
 uniform int algorithm;
@@ -163,7 +162,7 @@ void main()
 	    vec3 color = vec3(0.0);
 
 	    for(int i = 0; i < 9; i++)	sample_points[i] = vec3(texture( tex, texture_coords.st + offsets[i] ));    
-	    for(int i = 0; i < 9; i++)	color += sample_points[i] * kernel[i % 3][ i / 3];
+	    for(int i = 0; i < 9; i++)	color += sample_points[i] * kernel_matrix[i % 3][ i / 3];
 	    
 	    frag_color = vec4(color, 1.0);
 	}

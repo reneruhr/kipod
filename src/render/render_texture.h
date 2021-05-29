@@ -35,10 +35,12 @@ public:
     virtual ~TextureImplementation() = default;
 };
 
+	
 class Texture
 {
     friend class TextureImplementation;
     friend class TextureOpenGL;
+    friend class TextureIPOpenGL;
 
     std::unique_ptr<ImageData> image_;
     std::unique_ptr<TexturedShape> textured_square_;
@@ -61,6 +63,8 @@ public:
     void SetupTextureToSquare(float height = 300);
     ImageData* GetImage() const { return image_.get(); }
     TexturedShape* Square() const { return textured_square_.get(); }
+
+    void LoadBufferedTexture(std::filesystem::path path);
 };
 
 

@@ -41,7 +41,7 @@ void kipod::Texture::Bind() const
 
 void kipod::Texture::SetupTextureToSquare(float height)
 {
-    textured_square_ = std::unique_ptr<TexturedShape>(new TexturedShape(Shapes::Square()));
+    textured_square_ = std::make_unique<TexturedShape>(Shapes::Square());
     float ratio = image_->width_ / image_->height_;
     textured_square_->ScaleShape(ratio * height, height);
     textured_square_->UpdatedTransformedVertices();
@@ -65,12 +65,32 @@ void kipod::Texture::Resize(int w,int h)
 
 void kipod::TexturedShape::Draw()
 {
-    auto shader = static_cast<GLRenderLayout*>(Layout())->sha_;
+    auto shader = dynamic_cast<GLRenderLayout*>(Layout())->sha_;
     if(shader) shader->Use();
     glActiveTexture(GL_TEXTURE0);
     texture_->Bind();
-    if(shader) shader->SetUniform<int>(name_.c_str(), 0);
+    if(shader) shader->SetUniform<int>(name_, 0);
     Shape::Draw();
     if(shader) shader->Unuse();
 }
 
+
+
+
+
+void kipod::Texture::LoadBufferedTexture(std::filesystem::path path) {
+
+    image_ = std::make_unique<ImageData>(ImageLoader::Kipod_LoadImage(path));
+
+    if (image_->data_)
+    {
+        texture_implementation_ = std::make_unique<TextureIPOpenGL>(this);
+        texture_implementation_->LoadTexture();
+    }
+    else
+    {
+        LOG("Failed to load texture");
+    }
+
+    ImageLoader::FreeImage(image_.get());
+}

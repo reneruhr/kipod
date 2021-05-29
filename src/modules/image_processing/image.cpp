@@ -10,8 +10,9 @@ Image::Image(std::filesystem::path path)
 
         std::cout << path;
         if(std::filesystem::exists(path)){
-            tex_->LoadTexture(path, GL_NEAREST, GL_CLAMP_TO_BORDER);
-            return;
+            //tex_->LoadBufferedTexture(path);
+            tex_->LoadTexture(path);
+        	return;
          }
         LOG_INFO("Tried but did not succeed to load image.");
         tex_ = nullptr;
@@ -19,7 +20,7 @@ Image::Image(std::filesystem::path path)
 
 void Image::Init()
 {     
-    textured_rectangle_ = std::unique_ptr<TexturedShape>(new TexturedShape(Shapes::Rectangle(2, 2)));
+    textured_rectangle_ = std::make_unique<TexturedShape>(Shapes::Rectangle(2, 2));
     textured_rectangle_->Init();
     textured_rectangle_->texture_ = tex_.get();
 

@@ -3,6 +3,26 @@
 namespace kipod
 {
 
+    void LoadTexture410(TextureOpenGL* texture_implementation, int texture_option_filter, int texture_option_wrap)
+    {
+        auto& id_ = texture_implementation->id_;
+        auto tex_ = texture_implementation->Tex();
+        auto image_ = tex_->GetImage();
+    	
+        glGenTextures(1, &id_);
+        glBindTexture(GL_TEXTURE_2D, id_);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_option_wrap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_option_wrap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_option_filter);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_option_filter);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_->width_, image_->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, image_->data_);
+        //glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+	
     void RenderToTexture410(GLuint& frame_buffer, TextureOpenGL* texture_implementation)
     {
         auto& id_ = texture_implementation->id_;

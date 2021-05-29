@@ -10,6 +10,15 @@ void kipod::TextureOpenGL::SetupTextureToSquare(float height)
     dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_->AttachUniform<int>("tex");
 }
 
+kipod::TextureOpenGL::~TextureOpenGL() {
+    glDeleteTextures(1, &depths_id_);
+    glDeleteTextures(1, &id_);
+}
+
+void kipod::TextureOpenGL::Bind() const {
+    glBindTexture(GL_TEXTURE_2D, id_);
+}
+
 void kipod::TextureOpenGL::Draw()
 {
 
@@ -20,20 +29,26 @@ void kipod::TextureOpenGL::Resize(int w, int h)
 
 }
 
-void kipod::TextureOpenGL::LoadTexture(int texture_option_filter, int texture_option_wrap){
-
-       glGenTextures(1, &id_);
-       glBindTexture(GL_TEXTURE_2D, id_);
-
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture_option_wrap);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture_option_wrap);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture_option_filter);
-       //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture_option_filter);
-
-       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_->image_->width_, tex_->image_->height_, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_->image_->data_);
-       //glGenerateMipmap(GL_TEXTURE_2D);
+void kipod::TextureOpenGL::LoadTexture(int texture_option_filter, int texture_option_wrap)
+{
+    if (OpenGLEngine::Version() == 450)           LoadTexture450(this, texture_option_filter, texture_option_wrap);
+    else                                          LoadTexture410(this, texture_option_filter, texture_option_wrap);
+    
 }
+
+void kipod::TextureOpenGL::RenderToTexture(GLuint& frame_buffer)
+{
+    if (OpenGLEngine::Version() == 450)           RenderToTexture450(frame_buffer, this);
+    else                                          RenderToTexture410(frame_buffer, this);
+}
+
+
+
+
+
+
+
+
 
 //
 //void kipod::TextureOpenGL::RenderToTexture(GLuint& frame_buffer)
@@ -77,19 +92,42 @@ void kipod::TextureOpenGL::LoadTexture(int texture_option_filter, int texture_op
 
 
 
-kipod::TextureOpenGL::~TextureOpenGL(){
+
+void kipod::TextureIPOpenGL::SetupTextureToSquare(float height)
+{
+    dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_ = std::make_shared<Shader>("passthrough.vert.glsl", "passthrough.frag.glsl");
+    dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_->AttachUniform<int>("tex");
+}
+
+kipod::TextureIPOpenGL::~TextureIPOpenGL() {
     glDeleteTextures(1, &depths_id_);
     glDeleteTextures(1, &id_);
 }
 
-void kipod::TextureOpenGL::Bind() const {
+void kipod::TextureIPOpenGL::Bind() const {
     glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-void kipod::TextureOpenGL::RenderToTexture(GLuint& frame_buffer)
+void kipod::TextureIPOpenGL::Draw()
 {
-    if (OpenGLEngine::Version() == 450)           RenderToTexture450(frame_buffer, this);
-    else                                          RenderToTexture410(frame_buffer, this);
+
 }
 
+void kipod::TextureIPOpenGL::Resize(int w, int h)
+{
 
+}
+
+void kipod::TextureIPOpenGL::LoadTexture(int texture_option_filter, int texture_option_wrap)
+{
+    auto image = Tex()->GetImage();
+    buffer_ = std::make_unique<VertexBuffer450>(static_cast<void*>(image->data_), sizeof(image->data_), 0);
+	LoadBufferedTexture450(this);
+   // else                                          LoadTexture410(this, texture_option_filter, texture_option_wrap);
+}
+
+void kipod::TextureIPOpenGL::RenderToTexture(GLuint& frame_buffer)
+{
+   // if (OpenGLEngine::Version() == 450)           RenderToTexture450(frame_buffer, this);
+   // else                                          RenderToTexture410(frame_buffer, this);
+}

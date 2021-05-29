@@ -24,12 +24,22 @@ void kipod::ImageProcessing::ImageProcessingScene::Draw()
     glEnable(GL_DEPTH_TEST);
     
     auto image = ActiveImage();
-    if (image) {
-        auto shader = shaders_["ImageProcessing"];
-        shader->Use();
-        SetupUniforms(image, ActiveKernel(), ActiveAlgorithm());
-        image->Draw();
-        shader->Unuse();
+    auto algo = ActiveAlgorithm();
+    auto kernel = ActiveKernel();
+    if (image)
+    {
+    	if(algo->name_=="LoadImage")
+    	{
+            algo->SetupUniforms(image, kernel);
+            algo->Draw(image);
+    	}
+		else {
+	        auto shader = shaders_["ImageProcessing"];
+	        shader->Use();
+	        SetupUniforms(image, ActiveKernel(), ActiveAlgorithm());
+	        image->Draw();
+	        shader->Unuse();
+		}
     }
     
     glDisable(GL_DEPTH_TEST);
@@ -129,6 +139,9 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupAlgorithms(){
     algorithms_.back().data_ = new CannyData();
     //algorithms_.push_back(Algorithm{ "Inversion", "image_inversion.comp.glsl" });
     active_algorithm_ = &algorithms_[0];
+    algorithms_.push_back(Algorithm{ "LoadImage" });
+    algorithms_.back().Setup();
+	
 }
 
 
