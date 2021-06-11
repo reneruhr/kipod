@@ -37,6 +37,7 @@ public:
     std::string Name();
     void Name(std::string name);
     void Pause() { pause_ = true; }
+    void Continue() { pause_ = false; }
     void SynchronizeLinks();
 
     virtual void Init();
