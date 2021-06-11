@@ -32,8 +32,8 @@ class SoftRenderer
     GLint  vPosition;
     GLint  vTexCoord;
 
-    GLuint gScreenTex;
-    GLuint gScreenVtc;
+    GLuint screen_texture_;
+    GLuint screen_vertex_array_;
     void CreateOpenGLBuffer();
     void InitOpenGLRendering();
 

@@ -202,10 +202,10 @@ void SoftRenderer::drawTriangleCall(int triangle[3][2])
 
 void SoftRenderer::InitOpenGLRendering()
 {
-    glGenTextures(1, &gScreenTex);
-    glGenVertexArrays(1, &gScreenVtc);
+    glGenTextures(1, &screen_texture_);
+    glGenVertexArrays(1, &screen_vertex_array_);
     GLuint buffer;
-    glBindVertexArray(gScreenVtc);
+    glBindVertexArray(screen_vertex_array_);
     glGenBuffers(1, &buffer);
     const GLfloat vtc[]={
         -1, -1,
@@ -243,7 +243,7 @@ void SoftRenderer::InitOpenGLRendering()
 void SoftRenderer::CreateOpenGLBuffer()
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gScreenTex);
+    glBindTexture(GL_TEXTURE_2D, screen_texture_);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width_, height_, 0, GL_RGB, GL_FLOAT, NULL);
     glViewport(0, 0, width_, height_);
 }
@@ -252,10 +252,10 @@ void SoftRenderer::DrawToOpenGL()
 {
     glUseProgram( program );
 
-    glBindVertexArray(gScreenVtc);
+    glBindVertexArray(screen_vertex_array_);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gScreenTex);
+    glBindTexture(GL_TEXTURE_2D, screen_texture_);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width_, height_, GL_RGB, GL_FLOAT, framebuffer_->Data());
     glGenerateMipmap(GL_TEXTURE_2D);
 

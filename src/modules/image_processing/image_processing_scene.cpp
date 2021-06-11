@@ -139,8 +139,8 @@ void kipod::ImageProcessing::ImageProcessingScene::SetupAlgorithms(){
     algorithms_.back().data_ = new CannyData();
     //algorithms_.push_back(Algorithm{ "Inversion", "image_inversion.comp.glsl" });
     active_algorithm_ = &algorithms_[0];
-    algorithms_.push_back(Algorithm{ "LoadImage" });
-    algorithms_.back().Setup();
+    //algorithms_.push_back(Algorithm{ "LoadImage" });
+    //algorithms_.back().Setup();
 	
 }
 

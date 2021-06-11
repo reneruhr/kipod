@@ -249,7 +249,7 @@ void OpenGLScene::SetUniformBox(MeshModel* model, kipod::RenderCamera* camera)
 
 void OpenGLScene::SetUniformCamera(kipod::RenderCamera *cameraModel, kipod::RenderCamera *camera)
 {
-    glm::mat4 cam = glm::inverse(cameraModel->view_matrix_) * glm::scale(glm::mat4(1.0f),glm::vec3(0.2f));
+    glm::mat4 cam = glm::inverse(cameraModel->view_matrix_) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2f));
     glm::mat4 pv = camera->projection_view_matrix_;
     glm::mat4 mvp = pv * cam;
     shaders_["Basic"]->SetUniform<glm::mat4>("mvp", mvp);

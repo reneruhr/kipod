@@ -28,7 +28,7 @@ struct Algorithm{
     
      void Setup() 
     {
-	     if(true){
+         if(true){
 		     shader_ = std::make_unique<Shader>("image_processing_loadimage.vert.glsl",
 										"image_processing_loadimage.frag.glsl");
 	     	shader_->AttachUniform<int>("width");
