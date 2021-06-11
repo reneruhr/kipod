@@ -136,13 +136,14 @@ void RenderCamera::ChangePerspective(const float fovy, const float aspect, const
     far_= zFar;
 }
 
-Screen RenderCamera::GetFrontScreen(){
+Screen RenderCamera::GetFrontScreen()
+{
     Screen screen;
     auto inverse_view = glm::inverse(projection_view_matrix_);
-    auto bl = inverse_view*glm::vec4(-1,-1,-1,1);
-    auto br = inverse_view*glm::vec4(1,-1,-1,1);
-    auto tr = inverse_view*glm::vec4(1,1,-1,1);
-    auto tl = inverse_view*glm::vec4(-1,1,-1,1);
+    auto bl = inverse_view*glm::vec4(-1,-1, 1, 1);
+    auto br = inverse_view*glm::vec4( 1,-1, 1, 1);
+    auto tr = inverse_view*glm::vec4( 1, 1, 1, 1);
+    auto tl = inverse_view*glm::vec4(-1, 1, 1, 1);
 
     screen.left_bottom_ = bl/bl.w;
     screen.right_bottom_ = br/br.w;

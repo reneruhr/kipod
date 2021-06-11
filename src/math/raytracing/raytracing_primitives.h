@@ -1,8 +1,6 @@
 #pragma once
-#include "../../siegel2021.h"
+#include <glm/matrix.hpp>
 namespace kipod{
-
-using Vec3d = siegel2021::Vector<double,3>;
 
 enum class RaytracingPrimitive{
     Sphere,
@@ -18,8 +16,8 @@ struct RaytracingObject
 };
 
 struct RaytracingSphere : public RaytracingObject{
-    double radius_ = 1.;
-    Vec3d center_ = {0.,0.,0.};
+    float radius_ = 1.;
+    glm::vec3 center_ = {0.,0.,0.};
 
     RaytracingSphere() : RaytracingObject(RaytracingPrimitive::Sphere){}
 };

@@ -18,7 +18,7 @@ class RaytracerScene  : public MeshModelAPIScene{
 
 
         std::unique_ptr<Raytracer> raytracer_;
-        Vec3d Screen(int i,int j);
+        glm::vec3 Screen(int i,int j);
 
 
 protected:

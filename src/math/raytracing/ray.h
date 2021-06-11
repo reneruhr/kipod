@@ -1,21 +1,24 @@
 #pragma once
-#include "../../siegel2021.h"
+#include <glm/matrix.hpp>
 #include "raytracing_primitives.h"
-namespace kipod{
+#include <iostream>
 
-using Vec3d = siegel2021::Vector<double,3>;
+namespace kipod{
 
 class Ray : public RaytracingObject
 {
-    Vec3d origin_;
-    Vec3d direction_;
+    glm::vec3 origin_;
+    glm::vec3 direction_;
 public:
-    Ray(const Vec3d& o, const Vec3d& d)
-        : RaytracingObject(RaytracingPrimitive::Ray), origin_(o), direction_(d){}
-    Vec3d Origin() const { return origin_; }
-    Vec3d Direction() const { return direction_; }
-    Vec3d At(double t) const { return origin_+t*direction_; }
+    Ray(const glm::vec3& origin, const glm::vec3& direction)
+        : RaytracingObject(RaytracingPrimitive::Ray), origin_(origin), direction_(direction){}
+    glm::vec3 Origin() const { return origin_; }
+    glm::vec3 Direction() const { return direction_; }
+    glm::vec3 At(float t) const { return origin_+t*direction_; }
+
 };
+
+std::ostream& operator<<(std::ostream& os,  Ray& ray);
 
 }
 

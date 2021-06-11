@@ -8,7 +8,8 @@ using Vec3f = siegel2021::Vector<float,3>;
 class RaytracerFramebuffer
 {
     std::unique_ptr<float[]> buffer_;
-    int INDEX(int width_,int x,int y,int c){
+    int INDEX(int width_,int x,int y,int c)
+    {
         return (x+y*width_)*3+c;
     }
     int width_;
@@ -18,11 +19,13 @@ public:
         buffer_(std::make_unique<float[]>(width*height*3) ),
         width_(width), height_(height){}
 
-    void Clear(){
+    void Clear()
+    {
         for(int i = 0; i< width_*height_*3; i++) buffer_[i]=0;
     }
 
-    float* Data(){
+    float* Data()
+    {
         return buffer_.get();
     }
 

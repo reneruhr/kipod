@@ -4,19 +4,18 @@
 #include "../../../math/glmtosiegel.h"
 namespace kipod::MeshModels{
 
-Vec3d RaytracerScene::Screen(int i, int j)
+glm::vec3 RaytracerScene::Screen(int i, int j)
 {
-    double x = i*1.0/scene_->width_;
-    double y = j*1.0/scene_->height_;
+    float x = i*1.0/scene_->width_;
+    float y = j*1.0/scene_->height_;
 
     auto cam = scene_->GetActiveCamera();
     auto screen = cam->GetFrontScreen();
 
-    auto hori = ToSiegel(screen.right_bottom_ - screen.left_bottom_);
-    auto vert = ToSiegel(screen.left_top_ -screen.left_bottom_);
+    auto hori = screen.right_bottom_ - screen.left_bottom_;
+    auto vert = screen.left_top_ - screen.left_bottom_;
 
-    return x*hori + y*vert;
-
+    return x*hori + y*vert + screen.left_bottom_;
 }
 
 void RaytracerScene::Setup()
@@ -38,25 +37,34 @@ void RaytracerScene::Draw()
         raytracer_->DrawPoint(scene_->width_/2,j,&color);
     }
 
+
     for(int i = 0; i < scene_->width_; ++i){
         for(int j = 0; j < scene_->height_; ++j){
-            Vec3d origin = ToSiegel(cam->Eye());
-            auto direction = Screen(i,j)-origin;
+
+            auto origin = cam->Eye(); // In Camera coordinates
+            auto direction = glm::normalize(Screen(i,j)-origin);
             Ray ray(origin, direction);
-            for(const auto& model : scene_->render_objects_){                   
-                    PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
-                    if(ray_object && ray_object->Type()==Sphere)
-                    {
-                        raytracer_->SetUniforms(cam, mat4( model->Transform() ));
-                        RaytracingSphere sphere;
-                        Intersections hit = Intersections(&ray, &sphere);
-                        if(hit()){
-                            Vec3f color = {1.,1.,1.};
-                            raytracer_->DrawPoint(i,j,&color);
-                        }
+
+            LOG_DEBUG("Raytracing Screen: {} {} {}", Screen(i,j).x, Screen(i,j).y, Screen(i,j).z);
+            LOG_DEBUG("Ray Origin {} {} {}", ray.Origin().x, ray.Origin().y, ray.Origin().z );
+            LOG_DEBUG("Ray Direction {} {} {}", ray.Direction().x, ray.Direction().y, ray.Direction().z );
+
+            for(const auto& model : scene_->render_objects_){
+                PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
+                if(ray_object && ray_object->Type()==Sphere)
+                {
+                    raytracer_->SetUniforms(cam, mat4( model->Transform() ));
+                    RaytracingSphere sphere;
+                    Intersections hit = Intersections(&ray, &sphere);
+                    if(hit()){
+                        auto hit_point = hit.Point();
+                        LOG_DEBUG("Hit at {} {} {}", hit_point.x, hit_point.y, hit_point.z );
+                        Vec3f color = {1.,1.,1.};
+                        raytracer_->DrawPoint(i,j,&color);
                     }
                 }
-    }
+            }
+        }
     }
     scene_->framebuffer_->Bind();    
     glViewport(0, 0, scene_->width_, scene_->height_);
@@ -73,8 +81,6 @@ void RaytracerScene::Resize(int w, int h)
     raytracer_= std::make_unique<Raytracer>(w, h);
 }
 
-
-
 void RaytracerScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
 {
     // std::string name = "SoftLayout";
@@ -87,7 +93,6 @@ void RaytracerScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
     // model->AddLayout(name, std::move(*layout));
 
 }
-
 
 RaytracerScene::RaytracerScene(MeshModelScene *scene) :
     MeshModelAPIScene(scene),

@@ -9,7 +9,7 @@
 namespace kipod{
 class Light;
 class MaterialStruct;
-class RaytracerBuffer;
+struct RaytracerBuffer;
 
 
 class Raytracer
@@ -27,8 +27,8 @@ class Raytracer
     GLint  vPosition;
     GLint  vTexCoord;
 
-    GLuint gScreenTex;
-    GLuint gScreenVtc;
+    GLuint screen_texture_;
+    GLuint screen_vertex_array_;
     void CreateOpenGLBuffer();
     void InitOpenGLRendering();
 

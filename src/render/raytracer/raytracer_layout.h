@@ -3,14 +3,12 @@
 #include "../../math/raytracing/raytracing_primitives.h"
 namespace kipod{
 
-
-
-struct RaytracerBuffer{
+struct RaytracerBuffer
+{
     RaytracerBuffer(RaytracingPrimitive type, void* data) : type_(type), data_(data){}
     RaytracingPrimitive type_;
     void* data_;
 };
-
 
 class Raytracer;
 class RaytracerLayout : public RenderLayout
@@ -20,19 +18,23 @@ class RaytracerLayout : public RenderLayout
     
 
 public:
-    RaytracerLayout()=default;
+    RaytracerLayout() = default;
     ~RaytracerLayout() = default;
-    RaytracerLayout(RaytracerLayout&&)=default;
-    RaytracerLayout& operator=(RaytracerLayout&&)=default;
-    virtual void Draw() override {};
+    RaytracerLayout(RaytracerLayout&&) = default;
+    RaytracerLayout& operator=(RaytracerLayout&&) = default;
+
+    virtual void Draw() override {}
+
     virtual void Setup() override {}
+
     virtual void AddTo(const std::string &name, std::unordered_map<std::string, std::unique_ptr<RenderLayout> > &map) 
         override
-        {
-            map.insert( { name, std::make_unique<RaytracerLayout>(std::move(*this)) } );
-        }
+    {
+        map.insert( { name, std::make_unique<RaytracerLayout>(std::move(*this)) } );
+    }
 
-    void SetRaytracer(Raytracer* raytracer) {
+    void SetRaytracer(Raytracer* raytracer)
+    {
         raytracer_ = raytracer;
     }
 
@@ -41,7 +43,8 @@ public:
         buffer_ = std::make_unique<RaytracerBuffer>(type, data);
     }
 
-    RaytracerBuffer& Buffer(){
+    RaytracerBuffer& Buffer()
+    {
         return *buffer_;
     }
 

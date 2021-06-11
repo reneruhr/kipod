@@ -2,7 +2,6 @@
 #include "raytracer_layout.h"
 namespace kipod{
 
-
 Raytracer::Raytracer(int width, int height) :    
     framebuffer_(std::make_unique<RaytracerFramebuffer>(width, height)),
     uniform_(std::make_unique<RaytracerUniform>()),
@@ -18,12 +17,10 @@ void Raytracer::SetUniforms(RenderCamera *camera, mat4 transform)
     uniform_->object_transform_ = transform;
 }
 
-
 void Raytracer::CreateBuffers()
 {
     CreateOpenGLBuffer();
 }
-
 
 void Raytracer::ClearBuffer()
 {
@@ -38,10 +35,10 @@ void Raytracer::DrawPoint(int x, int y, Vec3f *color)
 
 void Raytracer::InitOpenGLRendering()
 {
-    glGenTextures(1, &gScreenTex);
-    glGenVertexArrays(1, &gScreenVtc);
+    glGenTextures(1, &screen_texture_);
+    glGenVertexArrays(1, &screen_vertex_array_);
     GLuint buffer;
-    glBindVertexArray(gScreenVtc);
+    glBindVertexArray(screen_vertex_array_);
     glGenBuffers(1, &buffer);
     const GLfloat vtc[]={
         -1, -1,
@@ -79,7 +76,7 @@ void Raytracer::InitOpenGLRendering()
 void Raytracer::CreateOpenGLBuffer()
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gScreenTex);
+    glBindTexture(GL_TEXTURE_2D, screen_texture_);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, width_, height_, 0, GL_RGB, GL_FLOAT, NULL);
     glViewport(0, 0, width_, height_);
 }
@@ -88,10 +85,10 @@ void Raytracer::DrawToOpenGL()
 {
     glUseProgram( program );
 
-    glBindVertexArray(gScreenVtc);
+    glBindVertexArray(screen_vertex_array_);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gScreenTex);
+    glBindTexture(GL_TEXTURE_2D, screen_texture_);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width_, height_, GL_RGB, GL_FLOAT, framebuffer_->Data());
     glGenerateMipmap(GL_TEXTURE_2D);
 
