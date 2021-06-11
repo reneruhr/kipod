@@ -8,7 +8,8 @@
 
 class Log
 {
-	static std::shared_ptr<spdlog::logger> s_logger;
+    static std::shared_ptr<spdlog::logger> console_logger_;
+    static std::shared_ptr<spdlog::logger> file_logger_;
 	
 public:
 	
@@ -16,17 +17,21 @@ public:
 	
 	static void Init();
 
-	static std::shared_ptr<spdlog::logger>& getLogger()
+    static std::shared_ptr<spdlog::logger>& GetConsoleLogger()
 	{ 
-		return s_logger; 
+        return console_logger_;
 	}
+    static std::shared_ptr<spdlog::logger>& GetFileLogger()
+    {
+        return file_logger_;
+    }
 };
 
 
 
-#define LOG_INFO(...)     Log::getLogger()->info(__VA_ARGS__)
-#define LOG_ENGINE(...)     Log::getLogger()->info(__VA_ARGS__)
-#define LOG_DEBUG(...)     Log::getLogger()->info(__VA_ARGS__)
-#define LOG(...)     Log::getLogger()->info(__VA_ARGS__)
+#define LOG_INFO(...)     Log::GetConsoleLogger()->info(__VA_ARGS__)
+#define LOG_ENGINE(...)     Log::GetConsoleLogger()->info(__VA_ARGS__)
+#define LOG_DEBUG(...)     Log::GetFileLogger()->info(__VA_ARGS__)
+#define LOG(...)     Log::GetConsoleLogger()->info(__VA_ARGS__)
 
 
