@@ -12,6 +12,7 @@ class Intersections
 public:
     Intersections(Ray*, RaytracingObject*) {}
     Intersections(Ray* A, RaytracingSphere* B);
+    Intersections(Ray* A, RaytracingQuadric* B);
 
     int Count(){ return intersection_points_.size(); }
 

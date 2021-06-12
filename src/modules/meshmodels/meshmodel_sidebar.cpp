@@ -32,6 +32,7 @@ void MeshmodelSidebar::ModelControl(){
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     LoadPrimitive();
+    LoadQuadricPrimitive();
     LoadOBJfile();
     ModelList();
     ModelMoveOptions();
@@ -157,6 +158,53 @@ void MeshmodelSidebar::LoadPrimitive(){
     if(primitiveChoice_current==2){
         ImGui::PushItemWidth(70);
         ImGui::InputInt("# Subdivisions", &numberPolygons);
+        ImGui::PopItemWidth();
+    }
+    ImGui::PopID();
+    ImGui::Separator();
+}
+
+void MeshmodelSidebar::LoadQuadricPrimitive()
+{
+    auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
+
+    const char* quadricChoice[] = { "Sphere", "Ellipsoid"};
+    static int quadricChoice_current = 0;
+    static float quadric_a=1, quadric_b=1, quadric_c=1;
+
+    ImGui::PushItemWidth(70);
+    ImGui::Combo("##Type_primitive", &quadricChoice_current, quadricChoice, IM_ARRAYSIZE(quadricChoice));
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+    ImGui::PushID("Add Quadric");
+    if(ImGui::Button("Add")){
+                            if(quadricChoice_current==0){
+                                meshmodelscene->LoadPrimitive(Quadric::Sphere);
+                                auto sphere = dynamic_cast<PrimMeshModel*>(meshmodelscene->render_objects_.back().get())->GetRaytracingQuadric();
+                                sphere->Q_[3][3] = quadric_a;
+                            }
+                            else if(quadricChoice_current==1) {
+                                meshmodelscene->LoadPrimitive(Quadric::Ellipsoid);
+                                auto ellipsoid = dynamic_cast<PrimMeshModel*>(meshmodelscene->render_objects_.back().get())->GetRaytracingQuadric();
+                                auto& Q = ellipsoid->Q_;
+                                Q[0][0] = quadric_a;
+                                Q[1][1] = quadric_b;
+                                Q[2][2] = quadric_c;
+                            }
+                            LOG_ENGINE("Loaded Quadric Primitive.");
+                            meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);
+    }
+
+    if(quadricChoice_current==0){
+        ImGui::PushItemWidth(70);
+        ImGui::InputFloat("radius", &quadric_a);
+        ImGui::PopItemWidth();
+    }
+    if(quadricChoice_current==1){
+        ImGui::PushItemWidth(70);
+        ImGui::InputFloat("a", &quadric_a);
+        ImGui::InputFloat("b", &quadric_b);
+        ImGui::InputFloat("c", &quadric_c);
         ImGui::PopItemWidth();
     }
     ImGui::PopID();

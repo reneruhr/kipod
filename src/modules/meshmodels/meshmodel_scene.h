@@ -51,6 +51,7 @@ protected:
 
         void LoadOBJModel(std::filesystem::path path, bool textures = false);
         void LoadPrimitive(Primitive primitive, int numberPolygons=0);
+        void LoadPrimitive(Quadric);
 
         MeshModel* GetActiveModel();
         void AddModel(MeshModel&&);

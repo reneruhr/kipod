@@ -7,10 +7,18 @@ PrimMeshModel::PrimMeshModel(Primitive primitive, int n) : type_(primitive){
     LoadPrimitive(primitive, n);
 }
 
+PrimMeshModel::PrimMeshModel(enum Quadric quadric) : type_(QuadricPrimitive)
+{
+    quadric_ = std::make_unique<RaytracingQuadric>(quadric);
+    std::vector<vec3> unit = {vec3(1.0f)};
+    boundingBoxData_ = std::make_unique<BoundingBoxData>(unit);
+}
+
 void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
 
     switch(primitive){
-        case Cube:{
+        case Cube:
+        {
          LOG_ENGINE("Create a Cube");
          LOG_CONSOLE("Create a Cube");
          name_ = "Cube";
@@ -65,7 +73,8 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
 
                 break;
         } // cube
-        case Tetrahedron:{
+        case Tetrahedron:
+        {
             LOG_ENGINE("Create a Tetrahedron");
             LOG_CONSOLE("Create a Tetrahedron");
             name_ = "Tetrahedron";
@@ -99,7 +108,8 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                                     normals_vector, nindices_vector);
             break;
         } //tetrahedron
-    case Sphere:{
+    case Sphere:
+    {
         // Interactive computer graphics p281
         LOG_ENGINE("Create a Sphere");
         LOG_CONSOLE("Create a Sphere");
@@ -148,7 +158,11 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
         break;
     } //sphere
 
-    }//switch
+    case QuadricPrimitive:{
+        assert(0);
+    }
+    } // switch
+
     CreateBoundingBox();
     CenterModel();
 }

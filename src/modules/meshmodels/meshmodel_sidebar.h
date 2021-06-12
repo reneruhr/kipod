@@ -14,6 +14,7 @@ class MeshmodelSidebar : public kipod::Sidebar
 
 
     void LoadPrimitive();
+    void LoadQuadricPrimitive();
     void LoadOBJfile();
     void ModelList();
     void ModelViewOptions();

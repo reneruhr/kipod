@@ -132,6 +132,16 @@ void MeshModelScene::LoadPrimitive(Primitive primitive, int numberPolygons)
     AddModel(std::move(*model));
 }
 
+void MeshModelScene::LoadPrimitive(Quadric quadric)
+{
+    PrimMeshModel *model = new PrimMeshModel(quadric);
+    model->SetUniformMaterial();
+//    opengl_impl_->CreatePrimitiveModelLayout(model);
+//    softrenderer_impl_->CreateMeshModelLayout(model);
+    raytracer_impl_->CreateMeshModelLayout(model);
+    AddModel(std::move(*model));
+}
+
 
 //void MeshModelScene::LookAtModel(int camera_id, int model_id){
 //    if(NumberOfModels() <= model_id) return;
