@@ -60,6 +60,7 @@ ${imgui}
   src/utils/key_table.h
   src/utils/imgui_utils.h
   src/utils/imgui_console.h
+  src/utils/debug.h
 
   src/math/lattice.h
   src/math/lattice.cpp

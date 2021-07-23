@@ -1,5 +1,7 @@
 #include "engine_gui.h"
 #include "../utils/imgui_utils.h"
+#include "../utils/debug.h"
+
 
 namespace kipod{
 
@@ -168,6 +170,9 @@ void kipod::Gui::Init(std::shared_ptr<kipod::Window> window)
     ImGuiIO &io = ImGui::GetIO();  (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    PrintPath();
+    std::filesystem::current_path(std::filesystem::current_path() / std::filesystem::path("..")); //Deleted /resources for QT Creator Build "Imported Kit Debug"
     io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 14.0f);
     io.Fonts->Build();
 
