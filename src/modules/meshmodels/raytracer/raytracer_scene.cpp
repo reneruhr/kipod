@@ -36,15 +36,12 @@ void RaytracerScene::Draw()
         Vec3f color = {1.,1.,1.};
         raytracer_->DrawPoint(scene_->width_/2,j,&color);
     }
-
-
     for(const auto& model : scene_->render_objects_){
         PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
         if(ray_object && ray_object->Type()==QuadricPrimitive){
             ray_object->GetRaytracingQuadric()->Transform(ray_object->Transform());
         }
     }
-
     for(int i = 0; i < scene_->width_; ++i){
         for(int j = 0; j < scene_->height_; ++j){
 
@@ -60,36 +57,42 @@ void RaytracerScene::Draw()
 
             for(const auto& model : scene_->render_objects_){
                 PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
-                if(ray_object && ray_object->Type()==Sphere){
-                    raytracer_->SetUniforms(cam, mat4( model->Transform() ));
-                    RaytracingSphere sphere;
-                    Intersections hit = Intersections(&ray, &sphere);
-                    if(hit()){
-                    /*  auto hit_point = hit.Point();
-                        LOG_DEBUG("Hit at {} {} {}", hit_point.x, hit_point.y, hit_point.z ); */
-                        Vec3f color = {1.,1.,1.};
-                        raytracer_->DrawPoint(i,j,&color);
+                if(ray_object){
+                    if(ray_object->Type()==Sphere){
+                        raytracer_->SetUniforms(cam, mat4( model->Transform() ));
+                        RaytracingSphere sphere;
+                        Intersections hit = Intersections(&ray, &sphere);
+                        if(hit()){
+                        /*  auto hit_point = hit.Point();
+                            LOG_DEBUG("Hit at {} {} {}", hit_point.x, hit_point.y, hit_point.z ); */
+                            Vec3f color = {1.,1.,1.};
+                            raytracer_->DrawPoint(i,j,&color);
+                        }
+                    } else if(ray_object->Type()==QuadricPrimitive){
+                        raytracer_->SetUniforms(cam, mat4( model->Transform() ));
+                        RaytracingQuadric* quadric = ray_object->GetRaytracingQuadric();
+                        Intersections hit = Intersections(&ray, quadric);
+                        if(hit()){
+                            Vec3f color = {1.,1.,1.};
+                            raytracer_->DrawPoint(i,j,&color);
+                        }
                     }
-                } // Sphere
-                if(ray_object && ray_object->Type()==QuadricPrimitive){
-                    raytracer_->SetUniforms(cam, mat4( model->Transform() ));
-                    RaytracingQuadric* quadric = ray_object->GetRaytracingQuadric();
-                    Intersections hit = Intersections(&ray, quadric);
-                    if(hit()){
-                        Vec3f color = {1.,1.,1.};
-                        raytracer_->DrawPoint(i,j,&color);
-                    }
-                } // Quadric
-            }
-        }
-    }
+                    continue;
+                }//primitive
+                MeshModel* ray_model = dynamic_cast<MeshModel*>(model.get());
+                if(ray_model){
+
+
+                }//triangle
+            }//model
+        }//j
+    }//i
     scene_->framebuffer_->Bind();    
     glViewport(0, 0, scene_->width_, scene_->height_);
     glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     raytracer_->DrawToOpenGL();
     kipod::RenderManager::Bind(0);
-
 }
 
 void RaytracerScene::Resize(int w, int h)

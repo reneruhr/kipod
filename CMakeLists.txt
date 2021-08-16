@@ -77,6 +77,9 @@ ${imgui}
   src/math/raytracing/intersections.h
   src/math/raytracing/intersections.cpp
 
+  src/math/softrenderer/graphicsalgorithms.h
+  src/math/softrenderer/graphicsalgorithms.cpp
+
 
   src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
   src/modules/meshmodels/opengl/meshmodel_opengl_scene.cpp
@@ -242,8 +245,6 @@ ${imgui}
   src/render/softrenderer/softrenderer_buffer.cpp
   src/render/softrenderer/softrenderer_uniform.h
   src/render/softrenderer/softrenderer_uniform.cpp
-  src/render/softrenderer/softrenderer_graphicsalgorithms.h
-  src/render/softrenderer/softrenderer_graphicsalgorithms.cpp
   src/render/softrenderer/softrenderer_camera.h
   src/render/softrenderer/softrenderer_camera.cpp
   src/render/softrenderer/softrenderer_light.h

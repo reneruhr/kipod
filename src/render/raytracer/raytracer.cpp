@@ -32,7 +32,6 @@ void Raytracer::DrawPoint(int x, int y, Vec3f *color)
     framebuffer_->DrawPoint(x,y,color);
 }
 
-
 void Raytracer::InitOpenGLRendering()
 {
     glGenTextures(1, &screen_texture_);
@@ -95,9 +94,4 @@ void Raytracer::DrawToOpenGL()
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
-
-
-
-
-
 }

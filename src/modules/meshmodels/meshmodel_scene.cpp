@@ -37,7 +37,8 @@ void MeshModelScene::Setup()
     LOG_CONSOLE("MeshModel Scene Initialized.");
 }
 
-void MeshModelScene::SetupOptions(){
+void MeshModelScene::SetupOptions()
+{
     Add(kipod::ModeToggle("Normals", false));
     Add(kipod::ModeToggle("Show Cameras", false));
     Add(kipod::ModeToggle("Show Frustum", false));
@@ -87,11 +88,13 @@ void MeshModelScene::Resize(int w, int h)
 
 
 
-void MeshModelScene::SetActiveModel(int id){
+void MeshModelScene::SetActiveModel(int id)
+{
     SetActiveRenderObject(id);
 }
 
-MeshModel* MeshModelScene::GetActiveModel(){
+MeshModel* MeshModelScene::GetActiveModel()
+{
     if(HasModel()) return static_cast<MeshModel*>(GetActiveRenderObject());
     else return nullptr;
 }
@@ -263,13 +266,15 @@ void MeshModelScene::ProcessMouseMoves(kipod::MouseMoveEvent &event)
     }
 }
 
-void MeshModelScene::Signup() {
+void MeshModelScene::Signup()
+{
     kipod::Events::Signup(this, kipod::EventCategoryKeyboard); LOG_CATEGORY_NAME(kipod::EventCategoryKeyboard);
     kipod::Events::Signup(this, kipod::EventCategoryMouseButton); LOG_CATEGORY_NAME(kipod::EventCategoryMouseButton);
     kipod::Events::Signup(this, kipod::EventCategoryMouse); LOG_CATEGORY_NAME(kipod::EventCategoryMouse);
 }
 
-void MeshModelScene::Receive(std::shared_ptr<kipod::Event> event){
+void MeshModelScene::Receive(std::shared_ptr<kipod::Event> event)
+{
     Process<kipod::KeyPressedEvent>(event, BIND_EVENT_FN(MeshModelScene::ProcessKeys));
     Process<kipod::MouseButtonPressEvent>(event, BIND_EVENT_FN(MeshModelScene::ProcessMouseButtons));
     Process<kipod::MouseButtonReleaseEvent>(event, BIND_EVENT_FN(MeshModelScene::ProcessMouseButtons));

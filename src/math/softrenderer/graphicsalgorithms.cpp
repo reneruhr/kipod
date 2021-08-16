@@ -1,4 +1,4 @@
-#include "softrenderer_graphicsalgorithms.h"
+#include "graphicsalgorithms.h"
 
 namespace kipod{
 graphicsalgorithms::graphicsalgorithms()

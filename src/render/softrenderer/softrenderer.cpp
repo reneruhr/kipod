@@ -1,12 +1,11 @@
 #include "softrenderer.h"
 #include "softrenderer_light.h"
-#include "softrenderer_graphicsalgorithms.h"
+#include "../../math/softrenderer/graphicsalgorithms.h"
 #include "softrenderer_buffer.h"
 #include "softrenderer_layout.h"
 namespace kipod{
 
 using namespace std::placeholders;
-
 
 SoftRenderer::SoftRenderer(int width, int height) :    
     framebuffer_(std::make_unique<SoftRendererFramebuffer>(width, height)),
@@ -62,7 +61,7 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
    {
        if(buffer.HasNormals()){
            for(int i = 0; i<3 ; i++)
-                    triangle[i]=transform * buffer.Vertex(j,i);
+               triangle[i]=transform * buffer.Vertex(j,i);
 
            auto ts = clipTriangle(std::make_unique<Triangle>( Triangle(triangle) ));
            for(auto& t : *ts)       {
@@ -73,17 +72,16 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
                } else
                     zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_);
            }
-       }else
-       {
+       } else {
           for(int i = 0; i<3 ; i++){
-                   triangle[i]=transform * buffer.Vertex(j,i);
-                   triangle_normal_ends[i] = mat4(camera)* normal_transform * buffer.Normal(j,i) + triangle[i];
+              triangle[i]=transform * buffer.Vertex(j,i);
+              triangle_normal_ends[i] = mat4(camera)* normal_transform * buffer.Normal(j,i) + triangle[i];
           }
 
           Triangles ts;
           if(clippingMode)
-                ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle,triangle_normal_ends)), true);
-          else{
+              ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle,triangle_normal_ends)), true);
+          else {
               ts = std::make_unique<std::vector<TrianglePtr>>(std::vector<TrianglePtr>());
               ts->emplace_back(std::make_unique<Triangle>(Triangle(triangle,triangle_normal_ends)));
           }
@@ -94,7 +92,7 @@ void SoftRenderer::DrawTriangles(RenderObject* object,
                    clipToScreen((t->normal_data)[i], rasterized_normal_ends[i], width_, height_);
               }
               if(wireframeMode)
-                    drawTriangleCall(rasterized_triangle);
+                   drawTriangleCall(rasterized_triangle);
               else
                    zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_);
 
@@ -153,15 +151,11 @@ void SoftRenderer::DrawColoredTriangles(RenderObject* object,
                      triangleColors[i]+= material->emission_;
         }
         auto ts = clipTriangle(std::make_unique<Triangle>(Triangle(triangle, triangle_normals, triangleColors)), true);
-        for(auto& t : *ts)       {
+        for(auto& t : *ts){
             zBufferAlgorithm(m_zbuffer, framebuffer_->Data(), *t, width_, height_, 65535);
         }
     }
 }
-
-
-
-
 
 void SoftRenderer::drawLineCall(int* p, int* q)
 {
@@ -198,7 +192,6 @@ void SoftRenderer::drawTriangleCall(int triangle[3][2])
                         break;
     }
 }
-
 
 void SoftRenderer::InitOpenGLRendering()
 {
@@ -262,9 +255,4 @@ void SoftRenderer::DrawToOpenGL()
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
-
-
-
-
-
 }

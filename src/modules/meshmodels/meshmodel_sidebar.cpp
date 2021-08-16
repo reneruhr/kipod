@@ -28,11 +28,12 @@ void MeshmodelSidebar::Help()
                       "It is possible to drag windows around.\n");
 }
 
-void MeshmodelSidebar::ModelControl(){
+void MeshmodelSidebar::ModelControl()
+{
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     LoadPrimitive();
-    LoadQuadricPrimitive();
+    //LoadQuadricPrimitive(); // Todo: Implement Raytracing Quadratics
     LoadOBJfile();
     ModelList();
     ModelMoveOptions();
@@ -135,7 +136,8 @@ void MeshmodelSidebar::LightAdd()
 }
 
 
-void MeshmodelSidebar::LoadPrimitive(){
+void MeshmodelSidebar::LoadPrimitive()
+{
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     const char* primitiveChoice[] = { "Cube", "Tetrahedron", "Sphere"};
@@ -211,7 +213,8 @@ void MeshmodelSidebar::LoadQuadricPrimitive()
     ImGui::Separator();
 }
 
-void MeshmodelSidebar::LoadOBJfile(){
+void MeshmodelSidebar::LoadOBJfile()
+{
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
 
     static bool texturedOption = true;
@@ -278,7 +281,8 @@ void MeshmodelSidebar::ModelViewOptions()
     ImGui::Separator();
 }
 
-void MeshmodelSidebar::ModelMoveOptions(){
+void MeshmodelSidebar::ModelMoveOptions()
+{
     auto meshmodelscene = std::static_pointer_cast<MeshModelScene>(scene_);
     auto model = meshmodelscene->GetActiveModel();
     if(model) {
@@ -338,7 +342,8 @@ void MeshmodelSidebar::CameraList()
     ImGui::Separator();
 }
 
-void CameraViewToggle(void* ptr, int i){
+void CameraViewToggle(void* ptr, int i)
+{
     auto cam = static_cast<kipod::RenderCamera*>(ptr);
     if(i==0) {
         cam->MakeProjection(kipod::RenderCamera::ProjectionType::ORTHOGONAL);

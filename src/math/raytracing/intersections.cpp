@@ -64,6 +64,37 @@ Intersections::Intersections(Ray *ray, RaytracingQuadric *quadric)
                 intersection_points_.push_back(a);
                 intersection_points_.push_back(b);
             }
+        }
+
+Intersections::Intersections(Ray *ray, glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{ //https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    glm::vec3 edge1, edge2, h, s, q;
+    float e,f,u,v;
+    edge1 = b - a;
+    edge2 = c - a;
+    h = glm::cross(ray->Direction(), edge2);
+    e = glm::dot(edge1, h);
+    if (e > -EPS_HIT_MIN && e < EPS_HIT_MIN)
+        return;    // This ray is parallel to this triangle.
+    f = 1.0/e;
+    s = ray->Origin() - a;
+    u = f * glm::dot(s, h);
+    if (u < 0.0 || u > 1.0)
+        return;
+    q = glm::cross(s, edge1);
+    v = f * glm::dot(ray->Direction(), q);
+    if (v < 0.0 || u + v > 1.0)
+        return;
+    // At this stage we can compute t to find out where the intersection point is on the line.
+    float t = f * glm::dot(edge2, q);
+    if (t > EPS_HIT_MIN && t < EPS_HIT_MAX) // ray intersection
+    {
+        intersection_points_.push_back(t);
+        return;
+    }
+    else // This means that there is a line intersection but not a ray intersection.
+        return;
+
 }
 
 float Intersections::Point(int i)

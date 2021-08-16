@@ -5,7 +5,8 @@ namespace kipod{
 enum class RaytracingPrimitive{
     Sphere,
     Ray,
-    Quadratic
+    Quadratic,
+    Triangle
 };
 
 enum class Quadric{
