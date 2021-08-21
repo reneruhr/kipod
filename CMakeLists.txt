@@ -26,7 +26,7 @@ file(GLOB IconsFontAwesome
 add_library(kipod
 ${imgui}
 
-  src/include/kipod.h
+  include/kipod.h
   src/core.h
 
   src/utils/mat.h
