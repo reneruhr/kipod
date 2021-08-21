@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <algorithm>
-#include "../../siegel2021.h"
+#include "siegel2021.h"
 
 namespace kipod{
 using Vec3f = siegel2021::Vector<float,3>;

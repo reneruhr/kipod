@@ -172,8 +172,8 @@ void kipod::Gui::Init(std::shared_ptr<kipod::Window> window)
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     PrintPath();
-    std::filesystem::current_path(std::filesystem::current_path() / std::filesystem::path("..")); //Deleted /resources for QT Creator Build "Imported Kit Debug"
-    io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Medium.ttf", 14.0f);
+    //std::filesystem::current_path(std::filesystem::current_path() / std::filesystem::path("..")); //Uncomment for QT Creator Build "Imported Kit Debug"
+    io.Fonts->AddFontFromFileTTF("kipod/resources/fonts/Roboto-Medium.ttf", 14.0f);
     io.Fonts->Build();
 
     ImGuiStyle& style = ImGui::GetStyle();

@@ -39,11 +39,11 @@ file(GLOB siegel
     "siegel2021/utils/*.h"
 )
 
-add_executable(kipod
+add_library(kipod
 ${siegel}
 ${imgui}
-
-  src/main.cpp
+  #remove main.cpp to use kipod as library
+  #src/main.cpp
 
   src/kipod.h
   src/core.h
@@ -138,23 +138,23 @@ ${imgui}
   src/modules/image_processing/algorithms/canny_edge_detection.h
   src/modules/image_processing/algorithms/canny_edge_detection.cpp
 
-
-  src/modules/quasicrystals/quasicrystals_pointset.h
-  src/modules/quasicrystals/quasicrystals_pointset.cpp
-  src/modules/quasicrystals/quasicrystal.h
-  src/modules/quasicrystals/quasicrystal.cpp
-  src/modules/quasicrystals/quasicrystals_scene.h
-  src/modules/quasicrystals/quasicrystals_scene.cpp
-  src/modules/quasicrystals/quasicrystals_sidebar.h
-  src/modules/quasicrystals/quasicrystals_sidebar.cpp
-  src/modules/quasicrystals/quasicrystals_console.h
-  src/modules/quasicrystals/quasicrystals_console.cpp
-  src/modules/quasicrystals/quasicrystals_module.h
-  src/modules/quasicrystals/quasicrystals_module.cpp
-  src/modules/quasicrystals/quasicrystals_examples.h
-  src/modules/quasicrystals/quasicrystals_examples.cpp
-  src/modules/quasicrystals/quasicrystals_physical_window.h
-  src/modules/quasicrystals/quasicrystals_physical_window.cpp
+ #remove this module. comes now as seperate application 
+  #src/modules/quasicrystals/quasicrystals_pointset.h
+  #src/modules/quasicrystals/quasicrystals_pointset.cpp
+  #src/modules/quasicrystals/quasicrystal.h
+  #src/modules/quasicrystals/quasicrystal.cpp
+  #src/modules/quasicrystals/quasicrystals_scene.h
+  #src/modules/quasicrystals/quasicrystals_scene.cpp
+  #src/modules/quasicrystals/quasicrystals_sidebar.h
+  #src/modules/quasicrystals/quasicrystals_sidebar.cpp
+  #src/modules/quasicrystals/quasicrystals_console.h
+  #src/modules/quasicrystals/quasicrystals_console.cpp
+  #src/modules/quasicrystals/quasicrystals_module.h
+  #src/modules/quasicrystals/quasicrystals_module.cpp
+  #src/modules/quasicrystals/quasicrystals_examples.h
+  #src/modules/quasicrystals/quasicrystals_examples.cpp
+  #src/modules/quasicrystals/quasicrystals_physical_window.h
+  #src/modules/quasicrystals/quasicrystals_physical_window.cpp
 
 
   src/engine/engine_module.h

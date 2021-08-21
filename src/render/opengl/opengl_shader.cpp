@@ -3,6 +3,7 @@
 
 std::string* ReadShaderSource(std::filesystem::path path)
 {
+    path = std::filesystem::path("kipod/") / path;
     LOG("Current path: {}", std::filesystem::current_path());
     LOG_ENGINE("Reading shader from path {} ... {}", std::filesystem::current_path().string() , path.string());
     std::ifstream t(path);
