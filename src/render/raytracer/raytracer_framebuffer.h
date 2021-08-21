@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
 #include <algorithm>
-#include "siegel2021.h"
+#include <glm/matrix.hpp>
 
 namespace kipod{
-using Vec3f = siegel2021::Vector<float,3>;
+using Vec3f = glm::vec3;
 class RaytracerFramebuffer
 {
     std::unique_ptr<float[]> buffer_;

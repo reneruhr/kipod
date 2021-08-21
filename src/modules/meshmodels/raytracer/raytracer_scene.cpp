@@ -1,7 +1,7 @@
 #include "raytracer_scene.h"
 #include "../meshmodel_scene.h"
 #include "../../../render/raytracer/raytracer_layout.h"
-#include "../../../math/glmtosiegel.h"
+//#include "../../../math/glmtosiegel.h"
 namespace kipod::MeshModels{
 
 glm::vec3 RaytracerScene::Screen(int i, int j)

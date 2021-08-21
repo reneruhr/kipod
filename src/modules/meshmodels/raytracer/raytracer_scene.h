@@ -8,7 +8,6 @@
 namespace kipod::MeshModels{
 
 using MeshModel = kipod::MeshModels::MeshModel;
-using Vec3d = siegel2021::Vector<double,3>;
 
 class MeshModelScene;
 class RaytracerScene  : public MeshModelAPIScene{

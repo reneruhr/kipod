@@ -5,17 +5,10 @@ project(kipod)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
-#add_definitions(-std=c++17
-#                               -Wall
-#                              -march=native)
-
-
 include_directories(include)
 
 set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/external_libs/spdlog/include/)
 include_directories(${SPDLOG_DIR})
-
 
 file(GLOB imgui
     "external_libs/imgui/*.h"
@@ -30,22 +23,10 @@ file(GLOB IconsFontAwesome
     "external_libs/IconsFontAwesome/*.h"
 )
 
-file(GLOB siegel
-    "siegel2021.h"
-    "siegel2021/*.h"
-    "siegel2021/linear_algebra/*.h"
-    "siegel2021/matrix/*.h"
-    "siegel2021/vector/*.h"
-    "siegel2021/utils/*.h"
-)
-
 add_library(kipod
-${siegel}
 ${imgui}
-  #remove main.cpp to use kipod as library
-  #src/main.cpp
 
-  src/kipod.h
+  src/include/kipod.h
   src/core.h
 
   src/utils/mat.h
@@ -62,14 +43,6 @@ ${imgui}
   src/utils/imgui_console.h
   src/utils/debug.h
 
-  src/math/lattice.h
-  src/math/lattice.cpp
-  src/math/sl.h
-  src/math/sl.cpp
-  src/math/minkowski_embedding.h
-  src/math/minkowski_embedding.cpp
-  src/math/glmtosiegel.h
-
   src/math/raytracing/ray.h
   src/math/raytracing/ray.cpp
   src/math/raytracing/raytracing_primitives.h
@@ -79,37 +52,6 @@ ${imgui}
 
   src/math/softrenderer/graphicsalgorithms.h
   src/math/softrenderer/graphicsalgorithms.cpp
-
-
-  src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
-  src/modules/meshmodels/opengl/meshmodel_opengl_scene.cpp
-
-  src/modules/meshmodels/softrenderer/softrenderer_scene.h
-  src/modules/meshmodels//softrenderer/softrenderer_scene.cpp
-
-  src/modules/meshmodels/raytracer/raytracer_scene.h
-  src/modules/meshmodels//raytracer/raytracer_scene.cpp
-
-  src/modules/meshmodels/meshmodel_api_scene.h
-
-
-  src/modules/meshmodels/meshmodel_module.h
-  src/modules/meshmodels/meshmodel_module.cpp
-  src/modules/meshmodels/meshmodel_scene.h
-  src/modules/meshmodels/meshmodel_scene.cpp
-  src/modules/meshmodels/meshmodel_sidebar.h
-  src/modules/meshmodels/meshmodel_sidebar.cpp
-  src/modules/meshmodels/meshmodel_console.h
-  src/modules/meshmodels/meshmodel_console.cpp
-  src/modules/meshmodels/meshmodel.h
-  src/modules/meshmodels/meshmodel.cpp
-  src/modules/meshmodels/meshmodel_primitive.h
-  src/modules/meshmodels/meshmodel_primitive.cpp
-  src/modules/meshmodels/meshmodel_boundingbox.h
-  src/modules/meshmodels/meshmodel_boundingbox.cpp
-  src/modules/meshmodels/meshmodel_parsing.h
-  src/modules/meshmodels/meshmodel_parsing.cpp
-
 
   src/modules/shapes/shapes_module.h
   src/modules/shapes/shapes_module.cpp
@@ -137,25 +79,6 @@ ${imgui}
   src/modules/image_processing/algorithms/image_algorithms.h
   src/modules/image_processing/algorithms/canny_edge_detection.h
   src/modules/image_processing/algorithms/canny_edge_detection.cpp
-
- #remove this module. comes now as seperate application 
-  #src/modules/quasicrystals/quasicrystals_pointset.h
-  #src/modules/quasicrystals/quasicrystals_pointset.cpp
-  #src/modules/quasicrystals/quasicrystal.h
-  #src/modules/quasicrystals/quasicrystal.cpp
-  #src/modules/quasicrystals/quasicrystals_scene.h
-  #src/modules/quasicrystals/quasicrystals_scene.cpp
-  #src/modules/quasicrystals/quasicrystals_sidebar.h
-  #src/modules/quasicrystals/quasicrystals_sidebar.cpp
-  #src/modules/quasicrystals/quasicrystals_console.h
-  #src/modules/quasicrystals/quasicrystals_console.cpp
-  #src/modules/quasicrystals/quasicrystals_module.h
-  #src/modules/quasicrystals/quasicrystals_module.cpp
-  #src/modules/quasicrystals/quasicrystals_examples.h
-  #src/modules/quasicrystals/quasicrystals_examples.cpp
-  #src/modules/quasicrystals/quasicrystals_physical_window.h
-  #src/modules/quasicrystals/quasicrystals_physical_window.cpp
-
 
   src/engine/engine_module.h
   src/engine/engine_module.cpp
