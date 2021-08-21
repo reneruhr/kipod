@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 
-set(SPDLOG_DIR ${CMAKE_SOURCE_DIR}/external_libs/spdlog/include/)
+set(SPDLOG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external_libs/spdlog/include/)
 include_directories(${SPDLOG_DIR})
 
 file(GLOB imgui
@@ -24,7 +24,7 @@ file(GLOB IconsFontAwesome
 )
 
 add_library(kipod
-${imgui}
+  ${imgui}
 
   include/kipod.h
   src/core.h
