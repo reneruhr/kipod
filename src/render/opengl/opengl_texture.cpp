@@ -6,7 +6,7 @@
 
 void kipod::TextureOpenGL::SetupTextureToSquare(float height)
 {
-    dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_ = std::make_shared<Shader>("passthrough.vert.glsl", "passthrough.frag.glsl");
+    dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_ = std::make_shared<Shader>("kipod/shaders/passthrough.vert.glsl", "kipod/shaders/passthrough.frag.glsl");
     dynamic_cast<GLRenderLayout*>(tex_->textured_square_->Layout())->sha_->AttachUniform<int>("tex");
 }
 

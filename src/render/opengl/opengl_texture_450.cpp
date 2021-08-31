@@ -100,7 +100,7 @@ namespace kipod
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        LOG_ENGINE("Created Texture {} and Framebuffer {}", id, frame_buffer);
+        LOG_DEBUG("Created Texture {} and Framebuffer {}", id, frame_buffer);
     }
 
 	

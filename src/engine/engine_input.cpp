@@ -5,7 +5,7 @@
 
 void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 {
-    LOG_ENGINE("Got key {}", key);
+    LOG_DEBUG("Got key {}", key);
     if ((action == GLFW_PRESS || action == GLFW_REPEAT) && !Events::BlockKeyboard() && !Events::BlockInput()  )
         Events::Add<KeyPressedEvent>({Key(key),0, Mod(mods)});
 }

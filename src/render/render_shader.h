@@ -10,7 +10,7 @@ namespace kipod{
 
 class Shader
 {
-    inline static std::string path = "shaders/";
+    inline static std::string path = "";
 
     GLuint program_;
     std::unordered_map<std::string, IUniform*> uniforms_;

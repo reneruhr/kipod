@@ -6,13 +6,13 @@ kipod::FrameBuffer::FrameBuffer(unsigned int width, unsigned int height) : width
     static int n_frame_buffers = 0;
     id_ = n_frame_buffers++;
     if(width_ && height_){
-        LOG_ENGINE("Create Textured FrameBuffer (count ={}) with Width {}, Height {}", id_, width_, height_);
+        LOG_DEBUG("Create Textured FrameBuffer (count ={}) with Width {}, Height {}", id_, width_, height_);
         tex_ = std::make_shared<Texture>(width_, height_);
         tex_->Init();
         tex_->RenderToTexture(opengl_id_);
         tex_->SetupTextureToSquare();
     } else
-        LOG_ENGINE("Created Empty FrameBuffer (count ={}), opengl id {}", id_, opengl_id_);
+        LOG_DEBUG("Created Empty FrameBuffer (count ={}), opengl id {}", id_, opengl_id_);
 }
 
 kipod::FrameBuffer::~FrameBuffer(){

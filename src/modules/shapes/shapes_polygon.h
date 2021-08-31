@@ -1,10 +1,7 @@
 #pragma once
-
 #include "../../core.h"
 
 namespace kipod::Shapes{
-
-
 class Polygon
 {
 protected:
@@ -26,7 +23,6 @@ public:
     void UpdatedTransformedVertices();
 };
 
-
 // Sides orthogonal to coordinate axes AKA truncated square.
 // Centered at origin (0,0)
 class Octagon : public Polygon
@@ -46,5 +42,4 @@ class Rectangle : public Polygon
 public:
     Rectangle(float w = 1, float h = 2);
 };
-
 }

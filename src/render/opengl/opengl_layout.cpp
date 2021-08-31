@@ -135,7 +135,7 @@ void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
 
 }
 
-void kipod::GLRenderLayout::SetupPointSet(const std::vector<vec4> *vertices)
+void kipod::GLRenderLayout::SetupPointSet(const std::vector<glm::vec4> *vertices)
 {
     LOG_ENGINE("Call: PointSet Setup");
     SetupLayout(*vertices, GL_POINTS);
@@ -170,6 +170,14 @@ unsigned long  AddBuffer(const std::vector<Vector>& vectors, MoreVectors... more
     return vectors->size()*sizeof(Vector)+CalculateBufferSize(more_vectors...);
 }
 
+unsigned int VectorLength(glm::vec2){ return 2;}
+unsigned int VectorLength(glm::vec3){ return 3;}
+unsigned int VectorLength(glm::vec4){ return 4;}
+unsigned int VectorLength(vec2){ return 2;}
+unsigned int VectorLength(vec3){ return 3;}
+unsigned int VectorLength(vec4){ return 4;}
+
+
 template<typename Vector, typename... MoreVectors>
 void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, MoreVectors... more_vectors)
 {
@@ -177,7 +185,7 @@ void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, Mo
     vbo_->count_ = vectors.size();
 
     vbo_->Add(buffersize, (void*)vectors.data());
-    vao_->Add({vao_->NumberOfAttributes(), Vector::Length(), sizeof(Vector),0});
+    vao_->Add({vao_->NumberOfAttributes(), VectorLength(vectors[0]), sizeof(Vector),0});
 
     AddBufferData(more_vectors...);
 }

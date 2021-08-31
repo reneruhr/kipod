@@ -282,7 +282,7 @@ void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
 
     if( x!= old_x && x!= ancient_x ) // Fixes some resizing bug from Imgui
         if(scene->width_ != x)   {
-            LOG_ENGINE("Viewport Resized w={} h={}",x,y);
+            LOG_DEBUG("Viewport Resized w={} h={}",x,y);
             scene->Resize(x, y);
             { // Fixes some resizing bug from Imgui
                 if(old_or_ancient) old_x = x;

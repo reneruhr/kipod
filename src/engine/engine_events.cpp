@@ -22,7 +22,7 @@ void kipod::Events::Remove(kipod::Listener* listener)
 void kipod::Events::Process()
 {
     for(auto event : events_){
-        if(event->GetEventType()!=kipod::EventType::MouseMoved) LOG_ENGINE("Got Event: {}", *event);
+        if(event->GetEventType()!=kipod::EventType::MouseMoved) LOG_DEBUG("Got Event: {}", *event);
         for(auto& listeners : listeners_)
             if(event->IsInCategory(listeners.first))
                 for(auto& listener : listeners.second)

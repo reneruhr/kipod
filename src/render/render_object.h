@@ -12,7 +12,6 @@ namespace kipod{
 class Texture;
 class FrameBuffer;
 
-
 class RenderObject{
 
     std::unordered_map<std::string, std::unique_ptr<RenderLayout>> render_layouts_;
@@ -39,22 +38,16 @@ public:
     std::shared_ptr<Texture> tex_ = nullptr;
     std::shared_ptr<FrameBuffer> fra_ = nullptr;
 
-
-
-    glm::mat4 local_transform_ = glm::mat4(1.0);
-    glm::mat4 world_transform_ = glm::mat4(1.0);
-
     glm::mat4 Transform() const;
 
     const glm::mat4& TransformWorld() const;
     const glm::mat4& TransformLocal() const;
 
-
     virtual void Draw();
-    virtual void Draw(RenderLayout* layout_);
+    virtual void Draw(RenderLayout* layout);
     virtual void Draw(std::string layout);
     virtual void Setup();
-    virtual void Setup(RenderLayout* layout_);
+    virtual void Setup(RenderLayout* layout);
     virtual void Setup(std::string layout);
     virtual RenderLayout* Layout(std::string layout);
     virtual RenderLayout* Layout();

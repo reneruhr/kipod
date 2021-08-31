@@ -9,8 +9,6 @@ namespace kipod::Shapes{
 
 class Shape : public Polygon, public kipod::RenderObject
 {
-
-
 public:
     std::shared_ptr<ShapeData> shape_data_ = nullptr;
 
@@ -29,7 +27,5 @@ public:
     void UpdateShape();
 
     std::vector<vec2> MakeFan();
-
 };
-
 }

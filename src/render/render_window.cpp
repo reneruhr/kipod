@@ -145,7 +145,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     bool splitScreen = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window))->splitScreen;
     GLOBAL_SCR_WIDTH = width/2 * ( splitScreen? 1 : 2 );
     GLOBAL_SCR_HEIGHT = height;
-    LOG_ENGINE("Resized Window. Width {} and height {}", width, height);
+    LOG_DEBUG("Resized Window. Width {} and height {}", width, height);
 }
 
 void key_callback(GLFWwindow*, int key, int scancode, int action, int mods)
