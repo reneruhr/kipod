@@ -6,12 +6,10 @@ Kipod is a small engine for various rendering tasks and math visualizations.
 It is departmentalized in the following modules:
 
 #### Rendering:
-* Wireframes with OpenGL (GPU)
-* Wireframes with software renderer (CPU)
-* 2D Geometry with simple shapes (Cube, Octagon, ...)
+* Meshmodels https://github.com/reneruhr/meshes
 
 #### Math Visualization:
-* Quasicrystals as cut and project sets from lattices in 4D and 2D internal/external projections.
+* Quasicrystals https://github.com/reneruhr/quacry
   
 #### Architecture
 Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by GLFW and Dear ImGUI.
@@ -19,6 +17,9 @@ Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by G
 
 
 ## Instructions for building from Source for Linux, Mac, Windows:
+
+[The following describes the build for the old standalone version of kipod and will fail since path names have been changed. 
+Instead, follow these instructions but with a specific module listed above.]
 
 Building uses cmake and git to receive the source. Dependencies (GLM, GLFW and GLEW) are installed via a package manager (Unix) or can be cloned as submodules.
 
