@@ -3,20 +3,15 @@
 #include "opengl/opengl_engine.h"
 #include "opengl/opengl_texture.h"
 
-void kipod::Texture::LoadTexture(std::filesystem::path path, int texture_option_filter, int texture_option_wrap){
-
+void kipod::Texture::LoadTexture(std::filesystem::path path, int texture_option_filter, int texture_option_wrap)
+{
        image_= std::make_unique<ImageData>(ImageLoader::Kipod_LoadImage(path));
-
-       if (image_->data_)
-       {
+       if (image_->data_) {
            texture_implementation_ = std::make_unique<TextureOpenGL>(this);
            texture_implementation_->LoadTexture(texture_option_filter, texture_option_wrap);
-       }
-       else
-       {
+       } else {
            LOG("Failed to load texture");
        }
-
        ImageLoader::FreeImage(image_.get());
 }
 
@@ -25,14 +20,15 @@ void kipod::Texture::RenderToTexture(GLuint& frame_buffer)
     texture_implementation_->RenderToTexture(frame_buffer);
 }
 
-kipod::Texture::Texture(int w, int h){
+kipod::Texture::Texture(int w, int h)
+{
     image_ = std::make_unique<ImageData>(ImageData(w,h));
 }
 
-void kipod::Texture::Init() {
+void kipod::Texture::Init()
+{
     texture_implementation_ = std::make_unique<TextureOpenGL>(this);
 }
-
 
 void kipod::Texture::Bind() const 
 {
@@ -60,7 +56,6 @@ void kipod::Texture::Resize(int w,int h)
     image_->width_ = w;
     image_->height_ = h;
     texture_implementation_->Resize(w, h);
-
 }
 
 void kipod::TexturedShape::Draw()
@@ -74,23 +69,14 @@ void kipod::TexturedShape::Draw()
     if(shader) shader->Unuse();
 }
 
-
-
-
-
-void kipod::Texture::LoadBufferedTexture(std::filesystem::path path) {
-
+void kipod::Texture::LoadBufferedTexture(std::filesystem::path path)
+{
     image_ = std::make_unique<ImageData>(ImageLoader::Kipod_LoadImage(path));
-
-    if (image_->data_)
-    {
+    if (image_->data_) {
         texture_implementation_ = std::make_unique<TextureIPOpenGL>(this);
         texture_implementation_->LoadTexture();
-    }
-    else
-    {
+    } else {
         LOG("Failed to load texture");
     }
-
     ImageLoader::FreeImage(image_.get());
 }

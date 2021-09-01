@@ -5,6 +5,7 @@ kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(fl
 {
     LOG_DEBUG("Create Scene with width {} and height {}", w, h);
     framebuffer_ =  std::make_shared<kipod::FrameBuffer>(width_, height_);
+    framebuffers_= {{"Module Viewport", framebuffer_}};
 }
 
 void kipod::RenderScene::Resize(int w,int h)
@@ -14,12 +15,13 @@ void kipod::RenderScene::Resize(int w,int h)
     if(fixed_ratio_) h = std::floor(reverse_ratio_* w); //h = 1/ratio_*w;
     width_ = w; height_ = h;
     LOG_DEBUG("Resized Scene. Width {} and height {}", w, h);
-    framebuffer_->Resize(width_,height_);
+    // framebuffer_->Resize(width_,height_);
+    for(auto& fb : framebuffers_) fb.second->Resize(width_,height_);
 }
 
-unsigned int kipod::RenderScene::SceneAsFramebuffer()
+unsigned int kipod::RenderScene::SceneAsFramebuffer(const std::string& name )
 {
-   return framebuffer_->FrameBufferAsTexture();
+   return framebuffers_[name]->FrameBufferAsTexture();
 }
 
 void kipod::RenderScene::AddLight(kipod::RenderLight&& light)

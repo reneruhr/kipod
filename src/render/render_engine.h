@@ -1,5 +1,4 @@
 #pragma once
-
 #include "render_object.h"
 #include "render_light.h"
 #include "render_window.h"
@@ -11,11 +10,9 @@
 #include "render_material.h"
 #include "render_primitive.h"
 #include "render_camera.h"
-
 #include "opengl/opengl_layout.h"
 
 namespace kipod{
-
 class RenderEngine
 {
     RenderEngine(){}
@@ -36,6 +33,4 @@ public:
         else if (api=="Raytracer") Get().active_API_ = 2;
     }
 };
-
-
 }

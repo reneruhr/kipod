@@ -4,7 +4,6 @@
 #include "../modules/shapes/shape.h"
 
 namespace kipod{
-
 class TexturedShape : public Shapes::Shape{
 public:
     TexturedShape(Polygon polygon) : Shape(polygon){}
@@ -35,7 +34,6 @@ public:
     virtual ~TextureImplementation() = default;
 };
 
-	
 class Texture
 {
     friend class TextureImplementation;
@@ -45,13 +43,13 @@ class Texture
     std::unique_ptr<ImageData> image_;
     std::unique_ptr<TexturedShape> textured_square_;
     std::unique_ptr<TextureImplementation> texture_implementation_;
-
 public:
     Texture() = default;
     Texture(int w, int h);
     Texture(Texture&&) = default;
     Texture& operator=(Texture&&) = default;
     ~Texture() = default;
+
     unsigned int Id() const { return texture_implementation_->id_; }
     std::string Name() const { return texture_implementation_->name_;  }
     void Resize(int w, int h);
@@ -63,17 +61,12 @@ public:
     void SetupTextureToSquare(float height = 300);
     ImageData* GetImage() const { return image_.get(); }
     TexturedShape* Square() const { return textured_square_.get(); }
-
     void LoadBufferedTexture(std::filesystem::path path);
 };
 
-
-
 class TextureManager{
     inline static std::vector<Texture*> textures_;
-
 public:
-
     static Texture* Get(int id)
     {
         return textures_[id];
@@ -84,5 +77,4 @@ public:
         textures_.push_back(texture);
     }
 };
-
 }

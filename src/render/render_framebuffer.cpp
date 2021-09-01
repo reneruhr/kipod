@@ -15,7 +15,8 @@ kipod::FrameBuffer::FrameBuffer(unsigned int width, unsigned int height) : width
         LOG_DEBUG("Created Empty FrameBuffer (count ={}), opengl id {}", id_, opengl_id_);
 }
 
-kipod::FrameBuffer::~FrameBuffer(){
+kipod::FrameBuffer::~FrameBuffer()
+{
     glDeleteFramebuffers(1, &opengl_id_);
 }
 
@@ -24,11 +25,13 @@ void kipod::FrameBuffer::Bind()
     glBindFramebuffer(GL_FRAMEBUFFER, opengl_id_);
 }
 
-unsigned int kipod::FrameBuffer::FrameBufferAsTexture(){
+unsigned int kipod::FrameBuffer::FrameBufferAsTexture()
+{
     return tex_->Id();
 }
 
-void kipod::FrameBuffer::Resize(unsigned int w, unsigned int h){
+void kipod::FrameBuffer::Resize(unsigned int w, unsigned int h)
+{
     width_ = w; height_ = h;
     tex_->Resize(w,h);
     tex_->RenderToTexture(opengl_id_);

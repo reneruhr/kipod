@@ -1,21 +1,16 @@
 #pragma once
-
 #include "../core.h"
 #include "render_object.h"
 #include "render_camera.h"
 #include "render_light.h"
 
-
-namespace kipod
-{
+namespace kipod {
 using LightContainer = std::vector<std::unique_ptr<RenderLight> >;
 using ObjectContainer = std::vector<std::unique_ptr<RenderObject>>;
 using CameraContainer = std::vector<std::unique_ptr<RenderCamera> >;
 
-class RenderScene
-{
-
-friend class Gui;
+class RenderScene {
+    friend class Gui;
 
 protected:
     RenderCamera* active_camera_ = nullptr;
@@ -33,8 +28,8 @@ protected:
     bool fixed_ratio_ = true;
     float ratio_;
     float reverse_ratio_;
-    std::shared_ptr<kipod::FrameBuffer> framebuffer_;
-
+    std::shared_ptr<kipod::FrameBuffer> framebuffer_ = nullptr;
+    std::unordered_map<std::string, std::shared_ptr<kipod::FrameBuffer>> framebuffers_;
 
 public:
     RenderScene() = default;
@@ -51,7 +46,7 @@ public:
     virtual void DrawGui(){}
 
     virtual void Resize(int w, int h);
-    virtual unsigned int SceneAsFramebuffer();
+    virtual unsigned int SceneAsFramebuffer(const std::string& name = "Module Viewport");
 
     void AddLight(RenderLight&& light);
     void AddCamera(RenderCamera&& camera);
@@ -72,6 +67,4 @@ public:
 
     void SwapFrameBuffer();
 };
-
-
 }//kipod
