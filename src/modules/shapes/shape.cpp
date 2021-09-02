@@ -1,8 +1,7 @@
 #include "shape.h"
 #include "../../render/opengl/opengl_layout.h"
+
 namespace kipod::Shapes{
-
-
 
 Shape::Shape(Polygon polygon): Polygon(polygon)
 {    
@@ -38,8 +37,6 @@ void Shape::UpdateShape()
     static_cast<GLRenderLayout*>(Layout())->vbo_->Add(0, buffersize, (void*)&transformed_vertices_);
 }
 
-
-
 std::vector<vec2> Shape::MakeFan() // Makes a fan with origin vector for TRIANGLE_FAN at center_=0
 {
     std::vector<vec2> triangleFan_;
@@ -50,5 +47,4 @@ std::vector<vec2> Shape::MakeFan() // Makes a fan with origin vector for TRIANGL
 
     return triangleFan_;
 }
-
 }

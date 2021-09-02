@@ -2,8 +2,7 @@
 #include "../../core.h"
 
 namespace kipod::Shapes{
-class Polygon
-{
+class Polygon {
 protected:
     //Counter-Clockwise Order
     vec2 center_ = {0,0};
@@ -21,6 +20,7 @@ public:
 
     bool IsInside(vec2 x);
     void UpdatedTransformedVertices();
+    int NumberEdges(){ return edges_.size(); }
 };
 
 // Sides orthogonal to coordinate axes AKA truncated square.
