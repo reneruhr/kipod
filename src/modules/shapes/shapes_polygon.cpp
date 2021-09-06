@@ -36,7 +36,6 @@ Square::Square(float s): Polygon(s)
         edges_.emplace_back(std::vector<vec2>{vertices_[i],vertices_[(i+1)%4]});
 }
 
-
 Rectangle::Rectangle(float w, float h): Polygon()
 {
     float s = h/2;
@@ -52,8 +51,6 @@ Rectangle::Rectangle(float w, float h): Polygon()
         edges_.emplace_back(std::vector<vec2>{vertices_[i],vertices_[(i+1)%4]});
 }
 
-
-
 bool Polygon::IsInside(vec2 x)
 {
     for(auto e : edges_) if(det(x-e[0],e[1]-e[0]) > 0) return false;
@@ -66,5 +63,4 @@ void Polygon::UpdatedTransformedVertices()
     for(auto& v : vertices_)
         transformed_vertices_.emplace_back(transform_*v);
 }
-
 }
