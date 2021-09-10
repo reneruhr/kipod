@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-#project(kipod LANGUAGES CXX)
 project(kipod)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,6 +8,16 @@ include_directories(include)
 
 set(SPDLOG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external_libs/spdlog/include/)
 include_directories(${SPDLOG_DIR})
+
+set(EIGEN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external_libs/Eigen/)
+include_directories(${EIGEN_DIR})
+set(CMAKE_CXX_FLAGS "-DEIGEN_MPL2_ONLY")
+
+file(GLOB catch2
+    "external_libs/catch2/*.hpp"
+    "external_libs/catch2/*.cpp"
+)
+
 
 file(GLOB imgui
     "external_libs/imgui/*.h"
