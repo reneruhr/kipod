@@ -22,10 +22,10 @@ public:
 
     void ScaleShape(const float scale);
     void ScaleShape(const float x, const float y);
-    void Move(const vec2& translate);
+    void Move(const Vec2& translate);
 
     void UpdateShape();
 
-    std::vector<vec2> MakeFan();
+    std::vector<Vec2> MakeFan();
 };
 }

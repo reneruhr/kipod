@@ -128,7 +128,7 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
     Unbind();
 }
 
-void kipod::GLRenderLayout::SetupShape(const std::vector<vec2> *vertices)
+void kipod::GLRenderLayout::SetupShape(const std::vector<glm::vec2> *vertices)
 {
     LOG_ENGINE("Call: Shape Setup");
     SetupLayout(*vertices, GL_TRIANGLE_FAN);
