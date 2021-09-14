@@ -1,8 +1,7 @@
 #pragma once
 #include "../core.h"
 
-namespace kipod
-{
+namespace kipod {
 
 struct Screen{
     glm::vec3 left_bottom_;
@@ -13,7 +12,6 @@ struct Screen{
 
 class RenderCamera
 {
-
 public:
     enum ProjectionType{
         ORTHOGONAL,
@@ -55,7 +53,7 @@ public:
 
 
     void LookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up );
-    void UpdatepojectionView(){ projection_view_matrix_ = projection_matrix_*view_matrix_; }
+    void UpdateProjectionView(){ projection_view_matrix_ = projection_matrix_*view_matrix_; }
     void Move(Movement direction, float delta_time);
     void Move(const glm::vec3 &translate);
     void Rotate(float x_offset, float y_offset_);
@@ -70,7 +68,7 @@ public:
     operator glm::mat4 () const {   return projection_view_matrix_; }
     const glm::mat4& operator()() const {   return projection_view_matrix_; }
 
-
+    void ScaleOrthogonalCamera(float);
     Screen GetFrontScreen();
 
     glm::vec3 Eye(){ return eye_; }

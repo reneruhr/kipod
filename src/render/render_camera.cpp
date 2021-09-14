@@ -19,7 +19,7 @@ RenderCamera::RenderCamera(glm::vec3 eye, glm::vec3 at, glm::vec3 up, Projection
     assert(length(eye_-at_)>0.0001);
     MakeProjection(projection_type);
     view_matrix_ = glm::lookAt(eye, at, up);
-    UpdatepojectionView();
+    UpdateProjectionView();
     UpdateInternalCoordinatesAfterTranslation();
 }
 RenderCamera::RenderCamera( const float left, const float right,
@@ -33,7 +33,7 @@ void RenderCamera::LookAt(const glm::vec3 &eye, const glm::vec3 &at, const glm::
 {
    eye_= eye; at_ = at; up_ = up;
    view_matrix_ = glm::lookAt(eye, at, up);
-   UpdatepojectionView();
+   UpdateProjectionView();
    UpdateInternalCoordinatesAfterTranslation();
 }
 
@@ -73,7 +73,7 @@ void RenderCamera::Move(const glm::vec3 &translate)
 {
     eye_+=translate;
     view_matrix_ = glm::lookAt(eye_, at_, up_);
-    UpdatepojectionView();
+    UpdateProjectionView();
     LOG_ENGINE("Moved Camera by {},{},{}", translate.x,translate.y,translate.z);
 }
 
@@ -129,11 +129,21 @@ void RenderCamera::UpdateAt(glm::vec3 at)
 void RenderCamera::ChangePerspective(const float fovy, const float aspect, const float zNear, const float zFar)
 {
     projection_matrix_ = glm::perspective(radians(fovy), aspect, zNear, zFar );
-    UpdatepojectionView();
+    UpdateProjectionView();
     fovy_ = fovy;
     aspect_ = aspect;
     near_= zNear;
     far_= zFar;
+}
+
+void RenderCamera::ScaleOrthogonalCamera(float s)
+{
+    bottom_-=s;
+    top_+=s;
+    left_-=s;
+    right_+=s; 
+    projection_matrix_ = glm::ortho(left_, right_, bottom_, top_, near_, far_);
+    UpdateProjectionView();
 }
 
 Screen RenderCamera::GetFrontScreen()
