@@ -133,6 +133,8 @@ void kipod::GLRenderLayout::SetupShape(const std::vector<glm::vec2> *vertices)
     LOG_ENGINE("Call: Shape Setup");
     SetupLayout(*vertices, GL_TRIANGLE_FAN);
 
+    for(const auto& v : *vertices)
+        LOG_INFO("({},{})",v.x,v.y);
 }
 
 void kipod::GLRenderLayout::SetupPointSet(const std::vector<glm::vec4> *vertices)
@@ -145,14 +147,12 @@ void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const 
 {
     LOG_ENGINE("Call: Lines Setup");
     SetupLayout(*vertices, *colors, GL_LINES);
-
 }
 
 void kipod::GLRenderLayout::SetupGrid(const std::vector<vec3> *vertices)
 {
     LOG_ENGINE("Call: Grid Setup");
     SetupLayout(*vertices, GL_LINES);
-
 }
 
 unsigned long  CalculateBufferSize(GLchar){     return 0;   }
