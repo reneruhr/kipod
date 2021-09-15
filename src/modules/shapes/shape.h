@@ -6,7 +6,7 @@
 class ShapeData;
 
 namespace kipod::Shapes{
-
+//Class using TriangleFan at a central vertex center_
 class Shape : public Polygon, public kipod::RenderObject
 {
 public:

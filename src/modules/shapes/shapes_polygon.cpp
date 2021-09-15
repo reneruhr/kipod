@@ -51,7 +51,7 @@ Rectangle::Rectangle(float w, float h): Polygon()
         edges_.emplace_back(std::make_pair(vertices_[i],vertices_[(i+1)%4]));
 }
 
-bool Polygon::IsInside(Vec2 x)
+bool Polygon::IsInside(const Vec2& x)
 {
     for(const auto& e : edges_) if(glm::determinant(Mat2(x-e.first,e.second-e.first)) > 0) return false;
     return true;
@@ -59,6 +59,7 @@ bool Polygon::IsInside(Vec2 x)
 
 void Polygon::UpdatedTransformedVertices()
 {
+    center_ = transform_ * center_;
     transformed_vertices_.clear(); 
     for(auto& v : vertices_)
         transformed_vertices_.emplace_back(transform_*v);

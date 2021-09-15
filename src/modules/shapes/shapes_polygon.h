@@ -14,13 +14,12 @@ protected:
 public:
     Polygon(){}
     Polygon(float s) : side_length_(s) {}
-    Polygon(const std::vector<Vec2>& vertices) : vertices_(vertices) 
+    Polygon(const std::vector<Vec2>& vertices, const Vec2& center = Vec2(0)) : center_(center), vertices_(vertices) 
     {
+        UpdatedTransformedVertices();
 
-    UpdatedTransformedVertices();
-
-    for(int i = 0; i<vertices_.size(); ++i)
-        edges_.emplace_back(std::make_pair(vertices_[i],vertices_[(i+1)%vertices_.size()]));
+        for(int i = 0; i<vertices_.size(); ++i)
+            edges_.emplace_back(std::make_pair(vertices_[i],vertices_[(i+1)%vertices_.size()]));
     }
     virtual ~Polygon() = default;
 
@@ -29,10 +28,13 @@ public:
     std::vector<Vec2> transformed_vertices_; // = transform_ * vertices_
     std::vector< std::pair<Vec2,Vec2> > edges_;
 
-    bool IsInside(Vec2 x);
+    bool IsInside(const Vec2& x);
     void UpdatedTransformedVertices();
     int NumberEdges(){ return edges_.size(); }
+    int NumberVertices(){ return transformed_vertices_.size(); }
     Vec2 GetVertex(int n) { return transformed_vertices_[n]; }
+    Vec2 GetCenter() { return center_; }
+    void SetCenter(const Vec2& c) { center_ = c; }
 };
 
 // Sides orthogonal to coordinate axes AKA truncated square.

@@ -1,6 +1,5 @@
 #pragma once
 #include "../../kipod.h"
-
 #include "meshmodel.h"
 #include "meshmodel_primitive.h"
 #include "opengl/meshmodel_opengl_scene.h"

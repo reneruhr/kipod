@@ -1,12 +1,8 @@
 #pragma once
-
 #include "../core.h"
-
 #include "engine_input.h"
 
 namespace kipod{
-
-
 
 struct MultipleModeToggle
 {
@@ -16,7 +12,6 @@ struct MultipleModeToggle
 
     operator const int () const { return state_; }
     operator int& () { return state_; }
-
 
     entt::delegate<void(void*, int)> delegate_;
     int state_ = -1;
@@ -59,7 +54,6 @@ inline std::ostream& operator<<(std::ostream& os, const ModeToggle& mode)
 {
     return os << "Mode" << mode.name_ << " is set " << mode.state_;
 }
-
 
 class Controls
 {
