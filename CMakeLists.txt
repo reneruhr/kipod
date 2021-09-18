@@ -73,21 +73,31 @@ add_library(kipod
   src/modules/shapes/shapes_sidebar.h
   src/modules/shapes/shapes_sidebar.cpp
 
+  src/modules/meshmodels/opengl/meshmodel_opengl_scene.h
+  src/modules/meshmodels/opengl/meshmodel_opengl_scene.cpp
+  src/modules/meshmodels/softrenderer/softrenderer_scene.h
+  src/modules/meshmodels/softrenderer/softrenderer_scene.cpp
+  src/modules/meshmodels/raytracer/raytracer_scene.h
+  src/modules/meshmodels/raytracer/raytracer_scene.cpp
+  src/modules/meshmodels/meshmodel_api_scene.h
 
-  src/modules/image_processing/image_processing_module.h
-  src/modules/image_processing/image_processing_module.cpp
-  src/modules/image_processing/image_processing_scene.h
-  src/modules/image_processing/image_processing_scene.cpp
-  src/modules/image_processing/image_processing_sidebar.h
-  src/modules/image_processing/image_processing_sidebar.cpp
-  src/modules/image_processing/image.h
-  src/modules/image_processing/image.cpp
-  src/modules/image_processing/kernel.h
-  src/modules/image_processing/kernel.cpp
+  src/modules/meshmodels/meshmodel_module.h
+  src/modules/meshmodels/meshmodel_module.cpp
+  src/modules/meshmodels/meshmodel_scene.h
+  src/modules/meshmodels/meshmodel_scene.cpp
+  src/modules/meshmodels/meshmodel_sidebar.h
+  src/modules/meshmodels/meshmodel_sidebar.cpp
+  src/modules/meshmodels/meshmodel_console.h
+  src/modules/meshmodels/meshmodel_console.cpp
+  src/modules/meshmodels/meshmodel.h
+  src/modules/meshmodels/meshmodel.cpp
+  src/modules/meshmodels/meshmodel_primitive.h
+  src/modules/meshmodels/meshmodel_primitive.cpp
+  src/modules/meshmodels/meshmodel_boundingbox.h
+  src/modules/meshmodels/meshmodel_boundingbox.cpp
+  src/modules/meshmodels/meshmodel_parsing.h
+  src/modules/meshmodels/meshmodel_parsing.cpp
 
-  src/modules/image_processing/algorithms/image_algorithms.h
-  src/modules/image_processing/algorithms/canny_edge_detection.h
-  src/modules/image_processing/algorithms/canny_edge_detection.cpp
 
   src/engine/engine_module.h
   src/engine/engine_module.cpp

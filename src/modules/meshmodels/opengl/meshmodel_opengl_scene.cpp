@@ -143,7 +143,7 @@ void OpenGLScene::SetupShaders(){
 
 void OpenGLScene::SetupShaderTexturedTriangles()
 {
-    shaders_.insert({"Textured Triangles", std::make_shared<kipod::Shader>("textures.vert.glsl", "textures.frag.glsl")});
+    shaders_.insert({"Textured Triangles", std::make_shared<kipod::Shader>("kipod/shaders/textures.vert.glsl", "kipod/shaders/textures.frag.glsl")});
 
     shaders_["Textured Triangles"]->AttachUniform<float>("tex");
 
@@ -167,7 +167,7 @@ void OpenGLScene::SetupShaderTexturedTriangles()
 
 void OpenGLScene::SetupShaderColoredTriangles()
 {
-    shaders_.insert({"Colored Triangles", std::make_shared<kipod::Shader>("lights.vert.glsl",   "lights.frag.glsl")});
+    shaders_.insert({"Colored Triangles", std::make_shared<kipod::Shader>("kipod/shaders/lights.vert.glsl",   "kipod/shaders/lights.frag.glsl")});
 
     shaders_["Colored Triangles"]->AttachUniform<float>("tex");
 
@@ -192,7 +192,7 @@ void OpenGLScene::SetupShaderColoredTriangles()
 
 void OpenGLScene::SetupShaderNormals()
 {
-    shaders_.insert({"Normals Triangles", std::make_shared<kipod::Shader>("normals.vert.glsl", "normals.frag.glsl", "normals.geom.glsl")});
+    shaders_.insert({"Normals Triangles", std::make_shared<kipod::Shader>("kipod/shaders/normals.vert.glsl", "kipod/shaders/normals.frag.glsl", "kipod/shaders/normals.geom.glsl")});
     auto shader = shaders_["Normals Triangles"];
     shader->AttachUniform<float>("normal_length");
     shader->AttachUniform<glm::mat4>("mv");
@@ -202,7 +202,7 @@ void OpenGLScene::SetupShaderNormals()
 
 void OpenGLScene::SetupShaderBasic()
 {
-    shaders_.insert({"Basic", std::make_shared<kipod::Shader>("basic.vert.glsl",   "basic.frag.glsl")});
+    shaders_.insert({"Basic", std::make_shared<kipod::Shader>("kipod/shaders/basic.vert.glsl",   "kipod/shaders/basic.frag.glsl")});
     shaders_["Basic"]->AttachUniform<glm::mat4>("mvp");
     shaders_["Basic"]->AttachUniform<glm::vec4>("color");
 }
@@ -463,7 +463,7 @@ void OpenGLScene::CreateCoordinateAxisLayout(std::vector<vec3>& vertices,
     std::string name = "Coordinate Axis";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupLines(&vertices, &colors);
-    layout->sha_ = std::make_shared<kipod::Shader>("lines.vert.glsl", "lines.frag.glsl");
+    layout->sha_ = std::make_shared<kipod::Shader>("kipod/shaders/lines.vert.glsl", "kipod/shaders/lines.frag.glsl");
     layout->sha_->AttachUniform<glm::mat4>("mvp");
     scene_->coordinate_axis_->AddLayout(name, std::move(*layout));
 }
@@ -473,7 +473,7 @@ void OpenGLScene::CreateGridLayout(std::vector<vec3>& vertices)
     std::string name = "Grid";
     auto layout = new kipod::GLRenderLayout;
     layout->SetupGrid(&vertices);
-    layout->sha_ = std::make_shared<kipod::Shader>("grid.vert.glsl", "grid.frag.glsl");
+    layout->sha_ = std::make_shared<kipod::Shader>("kipod/shaders/grid.vert.glsl", "kipod/shaders/grid.frag.glsl");
     layout->sha_->AttachUniform<glm::mat4>("mvp");
     scene_->grid_->AddLayout(name, std::move(*layout));
 }

@@ -20,7 +20,7 @@ void MeshModelModuleMenu::Draw(){
         RenderEngine::SetAPI("OpenGL");
         scene_->NeedsUpdate();
     }
-    if(ImGui::MenuItem("SoftRenderer",  "Activates Lazy Updates", RenderEngine::ActiveAPI() == "SoftRenderer")){
+    /*if(ImGui::MenuItem("SoftRenderer",  "Activates Lazy Updates", RenderEngine::ActiveAPI() == "SoftRenderer")){
         module_->Continue();
         RenderEngine::SetAPI("SoftRenderer");
         scene_->Toggle("Lazy Mode").On();
@@ -36,6 +36,7 @@ void MeshModelModuleMenu::Draw(){
     }
     if(ImGui::MenuItem("Lazy Updates", "Only updates on change", scene_->Toggle("Lazy Mode")))
         scene_->Toggle("Lazy Mode").Switch();
+*/
 }
 
 

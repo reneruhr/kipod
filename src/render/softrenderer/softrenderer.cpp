@@ -220,7 +220,7 @@ void SoftRenderer::InitOpenGLRendering()
     glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(vtc), vtc);
     glBufferSubData( GL_ARRAY_BUFFER, sizeof(vtc), sizeof(tex), tex);
 
-    program = InitShader( "shaders/softrenderer.vert.glsl", "shaders/softrenderer.frag.glsl" );
+    program = InitShader( "kipod/shaders/softrenderer.vert.glsl", "kipod/shaders/softrenderer.frag.glsl" );
     glUseProgram( program );
     GLint  vPosition = glGetAttribLocation( program, "vPosition" );
 

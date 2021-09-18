@@ -102,7 +102,7 @@ void kipod::Shapes::ShapesScene::SetupLayout(Shape* shape)
 
 void kipod::Shapes::ShapesScene::SetupShaders()
 {
-    shaders_.insert({"Shape", std::make_shared<kipod::Shader>("shape.vert.glsl",   "shape.frag.glsl")});
+    shaders_.insert({"Shape", std::make_shared<kipod::Shader>("kipod/shaders/shape.vert.glsl",   "kipod/shaders/shape.frag.glsl")});
     shaders_["Shape"]->AttachUniform<float>("depth");
     shaders_["Shape"]->AttachUniform<glm::mat4>("transform");
     shaders_["Shape"]->AttachUniform<glm::vec4>("color");
