@@ -2,17 +2,13 @@
 
 ## Kipod
 
-Kipod is a small engine for various rendering tasks and math visualizations.
-It is departmentalized in the following modules:
+Kipod is a small engine used for learning about graphics and doing math visualizations.
 
-#### Rendering:
-* Meshmodels https://github.com/reneruhr/meshes
-
-#### Math Visualization:
+#### Math:
 * Quasicrystals https://github.com/reneruhr/quacry
   
 #### Architecture
-Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by GLFW and Dear ImGUI.
+Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by GLFW and Dear ImGUI. Some code originates from the Hazel engine (https://github.com/TheCherno/Hazel).
 
 
 
