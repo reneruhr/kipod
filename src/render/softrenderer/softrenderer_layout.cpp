@@ -1,7 +1,8 @@
 #include "softrenderer_layout.h"
 
 namespace kipod{
-
+using Vec2 = glm::vec2;
+using Vec3 = glm::vec3;
 void SoftRenderLayout::Draw()
 {
 //    void DrawTriangles(SoftrendererBuffer& buffer, mat4& model,
@@ -25,7 +26,7 @@ void SoftRenderLayout::SetSoftRenderer(SoftRenderer *softrenderer) {
     softrenderer_ = softrenderer;
 }
 
-void SoftRenderLayout::SetBuffer(std::shared_ptr<std::vector<vec3> > vertices, std::shared_ptr<std::vector<unsigned int> > indices, std::shared_ptr<std::vector<vec3> > normals, std::shared_ptr<std::vector<unsigned int> > nindices)
+void SoftRenderLayout::SetBuffer(std::shared_ptr<std::vector<Vec3> > vertices, std::shared_ptr<std::vector<unsigned int> > indices, std::shared_ptr<std::vector<Vec3> > normals, std::shared_ptr<std::vector<unsigned int> > nindices)
 {
     buffer_ = std::make_unique<SoftrendererBuffer>(vertices, indices, normals, nindices);
 }

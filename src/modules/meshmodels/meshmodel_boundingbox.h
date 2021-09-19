@@ -10,7 +10,7 @@ struct BoundingBoxData{
     glm::mat4 transform_;
 
     BoundingBoxData() = default;
-    BoundingBoxData(const std::vector<vec3> &vertices);
+    BoundingBoxData(const std::vector<glm::vec3> &vertices);
     BoundingBoxData(BoundingBoxData&&) = default;
     BoundingBoxData& operator=(BoundingBoxData&&) = default;
 };

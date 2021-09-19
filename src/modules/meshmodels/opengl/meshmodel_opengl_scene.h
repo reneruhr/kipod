@@ -47,8 +47,8 @@ protected:
 
         void CreateBoundingSphereLayout();
 
-        void CreateGridLayout(std::vector<vec3> &vertices) override;
-        void CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors) override;
+        void CreateGridLayout(std::vector<glm::vec3> &vertices) override;
+        void CreateCoordinateAxisLayout(std::vector<glm::vec3> &vertices, std::vector<glm::vec3> &colors) override;
 
         void DrawCamera(RenderCamera *camera_model, RenderCamera *camera);
         void DrawFrustum(RenderCamera *camera_model, RenderCamera *camera);

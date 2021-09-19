@@ -5,6 +5,9 @@
 
 namespace kipod{
 
+using Vec2 = glm::vec2;
+using Vec3 = glm::vec3;
+using Vec4 = glm::vec4;
 class GLRenderLayout : public RenderLayout{
 
     template<typename Vector, typename... MoreVectors>
@@ -24,14 +27,14 @@ public:
     virtual void AddTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
     void Unbind();
 
-    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices);
-    void SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices,
-                               const std::vector<vec3> *normals, const std::vector<unsigned int> *nindices);
+    void SetupColoredTriangles(const std::vector<Vec3> *vertices, const std::vector<unsigned int> *indices);
+    void SetupColoredTriangles(const std::vector<Vec3> *vertices, const std::vector<unsigned int> *indices,
+                               const std::vector<Vec3> *normals, const std::vector<unsigned int> *nindices);
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles);
     void SetupShape(const std::vector<glm::vec2>* vertices_);
     void SetupPointSet(const std::vector<glm::vec4>* vertices);
-    void SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors);
-    void SetupGrid(const std::vector<vec3> *vertices);
+    void SetupLines(const std::vector<Vec3> *vertices, const std::vector<Vec3> *colors);
+    void SetupGrid(const std::vector<Vec3> *vertices);
 
     template<typename Vector, typename... MoreVectors>
     void SetupLayout(const std::vector<Vector>&, MoreVectors... );

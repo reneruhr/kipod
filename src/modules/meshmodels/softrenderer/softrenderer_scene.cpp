@@ -72,7 +72,7 @@ void SoftRendererScene::CreatePrimitiveModelLayout(PrimMeshModel *model)
     model->AddLayout(name, std::move(*layout));
 
 }
-void SoftRendererScene::CreateCoordinateAxisLayout(std::vector<vec3> &vertices, std::vector<vec3> &colors)
+void SoftRendererScene::CreateCoordinateAxisLayout(std::vector<glm::vec3> &vertices, std::vector<glm::vec3> &colors)
 {
 
 }
@@ -80,7 +80,7 @@ void SoftRendererScene::CreateBoundingBoxLayout()
 {
 
 }
-void SoftRendererScene::CreateGridLayout(std::vector<vec3> &vertices)
+void SoftRendererScene::CreateGridLayout(std::vector<glm::vec3> &vertices)
 {
 
 }

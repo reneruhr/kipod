@@ -19,9 +19,9 @@ public:
                        std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&)
                         override;
     void SetSoftRenderer(SoftRenderer* softrenderer);
-    void SetBuffer(std::shared_ptr< std::vector<vec3> > vertices,
+    void SetBuffer(std::shared_ptr< std::vector<glm::vec3> > vertices,
                    std::shared_ptr< std::vector<unsigned int> > indices,
-                   std::shared_ptr< std::vector<vec3> > normals = nullptr,
+                   std::shared_ptr< std::vector<glm::vec3> > normals = nullptr,
                    std::shared_ptr< std::vector<unsigned int> > nindices = nullptr);
     SoftrendererBuffer& Buffer();
 };

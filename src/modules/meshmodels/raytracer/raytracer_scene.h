@@ -29,10 +29,10 @@ protected:
         void DrawGrid(RenderCamera *camera) override{}
         void DrawCoordinateAxis(RenderCamera *camera) override{}
 
-        void CreateCoordinateAxisLayout(std::vector<vec3> &vertices,
-                                        std::vector<vec3> &colors) override{}
+        void CreateCoordinateAxisLayout(std::vector<glm::vec3> &vertices,
+                                        std::vector<glm::vec3> &colors) override{}
         void CreateBoundingBoxLayout() override{}
-        void CreateGridLayout(std::vector<vec3> &vertices) override{}
+        void CreateGridLayout(std::vector<glm::vec3> &vertices) override{}
         void CreateMeshModelLayout(MeshModel *model) override{}
 
 

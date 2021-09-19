@@ -46,11 +46,11 @@ void kipod::GLRenderLayout::Unbind()
 
 
 
-void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* vertices, const std::vector<unsigned int>* indices,
-                                                  const std::vector<vec3>* normals,  const std::vector<unsigned int>* nindices)
+void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<Vec3>* vertices, const std::vector<unsigned int>* indices,
+                                                  const std::vector<Vec3>* normals,  const std::vector<unsigned int>* nindices)
 {
     LOG_ENGINE("Call: Colored Triangles Setup");
-    std::vector<vec3> vnVector;
+    std::vector<Vec3> vnVector;
     std::vector<unsigned int> indices_vector;
     pack_vectors(*vertices, *normals, vnVector, *indices, *nindices, indices_vector);
 
@@ -60,7 +60,7 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* verti
     vao_ = std::make_shared<kipod::VertexAttributeObject>();
     vao_->Set();
 
-    unsigned int buffersize = vnVector.size()*sizeof(vec3);
+    unsigned int buffersize = vnVector.size()*sizeof(Vec3);
     if(OpenGLEngine::Version()==450){
         vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, buffersize);
     }else{
@@ -69,14 +69,14 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3>* verti
     vbo_->Add(0, buffersize, (void*)vnVector.data());
     vbo_->Bind();
 
-    vao_->Add({0,3,2*sizeof(vec3),0});
-    vao_->Add({1,3,2*sizeof(vec3), sizeof(vec3)});
+    vao_->Add({0,3,2*sizeof(Vec3),0});
+    vao_->Add({1,3,2*sizeof(Vec3), sizeof(Vec3)});
     vao_->SetAttributes();
 
     Unbind();
 }
 
-void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *vertices, const std::vector<unsigned int> *indices_vector)
+void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<Vec3> *vertices, const std::vector<unsigned int> *indices_vector)
 {
     LOG_ENGINE("Call: Colored Triangles Without Normals Setup");
     ebo_ = std::make_shared<kipod::ElementsBuffer>((void*)indices_vector->data(), indices_vector->size(), indices_vector->size()*sizeof(unsigned int));
@@ -85,7 +85,7 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *verti
     vao_ = std::make_shared<kipod::VertexAttributeObject>();
     vao_->Set();
 
-    unsigned int buffersize = vertices->size()*sizeof(vec3);
+    unsigned int buffersize = vertices->size()*sizeof(Vec3);
 
     if(OpenGLEngine::Version()==450){
         vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, buffersize);
@@ -95,7 +95,7 @@ void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<vec3> *verti
     vbo_->Add(0, buffersize, (void*)vertices->data());
     vbo_->Bind();
 
-    vao_->Add({0,3,sizeof(vec3),0});
+    vao_->Add({0,3,sizeof(Vec3),0});
     vao_->SetAttributes();
 
     Unbind();
@@ -143,13 +143,13 @@ void kipod::GLRenderLayout::SetupPointSet(const std::vector<glm::vec4> *vertices
     SetupLayout(*vertices, GL_POINTS);
 }
 
-void kipod::GLRenderLayout::SetupLines(const std::vector<vec3> *vertices, const std::vector<vec3> *colors)
+void kipod::GLRenderLayout::SetupLines(const std::vector<Vec3> *vertices, const std::vector<Vec3> *colors)
 {
     LOG_ENGINE("Call: Lines Setup");
     SetupLayout(*vertices, *colors, GL_LINES);
 }
 
-void kipod::GLRenderLayout::SetupGrid(const std::vector<vec3> *vertices)
+void kipod::GLRenderLayout::SetupGrid(const std::vector<Vec3> *vertices)
 {
     LOG_ENGINE("Call: Grid Setup");
     SetupLayout(*vertices, GL_LINES);

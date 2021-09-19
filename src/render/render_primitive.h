@@ -2,14 +2,15 @@
 #include "../core.h"
 
 namespace kipod{
-
+using Vec3 = glm::vec3;
+using Vec2 = glm::vec2;
 struct GLVertex{
-    vec3 position_;
-    vec3 normal_;
-    vec2 texture_;
+    Vec3 position_;
+    Vec3 normal_;
+    Vec2 texture_;
 
     GLVertex() = default;
-    GLVertex(const vec3& position,const  vec3& normal,const vec2& texture)
+    GLVertex(const Vec3& position,const  Vec3& normal,const Vec2& texture)
         : position_(position), normal_(normal), texture_(texture) {}
 };
 
@@ -25,8 +26,8 @@ struct GLTriangle{
 };
 
 void CreateTriangleVector(std::vector<GLTriangle>& triangles,
-                         std::vector<vec3>& vertices_vector, std::vector<unsigned int>& indices_vector,
-                         std::vector<vec3>& normals_vector, std::vector<unsigned int>& nindices_vector,
-                         std::vector<vec2>& texture_vector, std::vector<unsigned int>& tindices_vector);
+                         std::vector<Vec3>& vertices_vector, std::vector<unsigned int>& indices_vector,
+                         std::vector<Vec3>& normals_vector, std::vector<unsigned int>& nindices_vector,
+                         std::vector<Vec2>& texture_vector, std::vector<unsigned int>& tindices_vector);
 
 }

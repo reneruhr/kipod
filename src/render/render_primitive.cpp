@@ -1,8 +1,8 @@
 #include "render_primitive.h"
 
-void kipod::CreateTriangleVector(std::vector<GLTriangle>& triangles, std::vector<vec3>& vertices_vector, std::vector<unsigned int>& indices_vector,
-                          std::vector<vec3>& normals_vector, std::vector<unsigned int>& nindices_vector,
-                          std::vector<vec2>& texture_vector, std::vector<unsigned int>& tindices_vector)
+void kipod::CreateTriangleVector(std::vector<GLTriangle>& triangles, std::vector<Vec3>& vertices_vector, std::vector<unsigned int>& indices_vector,
+                          std::vector<Vec3>& normals_vector, std::vector<unsigned int>& nindices_vector,
+                          std::vector<Vec2>& texture_vector, std::vector<unsigned int>& tindices_vector)
 {
     for(int i=0, n=indices_vector.size(); i<n; i+=3){
         triangles.emplace_back(

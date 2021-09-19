@@ -14,6 +14,12 @@ MeshModelModule::MeshModelModule(std::string name, int width, int height) : Modu
     menu_= std::make_unique<MeshModelModuleMenu>(static_cast<MeshModelScene*>(scene_.get()));
 }
 
+auto MeshModelModule::GetScene() -> MeshModelScene*  
+{ 
+    return static_cast<MeshModelScene*>(scene_.get()); 
+}
+
+
 void MeshModelModuleMenu::Draw(){
     if(ImGui::MenuItem("OpenGL" ,  "", RenderEngine::ActiveAPI() == "OpenGL")){
         module_->Continue();

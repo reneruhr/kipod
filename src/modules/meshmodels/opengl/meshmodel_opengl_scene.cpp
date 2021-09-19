@@ -457,8 +457,8 @@ void OpenGLScene::DrawGrid(kipod::RenderCamera* camera)
 }
 
 
-void OpenGLScene::CreateCoordinateAxisLayout(std::vector<vec3>& vertices,
-                                                      std::vector<vec3>& colors)
+void OpenGLScene::CreateCoordinateAxisLayout(std::vector<glm::vec3>& vertices,
+                                                      std::vector<glm::vec3>& colors)
 {
     std::string name = "Coordinate Axis";
     auto layout = new kipod::GLRenderLayout;
@@ -468,7 +468,7 @@ void OpenGLScene::CreateCoordinateAxisLayout(std::vector<vec3>& vertices,
     scene_->coordinate_axis_->AddLayout(name, std::move(*layout));
 }
 
-void OpenGLScene::CreateGridLayout(std::vector<vec3>& vertices)
+void OpenGLScene::CreateGridLayout(std::vector<glm::vec3>& vertices)
 {
     std::string name = "Grid";
     auto layout = new kipod::GLRenderLayout;

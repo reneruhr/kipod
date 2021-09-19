@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "vec.h"
+#include <glm/matrix.hpp>
 
 struct FaceIdcs
 {
@@ -42,11 +42,11 @@ struct FaceIdcs
     }
 };
 
-vec3 vec3fFromStream(std::istream & aStream)
+glm::vec3 vec3fFromStream(std::istream & aStream)
 {
     float x, y, z;
     aStream >> x >> std::ws >> y >> std::ws >> z;
-    return vec3(x, y, z);
+    return glm::vec3(x, y, z);
 }
 
 std::vector<int> vec3iFromStream(std::istream & aStream)
@@ -56,9 +56,9 @@ std::vector<int> vec3iFromStream(std::istream & aStream)
     return vec;
 }
 
-vec2 vec2fFromStream(std::istream & aStream)
+glm::vec2 vec2fFromStream(std::istream & aStream)
 {
     float x, y;
     aStream >> x >> std::ws >> y;
-    return vec2(x, y);
+    return glm::vec2(x, y);
 }

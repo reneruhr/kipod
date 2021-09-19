@@ -10,7 +10,7 @@ PrimMeshModel::PrimMeshModel(Primitive primitive, int n) : type_(primitive){
 PrimMeshModel::PrimMeshModel(enum Quadric quadric) : type_(QuadricPrimitive)
 {
     quadric_ = std::make_unique<RaytracingQuadric>(quadric);
-    std::vector<vec3> unit = {vec3(1.0f)};
+    std::vector<Vec3> unit = {Vec3(1.0f)};
     boundingBoxData_ = std::make_unique<BoundingBoxData>(unit);
 }
 
@@ -23,7 +23,7 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
          LOG_CONSOLE("Create a Cube");
          name_ = "Cube";
 
-                    vec3 vertices[] = {
+                    Vec3 vertices[] = {
                                     {-1.0f,-1.0f,-1.0f},
                                     {-1.0f,-1.0f, 1.0f},
                                     {-1.0f, 1.0f, 1.0f}, //1
@@ -64,10 +64,10 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                     unsigned int *indices = new unsigned int[36];
                     for(unsigned int i = 0 ; i<36; i++) indices[i]=i;
 
-                    vertices_vector = std::make_shared< std::vector<vec3> >(vertices,vertices+36);
+                    vertices_vector = std::make_shared< std::vector<Vec3> >(vertices,vertices+36);
                     indices_vector = std::make_shared< std::vector<unsigned int> >(indices, indices+36);
                     nindices_vector = std::make_shared<std::vector<unsigned int>>(indices_vector->size());
-                    normals_vector = std::make_shared<std::vector<vec3>>();
+                    normals_vector = std::make_shared<std::vector<Vec3>>();
                     CalculateNormals(vertices_vector, indices_vector,
                                             normals_vector, nindices_vector);
 
@@ -79,7 +79,7 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
             LOG_CONSOLE("Create a Tetrahedron");
             name_ = "Tetrahedron";
 
-            vec3 vertices[12] = {
+            Vec3 vertices[12] = {
                 {0.0, 0.0, 1.0},
                 {0.0, 0.942809, -0.333333},
                 {-0.816497, -0.471405, -0.333333},
@@ -100,10 +100,10 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
                 10,11,8
             };
 
-            vertices_vector = std::make_shared< std::vector<vec3> >(vertices,vertices+12);
+            vertices_vector = std::make_shared< std::vector<Vec3> >(vertices,vertices+12);
             indices_vector = std::make_shared< std::vector<unsigned int> >(indices, indices+12);
             nindices_vector = std::make_shared<std::vector<unsigned int>>(indices_vector->size());
-            normals_vector = std::make_shared<std::vector<vec3>>();
+            normals_vector = std::make_shared<std::vector<Vec3>>();
             CalculateNormals(vertices_vector, indices_vector,
                                     normals_vector, nindices_vector);
             break;
@@ -114,23 +114,23 @@ void PrimMeshModel::LoadPrimitive(Primitive primitive, int n){
         LOG_ENGINE("Create a Sphere");
         LOG_CONSOLE("Create a Sphere");
         name_ = "Sphere";
-        std::vector<vec3> tetra = {{0.0, 0.0, 1.0},
+        std::vector<Vec3> tetra = {{0.0, 0.0, 1.0},
                                {0.0, 0.942809, -0.333333},
                                {-0.816497, -0.471405, -0.333333},
                                {0.816497, -0.471405, -0.333333}
                                };
-        vertices_vector = std::make_shared< std::vector<vec3> >();
-        auto triangle = [this](const vec3& a, const vec3& b, const vec3& c){
+        vertices_vector = std::make_shared< std::vector<Vec3> >();
+        auto triangle = [this](const Vec3& a, const Vec3& b, const Vec3& c){
                                     vertices_vector->push_back(a);
                                     vertices_vector->push_back(b);
                                     vertices_vector->push_back(c);
                                 };
 
-        std::function<void(const vec3&,const vec3&,const vec3&,const int)> divide_triangle = [&divide_triangle,&triangle](const vec3& a, const vec3& b, const vec3& c, const int n){
+        std::function<void(const Vec3&,const Vec3&,const Vec3&,const int)> divide_triangle = [&divide_triangle,&triangle](const Vec3& a, const Vec3& b, const Vec3& c, const int n){
             if(n>0){
-                vec3 v1 = normalize(a+b);
-                vec3 v2 = normalize(a+c);
-                vec3 v3 = normalize(b+c);
+                Vec3 v1 = normalize(a+b);
+                Vec3 v2 = normalize(a+c);
+                Vec3 v3 = normalize(b+c);
 
                 divide_triangle(v1,v3, v2, n-1);
                 divide_triangle(a, v1, v2, n-1);

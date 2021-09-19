@@ -1,7 +1,7 @@
 #include "meshmodel_boundingbox.h"
 
 namespace kipod::MeshModels{
-BoundingBoxData::BoundingBoxData(const std::vector<vec3> &vertices){
+BoundingBoxData::BoundingBoxData(const std::vector<glm::vec3> &vertices){
         glm::vec3 min = vertices[0];
         glm::vec3 max = vertices[0];
         for (auto v : vertices){

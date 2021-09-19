@@ -15,10 +15,12 @@ enum Primitive{
 
 class PrimMeshModel: public MeshModel{
     Primitive type_;
-    std::unique_ptr<RaytracingQuadric> quadric_ = nullptr;
+    std::shared_ptr<RaytracingQuadric> quadric_ = nullptr;
 public:
     PrimMeshModel(Primitive primitive, int n = 0);
     PrimMeshModel(Quadric quadric);
+    PrimMeshModel(const PrimMeshModel&) = default;
+    PrimMeshModel& operator=(const PrimMeshModel&) = default;
     PrimMeshModel(PrimMeshModel&&) = default;
     PrimMeshModel& operator=(PrimMeshModel&&) = default;
     void LoadPrimitive(Primitive primitive, int n = 0);
