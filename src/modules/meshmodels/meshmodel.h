@@ -8,14 +8,16 @@
 #include "meshmodel_boundingbox.h"
 
 namespace kipod::MeshModels{
+using Vec3 = glm::vec3;
+using Vec2 = glm::vec2;
 class MeshModelScene;
 class MeshModel : public kipod::RenderObject
 {
     friend class SoftRendererScene;
 protected :
-    std::shared_ptr< std::vector<vec3> > vertices_vector;
-    std::shared_ptr< std::vector<vec3> > normals_vector;
-    std::shared_ptr< std::vector<vec2> > texture_vector;
+    std::shared_ptr< std::vector<Vec3> > vertices_vector;
+    std::shared_ptr< std::vector<Vec3> > normals_vector;
+    std::shared_ptr< std::vector<Vec2> > texture_vector;
 
     std::shared_ptr< std::vector<unsigned int> > indices_vector;
     std::shared_ptr< std::vector<unsigned int> > nindices_vector;
@@ -23,11 +25,14 @@ protected :
 
     std::vector<kipod::GLTriangle> triangles_;
 
-    std::unique_ptr<BoundingBoxData> boundingBoxData_;
+    std::shared_ptr<BoundingBoxData> boundingBoxData_;
 public:
     MeshModel() = default;
     MeshModel(std::filesystem::path path, bool textured = false);
+    MeshModel(const std::vector<Vec3>&, const std::vector<unsigned int>&);
     virtual ~MeshModel(void);
+    MeshModel(const MeshModel&) = default;
+    MeshModel& operator=(const MeshModel&) = default;
     MeshModel(MeshModel&&) = default;
     MeshModel& operator=(MeshModel&&) = default;
 
@@ -43,7 +48,6 @@ public:
     glm::mat4 TansformBoundingBox();
     glm::vec3 Center();
 
-//    void draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals=false);
-//    void drawWithLight(SoftRenderer *softrenderer, const std::vector<Light*> &lights, bool lightMode=true, bool emissiveMode=false);
+    auto Vertices() -> std::vector<Vec3>*;
 };
 }

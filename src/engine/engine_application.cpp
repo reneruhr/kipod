@@ -82,4 +82,8 @@ void kipod::Application::ActiveModule(std::string name)
     modules_[name]->SynchronizeLinks();
 }
 
-
+auto kipod::Application::GetModule(std::string name) -> Module*
+{
+    assert(modules_.find(name)!= end(modules_));    
+    return modules_[name].get();
+}

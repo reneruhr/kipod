@@ -53,8 +53,7 @@ protected:
         void LoadPrimitive(Quadric);
 
         MeshModel* GetActiveModel();
-        void AddModel(MeshModel&&);
-        void AddModel(PrimMeshModel&&);
+        void AddModel(const PrimMeshModel&);
         bool HasModel() { return HasRenderObject(); }
         int NumberOfModels(){ return NumberOfRenderObjects();}
         void SetActiveModel(int id);
@@ -67,6 +66,10 @@ protected:
 
         MeshModelScene(int width, int height)
             : RenderScene(width, height), bounding_box_(Cube), bounding_sphere_(Sphere, 5){ }
+
+public:
+        auto AddModel(std::filesystem::path path, bool textures = false) -> MeshModel*;
+        auto AddModel(const MeshModel& model) -> MeshModel*;
 };
 
 }

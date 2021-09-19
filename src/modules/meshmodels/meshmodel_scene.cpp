@@ -1,8 +1,30 @@
+
 #include "meshmodel_scene.h"
 #include "../../render/render_engine.h"
 namespace kipod::MeshModels{
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//PUBLIC INTERFACE              ///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+auto MeshModelScene::AddModel(std::filesystem::path path, bool textures) -> MeshModel*
+{
+    LoadOBJModel(path, textures);
+    return static_cast<MeshModel*>(render_objects_.back().get());
+}
+
+auto MeshModelScene::AddModel(const MeshModel& model) -> MeshModel*
+{
+    render_objects_.push_back(
+                std::make_unique<MeshModel>(model));
+    auto m = static_cast<MeshModel*>(render_objects_.back().get());
+    m->SetUniformMaterial();
+    opengl_impl_->CreateMeshModelLayout(m);
+    NeedsUpdate();
+    return m; 
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP                          ///////////////////////////////////////////////////////
@@ -99,50 +121,45 @@ MeshModel* MeshModelScene::GetActiveModel()
     else return nullptr;
 }
 
-void MeshModelScene::AddModel(MeshModel && model)
+void MeshModelScene::AddModel(const PrimMeshModel& model)
 {
     render_objects_.push_back(
-                std::make_unique<MeshModel>(
-                    std::forward<MeshModel>(model)));
-    NeedsUpdate();
-}
-
-void MeshModelScene::AddModel(PrimMeshModel && model)
-{
-    render_objects_.push_back(
-                std::make_unique<PrimMeshModel>(
-                    std::forward<PrimMeshModel>(model)));
+                std::make_unique<PrimMeshModel>(model));
     NeedsUpdate();
 }
 
 void MeshModelScene::LoadOBJModel(std::filesystem::path path, bool textured)
 {
-    MeshModel *model = new MeshModel(path, textured);
-    if(!model->Valid()) return;
-    model->SetUniformMaterial();
-    opengl_impl_->CreateMeshModelLayout(model);
-    softrenderer_impl_->CreateMeshModelLayout(model);
-    AddModel(std::move(*model));
+    MeshModel model = MeshModel(path, textured);
+    if(!model.Valid()) return;
+    model.SetUniformMaterial();
+    opengl_impl_->CreateMeshModelLayout(&model);
+    softrenderer_impl_->CreateMeshModelLayout(&model);
+    render_objects_.push_back(
+                std::make_unique<MeshModel>(std::move(model)));
+    NeedsUpdate();
 }
 
 void MeshModelScene::LoadPrimitive(Primitive primitive, int numberPolygons)
 {
-    PrimMeshModel *model = new PrimMeshModel(primitive, numberPolygons);
-    model->SetUniformMaterial();
-    opengl_impl_->CreatePrimitiveModelLayout(model);
-    softrenderer_impl_->CreateMeshModelLayout(model);
-    raytracer_impl_->CreateMeshModelLayout(model);
-    AddModel(std::move(*model));
+    PrimMeshModel model = PrimMeshModel(primitive, numberPolygons);
+    model.SetUniformMaterial();
+    opengl_impl_->CreatePrimitiveModelLayout(&model);
+    softrenderer_impl_->CreateMeshModelLayout(&model);
+    raytracer_impl_->CreateMeshModelLayout(&model);
+    render_objects_.push_back(
+                std::make_unique<PrimMeshModel>(std::move(model)));
+    NeedsUpdate();
 }
 
 void MeshModelScene::LoadPrimitive(Quadric quadric)
 {
-    PrimMeshModel *model = new PrimMeshModel(quadric);
-    model->SetUniformMaterial();
-//    opengl_impl_->CreatePrimitiveModelLayout(model);
-//    softrenderer_impl_->CreateMeshModelLayout(model);
-    raytracer_impl_->CreateMeshModelLayout(model);
-    AddModel(std::move(*model));
+    PrimMeshModel model = PrimMeshModel(quadric);
+    model.SetUniformMaterial();
+    raytracer_impl_->CreateMeshModelLayout(&model);
+    render_objects_.push_back(
+                std::make_unique<PrimMeshModel>(std::move(model)));
+    NeedsUpdate();
 }
 
 
@@ -295,13 +312,13 @@ void MeshModelScene::SetupCoordinateAxis()
 {
     coordinate_axis_ = std::make_unique<kipod::RenderObject>();
 
-    std::vector<vec3> vertices = {vec3(-2,0,0),vec3(10,0,0),
-                                  vec3(0,-2,0),vec3(0,10,0),
-                                  vec3(0,0,-2),vec3(0,0,10),
+    std::vector<Vec3> vertices = {vec3(-2,0,0),vec3(10,0,0),
+                                  Vec3(0,-2,0),vec3(0,10,0),
+                                  Vec3(0,0,-2),vec3(0,0,10),
                                  };
-    std::vector<vec3> colors =   {vec3(1.0,0.5,0.5),vec3(1,0,0),
-                                  vec3(0.5,1.0,0.5),vec3(0,1,0),
-                                  vec3(0.5,0.5,1.0),vec3(0,0,1),
+    std::vector<Vec3> colors =   {vec3(1.0,0.5,0.5),vec3(1,0,0),
+                                  Vec3(0.5,1.0,0.5),vec3(0,1,0),
+                                  Vec3(0.5,0.5,1.0),vec3(0,0,1),
                                   };
 
     opengl_impl_->CreateCoordinateAxisLayout(vertices, colors);
@@ -311,14 +328,14 @@ void MeshModelScene::SetupGrid()
 {
     grid_ = std::make_unique<kipod::RenderObject>();
 
-    std::vector<vec3> vertices;
+    std::vector<Vec3> vertices;
 
     int n=100;
     for(int i=-n; i<=n; ++i){
-        vertices.push_back(vec3(-n,i,0));
-        vertices.push_back(vec3(n,i,0));
-        vertices.push_back(vec3(i,-n,0));
-        vertices.push_back(vec3(i,n,0));
+        vertices.push_back(Vec3(-n,i,0));
+        vertices.push_back(Vec3(n,i,0));
+        vertices.push_back(Vec3(i,-n,0));
+        vertices.push_back(Vec3(i,n,0));
     }
 
     opengl_impl_->CreateGridLayout(vertices);

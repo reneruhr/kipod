@@ -42,6 +42,9 @@ public:
 
     void ActiveModule(std::string name);
     Module& ActiveModule();
+    auto GetModule(std::string name) -> Module*;
+
+    auto WindowSize() -> std::pair<int,int> { return {width_,height_}; }
 };
 
 }

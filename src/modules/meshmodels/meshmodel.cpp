@@ -7,15 +7,30 @@
 
 namespace kipod::MeshModels{
 
+MeshModel::MeshModel(const std::vector<Vec3>& vertices, const std::vector<unsigned int>& indices)
+{
+    name_ = "New Model"; 
+    vertices_vector = std::make_shared<std::vector<Vec3>>(vertices);
+    normals_vector = std::make_shared<std::vector<Vec3>>();
+    texture_vector = std::make_shared<std::vector<Vec2>>();
+    indices_vector = std::make_shared<std::vector<unsigned int>>(indices);
+    nindices_vector = std::make_shared<std::vector<unsigned int>>();
+    tindices_vector = std::make_shared<std::vector<unsigned int>>();
+    CalculateNormals(vertices_vector, indices_vector,
+                                             normals_vector, nindices_vector);
+    CreateBoundingBox();
+    CenterModel();
+}
+
 MeshModel::MeshModel(std::filesystem::path path, bool textured)
 {
     name_ = path.stem().string();
-    vertices_vector = std::make_shared<std::vector<vec3> >();
-    normals_vector = std::make_shared<std::vector<vec3> >();
-    texture_vector = std::make_shared<std::vector<vec2> >();
-    indices_vector = std::make_shared<std::vector<unsigned int> >();
-    nindices_vector = std::make_shared<std::vector<unsigned int> >();
-    tindices_vector = std::make_shared<std::vector<unsigned int> >();
+    vertices_vector = std::make_shared<std::vector<Vec3>>();
+    normals_vector = std::make_shared<std::vector<Vec3>>();
+    texture_vector = std::make_shared<std::vector<Vec2>>();
+    indices_vector = std::make_shared<std::vector<unsigned int>>();
+    nindices_vector = std::make_shared<std::vector<unsigned int>>();
+    tindices_vector = std::make_shared<std::vector<unsigned int>>();
     LoadFile(path,
                     vertices_vector, indices_vector,
                     normals_vector, nindices_vector,
@@ -112,30 +127,35 @@ void MeshModel::Init(bool textured, bool normals, bool basic)
 //                                    lights,lightMode, emissiveMode);
 //}
 
-
-void MeshModel::CreateBoundingBox(){
+void MeshModel::CreateBoundingBox()
+{
     boundingBoxData_ = std::make_unique<BoundingBoxData>(*vertices_vector);
 }
 
-
-glm::mat4 MeshModel::TansformBoundingBox()  {
+glm::mat4 MeshModel::TansformBoundingBox()
+{
     return Transform() * boundingBoxData_->transform_;
 }
 
-glm::vec3 MeshModel::Center(){
+glm::vec3 MeshModel::Center()
+{
     glm::mat4 m = TransformWorld()*TransformLocal();
     glm::vec3 center = glm::vec3(m[3][0],m[3][1],m[3][2]);
 	return center;
 }
 
-void MeshModel::CenterModel(){
+void MeshModel::CenterModel()
+{
     local_->Translate(-boundingBoxData_->center_);
 }
-
 
 void MeshModel::SetUniformMaterial()
 {
     mat_ =  std::make_shared<kipod::RenderMaterial>();
 }
 
+auto MeshModel::Vertices() -> std::vector<Vec3>*
+{
+    return vertices_vector.get();
+}
 }
