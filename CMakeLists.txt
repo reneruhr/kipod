@@ -13,6 +13,8 @@ set(EIGEN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external_libs/Eigen/)
 include_directories(${EIGEN_DIR})
 set(CMAKE_CXX_FLAGS "-DEIGEN_MPL2_ONLY")
 
+include_directories(external_libs/)
+
 file(GLOB catch2
     "external_libs/catch2/*.hpp"
     "external_libs/catch2/*.cpp"
