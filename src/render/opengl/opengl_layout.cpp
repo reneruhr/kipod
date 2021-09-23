@@ -128,6 +128,32 @@ void kipod::GLRenderLayout::SetupGLTriangles(const std::vector<GLTriangle>* tria
     Unbind();
 }
 
+void kipod::GLRenderLayout::SetupPointSet23(const std::vector<Vec5f>* vertices)
+{
+    LOG_ENGINE("Call: SetupPointSet23 from Vec5f data");
+    unsigned long totalbuffersize = vertices->size()*sizeof(Vec5f);
+
+    AddBufferData(GL_POINTS);
+
+    vao_ = std::make_shared<kipod::VertexAttributeObject>();
+    vao_->Set();
+
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, totalbuffersize);
+        vbo_->count_ = vertices->size();
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, vertices->size(), totalbuffersize);
+    }
+    vbo_->Add(0, totalbuffersize, (void*)vertices->data());
+    vbo_->Bind();
+
+    vao_->Add({0,2,sizeof(Vec5f),0});
+    vao_->Add({1,3,sizeof(Vec5f),  2 * sizeof(GLfloat)});
+    vao_->SetAttributes();
+
+    Unbind();
+}
+
 void kipod::GLRenderLayout::SetupShape(const std::vector<glm::vec2> *vertices)
 {
     LOG_ENGINE("Call: Shape Setup");

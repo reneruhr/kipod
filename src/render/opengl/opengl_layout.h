@@ -1,13 +1,14 @@
 #pragma once
 #include "../render_layout.h"
 #include "opengl_buffer.h"
-
+#include "Eigen/Dense"
 
 namespace kipod{
 
 using Vec2 = glm::vec2;
 using Vec3 = glm::vec3;
 using Vec4 = glm::vec4;
+using Vec5f = Eigen::Matrix<float,5,1>;
 class GLRenderLayout : public RenderLayout{
 
     template<typename Vector, typename... MoreVectors>
@@ -33,6 +34,7 @@ public:
     void SetupGLTriangles(const std::vector<GLTriangle> *triangles);
     void SetupShape(const std::vector<glm::vec2>* vertices_);
     void SetupPointSet(const std::vector<glm::vec4>* vertices);
+    void SetupPointSet23(const std::vector<Vec5f>* vertices);
     void SetupLines(const std::vector<Vec3> *vertices, const std::vector<Vec3> *colors);
     void SetupGrid(const std::vector<Vec3> *vertices);
 
