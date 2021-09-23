@@ -49,5 +49,7 @@ public:
     glm::vec3 Center();
 
     auto Vertices() -> std::vector<Vec3>*;
+    auto Triangle(int n) -> std::tuple<const Vec3&,const Vec3&,const Vec3&>;
+    int NumberOfTriangles() { return indices_vector->size()/3; }
 };
 }

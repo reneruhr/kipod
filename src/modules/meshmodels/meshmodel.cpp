@@ -158,4 +158,10 @@ auto MeshModel::Vertices() -> std::vector<Vec3>*
 {
     return vertices_vector.get();
 }
+auto MeshModel::Triangle(int n) -> std::tuple<const Vec3&,const Vec3&,const Vec3&>
+{
+    assert(n<indices_vector->size()/3);
+    auto v = [this](int i){ return  (*vertices_vector)[(*indices_vector)[i]]; };
+    return { v(n), v(n+1), v(n+2) };
+}
 }
