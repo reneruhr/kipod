@@ -2,7 +2,7 @@
 
 ## Kipod
 
-Kipod is a small engine used for learning about graphics and doing math visualizations.
+Kipod is a small graphics engine.
 
 #### Math:
 * Quasicrystals https://github.com/reneruhr/quacry
@@ -10,9 +10,9 @@ Kipod is a small engine used for learning about graphics and doing math visualiz
 #### Architecture
 Kipod is written in C++17. Rendering happens with OpenGL. The UI is handled by GLFW and Dear ImGUI. 
 
-Other external libaries used: Eigen, glm, catch2, entt, spdlog, stb 
+Other external libaries used: Eigen, glm, catch2, entt, spdlog, stb.
 
-Keyhandling and framebuffer usage with ImGui is gratefully adapted from the Hazel engine (https://github.com/TheCherno/Hazel).
+Keyhandling and framebuffer usage with ImGui is adapted from the Hazel engine (https://github.com/TheCherno/Hazel).
 
 #### Instructions for building from Source for Linux, Mac, Windows:
 
