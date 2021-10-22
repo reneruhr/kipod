@@ -23,10 +23,17 @@ void RaytracerScene::Setup()
 
 }
 
+void RaytracerScene::PrepareScreen()
+{
+    raytracer_->ClearBuffer();
+    scene_->framebuffer_->Bind();    
+    glViewport(0, 0, scene_->width_, scene_->height_);
+    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}    
 
 void RaytracerScene::Draw()
 {
-    raytracer_->ClearBuffer();
     auto cam = scene_->GetActiveCamera();
     for(int i = 0; i < scene_->width_; ++i){
         Vec3f color = {1.,1.,1.};
@@ -87,12 +94,7 @@ void RaytracerScene::Draw()
             }//model
         }//j
     }//i
-    scene_->framebuffer_->Bind();    
-    glViewport(0, 0, scene_->width_, scene_->height_);
-    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     raytracer_->DrawToOpenGL();
-    kipod::RenderManager::Bind(0);
 }
 
 void RaytracerScene::Resize(int w, int h)

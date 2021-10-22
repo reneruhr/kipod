@@ -36,6 +36,7 @@ protected:
         bool mouse_rotation_active_ = false;
 
         void SetupOptions();
+        void SetupKeys();
         void SetupCoordinateAxis();
         void SetupGrid();
 
@@ -59,16 +60,17 @@ protected:
         void SetActiveModel(int id);
         void LookAtModel(int camera_id, int model_id);
 
-        virtual void Signup() override;
         virtual void Setup() override;
-        virtual void Draw() override;
         virtual void Resize(int w, int h) override;
 
         MeshModelScene(int width, int height)
             : RenderScene(width, height), bounding_box_(Cube), bounding_sphere_(Sphere, 5){ }
 
 public:
+        virtual void Signup() override;
+        virtual void Draw() override;
         auto AddModel(std::filesystem::path path, bool textures = false) -> MeshModel*;
+        auto AddModel(std::unique_ptr<MeshModel>&& model) -> MeshModel*;
         auto AddModel(const MeshModel& model) -> MeshModel*;
 };
 

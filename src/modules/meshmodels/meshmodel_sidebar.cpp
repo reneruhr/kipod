@@ -49,7 +49,6 @@ void MeshmodelSidebar::CameraControl()
     CameraProjectiveOption();
 }
 
-
 void MeshmodelSidebar::LightControl()
 {
 

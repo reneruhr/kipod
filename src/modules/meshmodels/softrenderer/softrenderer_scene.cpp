@@ -9,9 +9,17 @@ void SoftRendererScene::Setup()
 
 }
 
-void SoftRendererScene::Draw()
+void SoftRendererScene::PrepareScreen()
 {
     softrenderer_->ClearBuffer();
+    scene_->framebuffer_->Bind();    
+    glViewport(0, 0, scene_->width_, scene_->height_);
+    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}    
+
+void SoftRendererScene::Draw()
+{
         for(const auto& model : scene_->render_objects_){
             softrenderer_->SetUniforms(scene_->GetActiveCamera(), mat4( model->Transform() ));
             if(scene_->Toggle("Colors") || scene_->Toggle("Emissive"))
@@ -25,13 +33,7 @@ void SoftRendererScene::Draw()
 //                 boundingBox.draw(softrenderer_, true,false);
 //            }
         }
-    scene_->framebuffer_->Bind();    
-    glViewport(0, 0, scene_->width_, scene_->height_);
-    glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     softrenderer_->DrawToOpenGL();
-    kipod::RenderManager::Bind(0);
-
 }
 
 

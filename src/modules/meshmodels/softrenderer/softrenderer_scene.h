@@ -19,6 +19,7 @@ class SoftRendererScene  : public MeshModelAPIScene{
 
 protected:
         void Setup() override;
+        void PrepareScreen() override;
         void Draw() override;
         void Resize(int, int) override{};
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "../../kipod.h"
 
-
 namespace kipod::MeshModels{
 class MeshmodelSidebar : public kipod::Sidebar
 {
@@ -11,7 +10,6 @@ class MeshmodelSidebar : public kipod::Sidebar
     void ModelControl();
     void CameraControl();
     void LightControl();
-
 
     void LoadPrimitive();
     void LoadQuadricPrimitive();
@@ -31,9 +29,8 @@ class MeshmodelSidebar : public kipod::Sidebar
     void LightViewOptions();
 protected:
     MeshmodelSidebar(std::shared_ptr<kipod::RenderScene> scene) : kipod::Sidebar(scene) {}
-
+public:
     virtual void SideBarContent() override;
-
 };
 
 

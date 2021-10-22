@@ -42,13 +42,16 @@ void OpenGLScene::CreateBoundingSphereLayout(){
 //DRAWING                          ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-void OpenGLScene::Draw()
+void OpenGLScene::PrepareScreen()
 {
     scene_->framebuffer_->Bind();
     glViewport(0, 0, scene_->width_, scene_->height_);
     glClearColor(0.1f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void OpenGLScene::Draw()
+{
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
@@ -120,8 +123,6 @@ void OpenGLScene::Draw()
     }
     glDisable(GL_DEPTH_TEST);
 
-
-    kipod::RenderManager::Bind(0);
     //framebuffer_->tex_->Draw();
 }
 

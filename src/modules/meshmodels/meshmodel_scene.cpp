@@ -1,9 +1,6 @@
-
 #include "meshmodel_scene.h"
 #include "../../render/render_engine.h"
 namespace kipod::MeshModels{
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //PUBLIC INTERFACE              ///////////////////////////////////////////////////////
@@ -26,11 +23,19 @@ auto MeshModelScene::AddModel(const MeshModel& model) -> MeshModel*
     return m; 
 }
 
+auto MeshModelScene::AddModel(std::unique_ptr<MeshModel>&& model) -> MeshModel*
+{
+    render_objects_.push_back(std::move(model));
+    auto m = static_cast<MeshModel*>(render_objects_.back().get());
+    m->SetUniformMaterial();
+    opengl_impl_->CreateMeshModelLayout(m);
+    NeedsUpdate();
+    return m; 
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //SETUP                          ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 void MeshModelScene::Setup()
 {
@@ -55,6 +60,7 @@ void MeshModelScene::Setup()
     SetupGrid();
 
     SetupOptions();
+    SetupKeys();
     LOG_ENGINE("MeshModel Scene Initialized.");
     LOG_CONSOLE("MeshModel Scene Initialized.");
 }
@@ -72,24 +78,40 @@ void MeshModelScene::SetupOptions()
     Add(kipod::ModeToggle("Clipping Mode", true));
     Add(kipod::ModeToggle("Lazy Mode", false));
     Add(kipod::ModeToggle("Show Lights", false));
+    Add(kipod::ModeToggle("Prepare Screen", true));
 }
 
-
+void MeshModelScene::SetupKeys()
+{
+    Add("Left", Key::Left);
+    Add("Right", Key::Right);
+    Add("Up", Key::Up);
+    Add("Down", Key::Down);
+    Add("Forward", Key::PageUp);
+    Add("Backward", Key::PageDown);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //DRAWING                          ///////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 void MeshModelScene::Draw()
 {
     if(Toggle("Lazy Mode") && !needs_update_) return;
-    if(RenderEngine::ActiveAPI()=="OpenGL")
+    if(RenderEngine::ActiveAPI()=="OpenGL"){
+        if(Toggle("Prepare Screen")) opengl_impl_->PrepareScreen();
         opengl_impl_->Draw();
-    else if(RenderEngine::ActiveAPI()=="SoftRenderer")
+    }
+    else if(RenderEngine::ActiveAPI()=="SoftRenderer"){
+        if(Toggle("Prepare Screen")) softrenderer_impl_->PrepareScreen();
         softrenderer_impl_->Draw();
-    else if(RenderEngine::ActiveAPI()=="Raytracer")
+    }
+    else if(RenderEngine::ActiveAPI()=="Raytracer"){
+        if(Toggle("Prepare Screen")) raytracer_impl_->PrepareScreen();
         raytracer_impl_->Draw();
+    }
+    if(Toggle("Prepare Screen")) kipod::RenderManager::Bind(0);
+
     needs_update_= false;
 }
 
@@ -197,27 +219,27 @@ void MeshModelScene::ProcessKeys(kipod::KeyPressedEvent &event)
         else if(key == Key::X)
             Toggle("Clipping Mode").Switch();
         //TRANSFORM CONTROL:
-        else if(key == Key::Left){
+        else if(key == Key("Left")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({-stepsize,0,0});
                 }
-        else if(key == Key::Right){
+        else if(key == Key("Right")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({+stepsize,0,0});
                 }
-        else if(key == Key::Up){
+        else if(key == Key("Up")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({0,stepsize,0});
                 }
-        else if(key == Key::Down){
+        else if(key == Key("Down")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({0,-stepsize,0});
                 }
-        else if(key == Key::PageUp){
+        else if(key == Key("Forward")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({0,0, stepsize});
                 }
-        else if(key == Key::PageDown){
+        else if(key == Key("Backward")){
                 if(GetActiveModel())
                     GetActiveModel()->world_->Translate({0,0,-stepsize});
                 }

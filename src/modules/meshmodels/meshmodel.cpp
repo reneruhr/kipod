@@ -1,6 +1,4 @@
 #include "../../core.h"
-
-
 #include "meshmodel.h"
 #include "../../render/render_texture.h"
 #include "meshmodel_parsing.h"
@@ -70,20 +68,14 @@ MeshModel::MeshModel(std::filesystem::path path, bool textured)
     }
 }
 
-
-
 MeshModel::~MeshModel(void)
 {
 }
-
-
 
 bool MeshModel::Valid()
 {
     return !vertices_vector->empty();
 }
-
-
 
 void MeshModel::Init(bool textured, bool normals, bool basic)
 {
@@ -108,7 +100,6 @@ void MeshModel::Init(bool textured, bool normals, bool basic)
         layout->SetupColoredTriangles(vertices_vector.get(),indices_vector.get());
     }
 }
-
 
 //void MeshModel::draw(SoftRenderer *softrenderer, bool wireframemode, bool clippingMode, bool normals)
 //{

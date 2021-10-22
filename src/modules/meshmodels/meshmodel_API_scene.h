@@ -17,7 +17,7 @@ protected:
         std::unordered_map<std::string, std::shared_ptr<kipod::Shader> > shaders_;
 
         virtual void Setup() = 0;
-        virtual void Draw() = 0;
+        virtual void PrepareScreen() = 0;
         virtual void Resize(int w, int h) = 0;
 
         virtual void CreateMeshModelLayout(MeshModel *model) = 0;
@@ -33,6 +33,7 @@ protected:
         virtual void DrawCoordinateAxis(RenderCamera *camera) = 0;
 
 public:
+       virtual void Draw() = 0;
        MeshModelAPIScene(MeshModelScene* scene): scene_(scene) {};
        virtual ~MeshModelAPIScene() {}
 };
