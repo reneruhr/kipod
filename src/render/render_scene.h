@@ -31,6 +31,8 @@ protected:
     std::shared_ptr<kipod::FrameBuffer> framebuffer_ = nullptr;
     std::unordered_map<std::string, std::shared_ptr<kipod::FrameBuffer>> framebuffers_;
 
+    int frame_count_ = 0;
+    int frames_per_screenshot_ = 0;
 public:
     RenderScene() = default;
     RenderScene(int w, int h);
@@ -44,9 +46,13 @@ public:
     virtual void Draw() = 0;
 
     virtual void DrawGui(){}
+    void TakeScreenshot(std::string, bool);
 
     virtual void Resize(int w, int h);
     virtual unsigned int SceneAsFramebuffer(const std::string& name = "Module Viewport");
+    
+    void SetFixedRatio(bool ratio) { fixed_ratio_ = ratio; }
+
 
     void AddLight(RenderLight&& light);
     void AddCamera(RenderCamera&& camera);
@@ -66,5 +72,9 @@ public:
     void SetActiveRenderObject(int id);
 
     void SwapFrameBuffer();
+
+    int GetFrameCount() { return frame_count_; }
+    int GetFramesPerScreenshot() { return frames_per_screenshot_; }
+    void SetFramesPerScreenshot(int n) { frames_per_screenshot_ = n; }
 };
 }//kipod

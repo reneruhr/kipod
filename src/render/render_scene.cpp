@@ -1,5 +1,6 @@
 #include "render_scene.h"
 #include "render_manager.h"
+#include "../utils/image_writer.h"
 
 kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(float(w)/float(h)), reverse_ratio_(float(h)/float(w))
 {
@@ -79,4 +80,19 @@ kipod::RenderCamera* kipod::RenderScene::GetCamera(int id)
 void kipod::RenderScene::SetActiveRenderObject(int id)
 {
     if(id<NumberOfRenderObjects()) active_render_object_=render_objects_[id].get();
+}
+
+void kipod::RenderScene::TakeScreenshot(std::string name = "screenshot", bool count = true)
+{
+   if(frames_per_screenshot_ && !(frame_count_ % frames_per_screenshot_)){
+       static const GLuint channels = 4;
+       static GLubyte *data = (GLubyte*)malloc(channels * width_ * height_); 
+       static const GLenum gl_format = GL_RGBA;
+       static unsigned int total_count = 0;
+       glReadPixels(0, 0, width_, height_, gl_format, GL_UNSIGNED_BYTE, data);
+       static ImageData image = {width_, height_, channels, data};
+       name+= std::to_string(total_count);
+       if(count) ++total_count;
+       ImageWriter::WriteImage(image, name);
+   }
 }

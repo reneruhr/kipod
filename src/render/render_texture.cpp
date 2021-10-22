@@ -5,7 +5,7 @@
 
 void kipod::Texture::LoadTexture(std::filesystem::path path, int texture_option_filter, int texture_option_wrap)
 {
-       image_= std::make_unique<ImageData>(ImageLoader::Kipod_LoadImage(path));
+       image_= std::make_unique<ImageData>(ImageLoader::LoadImage(path));
        if (image_->data_) {
            texture_implementation_ = std::make_unique<TextureOpenGL>(this);
            texture_implementation_->LoadTexture(texture_option_filter, texture_option_wrap);
@@ -71,7 +71,7 @@ void kipod::TexturedShape::Draw()
 
 void kipod::Texture::LoadBufferedTexture(std::filesystem::path path)
 {
-    image_ = std::make_unique<ImageData>(ImageLoader::Kipod_LoadImage(path));
+    image_ = std::make_unique<ImageData>(ImageLoader::LoadImage(path));
     if (image_->data_) {
         texture_implementation_ = std::make_unique<TextureIPOpenGL>(this);
         texture_implementation_->LoadTexture();
