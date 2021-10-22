@@ -48,6 +48,8 @@ add_library(kipod
   src/utils/random.h
   src/utils/image_loader.h
   src/utils/image_loader.cpp
+  src/utils/image_writer.h
+  src/utils/image_writer.cpp
   src/utils/obj_parsing.h
   src/utils/key_table.h
   src/utils/imgui_utils.h

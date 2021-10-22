@@ -2,8 +2,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../external_libs/stb/stb_image.h"
 
-
-ImageData&& ImageLoader::Kipod_LoadImage(std::filesystem::path path)
+namespace kipod{
+ImageData&& ImageLoader::LoadImage(std::filesystem::path path)
 {
     ImageData* new_image = new ImageData();
         stbi_set_flip_vertically_on_load(1);
@@ -16,4 +16,6 @@ ImageData&& ImageLoader::Kipod_LoadImage(std::filesystem::path path)
 void ImageLoader::FreeImage(ImageData*old_image)
 {
         stbi_image_free(old_image->data_);
+}
+
 }
