@@ -1,12 +1,9 @@
 #pragma once
-
 #include "../core.h"
 #include "engine_events.h"
 #include "../utils/key_table.h"
 
 namespace kipod{
-
-
 class Input
 {
     inline static double x_last =0;
@@ -16,7 +13,6 @@ public:
     static void MouseButton(int button, int action, int mods);
     static void MousePosition(double x, double y);
 };
-
 
 class MouseMoveEvent : public Event{
 public:
@@ -49,7 +45,7 @@ protected:
 
 class MouseButtonPressEvent : public MouseButtonEvent{
 public:
-    MouseButtonPressEvent(const MouseButton button, const ::Mod mod = Mod::None)
+    MouseButtonPressEvent(const MouseButton button, const Mod mod = Mod::None)
         : MouseButtonEvent(button, mod){}
         EVENT_CLASS_TYPE(MouseButtonPressed)
         std::string ToString() const override;
@@ -57,7 +53,7 @@ public:
 
 class MouseButtonReleaseEvent : public MouseButtonEvent{
 public:
-    MouseButtonReleaseEvent(const MouseButton button, const ::Mod mod = Mod::None)
+    MouseButtonReleaseEvent(const MouseButton button, const Mod mod = Mod::None)
         : MouseButtonEvent(button, mod){}
         EVENT_CLASS_TYPE(MouseButtonReleased)
         std::string ToString() const override;
@@ -131,6 +127,5 @@ public:
 
     EVENT_CLASS_TYPE(KeyTyped)
 };
-
 
 }

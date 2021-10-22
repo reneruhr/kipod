@@ -247,35 +247,40 @@ void kipod::Gui::End()
 
 void kipod::Gui::CreateSceneWindow(kipod::RenderScene* scene)
 {
-    for(auto& fb : scene->framebuffers_)
-    {
-    ImGui::SetNextWindowSize(ImVec2(scene->width_, scene->height_),ImGuiCond_FirstUseEver);
-//    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin(fb.first.c_str(), (bool*)false,  ImGuiWindowFlags_NoBackground); //ImGuiWindowFlags_NoScrollbar
+    for(auto& fb : scene->framebuffers_) {
+        ImGui::SetNextWindowSize(ImVec2(scene->width_, scene->height_),ImGuiCond_FirstUseEver);
+        //    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin(fb.first.c_str(), (bool*)false,  ImGuiWindowFlags_NoBackground); //ImGuiWindowFlags_NoScrollbar
 
-    ImGuiIO &io = ImGui::GetIO();  (void)io;
-    io.WantCaptureKeyboard=1;
+        ImGuiIO &io = ImGui::GetIO();  (void)io;
+        io.WantCaptureKeyboard=1;
 
-    ImVec2 viewport_size = ImGui::GetContentRegionAvail();
-    unsigned int x = static_cast<unsigned int>(viewport_size.x);
-    unsigned int y = static_cast<unsigned int>(viewport_size.y);
-    static unsigned int old_x = x; static unsigned int ancient_x = x; static bool old_or_ancient = false;
-
-    if( x!= old_x && x!= ancient_x ) // Fixes some resizing bug from Imgui
-        if(scene->width_ != x)   {
-            LOG_DEBUG("Viewport Resized w={} h={}",x,y);
-            scene->Resize(x, y);
-            { // Fixes some resizing bug from Imgui
-                if(old_or_ancient) old_x = x;
-                else ancient_x = x;
-                old_or_ancient=!old_or_ancient;
-            }
+        //if(ImGui::IsWindowFocused() || ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup)){
+        if(ImGui::IsWindowFocused()){
+            kipod::Events::BlockMouse(false);
+            kipod::Events::BlockKeyboard(false);
         }
-    unsigned int scene_texture = scene->SceneAsFramebuffer(fb.first);
-    ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_ ,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-    ImGui::End();
-    ImGui::PopStyleVar();
+
+        ImVec2 viewport_size = ImGui::GetContentRegionAvail();
+        unsigned int x = static_cast<unsigned int>(viewport_size.x);
+        unsigned int y = static_cast<unsigned int>(viewport_size.y);
+        static unsigned int old_x = x; static unsigned int ancient_x = x; static bool old_or_ancient = false;
+        //Still Bug
+        if( x!= old_x && x!= ancient_x ) // Fixes some resizing bug from Imgui
+            if(scene->width_ != x)   {
+                LOG_DEBUG("Viewport Resized w={} h={}",x,y);
+                scene->Resize(x, y);
+                { // Fixes some resizing bug from Imgui
+                    if(old_or_ancient) old_x = x;
+                    else ancient_x = x;
+                    old_or_ancient=!old_or_ancient;
+                }
+            }
+        unsigned int scene_texture = scene->SceneAsFramebuffer(fb.first);
+        ImGui::Image(reinterpret_cast<void*>(scene_texture), ImVec2(scene->width_ ,scene->height_), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 }
 }

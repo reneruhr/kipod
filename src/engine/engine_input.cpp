@@ -1,7 +1,5 @@
-
 #include "engine_input.h"
 #include "engine_events.h"
-
 
 void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 {
@@ -13,20 +11,20 @@ void kipod::Input::KeyBoard(int key, int scancode, int action, int mods)
 void kipod::Input::MouseButton(int button, int action, int mods)
 {
     if (action == GLFW_PRESS && !Events::BlockMouse() )
-        Events::Add<MouseButtonPressEvent>({::MouseButton(button), Mod(mods)});
+        Events::Add<MouseButtonPressEvent>({kipod::MouseButton(button), Mod(mods)});
     else if (action == GLFW_RELEASE && !Events::BlockMouse() )
-        Events::Add<MouseButtonReleaseEvent>({::MouseButton(button), Mod(mods)});
+        Events::Add<MouseButtonReleaseEvent>({kipod::MouseButton(button), Mod(mods)});
 }
 
 void kipod::Input::MousePosition(double x, double y)
 {
-
     float x_offset = x - x_last;
     float y_offset = y_last - y;
 
     x_last = x;
     y_last = y;
 
+    if(Events::BlockMouse()) return;
     Events::Add<MouseMoveEvent>({x_offset,y_offset});
 }
 

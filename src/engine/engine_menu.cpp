@@ -22,14 +22,14 @@ void Menu::DrawFiles()
 void Menu::DrawModuleMenu(std::unordered_map<std::string, std::unique_ptr<Module> > &modules, std::string& active_module)
 {
     if (ImGui::BeginMenuBar())
-               {
-           if (ImGui::BeginMenu("Modules"))
-           {
-               for(auto& [name, module] : modules)
-                   if(ImGui::MenuItem(name.c_str(),  "", name == active_module))  app_->ActiveModule(name);
-               ImGui::EndMenu();
-           }           
-           ImGui::EndMenuBar();
+    {
+        if (ImGui::BeginMenu("Modules"))
+        {
+            for(auto& [name, module] : modules)
+                if(ImGui::MenuItem(name.c_str(),  "", name == active_module))  app_->ActiveModule(name);
+            ImGui::EndMenu();
+        }           
+        ImGui::EndMenuBar();
     }
 }
 

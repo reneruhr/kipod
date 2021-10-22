@@ -5,8 +5,6 @@
 #include "../engine/engine_console.h"
 #include "../engine/engine_gui.h"
 
-
-
 namespace kipod{
 class Module;
 class MenuModule{
@@ -47,6 +45,8 @@ public:
     virtual void Signup();
     virtual void RemoveSubscription();
     virtual void DrawMenu();
+    
+    void DrawSidebarContent() { sidebar_->SideBarContent(); }
 };
 
 }

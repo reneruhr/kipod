@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-
+namespace kipod{
     // GLFW Keys minus "GLFW_KEY_" tag
     enum class MouseButton : std::int8_t {
         Button0 = 0,
@@ -160,3 +160,5 @@
         KIPOD_MOD_CAPS_LOCK = 0x0010,
         KIPOD_MOD_NUM_LOCK = 0x0020,
     };
+
+}

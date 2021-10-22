@@ -57,13 +57,15 @@ inline std::ostream& operator<<(std::ostream& os, const ModeToggle& mode)
 
 class Controls
 {
-public:
+protected:
+    std::unordered_map<std::string, kipod::Key> key_table_;
     std::unordered_map<std::string, ModeToggle> mode_toggles_;
-
+public:
     void Add(ModeToggle&& toggle){ mode_toggles_.emplace(toggle.name_, toggle); }
-
     ModeToggle& Toggle(std::string toggle){ return mode_toggles_[toggle];   }
 
+    void Add(std::string name, kipod::Key key) { key_table_[name] = key; };
+    kipod::Key Key(std::string name) { return key_table_[name]; };
     virtual void ProcessKeys(KeyPressedEvent&) {};
 };
 

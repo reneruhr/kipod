@@ -16,7 +16,7 @@ void Sidebar::Draw()
     if(ImGui::IsWindowFocused() ||
        ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup))
        kipod::Events::BlockMouse(true);
-    else kipod::Events::BlockMouse(false);
+//    else kipod::Events::BlockMouse(false);
 
     SideBarContent();
 

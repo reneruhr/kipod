@@ -33,8 +33,6 @@ enum EventCategory
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-
-
 class Event
 {
 public:
@@ -57,12 +55,6 @@ inline std::ostream& operator<<(std::ostream& os, const Event& e)
     return os << e.ToString();
 }
 
-
-
-
-
-
-
 #define LOG_CATEGORY_NAME(category_in) LOG_ENGINE("Sign up for {}", #category_in)
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
@@ -82,8 +74,6 @@ public:
     }
 };
 
-
-
 class Events
 {
     Events(){}
@@ -96,7 +86,6 @@ class Events
 public:
     Events(Events const&) = delete;
     void operator=(Events const&)  = delete;
-
 
     static Events& Get();
 
