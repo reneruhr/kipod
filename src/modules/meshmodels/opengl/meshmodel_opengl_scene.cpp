@@ -452,14 +452,14 @@ void OpenGLScene::DrawCoordinateAxis(kipod::RenderCamera* camera)
 void OpenGLScene::DrawGrid(kipod::RenderCamera* camera)
 {
     auto layout =
-    static_cast<kipod::GLRenderLayout*>(scene_->grid_->Layout("Grid")); layout->sha_->Use();
-    layout->sha_->SetUniform<glm::mat4>("mvp", *camera); layout->Draw();
+    static_cast<kipod::GLRenderLayout*>(scene_->grid_->Layout("Grid"));
+    layout->sha_->Use();
+    layout->sha_->SetUniform<glm::mat4>("mvp", *camera);
+    layout->Draw();
     layout->sha_->Unuse();
 }
 
-
-void OpenGLScene::CreateCoordinateAxisLayout(std::vector<glm::vec3>& vertices,
-                                                      std::vector<glm::vec3>& colors)
+void OpenGLScene::CreateCoordinateAxisLayout(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& colors)
 {
     std::string name = "Coordinate Axis";
     auto layout = new kipod::GLRenderLayout;
@@ -478,6 +478,4 @@ void OpenGLScene::CreateGridLayout(std::vector<glm::vec3>& vertices)
     layout->sha_->AttachUniform<glm::mat4>("mvp");
     scene_->grid_->AddLayout(name, std::move(*layout));
 }
-
-
 }

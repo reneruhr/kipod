@@ -44,8 +44,6 @@ void kipod::GLRenderLayout::Unbind()
     vao_->Unbind();
 }
 
-
-
 void kipod::GLRenderLayout::SetupColoredTriangles(const std::vector<Vec3>* vertices, const std::vector<unsigned int>* indices,
                                                   const std::vector<Vec3>* normals,  const std::vector<unsigned int>* nindices)
 {
@@ -147,8 +145,8 @@ void kipod::GLRenderLayout::SetupPointSet23(const std::vector<Vec5f>* vertices)
     vbo_->Add(0, totalbuffersize, (void*)vertices->data());
     vbo_->Bind();
 
-    vao_->Add({0,2,sizeof(Vec5f),0});
-    vao_->Add({1,3,sizeof(Vec5f),  2 * sizeof(GLfloat)});
+    vao_->Add({0, 2, sizeof(Vec5f), 0});
+    vao_->Add({1, 3, sizeof(Vec5f), 2 * sizeof(GLfloat)});
     vao_->SetAttributes();
 
     Unbind();
@@ -202,7 +200,6 @@ unsigned int VectorLength(glm::vec4){ return 4;}
 unsigned int VectorLength(vec2){ return 2;}
 unsigned int VectorLength(vec3){ return 3;}
 unsigned int VectorLength(vec4){ return 4;}
-
 
 template<typename Vector, typename... MoreVectors>
 void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, MoreVectors... more_vectors)

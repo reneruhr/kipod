@@ -53,7 +53,6 @@ public:
     
     void SetFixedRatio(bool ratio) { fixed_ratio_ = ratio; }
 
-
     void AddLight(RenderLight&& light);
     void AddCamera(RenderCamera&& camera);
     void AddRenderObject(RenderObject&& model);

@@ -95,4 +95,5 @@ void kipod::RenderScene::TakeScreenshot(std::string name = "screenshot", bool co
        if(count) ++total_count;
        ImageWriter::WriteImage(image, name);
    }
+   // ffmpeg -r 3 -f image2 -s 600x400 -start_number 0 -i Physical%d.png  -vframes 145 -vcodec libx264 -crf 25  -pix_fmt yuv420p test_long.mp4
 }
