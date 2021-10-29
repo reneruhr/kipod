@@ -45,7 +45,7 @@ void RaytracerScene::Draw()
     }
     for(const auto& model : scene_->render_objects_){
         PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
-        if(ray_object && ray_object->Type()==QuadricPrimitive){
+        if(ray_object && ray_object->Type()==Primitive::QuadricPrimitive){
             ray_object->GetRaytracingQuadric()->Transform(ray_object->Transform());
         }
     }
@@ -65,7 +65,7 @@ void RaytracerScene::Draw()
             for(const auto& model : scene_->render_objects_){
                 PrimMeshModel* ray_object = dynamic_cast<PrimMeshModel*>(model.get());
                 if(ray_object){
-                    if(ray_object->Type()==Sphere){
+                    if(ray_object->Type()==Primitive::Sphere){
                         raytracer_->SetUniforms(cam, mat4( model->Transform() ));
                         RaytracingSphere sphere;
                         Intersections hit = Intersections(&ray, &sphere);
@@ -75,7 +75,7 @@ void RaytracerScene::Draw()
                             Vec3f color = {1.,1.,1.};
                             raytracer_->DrawPoint(i,j,&color);
                         }
-                    } else if(ray_object->Type()==QuadricPrimitive){
+                    } else if(ray_object->Type()==Primitive::QuadricPrimitive){
                         raytracer_->SetUniforms(cam, mat4( model->Transform() ));
                         RaytracingQuadric* quadric = ray_object->GetRaytracingQuadric();
                         Intersections hit = Intersections(&ray, quadric);

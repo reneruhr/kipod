@@ -149,9 +149,9 @@ void MeshmodelSidebar::LoadPrimitive()
     ImGui::SameLine();
     ImGui::PushID("Add primitive");
     if(ImGui::Button("Add")){
-                            if(primitiveChoice_current==0)      meshmodelscene->LoadPrimitive(Cube);
-                            else if(primitiveChoice_current==1) meshmodelscene->LoadPrimitive(Tetrahedron);
-                            else if(primitiveChoice_current==2) meshmodelscene->LoadPrimitive(Sphere, std::max(0,numberPolygons));
+                            if(primitiveChoice_current==0)      meshmodelscene->LoadPrimitive(Primitive::Cube);
+                            else if(primitiveChoice_current==1) meshmodelscene->LoadPrimitive(Primitive::Tetrahedron);
+                            else if(primitiveChoice_current==2) meshmodelscene->LoadPrimitive(Primitive::Sphere, std::max(0,numberPolygons));
                             LOG_ENGINE("Loaded Primitive.");
                             meshmodelscene->SetActiveModel(meshmodelscene->NumberOfModels()-1);
                         }

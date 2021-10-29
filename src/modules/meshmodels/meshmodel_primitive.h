@@ -6,7 +6,7 @@
 
 namespace kipod::MeshModels{
 
-enum Primitive{
+enum class Primitive{
     Cube,
     Tetrahedron,
     Sphere,
@@ -17,8 +17,8 @@ class PrimMeshModel: public MeshModel{
     Primitive type_;
     std::shared_ptr<RaytracingQuadric> quadric_ = nullptr;
 public:
-    PrimMeshModel(Primitive primitive, int n = 0);
-    PrimMeshModel(Quadric quadric);
+    explicit PrimMeshModel(Primitive primitive, int n = 0);
+    explicit PrimMeshModel(Quadric quadric);
     PrimMeshModel(const PrimMeshModel&) = default;
     PrimMeshModel& operator=(const PrimMeshModel&) = default;
     PrimMeshModel(PrimMeshModel&&) = default;
@@ -26,7 +26,7 @@ public:
     void LoadPrimitive(Primitive primitive, int n = 0);
 
     Primitive Type(){ return type_;}
-    RaytracingQuadric* GetRaytracingQuadric() { assert(type_==QuadricPrimitive); return quadric_.get();}
+    RaytracingQuadric* GetRaytracingQuadric() { assert(type_==Primitive::QuadricPrimitive); return quadric_.get();}
 };
 
 }

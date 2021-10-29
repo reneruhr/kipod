@@ -64,7 +64,7 @@ protected:
         virtual void Resize(int w, int h) override;
 
         MeshModelScene(int width, int height)
-            : RenderScene(width, height), bounding_box_(Cube), bounding_sphere_(Sphere, 5){ }
+            : RenderScene(width, height), bounding_box_(Primitive::Cube), bounding_sphere_(Primitive::Sphere, 5){ }
 
 public:
         virtual void Signup() override;
