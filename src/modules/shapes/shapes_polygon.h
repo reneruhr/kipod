@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "../../core.h"
 
 namespace kipod::Shapes{
@@ -13,8 +15,8 @@ protected:
     std::vector<Vec2> vertices_; // fixed
 public:
     Polygon(){}
-    Polygon(float s) : side_length_(s) {}
-    Polygon(const std::vector<Vec2>& vertices, const Vec2& center = Vec2(0)) : center_(center), vertices_(vertices) 
+    explicit Polygon(float s) : side_length_(s) {}
+    Polygon(std::vector<Vec2>  vertices, const Vec2& center = Vec2(0)) : center_(center), vertices_(std::move(vertices))
     {
         UpdatedTransformedVertices();
 
@@ -30,8 +32,8 @@ public:
 
     bool IsInside(const Vec2& x);
     void UpdatedTransformedVertices();
-    int NumberEdges(){ return edges_.size(); }
-    int NumberVertices(){ return transformed_vertices_.size(); }
+    int NumberEdges() const{ return edges_.size(); }
+    int NumberVertices() const{ return transformed_vertices_.size(); }
     Vec2 GetVertex(int n) { return transformed_vertices_[n]; }
     Vec2 GetCenter() { return center_; }
     void SetCenter(const Vec2& c) { center_ = c; }
@@ -42,18 +44,18 @@ public:
 class Octagon : public Polygon
 {
 public:
-    Octagon(float s = 1);
+    explicit Octagon(float s = 1);
 };
 
 class Square : public Polygon
 {
 public:
-    Square(float s = 1);
+    explicit Square(float s = 1);
 };
 
 class Rectangle : public Polygon
 {
 public:
-    Rectangle(float w = 1, float h = 2);
+    explicit Rectangle(float w = 1, float h = 2);
 };
 }

@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "../core.h"
 #include "../render/render_engine.h"
 #include "../engine/engine_sidebar.h"
@@ -31,7 +33,7 @@ public:
     virtual ~Module() = default;
     Module(Module&&) = default;
     Module& operator=(Module&&) = default;
-    Module(std::string name) : name_(name){}
+    explicit Module(std::string name) : name_(std::move(name)){}
     std::string Name();
     void Name(std::string name);
     void Pause() { pause_ = true; }

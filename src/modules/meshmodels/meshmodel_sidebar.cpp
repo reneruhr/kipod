@@ -1,6 +1,5 @@
 #include "meshmodel_sidebar.h"
 #include "meshmodel_scene.h"
-#include "../../engine/engine_gui.h"
 
 namespace kipod::MeshModels{
 
@@ -120,7 +119,7 @@ void MeshmodelSidebar::LightAdd()
             if(lightChoice_current==0) source = kipod::LightSource::AMBIENT;
             else if(lightChoice_current==1) source = kipod::LightSource::DIFFUSE;
             else if(lightChoice_current==2) source = kipod::LightSource::SPECULAR;
-            kipod::RenderLight* light =
+            auto* light =
             new kipod::RenderLight(source,
                       glm::vec4(lightSourceLocation),
                       glm::vec4(float(clight.x),float(clight.y),float(clight.z),float(clight.w)));

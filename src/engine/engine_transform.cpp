@@ -4,6 +4,7 @@ const glm::mat4 &kipod::Transform::Translate(const glm::vec3& translate)
 {
     *matrix_ = glm::translate(*matrix_, translate);
     LOG_ENGINE("Moved Object by {},{},{}", translate.x,translate.y,translate.z);
+    move_signal_.publish();
     return *matrix_;
 }
 

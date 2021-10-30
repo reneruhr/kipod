@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "../../kipod.h"
 
 namespace kipod::MeshModels{
@@ -6,7 +8,7 @@ class MeshmodelSidebar : public kipod::Sidebar
 {
     friend class MeshModelModule;
 
-    void Help();
+    static void Help();
     void ModelControl();
     void CameraControl();
     void LightControl();
@@ -28,9 +30,9 @@ class MeshmodelSidebar : public kipod::Sidebar
     void LightAdd();
     void LightViewOptions();
 protected:
-    MeshmodelSidebar(std::shared_ptr<kipod::RenderScene> scene) : kipod::Sidebar(scene) {}
+    explicit MeshmodelSidebar(std::shared_ptr<kipod::RenderScene> scene) : kipod::Sidebar(std::move(scene)) {}
 public:
-    virtual void SideBarContent() override;
+    void SideBarContent() override;
 };
 
 

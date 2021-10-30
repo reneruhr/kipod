@@ -41,13 +41,13 @@ protected:
         void SetupGrid();
 
 
-        virtual void ProcessKeys(kipod::KeyPressedEvent& event) override;
+        void ProcessKeys(kipod::KeyPressedEvent& event) override;
 
         void ProcessMouseButtons(kipod::MouseButtonEvent& event);
         void ProcessMouseMoves(kipod::MouseMoveEvent& event);
 
 
-        virtual void Receive(std::shared_ptr<kipod::Event> event) override;
+        void Receive(std::shared_ptr<kipod::Event> event) override;
 
         void LoadOBJModel(std::filesystem::path path, bool textures = false);
         void LoadPrimitive(Primitive primitive, int numberPolygons=0);
@@ -60,18 +60,19 @@ protected:
         void SetActiveModel(int id);
         void LookAtModel(int camera_id, int model_id);
 
-        virtual void Setup() override;
-        virtual void Resize(int w, int h) override;
+        void Setup() override;
+        void Resize(int w, int h) override;
 
         MeshModelScene(int width, int height)
             : RenderScene(width, height), bounding_box_(Primitive::Cube), bounding_sphere_(Primitive::Sphere, 5){ }
 
 public:
-        virtual void Signup() override;
-        virtual void Draw() override;
+        void Signup() override;
+        void Draw() override;
         auto AddModel(std::filesystem::path path, bool textures = false) -> MeshModel*;
         auto AddModel(std::unique_ptr<MeshModel>&& model) -> MeshModel*;
         auto AddModel(const MeshModel& model) -> MeshModel*;
+        void SetActiveModel(MeshModel* model) { SetActiveRenderObject(model); }
 };
 
 }

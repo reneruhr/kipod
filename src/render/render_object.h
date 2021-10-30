@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "../core.h"
 #include "render_buffer.h"
 #include "render_shader.h"
@@ -13,7 +15,6 @@ class Texture;
 class FrameBuffer;
 
 class RenderObject{
-
     std::unordered_map<std::string, std::unique_ptr<RenderLayout>> render_layouts_;
     RenderLayout* lay_ = nullptr;
 public:
@@ -26,8 +27,8 @@ public:
     RenderObject(const RenderObject& other) : world_(new kipod::Transform(*other.world_)),
                                         local_(new kipod::Transform(*other.local_)){}
     RenderObject& operator=(const RenderObject& other) {
-        world_.reset(new kipod::Transform( *other.world_ ) );
-        local_.reset(new kipod::Transform( *other.local_ ) );
+        world_ = std::make_unique<kipod::Transform>( *other.world_ );
+        local_ = std::make_unique<kipod::Transform>( *other.local_ );
         return *this;
     }
     virtual ~RenderObject() = default;

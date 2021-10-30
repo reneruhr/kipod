@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "../core.h"
 #include "engine_input.h"
 
@@ -7,11 +9,11 @@ namespace kipod{
 struct MultipleModeToggle
 {
     MultipleModeToggle() = default;
-    MultipleModeToggle(std::vector<std::string> toggle_names)
-        : toggle_names_(toggle_names){}
+    explicit MultipleModeToggle(std::vector<std::string> toggle_names)
+        : toggle_names_(std::move(toggle_names)){}
 
-    operator const int () const { return state_; }
-    operator int& () { return state_; }
+    explicit operator int () const { return state_; }
+    explicit operator int& () { return state_; }
 
     entt::delegate<void(void*, int)> delegate_;
     int state_ = -1;
@@ -21,7 +23,7 @@ struct MultipleModeToggle
     std::vector<std::string> toggle_names_;
 
     void Set(int state);
-    void Apply(void *ptr){ delegate_(ptr, state_); };
+    void Apply(void *ptr) const{ delegate_(ptr, state_); };
 };
 
 inline std::ostream& operator<<(std::ostream& os, const MultipleModeToggle& mode)
@@ -32,10 +34,10 @@ inline std::ostream& operator<<(std::ostream& os, const MultipleModeToggle& mode
 struct ModeToggle
 {
     ModeToggle() = default;
-    ModeToggle(std::string name, bool state) : state_(state), name_(name){};
-    ModeToggle(std::string name) : name_(name){};
+    ModeToggle(std::string name, bool state) : state_(state), name_(std::move(name)){};
+    explicit ModeToggle(std::string name) : name_(std::move(name)){};
 
-    operator const bool () const { return state_; }
+     operator bool () const { return state_; }
 
     bool state_ = false;
     std::string name_;
@@ -62,10 +64,10 @@ protected:
     std::unordered_map<std::string, ModeToggle> mode_toggles_;
 public:
     void Add(ModeToggle&& toggle){ mode_toggles_.emplace(toggle.name_, toggle); }
-    ModeToggle& Toggle(std::string toggle){ return mode_toggles_[toggle];   }
+    ModeToggle& Toggle(const std::string& toggle){ return mode_toggles_[toggle];   }
 
-    void Add(std::string name, kipod::Key key) { key_table_[name] = key; };
-    kipod::Key Key(std::string name) { return key_table_[name]; };
+    void Add(const std::string& name, kipod::Key key) { key_table_[name] = key; };
+    kipod::Key Key(const std::string& name) { return key_table_[name]; };
     virtual void ProcessKeys(KeyPressedEvent&) {};
 };
 

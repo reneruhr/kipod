@@ -37,7 +37,7 @@ public:
     RenderScene() = default;
     RenderScene(int w, int h);
     RenderScene(RenderScene&) = default;
-    RenderScene& operator=(RenderScene&) = default;
+    RenderScene& operator=(const RenderScene&) = default;
     RenderScene(RenderScene&&) = default;
     RenderScene& operator=(RenderScene&&) = default;
     virtual ~RenderScene() = default;
@@ -49,8 +49,8 @@ public:
     void TakeScreenshot(std::string, bool);
 
     virtual void Resize(int w, int h);
-    virtual unsigned int SceneAsFramebuffer(const std::string& name = "Module Viewport");
-    
+    virtual unsigned int SceneAsFramebuffer(const std::string& name);
+
     void SetFixedRatio(bool ratio) { fixed_ratio_ = ratio; }
 
     void AddLight(RenderLight&& light);
@@ -69,11 +69,12 @@ public:
 
     void SetActiveCamera(int id);
     void SetActiveRenderObject(int id);
+    void SetActiveRenderObject(RenderObject* object) { active_render_object_ = object; }
 
     void SwapFrameBuffer();
 
-    int GetFrameCount() { return frame_count_; }
-    int GetFramesPerScreenshot() { return frames_per_screenshot_; }
+    int GetFrameCount() const { return frame_count_; }
+    int GetFramesPerScreenshot() const { return frames_per_screenshot_; }
     void SetFramesPerScreenshot(int n) { frames_per_screenshot_ = n; }
 };
 }//kipod
