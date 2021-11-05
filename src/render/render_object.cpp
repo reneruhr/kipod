@@ -28,7 +28,7 @@ void kipod::RenderObject::Draw(kipod::RenderLayout *layout)
     if(layout)  layout->Draw();
 }
 
-void kipod::RenderObject::Draw(std::string layout)
+void kipod::RenderObject::Draw(const std::string& layout)
 {
     assert(HasLayout(layout));
     render_layouts_[layout]->Draw();
@@ -44,13 +44,13 @@ void kipod::RenderObject::Setup(kipod::RenderLayout *layout)
     if(layout)  layout->Setup();
 }
 
-void kipod::RenderObject::Setup(std::string layout)
+void kipod::RenderObject::Setup(const std::string& layout)
 {
     assert(HasLayout(layout));
     render_layouts_[layout]->Setup();
 }
 
-kipod::RenderLayout *kipod::RenderObject::Layout(std::string layout)
+kipod::RenderLayout *kipod::RenderObject::Layout(const std::string& layout)
 {
     return render_layouts_[layout].get();
 }
@@ -71,4 +71,10 @@ void kipod::RenderObject::AddLayout(const std::string& name, kipod::RenderLayout
 bool kipod::RenderObject::HasLayout(const std::string& name)
 {
     return render_layouts_.find(name)!=end(render_layouts_);
+}
+
+void kipod::RenderObject::ChangeLayout(const std::string &name, kipod::RenderLayout &&layout)
+{
+    assert(HasLayout(name));
+    layout.ChangeTo(name, render_layouts_);
 }

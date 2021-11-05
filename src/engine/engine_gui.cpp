@@ -83,7 +83,7 @@ bool kipod::Gui::Transform(kipod::Transform& transform)
 
 bool Gui::Scale(kipod::Transform& transform)
 {
-    float stepsize = 0.05;;
+    float stepsize = 0.05;
     float s = 1.0;
     ImGui::Text("Scale:");
     ImGui::SameLine();

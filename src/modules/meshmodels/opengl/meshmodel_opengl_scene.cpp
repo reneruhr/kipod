@@ -107,7 +107,7 @@ void OpenGLScene::Draw()
         shaders_["Basic"]->Use();
         for(const auto& cam : scene_->cameras_){
             if(cam.get()!=scene_->GetActiveCamera())
-                DrawFrustum(cam.get(), scene_->GetActiveCamera());;
+                DrawFrustum(cam.get(), scene_->GetActiveCamera());
         }
         shaders_["Basic"]->Unuse();
     }
@@ -117,7 +117,7 @@ void OpenGLScene::Draw()
         shaders_["Basic"]->Use();
         for(const auto& light : scene_->lights_){
             if(light->Type()!=LightSource::AMBIENT)
-                DrawLight(light.get(), scene_->GetActiveCamera());;
+                DrawLight(light.get(), scene_->GetActiveCamera());
         }
         shaders_["Basic"]->Unuse();
     }
@@ -308,7 +308,7 @@ void OpenGLScene::BindMaterialUniforms(kipod::Shader& shader, const kipod::Rende
 
 void OpenGLScene::BindTextureUniforms(kipod::Shader& shader, const kipod::Texture* texture)
 {
-    shader.SetUniform<float>(texture->Name().c_str(), 0.0f);
+    shader.SetUniform<float>(texture->Name(), 0.0f);
     glActiveTexture(GL_TEXTURE0);
     texture->Bind();
 }

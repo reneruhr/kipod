@@ -18,7 +18,7 @@ public:
     virtual void Setup()=0;
 
     virtual void AddTo(const std::string& ,std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) = 0;
-
+    virtual void ChangeTo(const std::string& ,std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&){}
 };
 
 

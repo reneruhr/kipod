@@ -7,7 +7,6 @@
 
 void kipod::GLRenderLayout::Draw()
 {
-
     vao_->Bind();
     if(ebo_->count_){
         ebo_->Bind();
@@ -35,6 +34,11 @@ void kipod::GLRenderLayout::Setup()
 void kipod::GLRenderLayout::AddTo(const std::string& name, std::unordered_map<std::string, std::unique_ptr<kipod::RenderLayout> > &map)
 {
     map.insert( { name, std::make_unique<kipod::GLRenderLayout>(std::move(*this)) } );
+}
+
+void kipod::GLRenderLayout::ChangeTo(const std::string& name, std::unordered_map<std::string, std::unique_ptr<kipod::RenderLayout>>& map)
+{
+   map[name] = std::make_unique<kipod::GLRenderLayout>(std::move(*this));
 }
 
 void kipod::GLRenderLayout::Unbind()
@@ -194,12 +198,12 @@ unsigned long  AddBuffer(const std::vector<Vector>& vectors, MoreVectors... more
     return vectors->size()*sizeof(Vector)+CalculateBufferSize(more_vectors...);
 }
 
-unsigned int VectorLength(glm::vec2){ return 2;}
-unsigned int VectorLength(glm::vec3){ return 3;}
-unsigned int VectorLength(glm::vec4){ return 4;}
-unsigned int VectorLength(vec2){ return 2;}
-unsigned int VectorLength(vec3){ return 3;}
-unsigned int VectorLength(vec4){ return 4;}
+unsigned int VectorLength(const glm::vec2&){ return 2;}
+unsigned int VectorLength(const glm::vec3&){ return 3;}
+unsigned int VectorLength(const glm::vec4&){ return 4;}
+unsigned int VectorLength(const vec2&){ return 2;}
+unsigned int VectorLength(const vec3&){ return 3;}
+unsigned int VectorLength(const vec4&){ return 4;}
 
 template<typename Vector, typename... MoreVectors>
 void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, MoreVectors... more_vectors)

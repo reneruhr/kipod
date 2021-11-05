@@ -34,7 +34,7 @@ inline std::ostream& operator<<(std::ostream& os, const MultipleModeToggle& mode
 struct ModeToggle
 {
     ModeToggle() = default;
-    ModeToggle(std::string name, bool state) : state_(state), name_(std::move(name)){};
+    ModeToggle(std::string name, bool state) : state_(state), name_(std::move(name)){}
     explicit ModeToggle(std::string name) : name_(std::move(name)){};
 
      operator bool () const { return state_; }

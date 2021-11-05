@@ -17,15 +17,16 @@ class GLRenderLayout : public RenderLayout{
 
 
 public:
-    ~GLRenderLayout() = default;
+    ~GLRenderLayout() override = default;
     std::shared_ptr<ElementsBuffer> ebo_ = nullptr;
     std::shared_ptr<VertexAttributeObject> vao_ = nullptr;
     std::shared_ptr<VertexBuffer> vbo_ = nullptr;
     std::shared_ptr<Shader> sha_ = nullptr;
 
-    virtual void Draw() override;
-    virtual void Setup() override;
-    virtual void AddTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
+    void Draw() override;
+    void Setup() override;
+    void AddTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
+    void ChangeTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
     void Unbind();
 
     void SetupColoredTriangles(const std::vector<Vec3> *vertices, const std::vector<unsigned int> *indices);
