@@ -6,6 +6,41 @@
 
 #include "spdlog/fmt/ostr.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/glm.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include <spdlog/fmt/bundled/format.h>
+
+template<>
+struct fmt::formatter<glm::mat4> {
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::mat4& m, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(),
+                         "{}",
+                         glm::to_string(m));
+    }
+};
+
+template<>
+struct fmt::formatter<glm::vec3> {
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::vec3& m, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(),
+                         "{}",
+                         glm::to_string(m));
+    }
+};
+
+
+
 class Log
 {
     static std::shared_ptr<spdlog::logger> console_logger_;

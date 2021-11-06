@@ -149,10 +149,48 @@ auto MeshModel::Vertices() -> std::vector<Vec3>*
 {
     return vertices_vector.get();
 }
-auto MeshModel::Triangle(int n) -> std::tuple<const Vec3&,const Vec3&,const Vec3&>
+auto MeshModel::Triangle(int n) const -> Triangle3f
 {
-    assert(n<indices_vector->size()/3);
+    auto m = 3*n;
+    assert(m<indices_vector->size());
     auto v = [this](int i){ return  (*vertices_vector)[(*indices_vector)[i]]; };
-    return { v(n), v(n+1), v(n+2) };
+    return { v(m), v(m+1), v(m+2) };
 }
+
+// Volume x6
+float VolumeTetrahedron(const Triangle3f& T, const glm::vec3 &p)
+{
+    glm::mat4 in( Vec4(T.a,1), Vec4(T.b,1), Vec4(T.c,1), Vec4(p, 1));
+    LOG_DEBUG("Apply Determinant to {}", in);
+    return determinant(in);
 }
+
+//Assumes 0 is inside.
+bool TestIfCCWOriented(const MeshModel &model)
+{
+    auto Inside = [&model](int n){
+        return VolumeTetrahedron(model.Triangle(n), Vec3(0)) > 0;
+    };
+    for(int i = 0, e = model.NumberOfTriangles(); i<e; ++i)
+        if(!Inside(i)) return false;
+    return true;
+}
+
+void FixCCWOriented(MeshModel& model)
+{
+    LOG_DEBUG("Call to Fix Orientation. Running through {} triangles", model.NumberOfTriangles());
+    auto Inside = [&model](int n) {
+        return VolumeTetrahedron(model.Triangle(n), Vec3(0)) > 0;
+    };
+    for(int i = 0, e = model.NumberOfTriangles(); i<e; ++i) {
+        LOG_DEBUG("Test {}th triangle", i);
+        if (!Inside(i)) {
+            LOG_DEBUG("Found CW triangle. Flip now.");
+            model.TriangleFlip(i);
+            LOG_DEBUG("Orientation is fixed: {}", Inside(i));
+        }
+    }
+}
+
+}
+

@@ -9,6 +9,7 @@
 
 namespace kipod::MeshModels{
 using Vec3 = glm::vec3;
+struct Triangle3f { Vec3 a,b,c; };
 using Vec2 = glm::vec2;
 class MeshModelScene;
 class MeshModel : public kipod::RenderObject
@@ -49,7 +50,27 @@ public:
     glm::vec3 Center();
 
     auto Vertices() -> std::vector<Vec3>*;
-    auto Triangle(int n) -> std::tuple<const Vec3&,const Vec3&,const Vec3&>;
-    int NumberOfTriangles() { return indices_vector->size()/3; }
+    auto Triangle(int n) const -> Triangle3f;
+    int NumberOfTriangles() const { return indices_vector->size()/3; }
+    void TriangleFlip(int n) {  std::swap( (*indices_vector)[3*n], (*indices_vector)[3*n+1] ); }
 };
+
+float VolumeTetrahedron(const Triangle3f& T, const glm::vec3 &p);
+bool TestIfCCWOriented(const MeshModel& model);
+void FixCCWOriented(MeshModel& model);
 }
+
+
+template<>
+struct fmt::formatter<kipod::MeshModels::Triangle3f> {
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const kipod::MeshModels::Triangle3f& T, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(),
+                         "{} {} {}",
+                         glm::to_string(T.a), glm::to_string(T.b), glm::to_string(T.c) );
+    }
+};

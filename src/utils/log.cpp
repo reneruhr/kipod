@@ -3,6 +3,7 @@
 std::shared_ptr<spdlog::logger> Log::console_logger_;
 std::shared_ptr<spdlog::logger> Log::file_logger_;
 
+
 void Log::Init()
 	{
         std::vector<spdlog::sink_ptr> log_sink_console;
