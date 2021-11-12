@@ -75,6 +75,7 @@ bool kipod::RenderObject::HasLayout(const std::string& name)
 
 void kipod::RenderObject::ChangeLayout(const std::string &name, kipod::RenderLayout &&layout)
 {
+    LOG_ENGINE("Changing Layout {}", name);
     assert(HasLayout(name));
     layout.ChangeTo(name, render_layouts_);
 }

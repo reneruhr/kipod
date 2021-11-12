@@ -38,6 +38,7 @@ void kipod::GLRenderLayout::AddTo(const std::string& name, std::unordered_map<st
 
 void kipod::GLRenderLayout::ChangeTo(const std::string& name, std::unordered_map<std::string, std::unique_ptr<kipod::RenderLayout>>& map)
 {
+   LOG_ENGINE("Changing Layout at {}", name);
    map[name] = std::make_unique<kipod::GLRenderLayout>(std::move(*this));
 }
 

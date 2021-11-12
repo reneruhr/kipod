@@ -7,7 +7,8 @@ namespace kipod{
 
 class Transform
 {
-    entt::sigh<void(void)> move_signal_;
+    entt::sigh<void(bool)> move_signal_;
+    entt::sigh<void(bool)> scale_signal_;
 protected:
     std::unique_ptr<glm::mat4> matrix_;
 public:
@@ -23,8 +24,8 @@ public:
     operator glm::mat4& ()  { assert(matrix_!=nullptr); return *matrix_; }
     operator const glm::mat4& () const { assert(matrix_!=nullptr); return *matrix_; }
 
-    entt::sink<void(void)> move_sink_{move_signal_};
-
+    entt::sink<void(bool)> move_sink_{move_signal_};
+    entt::sink<void(bool)> scale_sink_{scale_signal_};
 
     float& x()  { return (*matrix_)[3][0]; }
     float& y()  { return (*matrix_)[3][1]; }
