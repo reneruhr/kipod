@@ -39,11 +39,11 @@ void kipod::RenderScene::AddCamera(kipod::RenderCamera&& camera)
                     std::forward<kipod::RenderCamera>(camera)));
 }
 
-void kipod::RenderScene::AddRenderObject(kipod::RenderObject&& object)
+auto kipod::RenderScene::AddRenderObject(std::unique_ptr<RenderObject> object, bool visible) -> kipod::RenderObject*
 {
-    render_objects_.push_back(
-                std::make_unique<kipod::RenderObject>(
-                    std::forward<kipod::RenderObject>(object)));
+    auto obj_ptr =  render_objects_.emplace_back(std::move(object)).get();
+    if(visible) visible_objects_.push_back(obj_ptr);
+    return obj_ptr;
 }
 
 kipod::RenderCamera *kipod::RenderScene::GetActiveCamera()
@@ -96,4 +96,9 @@ void kipod::RenderScene::TakeScreenshot(std::string name = "screenshot", bool co
        ImageWriter::WriteImage(image, name);
    }
    // ffmpeg -r 3 -f image2 -s 600x400 -start_number 0 -i Physical%d.png  -vframes 145 -vcodec libx264 -crf 25  -pix_fmt yuv420p test_long.mp4
+}
+
+void kipod::RenderScene::ClearScreen()
+{
+    visible_objects_.clear();
 }

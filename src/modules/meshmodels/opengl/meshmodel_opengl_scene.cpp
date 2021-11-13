@@ -59,20 +59,20 @@ void OpenGLScene::Draw()
     DrawGrid(scene_->GetActiveCamera());
     glDisable(GL_DEPTH_TEST);
 
-    for(const auto& model : scene_->render_objects_){
+    for(const auto& model : scene_->visible_objects_){
         if(scene_->Toggle("Wireframe")) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glEnable(GL_DEPTH_TEST);
 
         if( scene_->Toggle("Textures") && model->HasLayout("Textured Triangles") ){
            shaders_["Textured Triangles"]->Use();
-           SetUniformTex(scene_->GetActiveCamera(), model.get());
+           SetUniformTex(scene_->GetActiveCamera(), model);
            model->RenderObject::Draw("Textured Triangles");
            BindLightUniforms(*shaders_["Textured Triangles"]);
         }
         else if((scene_->Toggle("Colors") || scene_->Toggle("Emissive") )&& model->HasLayout("Colored Triangles")  ){
             shaders_["Colored Triangles"]->Use();
-            SetUniform(scene_->GetActiveCamera(), model.get());
+            SetUniform(scene_->GetActiveCamera(), model);
             BindLightUniforms(*shaders_["Colored Triangles"]);
             model->RenderObject::Draw("Colored Triangles");
         }
@@ -83,12 +83,12 @@ void OpenGLScene::Draw()
 
         if(scene_->Toggle("Normals") && model->HasLayout("Normals Triangles") ){
             shaders_["Normals Triangles"]->Use();
-            SetUniformNormal(static_cast<MeshModel*>(model.get()), scene_->GetActiveCamera());
+            SetUniformNormal(static_cast<MeshModel*>(model), scene_->GetActiveCamera());
             model->RenderObject::Draw("Normals Triangles");
         }
 
         if(scene_->Toggle("Bounding Box")){
-            DrawBoundingBox(static_cast<MeshModel*>(model.get()), scene_->GetActiveCamera());
+            DrawBoundingBox(static_cast<MeshModel*>(model), scene_->GetActiveCamera());
         }
     }
 

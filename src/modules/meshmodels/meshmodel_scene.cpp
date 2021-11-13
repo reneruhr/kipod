@@ -23,10 +23,9 @@ auto MeshModelScene::AddModel(const MeshModel& model) -> MeshModel*
     return m; 
 }
 
-auto MeshModelScene::AddModel(std::unique_ptr<MeshModel>&& model) -> MeshModel*
+auto MeshModelScene::AddModel(std::unique_ptr<MeshModel> model, bool visible) -> MeshModel*
 {
-    render_objects_.push_back(std::move(model));
-    auto m = static_cast<MeshModel*>(render_objects_.back().get());
+    auto m = static_cast<MeshModel*>(AddRenderObject(std::move(model), visible));
     m->SetUniformMaterial();
     opengl_impl_->CreateMeshModelLayout(m);
     NeedsUpdate();
@@ -363,6 +362,11 @@ void MeshModelScene::SetupGrid()
     opengl_impl_->CreateGridLayout(vertices);
 }
 
+void MeshModelScene::SetActiveModel(MeshModel *model, bool set_explicitly_visible)
+{
+    SetActiveRenderObject(model);
+    if(set_explicitly_visible) visible_objects_.push_back(model);
+}
 
 
 }

@@ -8,6 +8,7 @@ namespace kipod {
 using LightContainer = std::vector<std::unique_ptr<RenderLight> >;
 using ObjectContainer = std::vector<std::unique_ptr<RenderObject>>;
 using CameraContainer = std::vector<std::unique_ptr<RenderCamera> >;
+using VisibleContainer = std::vector<RenderObject*>;
 
 class RenderScene {
     friend class Gui;
@@ -20,6 +21,7 @@ protected:
     int min_height_ = 100;
 
     ObjectContainer render_objects_;
+    VisibleContainer visible_objects_;
     CameraContainer cameras_;
     LightContainer lights_;
 
@@ -55,7 +57,7 @@ public:
 
     void AddLight(RenderLight&& light);
     void AddCamera(RenderCamera&& camera);
-    void AddRenderObject(RenderObject&& model);
+    auto AddRenderObject(std::unique_ptr<RenderObject> object, bool visible = true) -> RenderObject*;
 
     RenderCamera* GetActiveCamera();
     RenderObject* GetActiveRenderObject();
@@ -66,6 +68,8 @@ public:
     int NumberOfRenderObjects();
     bool HasLight() { return !lights_.empty(); }
     bool HasRenderObject() { return !render_objects_.empty(); }
+
+    void ClearScreen();
 
     void SetActiveCamera(int id);
     void SetActiveRenderObject(int id);

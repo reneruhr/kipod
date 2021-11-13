@@ -70,9 +70,9 @@ public:
         void Signup() override;
         void Draw() override;
         auto AddModel(std::filesystem::path path, bool textures = false) -> MeshModel*;
-        auto AddModel(std::unique_ptr<MeshModel>&& model) -> MeshModel*;
+        auto AddModel(std::unique_ptr<MeshModel> model, bool visible = true) -> MeshModel*;
         auto AddModel(const MeshModel& model) -> MeshModel*;
-        void SetActiveModel(MeshModel* model) { SetActiveRenderObject(model); }
+        void SetActiveModel(MeshModel* model, bool set_explicitly_visible = false);
 };
 
 }
