@@ -157,6 +157,33 @@ void kipod::GLRenderLayout::SetupPointSet23(const std::vector<Vec5f>* vertices)
     Unbind();
 }
 
+void kipod::GLRenderLayout::SetupEdges23(const std::vector<Vec10f>* vertices)
+{
+    LOG_ENGINE("Call: SetupEdgesSet23 from Vec10f data");
+    unsigned long totalbuffersize = vertices->size()*sizeof(Vec5f);
+
+    AddBufferData(GL_POINTS);
+
+    vao_ = std::make_shared<kipod::VertexAttributeObject>();
+    vao_->Set();
+
+    if(OpenGLEngine::Version()==450){
+        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, totalbuffersize);
+        vbo_->count_ = vertices->size();
+    }else{
+        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, vertices->size(), totalbuffersize);
+    }
+    vbo_->Add(0, totalbuffersize, (void*)vertices->data());
+    vbo_->Bind();
+
+    vao_->Add({0, 2, sizeof(Vec10f), 0});
+    vao_->Add({1, 3, sizeof(Vec10f), 2 * sizeof(GLfloat)});
+    vao_->Add({2, 2, sizeof(Vec10f), 5 * sizeof(GLfloat)});
+    vao_->Add({3, 3, sizeof(Vec10f), 7 * sizeof(GLfloat)});
+    vao_->SetAttributes();
+
+    Unbind();
+}
 void kipod::GLRenderLayout::SetupShape(const std::vector<glm::vec2> *vertices)
 {
     LOG_ENGINE("Call: Shape Setup");
