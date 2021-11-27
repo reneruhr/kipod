@@ -160,7 +160,7 @@ void kipod::GLRenderLayout::SetupPointSet23(const std::vector<Vec5f>* vertices)
 void kipod::GLRenderLayout::SetupEdges23(const std::vector<Vec10f>* vertices)
 {
     LOG_ENGINE("Call: SetupEdgesSet23 from Vec10f data");
-    unsigned long totalbuffersize = vertices->size()*sizeof(Vec5f);
+    unsigned long totalbuffersize = vertices->size()*sizeof(Vec10f);
 
     AddBufferData(GL_POINTS);
 
