@@ -39,6 +39,19 @@ struct fmt::formatter<glm::vec3> {
     }
 };
 
+template<>
+struct fmt::formatter<glm::vec4> {
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const glm::vec4& m, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(),
+                         "{}",
+                         glm::to_string(m));
+    }
+};
 
 
 class Log

@@ -23,8 +23,8 @@ kipod::Attribute::Attribute(unsigned int id, unsigned int count, GLsizei stride,
 void kipod::Attribute::Set()
 {
     LOG_ENGINE("Setting Attribute {}. Count: {}. Type: {}. Stride: {}. Offset: {}",id_, count_, type_, stride_, offset_);
-    glVertexAttribPointer(this->id_, this->count_, type_, normalized_, stride_, (void *)offset_);
     glEnableVertexAttribArray(this->id_);
+    glVertexAttribPointer(this->id_, this->count_, type_, normalized_, stride_, (void *)offset_);
 }
 
 void kipod::VertexAttributeObject::Add(kipod::Attribute &&attribute)
