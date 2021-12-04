@@ -56,7 +56,7 @@ int Window::init()
         glfwTerminate();
         return -1;
     }
-    glfwSetWindowAspectRatio(_window, _width, _height);
+    //glfwSetWindowAspectRatio(_window, _width, _height);
 
     glfwMakeContextCurrent(_window);
 

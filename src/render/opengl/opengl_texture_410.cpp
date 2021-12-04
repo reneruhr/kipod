@@ -39,9 +39,6 @@ namespace kipod
         }
 
         glGenFramebuffers(1, &frame_buffer);
-
-
-
         glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
 
         glGenTextures(1, &id_);
@@ -52,18 +49,13 @@ namespace kipod
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id_, 0);
 
-
         glGenTextures(1, &depths_id_);
         glBindTexture(GL_TEXTURE_2D, depths_id_);
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, image_->width_, image_->height_);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depths_id_, 0);
 
-
         assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-        //LOG_ENGINE("Framebuffer not complete!");
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
         LOG_DEBUG("Created Texture {} and Framebuffer {}", id_, frame_buffer);
     }
 

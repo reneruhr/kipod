@@ -11,8 +11,8 @@ kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(fl
 
 void kipod::RenderScene::Resize(int w,int h)
 {
-    w = std::max(w, min_width_);
-    h = std::max(h, min_height_);
+    //w = std::max(w, min_width_);
+    //h = std::max(h, min_height_);
     if(fixed_ratio_) h = std::floor(reverse_ratio_* w); //h = 1/ratio_*w;
     width_ = w; height_ = h;
     LOG_DEBUG("Resized Scene. Width {} and height {}", w, h);

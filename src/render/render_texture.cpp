@@ -51,7 +51,7 @@ void kipod::Texture::Draw()
     textured_square_->Draw();
 }
 
-void kipod::Texture::Resize(int w,int h)
+void kipod::Texture::Resize(int w, int h)
 {
     image_->width_ = w;
     image_->height_ = h;
