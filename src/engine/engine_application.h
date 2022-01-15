@@ -44,6 +44,7 @@ public:
     Module& ActiveModule();
     auto GetModule(std::string name) -> Module*;
 
+    auto HasActiveModule() { return !active_module_.empty(); }
     auto WindowSize() -> std::pair<int,int> { return {width_,height_}; }
 };
 

@@ -4,7 +4,7 @@
 
 kipod::RenderScene::RenderScene(int w, int h) : width_(w), height_(h), ratio_(float(w)/float(h)), reverse_ratio_(float(h)/float(w))
 {
-    LOG_DEBUG("Create Scene with width {} and height {}", w, h);
+    LOG_ENGINE("Create Scene with width {} and height {}", w, h);
     framebuffer_ =  std::make_shared<kipod::FrameBuffer>(width_, height_);
     framebuffers_= {{"Module Viewport", framebuffer_}};
 }

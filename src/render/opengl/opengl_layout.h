@@ -11,12 +11,11 @@ using Vec4 = glm::vec4;
 using Vec5f = Eigen::Matrix<float,5,1>;
 using Vec10f = Eigen::Matrix<float,10,1>;
 
-class GLRenderLayout : public RenderLayout{
-
+class GLRenderLayout : public RenderLayout
+{
     template<typename Vector, typename... MoreVectors>
     void AddBufferData(const std::vector<Vector>&, MoreVectors... more_vectors);
     void AddBufferData(GLchar);
-
 
 public:
     ~GLRenderLayout() override = default;

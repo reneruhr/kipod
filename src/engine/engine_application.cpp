@@ -29,13 +29,17 @@ void kipod::Application::Run()
         glViewport(0, 0, window_->Width(),window_->Height());
         kipod::Gui::Begin();
         menu_->DrawFiles();
-        menu_->DrawModuleMenu(modules_, active_module_);
-        ActiveModule().DrawMenu();
+        if(HasActiveModule()) {
+            menu_->DrawModuleMenu(modules_, active_module_);
+            ActiveModule().DrawMenu();
+        }
         menu_->DrawTools();
         Console::DrawAppConsole();
-        ActiveModule().DrawSidebar();
-        ActiveModule().DrawConsole();
-        ActiveModule().DrawScene();        
+        if(HasActiveModule()) {
+            ActiveModule().DrawSidebar();
+            ActiveModule().DrawConsole();
+            ActiveModule().DrawScene();
+        }
         kipod::Gui::End();
 
         window_->updateWindow();
@@ -76,7 +80,7 @@ kipod::Module& kipod::Application::ActiveModule()
 void kipod::Application::ActiveModule(std::string name)
 {
     assert(modules_.find(name)!= end(modules_));    
-    if(active_module_!="") modules_[active_module_]->RemoveSubscription();
+    if(HasActiveModule()) modules_[active_module_]->RemoveSubscription();
     active_module_ = name;
     modules_[name]->Signup();
     modules_[name]->SynchronizeLinks();
