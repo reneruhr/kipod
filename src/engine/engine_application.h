@@ -13,8 +13,10 @@
 #include "engine_console.h"
 
 #include "../render/render_engine.h"
+#include "../modules/basicmodule.h"
 
-namespace kipod{
+namespace kipod
+{
 
 class Application
 {
@@ -38,6 +40,7 @@ public:
     void ShutDown();
 
     void Add(Module&& module);
+    void Add(std::unique_ptr<Module>);
     void Add(std::string name, kipod::Module &&module);
 
     void ActiveModule(std::string name);
@@ -46,6 +49,8 @@ public:
 
     auto HasActiveModule() { return !active_module_.empty(); }
     auto WindowSize() -> std::pair<int,int> { return {width_,height_}; }
+
+    auto CreateBasicModule(const std::string& name = "Basic Module") -> std::unique_ptr<BasicModule>;
 };
 
 }

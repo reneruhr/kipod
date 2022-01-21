@@ -47,6 +47,7 @@ public:
     virtual void Signup();
     virtual void RemoveSubscription();
     virtual void DrawMenu();
+    auto GetScene() { return scene_; }
     
     void DrawSidebarContent() { sidebar_->SideBarContent(); }
 };

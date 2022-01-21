@@ -91,3 +91,16 @@ auto kipod::Application::GetModule(std::string name) -> Module*
     assert(modules_.find(name)!= end(modules_));    
     return modules_[name].get();
 }
+
+auto kipod::Application::CreateBasicModule(const std::string& name) -> std::unique_ptr<BasicModule>
+{
+    return std::make_unique<BasicModule>(BasicModule{width_, height_, name});
+}
+
+void kipod::Application::Add(std::unique_ptr<Module> module)
+{
+    module->Init();
+    auto name = module->Name();
+    modules_.insert( {name, std::move(module)} );
+    ActiveModule(name);
+}

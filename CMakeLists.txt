@@ -211,7 +211,7 @@ add_library(kipod
   src/compute/opengl/compute_shader.h
   src/compute/opengl/compute_shader.cpp
 
-)
+        src/modules/basicmodule.cpp src/modules/basicmodule.h)
 
     find_package(OpenGL REQUIRED)
     if(NOT OPENGL_FOUND)

@@ -4,6 +4,14 @@
 #include "opengl_engine.h"
 #include "opengl_buffer_410.h"
 #include "opengl_buffer_450.h"
+template<>
+unsigned int kipod::VectorLength(const glm::vec2 &) {return 2;}
+
+template<>
+unsigned int kipod::VectorLength(const glm::vec3 &) {return 3;}
+
+template<>
+unsigned int kipod::VectorLength(const glm::vec4 &) {return 4;}
 
 void kipod::GLRenderLayout::Draw()
 {
@@ -211,62 +219,11 @@ void kipod::GLRenderLayout::SetupGrid(const std::vector<Vec3> *vertices)
     SetupLayout(*vertices, GL_LINES);
 }
 
-unsigned long  CalculateBufferSize(GLchar){     return 0;   }
 
-template<typename Vector, typename... MoreVectors>
-unsigned long  CalculateBufferSize(const std::vector<Vector>& vectors, MoreVectors... more_vectors)
-{
-    return vectors.size()*sizeof(Vector)+CalculateBufferSize(more_vectors...);
-}
-
-
-template<typename Vector, typename... MoreVectors>
-unsigned long  AddBuffer(const std::vector<Vector>& vectors, MoreVectors... more_vectors)
-{
-    return vectors->size()*sizeof(Vector)+CalculateBufferSize(more_vectors...);
-}
-
-unsigned int VectorLength(const glm::vec2&){ return 2;}
-unsigned int VectorLength(const glm::vec3&){ return 3;}
-unsigned int VectorLength(const glm::vec4&){ return 4;}
-unsigned int VectorLength(const vec2&){ return 2;}
-unsigned int VectorLength(const vec3&){ return 3;}
-unsigned int VectorLength(const vec4&){ return 4;}
-
-template<typename Vector, typename... MoreVectors>
-void kipod::GLRenderLayout::AddBufferData(const std::vector<Vector>& vectors, MoreVectors... more_vectors)
-{
-    unsigned long buffersize = vectors.size()*sizeof(Vector);
-    vbo_->count_ = vectors.size();
-
-    vbo_->Add(buffersize, (void*)vectors.data());
-    vao_->Add({vao_->NumberOfAttributes(), VectorLength(vectors[0]), sizeof(Vector),0});
-
-    AddBufferData(more_vectors...);
-}
 
 void kipod::GLRenderLayout::AddBufferData(GLchar primitive)
 {
     ebo_ = std::make_shared<kipod::ElementsBuffer>();
     ebo_->primitive_ = primitive;
-}
-
-template<typename Vector, typename... MoreVectors>
-void  kipod::GLRenderLayout::SetupLayout(const std::vector<Vector>& vectors, MoreVectors... more_vectors)
-{
-    vao_ = std::make_shared<kipod::VertexAttributeObject>();
-    vao_->Set();
-    unsigned long totalbuffersize = CalculateBufferSize(vectors, more_vectors...);
-
-    if(OpenGLEngine::Version()==450){
-        vbo_ = std::make_shared<kipod::VertexBuffer450>(nullptr, totalbuffersize);
-    }else{
-        vbo_ = std::make_shared<kipod::VertexBuffer410>(nullptr, 0, totalbuffersize);
-    }
-    AddBufferData(vectors,  more_vectors...);
-
-    vbo_->Bind();
-    vao_->SetAttributes();
-    Unbind();
 }
 

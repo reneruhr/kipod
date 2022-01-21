@@ -63,11 +63,11 @@ protected:
     std::unordered_map<std::string, kipod::Key> key_table_;
     std::unordered_map<std::string, ModeToggle> mode_toggles_;
 public:
+    virtual ~Controls() = default;
     void Add(ModeToggle&& toggle){ mode_toggles_.emplace(toggle.name_, toggle); }
     ModeToggle& Toggle(const std::string& toggle){
         if(mode_toggles_.find(toggle)==end(mode_toggles_)) LOG_ENGINE("Did not find Toggle {}", toggle);
         return mode_toggles_[toggle];   }
-
 
     void Add(const std::string& name, kipod::Key key) { key_table_[name] = key; };
     kipod::Key Key(const std::string& name) { return key_table_[name]; }
