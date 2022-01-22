@@ -7,12 +7,16 @@ class ElementsBuffer : public Buffer
 public:
     ElementsBuffer() = default;
     ElementsBuffer(const ElementsBuffer& elementbuffer) = default;
-    ElementsBuffer(void* data, unsigned int count, unsigned int size, GLchar primitive=GL_TRIANGLES) : Buffer(data, count, size), primitive_(primitive) {}
+    ElementsBuffer(void* data, unsigned int count, unsigned int size, GLchar primitive=GL_TRIANGLES)
+    : Buffer(data, count, size), primitive_(primitive), subcount_(count), start_(0) {}
     GLchar primitive_;
+    unsigned int subcount_;
+    std::size_t start_ ;
     void Set();
     void Bind();
     void Unbind();
-
+    void SubData(unsigned int subcount, std::size_t start);
+    void ResetSubData();
 };
 
 class Attribute : public IBuffer

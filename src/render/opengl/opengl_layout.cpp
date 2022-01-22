@@ -18,7 +18,7 @@ void kipod::GLRenderLayout::Draw()
     vao_->Bind();
     if(ebo_->count_){
         ebo_->Bind();
-        glDrawElements(ebo_->primitive_, ebo_->count_, GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(ebo_->primitive_, ebo_->subcount_, GL_UNSIGNED_INT, (void*)ebo_->start_);
         ebo_->Unbind();
     }else{
         vbo_->Bind();
@@ -223,7 +223,12 @@ void kipod::GLRenderLayout::SetupGrid(const std::vector<Vec3> *vertices)
 
 void kipod::GLRenderLayout::AddBufferData(GLchar primitive)
 {
-    ebo_ = std::make_shared<kipod::ElementsBuffer>();
+    if(!ebo_) ebo_ = std::make_shared<kipod::ElementsBuffer>();
     ebo_->primitive_ = primitive;
+}
+
+void kipod::GLRenderLayout::SetSubIndex(unsigned int count, std::size_t start)
+{
+    ebo_->SubData(count, start);
 }
 

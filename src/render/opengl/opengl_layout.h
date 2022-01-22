@@ -65,6 +65,7 @@ public:
 
     void Draw() override;
     void Setup() override;
+    void SetSubIndex(unsigned int count, std::size_t start);
     void AddTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
     void ChangeTo(const std::string&, std::unordered_map<std::string, std::unique_ptr<RenderLayout>>&) override;
     void Unbind();
@@ -98,6 +99,17 @@ public:
         vao_->SetAttributes();
         Unbind();
     }
+
+    template<typename Vector, typename... MoreVectors>
+    void  SetupLayout(const std::vector<unsigned int>& indices, const std::vector<Vector>& vectors, MoreVectors... more_vectors)
+    {
+        LOG_ENGINE("Call: Indexed SetupLayout");
+        ebo_ = std::make_shared<kipod::ElementsBuffer>((void*)indices.data(), indices.size(), indices.size()*sizeof(unsigned int));
+        ebo_->Set();
+
+        SetupLayout(vectors, std::forward<MoreVectors>(more_vectors)...);
+    }
+
 };
 
 }

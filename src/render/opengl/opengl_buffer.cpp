@@ -17,6 +17,18 @@ void kipod::ElementsBuffer::Unbind(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void kipod::ElementsBuffer::SubData(unsigned int count, std::size_t start)
+{
+    subcount_ = count;
+    start_ = start * sizeof(unsigned int);
+}
+
+void kipod::ElementsBuffer::ResetSubData()
+{
+    subcount_ = count_;
+    start_ = 0;
+}
+
 kipod::Attribute::Attribute(unsigned int id, unsigned int count, GLsizei stride, std::size_t offset) :
     stride_(stride), offset_(offset) { count_ = count; id_ = id;}
 
