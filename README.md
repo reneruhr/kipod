@@ -6,8 +6,8 @@ Kipod is a small graphics engine.
 
 #### Employed for
 * Quasicrystals https://github.com/reneruhr/quacry
-* Lorenz Attractors Quasicrystals https://github.com/reneruhr/lorenz
-* 
+* Lorenz Attractor https://github.com/reneruhr/lorenz
+
 #### Architecture
 Kipod is written in C++17. Rendering happens with OpenGL.
 
