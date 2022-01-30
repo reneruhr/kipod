@@ -23,6 +23,7 @@ void kipod::Application::Run()
 {
     while (!window_->windowShouldClose())
     {
+        kipod::Events::Process();
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -41,9 +42,7 @@ void kipod::Application::Run()
             ActiveModule().DrawScene();
         }
         kipod::Gui::End();
-
         window_->updateWindow();
-        kipod::Events::Process();
         clock_->Synchronize();
     }
 

@@ -1,14 +1,9 @@
 #pragma once
-
 #include "../core.h"
 
-
 namespace kipod{
-
-
 using namespace std::chrono_literals;
 using Time = std::chrono::high_resolution_clock;
-
 
 class Clock
 {
@@ -20,7 +15,7 @@ class Clock
 public:
     Clock() : last_(Time::now()) {}
 
-    int Timestep ();
+    int Timestep();
     void Synchronize();
 };
 

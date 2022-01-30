@@ -1,6 +1,5 @@
 #include "engine_clock.h"
 
-
 int kipod::Clock::Timestep()
 {
     return std::chrono::duration_cast<std::chrono::milliseconds>(current_time_step_).count();

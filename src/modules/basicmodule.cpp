@@ -133,7 +133,7 @@ void BasicScene::Draw() {
     {
         auto transform = m->Transform();
         auto mvp = cameras_[0]->projection_view_matrix_ * transform;
-        shaders_[0]->SetUniform<glm::vec4>("color", {1.f,1.f,1.f,1.f});
+        shaders_[0]->SetUniform<glm::vec4>("color", m->mat_->ambient_);
         shaders_[0]->SetUniform<glm::mat4>("mvp", mvp);
         shaders_[0]->Use();
         m->Draw();
@@ -160,7 +160,12 @@ void BasicScene::Add(const std::shared_ptr<RenderObject> &object)
     active_object_ = objects_.back().get();
 }
 
-
+void BasicScene::Update()
+{
+    for(auto& object : objects_){
+        object->Update();
+    }
+}
 
 
 BasicModule::BasicModule(int width, int height, std::string name) : Module(name)
@@ -169,5 +174,13 @@ BasicModule::BasicModule(int width, int height, std::string name) : Module(name)
     sidebar_ = std::make_unique<BasicSidebar>(BasicSidebar{scene_});
     console_ = nullptr;
     menu_ = std::make_unique<LorenzModuleMenu>();
+}
+
+void BasicObject::SetColor(const glm::vec3 &color)
+{
+    if(!mat_)
+        mat_ = std::make_shared<RenderMaterial>(0.);
+    mat_->ambient_ = glm::vec4(color,1.f);
+
 }
 }

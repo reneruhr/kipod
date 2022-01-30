@@ -46,6 +46,7 @@ public:
 
     virtual void Setup() = 0;
     virtual void Draw() = 0;
+    virtual void Update(){}
 
     virtual void DrawGui(){}
     void TakeScreenshot(std::string, bool);

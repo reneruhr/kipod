@@ -49,6 +49,7 @@ public:
     virtual void Draw(RenderLayout* layout);
     virtual void Draw(const std::string& layout);
     virtual void Setup();
+    virtual void Update(){}
     virtual void Setup(RenderLayout* layout);
     virtual void Setup(const std::string& layout);
     virtual RenderLayout* Layout(const std::string& layout);
@@ -56,6 +57,7 @@ public:
     virtual void AddLayout(const std::string& name, RenderLayout&& layout);
     virtual void ChangeLayout(const std::string& name, RenderLayout&& layout);
     virtual bool HasLayout(const std::string& name);
+
 };
 
 
