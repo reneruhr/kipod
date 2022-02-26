@@ -1,5 +1,7 @@
 #include "basicmodule.h"
 #include "../render/opengl/opengl_layout.h"
+#include "../entity/entity.h"
+
 namespace kipod
 {
 
@@ -129,14 +131,17 @@ void BasicScene::Signup() {
 void BasicScene::Draw() {
     PrepareScreen();
 
-    for(auto& m : objects_)
+    for(auto& object : objects_)
     {
-        auto transform = m->Transform();
-        auto mvp = cameras_[0]->projection_view_matrix_ * transform;
-        shaders_[0]->SetUniform<glm::vec4>("color", m->mat_->ambient_);
-        shaders_[0]->SetUniform<glm::mat4>("mvp", mvp);
-        shaders_[0]->Use();
-        m->Draw();
+        if(auto m = RenderObjectSPtr(object))
+        {
+            auto transform = m->Transform();
+            auto mvp = cameras_[0]->projection_view_matrix_ * transform;
+            shaders_[0]->SetUniform<glm::vec4>("color", m->mat_->ambient_);
+            shaders_[0]->SetUniform<glm::mat4>("mvp", mvp);
+            shaders_[0]->Use();
+            m->Draw();
+        }
     }
     kipod::RenderManager::Bind(0);
 }
@@ -157,13 +162,23 @@ void BasicScene::Setup() {
 void BasicScene::Add(const std::shared_ptr<RenderObject> &object)
 {
     objects_.push_back(object);
-    active_object_ = objects_.back().get();
+    SetActiveObject(objects_.back());
 }
 
 void BasicScene::Update()
 {
     for(auto& object : objects_){
-        object->Update();
+        if(auto o = RenderObjectSPtr(object)) o->Update();
+    }
+}
+
+void BasicScene::Add(std::weak_ptr<Actor> actor)
+{
+    auto basic_actor = std::static_pointer_cast<BasicActor>(actor)
+    if(auto actor_ptr = std::shared_ptr<BasicActor>{actor})
+    {
+        auto render_object_ptr = std::shared_ptr<RenderObject>(std::static_pointer_cast<RenderObject>(actor_ptr->GetComponent(render_component)) );
+        Add(render_object_ptr);
     }
 }
 
