@@ -21,6 +21,7 @@ public:
 class Module{
 
     bool pause_ = false;
+    bool pause_update_ = true;
 
 protected:
     std::shared_ptr<RenderScene> scene_;
@@ -39,6 +40,8 @@ public:
     void Pause() { pause_ = true; }
     void Continue() { pause_ = false; }
     void SynchronizeLinks();
+    void PauseUpdate() { pause_update_ = true; }
+    void ContinuePauseUpdate() { pause_update_ = false; }
 
     virtual void Init();
     virtual void DrawScene();
@@ -48,7 +51,7 @@ public:
     virtual void RemoveSubscription();
     virtual void DrawMenu();
     auto GetScene() { return scene_; }
-    
+    virtual void UpdateScene();
     void DrawSidebarContent() { sidebar_->SideBarContent(); }
 };
 

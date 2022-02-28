@@ -39,6 +39,7 @@ void kipod::Application::Run()
         if(HasActiveModule()) {
             ActiveModule().DrawSidebar();
             ActiveModule().DrawConsole();
+            ActiveModule().UpdateScene();
             ActiveModule().DrawScene();
         }
         kipod::Gui::End();

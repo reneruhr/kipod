@@ -8,8 +8,6 @@ auto BaseShader()
     return std::make_shared<Shader>("kipod/shaders/basic.vert.glsl", "kipod/shaders/basic.frag.glsl");
 }
 
-
-
 void BasicScene::SetupKeys()
 {
     Controls::Add("Left", Key::Left);
@@ -51,6 +49,7 @@ void BasicScene::Receive(std::shared_ptr<kipod::Event> event) {
 
 void BasicScene::ProcessKeys(KeyPressedEvent &event) {
     float stepsize = 1.0f;
+    float stepsize_small = 0.2f;
     auto key = event.GetKeyCode();
     auto mod = event.GetMod();
 
@@ -107,10 +106,10 @@ void BasicScene::ProcessKeys(KeyPressedEvent &event) {
         GetActiveCamera()->Move(kipod::RenderCamera::Movement::RIGHT, stepsize);
     }
     else if(key == Key::W && mod == Mod::None){
-        GetActiveCamera()->Move(kipod::RenderCamera::Movement::FORWARD, stepsize);
+        GetActiveCamera()->Move(kipod::RenderCamera::Movement::FORWARD, stepsize_small);
     }
     else if(key == Key::S && mod == Mod::None){
-        GetActiveCamera()->Move(kipod::RenderCamera::Movement::BACKWARD, stepsize);
+        GetActiveCamera()->Move(kipod::RenderCamera::Movement::BACKWARD, stepsize_small);
     }
     else if(key == Key::R && mod == Mod::None){
         GetActiveCamera()->Move(kipod::RenderCamera::Movement::UP, stepsize);
@@ -154,7 +153,7 @@ void BasicScene::Setup() {
 }
 
 
-void BasicScene::Add(const std::shared_ptr<RenderObject> &object)
+void BasicScene::Add(const std::shared_ptr<BasicObject> &object)
 {
     objects_.push_back(object);
     active_object_ = objects_.back().get();
@@ -162,9 +161,13 @@ void BasicScene::Add(const std::shared_ptr<RenderObject> &object)
 
 void BasicScene::Update()
 {
-    for(auto& object : objects_){
-        object->Update();
+    int static step {1};
+    if( (step %speed )==0) {
+        for (auto &object: objects_) {
+            object->Update();
+        }
     }
+    step++;
 }
 
 
@@ -181,6 +184,13 @@ void BasicObject::SetColor(const glm::vec3 &color)
     if(!mat_)
         mat_ = std::make_shared<RenderMaterial>(0.);
     mat_->ambient_ = glm::vec4(color,1.f);
-
 }
+
+void BasicObject::SetColor(const glm::vec4 &color)
+{
+    if (!mat_)
+        mat_ = std::make_shared<RenderMaterial>(0.);
+    mat_->ambient_ = glm::vec4(color);
+}
+
 }

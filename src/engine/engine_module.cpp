@@ -24,6 +24,11 @@ void kipod::Module::Init()
     scene_->Setup();
 }
 
+void kipod::Module::UpdateScene()
+{
+    if(!pause_update_)  scene_->Update();
+}
+
 void kipod::Module::DrawScene()
 {
     if(!pause_)  scene_->Draw();
@@ -64,16 +69,24 @@ void kipod::Module::DrawMenu()
         if (ImGui::BeginMenu("Controls"))
         {
             if(!pause_){
-                if(ImGui::MenuItem("Pause", "Stops Draw call"))
+                if(ImGui::MenuItem("Pause Render", "Stops Draw call"))
                     pause_ = !pause_;
             }
             else{
-                if(ImGui::MenuItem("Continue", "Runs Draw calls"))
+                if(ImGui::MenuItem("Continue Render", "Runs Draw calls"))
                     pause_ = !pause_;
                 if(ImGui::MenuItem("Step Forward", "Runs Draw call once"))
                     scene_->Draw();
             }
 
+            if(!pause_update_){
+                if(ImGui::MenuItem("Pause Update", "Stops Update()"))
+                    pause_update_ = !pause_update_;
+            }
+            else{
+                if(ImGui::MenuItem("Continue Update", "Runs Update()"))
+                    pause_update_ = !pause_update_;
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();

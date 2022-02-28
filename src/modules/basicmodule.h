@@ -25,16 +25,26 @@ public:
     }
     BasicObject() = default;
     void SetColor(const glm::vec3& color);
+    void SetColor(const glm::vec4 &color);
+    void Update()
+    {
+        update_callback_(this);
+    }
+
+    void SetUpdateCallback(std::function<void(BasicObject*)> callback) { update_callback_ = callback;}
+private:
+    std::function<void(BasicObject*)> update_callback_ = [](BasicObject*){};
 };
 
 class BasicScene : public RenderScene, public Listener, public Controls
 {
-    using Objects = std::vector<std::shared_ptr<RenderObject>>;
+    using Objects = std::vector<std::shared_ptr<BasicObject>>;
     using Shaders = std::vector<std::shared_ptr<Shader>>;
     Objects objects_{};
     Shaders shaders_{};
     bool mouse_rotation_active_ = false;
-    RenderObject* active_object_ = nullptr;
+    BasicObject* active_object_ = nullptr;
+    int speed {1};
 public:
     BasicScene(int w, int h) : RenderScene(w,h) {}
 
@@ -52,9 +62,9 @@ public:
         return objects_.back();
     }
 
-    void Add(const std::shared_ptr<RenderObject>& object);
+    void Add(const std::shared_ptr<BasicObject> &object);
     void Add(const std::shared_ptr<Shader>& shader) {shaders_.push_back(shader); }
-    RenderObject* GetActiveObject() { return active_object_; }
+    BasicObject* GetActiveObject() { return active_object_; }
     void Setup() override;
     void Draw() override;
     void Update() override;
@@ -65,7 +75,8 @@ public:
     void ProcessMouseMoves(kipod::MouseMoveEvent &event);
     void SetupKeys();
     void PrepareScreen();
-
+    auto GetObject(std::size_t index) { return objects_[index]; }
+    void SetSpeed(int frames_skipped) { speed = frames_skipped; }
 };
 
 
