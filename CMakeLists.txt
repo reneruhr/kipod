@@ -83,7 +83,7 @@ add_library(kipod
   src/modules/meshmodels/softrenderer/softrenderer_scene.cpp
   src/modules/meshmodels/raytracer/raytracer_scene.h
   src/modules/meshmodels/raytracer/raytracer_scene.cpp
-  src/modules/meshmodels/meshmodel_api_scene.h
+  #src/modules/meshmodels/meshmodel_api_scene.h
 
   src/modules/meshmodels/meshmodel_module.h
   src/modules/meshmodels/meshmodel_module.cpp
