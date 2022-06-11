@@ -11,7 +11,7 @@ Kipod is a small graphics engine.
 #### Architecture
 Kipod is written in C++17. Rendering happens with OpenGL.
 
-External libraries used: Eigen, glm, catch2, entt, spdlog, stb, GLFW, Dear ImGui
+External libraries used: Eigen, glm, catch2, entt, spdlog, stb, GLFW, Dear ImGui. The Event system follows https://github.com/TheCherno/Hazel.
 
 #### Instructions for building from Source for Linux, Mac, Windows:
 
@@ -39,6 +39,7 @@ Clone and Building Instruction:
 ~$ cd build
 ~$ cmake ..
 ~$ make
+```
 
 ### MacOS (Intel/ARM)
 
